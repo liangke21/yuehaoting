@@ -10,7 +10,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
-import com.example.yuehaoting.Data
+import com.example.yuehaoting.base.DataUri
 import com.example.yuehaoting.R
 import com.example.yuehaoting.loginRegistered.base.MyAppCompatActivity
 import com.example.yuehaoting.loginRegistered.entity.MNumber
@@ -85,7 +85,7 @@ class LoginActivity : MyAppCompatActivity(), View.OnClickListener {
      */
     private fun isItPureUser(number: String, password: String) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("${Data.apiUri}/songs/")
+            .baseUrl("${DataUri.apiUri}/songs/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val mNumber = retrofit.create(LoginService::class.java)

@@ -14,18 +14,24 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.乐好听"
             tools:targetApi="n">
-        <activity android:name=".loginRegistered.RegisteredActivity"
-                  android:theme="@style/TranslucentTheme">
-        </activity>
-        <activity android:name=".loginRegistered.LoginActivity"
-                  android:theme="@style/TranslucentTheme">
+        <activity android:name=".searchfor.SearchActivity"
+        android:theme="@style/SearchTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+                android:name=".loginRegistered.RegisteredActivity"
+                android:theme="@style/TranslucentTheme">
+        </activity>
+        <activity
+                android:name=".loginRegistered.LoginActivity"
+                android:theme="@style/TranslucentTheme">
+        </activity>
         <activity android:name=".MainActivity">
+
         </activity>
     </application>
 

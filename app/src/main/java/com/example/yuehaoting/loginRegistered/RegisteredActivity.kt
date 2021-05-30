@@ -2,12 +2,11 @@ package com.example.yuehaoting.loginRegistered
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
-import com.example.yuehaoting.Data
+import com.example.yuehaoting.base.DataUri
 import com.example.yuehaoting.R
 import com.example.yuehaoting.loginRegistered.base.MyAppCompatActivity
 import com.example.yuehaoting.loginRegistered.entity.MNumber
@@ -20,7 +19,6 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.regex.Pattern
-import kotlin.concurrent.thread
 
 
 class RegisteredActivity : MyAppCompatActivity(), View.OnClickListener {
@@ -84,7 +82,7 @@ class RegisteredActivity : MyAppCompatActivity(), View.OnClickListener {
      */
     private fun isItPureUser(number: String, mPassword: String) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("${Data.apiUri}/songs/")
+            .baseUrl("${DataUri.apiUri}/songs/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val mNumber = retrofit.create(LoginService::class.java)
@@ -114,7 +112,7 @@ class RegisteredActivity : MyAppCompatActivity(), View.OnClickListener {
      */
     private fun loginRetrofit(number: String, password: String) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("${Data.apiUri}/songs/")
+            .baseUrl("${DataUri.apiUri}/songs/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val login = retrofit.create(LoginService::class.java)
