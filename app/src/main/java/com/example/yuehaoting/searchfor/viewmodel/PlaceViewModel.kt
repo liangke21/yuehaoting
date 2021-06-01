@@ -10,14 +10,18 @@ class PlaceViewModel : ViewModel() {
 
     val placeList = ArrayList<RecordData>()
 
+    //Transformations.switchMap 观察这个对象
     val placeLiveData = Transformations.switchMap(searchLiveData) { query ->
-        Repository.searchPlaces(query)
+
+        //发起网络请求
+        Repository.searchPlaces(query) //返回LiveData对象
     }
 
     fun searchPlaces(query: String) {
         searchLiveData.value = query
     }
 
-
-
+  fun SinglePlaces(single: String){
+      println("-----$single----------------------------------------------------------------------------------------------")
+  }
 }

@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">乐好听</string>
-
+    <array name="searchTitleArray">
+    <item>单曲</item>
+    <item>视频</item>
+    <item>歌单</item>
+    <item>电台</item>
+    <item>专辑</item>
+    </array>
 </resources>

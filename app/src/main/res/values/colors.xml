@@ -13,4 +13,5 @@
 
 
     <color name="colorPrimary">#008577</color>
+    <color name="search_black">#000000</color>
 </resources>

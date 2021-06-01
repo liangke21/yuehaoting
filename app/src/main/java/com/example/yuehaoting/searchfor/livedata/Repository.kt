@@ -7,9 +7,12 @@ import com.example.yuehaoting.searchfor.data.kugou.RecordData
 
 import kotlinx.coroutines.Dispatchers
 
-
+/**
+ * 仓库层
+ */
 object Repository {
 private lateinit var HintInfo:List< RecordData>
+
     fun searchPlaces(query: String) = liveData(Dispatchers.IO) {
         val result = try {
             val placeResponse = SunnyWeatherNetwork.searchPlaces(query)
@@ -17,6 +20,9 @@ private lateinit var HintInfo:List< RecordData>
             if (placeResponse.status == 1) {
                 val places = placeResponse.data[0]
                 HintInfo = places.RecordDatas
+                HintInfo.forEach {
+                    Log.e(it.toString(), "-----------")
+                }
                 Result.success(HintInfo)
             } else {
                 Result.failure(RuntimeException("为响应 ${placeResponse.status}"))

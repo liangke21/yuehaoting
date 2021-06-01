@@ -1,14 +1,15 @@
 package com.example.yuehaoting.searchfor.ui.fragment
 
+import android.icu.text.SearchIterator
 import android.os.Bundle
+import android.text.Layout
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.widget.addTextChangedListener
+import androidx.core.widget.doBeforeTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -19,12 +20,18 @@ import com.example.yuehaoting.searchfor.data.kugou.RecordData
 import com.example.yuehaoting.searchfor.ui.adapter.PlaceAdapter
 import com.example.yuehaoting.searchfor.viewmodel.PlaceViewModel
 
+/**
+ * 废弃
+ */
 
-class PlaceFragment : Fragment() {
+class PlaceFragment : Fragment(), View.OnClickListener {
     private lateinit var recyclerView: RecyclerView
-    private lateinit var searchPlaceEdit: EditText
-    private lateinit var bgImageView:ImageView
- private val viewModel by lazy { ViewModelProviders.of(this).get(PlaceViewModel::class.java) }
+    private lateinit var ivTitleBarSearchBack: ImageView
+    private lateinit var etTitleBarSearch: EditText
+    private lateinit var tvTitleBarSearch: TextView
+    private lateinit var llrecyclerView: LinearLayout
+
+    private val viewModel by lazy { ViewModelProviders.of(this).get(PlaceViewModel::class.java) }
 
     private lateinit var adapter: PlaceAdapter
 
@@ -35,44 +42,88 @@ class PlaceFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        initView()
+
+        placeLiveDataObserve()
+
+    }
+
+    /**
+     * UI控件初始化
+     */
+    private fun initView() {
         recyclerView = activity!!.findViewById(R.id.recyclerView)
-        searchPlaceEdit = activity!!.findViewById(R.id.searchPlaceEdit)
-        //bgImageView = activity!!.findViewById(R.id.bgImageView)
+        etTitleBarSearch = activity!!.findViewById(R.id.et_title_bar_search)
+        ivTitleBarSearchBack = activity!!.findViewById(R.id.iv_title_bar_search_back)
+        ivTitleBarSearchBack.setOnClickListener(this)
+        etTitleBarSearch = activity!!.findViewById(R.id.et_title_bar_search)
+        tvTitleBarSearch = activity!!.findViewById(R.id.tv_title_bar_search)
+        tvTitleBarSearch.setOnClickListener(this)
+        llrecyclerView = activity!!.findViewById(R.id.ll_recyclerView)
 
         val layoutManager = LinearLayoutManager(activity)
         recyclerView.layoutManager = layoutManager
-        adapter = PlaceAdapter(this, viewModel.placeList)
+        adapter = PlaceAdapter(viewModel.placeList, object : PlaceAdapter.SearchHintInfo {
+            override fun hinInfo(i: String) {
+
+                etTitleBarSearch.setText(i)
+                viewModel.SinglePlaces(i)
+                llrecyclerView.visibility = View.GONE
+
+            }
+        })
         recyclerView.adapter = adapter
+
+        etTitleBarSearchUpdate()
+
+    }
+
+    /**
+     *  控件数据更新
+     */
+    private fun etTitleBarSearchUpdate() {
         //每当搜索框发生变化了,我们就获取新的类容
-        searchPlaceEdit.addTextChangedListener { editable ->
+        etTitleBarSearch.addTextChangedListener { editable ->
             val content = editable.toString()
             //不是空
             if (content.isNotEmpty()) {
                 viewModel.searchPlaces(content)
             } else {
                 recyclerView.visibility = View.GONE
-                bgImageView.visibility = View.VISIBLE
                 viewModel.placeList.clear()
                 adapter.notifyDataSetChanged()
             }
         }
+    }
+
+    /**
+     * 观察数据发生变化时 会把数据添加到集合中
+     */
+    private fun placeLiveDataObserve() {
         viewModel.placeLiveData.observe(this, Observer { result ->
             val places = result.getOrNull()
-            (places as Collection<RecordData>).forEach {
-                Log.e(it.HintInfo.toString(), "-----------")
-            }
-
             if (places != null) {
                 recyclerView.visibility = View.VISIBLE
-                bgImageView.visibility = View.GONE
                 viewModel.placeList.clear()
-              viewModel.placeList.addAll(places as Collection<RecordData>)
+                viewModel.placeList.addAll(places as Collection<RecordData>)
                 adapter.notifyDataSetChanged()
             } else {
-                Toast.makeText(activity, "未能查询到任何地点", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "未能查询到歌曲", Toast.LENGTH_SHORT).show()
                 result.exceptionOrNull()?.printStackTrace()
             }
         })
+
     }
+
+
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.iv_title_bar_search_back -> {
+            }
+            R.id.tv_title_bar_search -> {
+            }
+        }
+    }
+
 
 }
