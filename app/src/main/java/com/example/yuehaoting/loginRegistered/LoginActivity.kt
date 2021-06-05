@@ -24,7 +24,6 @@ import java.util.regex.Pattern
 
 
 class LoginActivity : MyAppCompatActivity(), View.OnClickListener {
-
     private lateinit var etNumber: EditText
     private lateinit var etPassword: EditText
     private lateinit var registered: TextView

@@ -1,11 +1,13 @@
 package com.example.yuehaoting.searchfor.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.*
+import com.example.yuehaoting.base.log.log
 import com.example.yuehaoting.searchfor.livedata.Repository
 import com.example.yuehaoting.searchfor.data.kugou.RecordData
 
 class PlaceViewModel : ViewModel() {
-
+private var tAG=PlaceViewModel::class.java.simpleName
     private val searchLiveData = MutableLiveData<String>()
 
     val placeList = ArrayList<RecordData>()
@@ -21,7 +23,6 @@ class PlaceViewModel : ViewModel() {
         searchLiveData.value = query
     }
 
-  fun SinglePlaces(single: String){
-      println("-----$single----------------------------------------------------------------------------------------------")
-  }
+    /////////////////////////////////////////////////////////////
+
 }

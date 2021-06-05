@@ -1,6 +1,7 @@
 package com.example.yuehaoting.base.retrofit
 
 import android.util.Log
+import com.example.yuehaoting.base.DataUri
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -9,10 +10,12 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 object SunnyWeatherNetwork {
-
-    private val placeService = ServiceCreator.create(PlaceService::class.java)
-
+     //关键字请求
+    private val placeService = ServiceCreator(DataUri.kuGouApiSearchFor).create(PlaceService::class.java)
     suspend fun searchPlaces(query: String) = placeService.searchPlaces(query).await()
+   //曲目请求
+    private val singleService = ServiceCreator(DataUri.kuGouApiSingle).create(PlaceService::class.java)
+    suspend fun singlePlaces(query: String) = singleService.singlePlaces(query).await()
 
     private suspend fun <T> Call<T>.await(): T {
         return suspendCoroutine { continuation ->

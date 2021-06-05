@@ -31,7 +31,7 @@ open class MyAppCompatActivity :AppCompatActivity(){
             window.statusBarColor = Color.TRANSPARENT
         }
         //隐藏导航栏
-        //隐藏导航栏
+        //隐藏导航栏zz
         val actionBar: ActionBar? = supportActionBar
         actionBar?.hide()
     }

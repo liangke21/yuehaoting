@@ -14,4 +14,9 @@
 
     <color name="colorPrimary">#008577</color>
     <color name="search_black">#000000</color>
+    <color name="search_single">#3F51B5</color>
+
+
+    <color name="测试">#000000</color>
+    
 </resources>

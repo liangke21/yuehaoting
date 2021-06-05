@@ -31,7 +31,7 @@
                 android:drawableLeft="@drawable/search"
                 android:background="@drawable/search_et_background"/>
         <TextView
-                android:id="@+id/tv_title_bar_search"
+                android:id="@+id/tv_title_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"

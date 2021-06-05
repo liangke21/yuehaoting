@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginTop="25dp"
+  android:background="?android:attr/selectableItemBackground"
+  android:orientation="vertical">
+  <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textSize="16dp"
+    android:textColor="@color/search_single"
+    android:id="@+id/rv_fragment_search_Single_SongName"
+    android:text="歌曲名称"/>
+  <LinearLayout
+    android:layout_marginTop="5dp"
+    android:layout_width="wrap_content"
+    android:layout_height="15dp"
+    android:orientation="horizontal">
+    <ImageView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:id="@+id/iv_hq"/>
+    <ImageView
+      android:layout_marginLeft="2dp"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:id="@+id/iv_sq"/>
+    <ImageView
+      android:layout_marginLeft="2dp"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:id="@+id/iv_vip"/>
+    <TextView
+      android:layout_marginLeft="3dp"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:gravity="center"
+      android:textSize="12dp"
+      android:id="@+id/rv_fragment_search_Single_AlbumName"
+      android:text="歌曲名称"/>
+  </LinearLayout>
+
+</LinearLayout>
+

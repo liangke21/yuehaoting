@@ -1,16 +1,12 @@
-package com.example.yuehaoting.searchfor.ui.adapter
+package com.example.yuehaoting.searchfor.adapter
 
-import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yuehaoting.R
 import com.example.yuehaoting.searchfor.data.kugou.RecordData
-import com.example.yuehaoting.searchfor.ui.fragment.PlaceFragment
 
 
 class PlaceAdapter( private val placeList: List<RecordData>,private  var mSearchHintInfo: SearchHintInfo) : RecyclerView.Adapter<PlaceAdapter.ViewHolder>() {
@@ -27,8 +23,10 @@ class PlaceAdapter( private val placeList: List<RecordData>,private  var mSearch
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val place = placeList[position]
+        println("搜索RecyclerView----------------${placeList[0].HintInfo}")
         holder.placeName.text = place.HintInfo
         holder.itemView.setOnClickListener{
+            println(place.HintInfo)
             mSearchHintInfo?.hinInfo(place.HintInfo)
         }
     }
