@@ -37,4 +37,5 @@ class PlaceAdapter( private val placeList: List<RecordData>,private  var mSearch
         fun hinInfo(i:String)
     }
 
+
 }

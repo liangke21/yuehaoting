@@ -92,7 +92,7 @@ class SingleFragment1dapter(private val list: List<KuGouSingle.Data.Lists>) :
 
         }
         if (!TextUtils.isEmpty(albumName)) {
-            albumName = "《$albumName》"
+            albumName = "-《$albumName》"
         }
 
         return arrayOf(songName, singerName, albumName)

@@ -100,9 +100,22 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener {
 
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
+        //适配器监听事假
+        adapterOnClickListener()
+
+
+        etTitleBarSearchUpdate()
+        //点击对话框显示布局
+        etTitleBarSearch.setOnClickListener {
+            llContentFragment.visibility = View.GONE
+            llRecyclerView.visibility = View.VISIBLE
+        }
+
+    }
+
+    private fun adapterOnClickListener() {
         adapter = PlaceAdapter(viewModel.placeList, object : PlaceAdapter.SearchHintInfo {
             override fun hinInfo(i: String) {
-
                 etTitleBarSearch.setText(i)
                 var edit = mSharedPreferences.edit()
                 edit.putString("Single", i)
@@ -121,10 +134,6 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener {
             }
         })
         recyclerView.adapter = adapter
-
-        etTitleBarSearchUpdate()
-
-
     }
 
 
@@ -154,6 +163,7 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener {
             val places = result.getOrNull() as ArrayList<RecordData>
             Log.e("请求的曲目数据已经观察到", places[0].HintInfo)
             if (places != null) {
+                println("11111111111111111111111111111111111111")
                 recyclerView.visibility = View.VISIBLE
                 viewModel.placeList.clear()
                 viewModel.placeList.addAll(places)
