@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
-  package="com.example.yuehaoting">
+  package="com.example.yuehaoting"
+  tools:ignore="ExtraText">
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-      android:name=".App"
       android:allowBackup="true"
       android:icon="@mipmap/ic_launcher"
       android:label="@string/app_name"
+      android:name=".App"
       android:networkSecurityConfig="@xml/network_security_config"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:supportsRtl="true"
@@ -22,7 +24,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
         <activity
           android:name=".loginRegistered.RegisteredActivity"
           android:theme="@style/TranslucentTheme">
@@ -32,17 +33,32 @@
           android:theme="@style/TranslucentTheme">
         </activity>
 
-
-        <service
-          android:enabled="true"
-          android:name=".musicpath.service.MusicService"
-          android:exported="true">
-        </service>
-
         <activity android:name=".MainActivity">
         </activity>
+
+        <provider
+          android:authorities="com.example.yuehaoting.fileprovider"
+          android:exported="false"
+          android:grantUriPermissions="true"
+          android:name="androidx.core.content.FileProvider">
+            <meta-data
+              android:name="android.support.FILE_PROVIDER_PATHS"
+              android:resource="@xml/provider_paths"/>
+        </provider>
+
+        <provider
+          android:authorities="com.example.yuehaoting.log-trojan"
+          android:name=".base.log.LogTrojanProvider"
+          android:exported="false"
+          android:initOrder="1000"
+          android:multiprocess="true">
+        </provider>
+        <service
+          android:enabled="true"
+          android:exported="true"
+          android:name=".musicpath.service.MusicService">
+        </service>
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET"/>
 
 </manifest>

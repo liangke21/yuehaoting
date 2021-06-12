@@ -15,9 +15,6 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         context = this
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
     }
 
     val isAppForeground: Boolean

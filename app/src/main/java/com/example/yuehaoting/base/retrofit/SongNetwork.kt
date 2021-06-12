@@ -9,13 +9,17 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-object SunnyWeatherNetwork {
+object SongNetwork {
      //关键字请求
     private val placeService = ServiceCreator(DataUri.kuGouApiSearchFor).create(PlaceService::class.java)
     suspend fun searchPlaces(query: String) = placeService.searchPlaces(query).await()
    //曲目请求
     private val singleService = ServiceCreator(DataUri.kuGouApiSingle).create(PlaceService::class.java)
     suspend fun singlePlaces(query: String) = singleService.singlePlaces(query).await()
+
+    //歌曲id请求
+    private val songUriID=ServiceCreator(DataUri.kuGouSongUriID).create(PlaceService::class.java)
+    suspend fun songUriID(query: String)= songUriID.songUriId(query).await()
 
     private suspend fun <T> Call<T>.await(): T {
         return suspendCoroutine { continuation ->

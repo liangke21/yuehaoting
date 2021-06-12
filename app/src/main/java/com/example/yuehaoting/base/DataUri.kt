@@ -12,6 +12,8 @@ object DataUri {
     const val apiUri = "http://10.0.2.2:8091"
     //酷狗搜索接口
     const val kuGouApiSearchFor="https://searchtip.kugou.com/"
-
+    //酷狗单曲接口
     const val kuGouApiSingle="http://songsearch.kugou.com/"
+    //酷狗歌曲详情id
+    const val kuGouSongUriID="https://wwwapi.kugou.com/"
 }

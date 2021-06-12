@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.*
 import android.text.TextUtils
 import android.util.Log
@@ -13,20 +14,22 @@ import com.example.yuehaoting.R
 import com.example.yuehaoting.musicpath.service.Command.Companion.PLAYSONG
 import com.example.yuehaoting.musicpath.util.Constants.MODE_LOOP
 import com.example.yuehaoting.musicpath.util.Constants.MODE_SHUFFLE
-import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousingle.SongLists
+import com.example.yuehaoting.musicpath.data.KuGouSong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import retrofit2.http.Url
 import timber.log.Timber
 import java.lang.Exception
+import com.example.yuehaoting.musicpath.tryLaunch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
 
 /**
  * 作者: QQ号:1396797522
  * 时间: 2021/6/7 13:04
  * 描述:
  */
-class MusicService : Service() {
+class MusicService : Service(), CoroutineScope by MainScope() {
 
     /**
      * 播放列队
@@ -117,7 +120,7 @@ class MusicService : Service() {
         val control = intent.getIntExtra(EXTRA_CONTROL, -1)
         Timber.d("后台播放4 $control")
         when (control) {
-            PLAYSONG ->{
+            PLAYSONG -> {
                 Timber.d("后台播放5")
                 playSelectSong(intent.getIntExtra(EXTRA_POSITION, -1))
             }
@@ -130,9 +133,9 @@ class MusicService : Service() {
      * @param position 播放位置
      */
     private fun playSelectSong(position: Int) {
-
-        playQueue.setPosition(position)
         Timber.d("后台播放6 播放位置$position")
+        playQueue.setPosition(position)
+        readyToPlay(playQueue.song)
     }
 
 
@@ -142,24 +145,29 @@ class MusicService : Service() {
      * @param song 播放歌曲的路径
      */
 
-private fun  readyToPlay(song:SongLists,requestFocus:Boolean=true){
+    private fun readyToPlay(song: SongLists, requestFocus: Boolean = true) {
 
-       try {
-           Timber.v("后台播放8 准备播放",song)
-           if (TextUtils.isEmpty(song.FileHash)){
-               Toast.makeText(this, R.string.path_empty,Toast.LENGTH_SHORT).show()
-               return
-           }
+        tryLaunch (block = {
+            Timber.v("后台播放8 准备播放", song.toString())
+            if (TextUtils.isEmpty(song.FileHash)) {
+                Toast.makeText(this, R.string.path_empty, Toast.LENGTH_SHORT).show()
+                return@tryLaunch
+            }
 
-          /* withContext(Dispatchers.IO){
-               mediaPlayer.setDataSource(this@MusicService,song.FileHash)
-           }*/
 
-       }catch (e:Exception){
+            KuGouSong().songID(song.FileHash)
+            val uri: Uri = Uri.parse("")
+            withContext(Dispatchers.IO) {
+                mediaPlayer.setDataSource(this@MusicService, uri)
 
-       }
+            }
 
-}
+        } ,
+         catch = {
+
+         }
+        )
+    }
 
 
     companion object {
