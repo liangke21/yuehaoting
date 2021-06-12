@@ -1,4 +1,4 @@
-package com.example.yuehaoting.searchfor.data.kugousingle
+package com.example.yuehaoting.data.kugousingle
 
 /**
  * Created by 13967 on 2021-06-03
@@ -65,7 +65,6 @@ data class KuGouSingle(
             var AlbumPrivilege: Int,
             var TopicUrl: String,
             var SuperFileHash: String,
-            var ASQPrivilege: Int,
             var OldCpy: Int,
             var IsOriginal: Int,
             var Privilege: Int,
@@ -77,7 +76,6 @@ data class KuGouSingle(
             var HQPrice: Int,
             var FoldType: Int,
             var Type: String,
-            var A320Privilege: Int,
             var AlbumID: String,
             var SQExtName: String,
             var AlbumName: String,
@@ -122,6 +120,8 @@ data class KuGouSingle(
             var mGrp: List<Grp>,
             var SingerId: List<Int>
         ) {
+
+
             data class TransParam(
                 var cpy_grade: Int,
                 var musicpack_advance: Int,

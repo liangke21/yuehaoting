@@ -12,15 +12,16 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
+import com.example.yuehaoting.BuildConfig
 import com.example.yuehaoting.R
+import com.example.yuehaoting.base.activity.BaseActivity
 import com.example.yuehaoting.searchfor.adapter.PlaceAdapter
-import com.example.yuehaoting.searchfor.data.kugou.RecordData
+import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.searchfor.fragment.BaseFragment
 import com.example.yuehaoting.searchfor.fragment.SingleFragment1
 import com.example.yuehaoting.searchfor.fragment.ext.MyCommonNavigator
@@ -36,9 +37,10 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerInd
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView
+import timber.log.Timber
 
 
-class SearchActivity : AppCompatActivity(), View.OnClickListener {
+class SearchActivity :  BaseActivity(), View.OnClickListener {
     private lateinit var recyclerView: RecyclerView
     private lateinit var ivTitleBarSearchBack: ImageView
     private lateinit var etTitleBarSearch: EditText

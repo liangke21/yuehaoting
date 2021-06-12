@@ -1,4 +1,4 @@
-package com.example.yuehaoting.searchfor.data.kugou
+package com.example.yuehaoting.data.kugou
 
 data class Data(
     val LableName: String,

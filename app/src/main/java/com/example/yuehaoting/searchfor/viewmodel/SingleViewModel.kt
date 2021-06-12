@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.example.yuehaoting.searchfor.data.kugousingle.KuGouSingle
+import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.searchfor.livedata.Repository
 
 /**

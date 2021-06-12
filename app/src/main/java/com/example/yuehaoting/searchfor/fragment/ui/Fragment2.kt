@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yuehaoting.R
 import com.example.yuehaoting.searchfor.adapter.SingleFragment1dapter
-import com.example.yuehaoting.searchfor.data.kugousingle.KuGouSingle
+import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.searchfor.fragment.BaseFragment
 import com.example.yuehaoting.searchfor.viewmodel.SingleViewModel
 
@@ -45,7 +45,6 @@ class Fragment2:BaseFragment() {
 
         viewModel.singleObservedLiveData.observe(this, Observer { result ->
             val list=result.getOrNull() as ArrayList<KuGouSingle.Data.Lists>
-            Log.e("请求的曲目数据已经观察到",list[0].SongName)
             viewModel.singleList.addAll(list)
             recyclerView?.adapter= SingleFragment1dapter(viewModel.singleList)
         })

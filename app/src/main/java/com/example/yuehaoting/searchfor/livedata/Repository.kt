@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.liveData
 import com.example.yuehaoting.base.log.log
 import com.example.yuehaoting.base.retrofit.SunnyWeatherNetwork
-import com.example.yuehaoting.searchfor.data.kugou.RecordData
+import com.example.yuehaoting.data.kugou.RecordData
 
 import kotlinx.coroutines.Dispatchers
 

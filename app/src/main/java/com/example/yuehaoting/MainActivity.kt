@@ -16,10 +16,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Repository.searchPlaces("query: String")
 
     }
-
+//    companion object {
+//        @JvmStatic
+//        lateinit var context: MainActivity
+//            private set
+//    }
 
 }
 
