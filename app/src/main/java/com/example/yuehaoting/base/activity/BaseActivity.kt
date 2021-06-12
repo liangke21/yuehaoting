@@ -38,7 +38,7 @@ open class BaseActivity : SmMainActivity() {
     private var musicStateReceiver: MusicStatReceiver? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-    //    binToService()
+        binToService()
     }
 
     override fun onResume() {

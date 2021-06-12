@@ -3,6 +3,7 @@ package com.example.yuehaoting.musicpath.service
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.data.kugousingle.SongLists.Companion.SONG_LIST
+import timber.log.Timber
 
 /**
  * 作者: QQ号:1396797522
@@ -30,5 +31,6 @@ class PlayQueue {
      */
     fun setPosition(position: Int) {
       song=_originalQueue[position]
+        Timber.d("后台播放7")
     }
 }

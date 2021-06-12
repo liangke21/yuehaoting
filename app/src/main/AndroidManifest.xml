@@ -34,8 +34,9 @@
 
 
         <service
+          android:enabled="true"
           android:name=".musicpath.service.MusicService"
-          android:exported="false">
+          android:exported="true">
         </service>
 
         <activity android:name=".MainActivity">

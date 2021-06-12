@@ -6,13 +6,20 @@ import android.content.Intent
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.*
+import android.text.TextUtils
 import android.util.Log
+import android.widget.Toast
+import com.example.yuehaoting.R
 import com.example.yuehaoting.musicpath.service.Command.Companion.PLAYSONG
 import com.example.yuehaoting.musicpath.util.Constants.MODE_LOOP
 import com.example.yuehaoting.musicpath.util.Constants.MODE_SHUFFLE
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousingle.SongLists
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import retrofit2.http.Url
 import timber.log.Timber
+import java.lang.Exception
 
 /**
  * 作者: QQ号:1396797522
@@ -76,6 +83,7 @@ class MusicService : Service() {
     override fun onCreate() {
         super.onCreate()
         Timber.d("我再后台运行")
+
     }
 
     inner class MusicBinder : Binder() {
@@ -122,8 +130,36 @@ class MusicService : Service() {
      * @param position 播放位置
      */
     private fun playSelectSong(position: Int) {
+
         playQueue.setPosition(position)
+        Timber.d("后台播放6 播放位置$position")
     }
+
+
+    /**
+     * 准备播放
+     *
+     * @param song 播放歌曲的路径
+     */
+
+private fun  readyToPlay(song:SongLists,requestFocus:Boolean=true){
+
+       try {
+           Timber.v("后台播放8 准备播放",song)
+           if (TextUtils.isEmpty(song.FileHash)){
+               Toast.makeText(this, R.string.path_empty,Toast.LENGTH_SHORT).show()
+               return
+           }
+
+          /* withContext(Dispatchers.IO){
+               mediaPlayer.setDataSource(this@MusicService,song.FileHash)
+           }*/
+
+       }catch (e:Exception){
+
+       }
+
+}
 
 
     companion object {
