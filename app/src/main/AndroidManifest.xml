@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
-  package="com.example.yuehaoting"
-  tools:ignore="ExtraText">
+  package="com.example.yuehaoting">
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+      tools:ignore="ScopedStorage"/>
 
     <application
       android:allowBackup="true"
@@ -14,6 +16,7 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:supportsRtl="true"
       android:theme="@style/Theme.乐好听"
+      android:requestLegacyExternalStorage="true"
       tools:targetApi="n">
         <activity
           android:name=".searchfor.SearchActivity"
@@ -36,15 +39,16 @@
         <activity android:name=".MainActivity">
         </activity>
 
-        <provider
-          android:authorities="com.example.yuehaoting.fileprovider"
-          android:exported="false"
-          android:grantUriPermissions="true"
-          android:name="androidx.core.content.FileProvider">
-            <meta-data
-              android:name="android.support.FILE_PROVIDER_PATHS"
-              android:resource="@xml/provider_paths"/>
-        </provider>
+
+        <service
+          android:enabled="true"
+          android:exported="true"
+          android:name=".musicpath.service.MusicService">
+        </service>
+
+
+
+
 
         <provider
           android:authorities="com.example.yuehaoting.log-trojan"
@@ -53,11 +57,7 @@
           android:initOrder="1000"
           android:multiprocess="true">
         </provider>
-        <service
-          android:enabled="true"
-          android:exported="true"
-          android:name=".musicpath.service.MusicService">
-        </service>
+
     </application>
 
 

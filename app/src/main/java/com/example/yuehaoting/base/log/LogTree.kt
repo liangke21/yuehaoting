@@ -6,6 +6,7 @@ import timber.log.Timber
 
 internal class LogTree : Timber.DebugTree() {
 
+
   override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
     val logger = LoggerFactory.getLogger(tag ?: "root")
     when (priority) {
