@@ -19,7 +19,7 @@ object SongNetwork {
 
     //歌曲id请求
     private val songUriID=ServiceCreator(DataUri.kuGouSongUriID).create(PlaceService::class.java)
-    suspend fun songUriID(query: String)= songUriID.songUriId(query).await()
+    suspend fun songUriID(query: String,album:String)= songUriID.songUriId(query,album).await()
 
     private suspend fun <T> Call<T>.await(): T {
         return suspendCoroutine { continuation ->

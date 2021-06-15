@@ -14,7 +14,7 @@ open class SmMainActivity : AppCompatActivity() {
         Log.e(getActivityATG, "onCreate 第一次创建了活动")
 
         super.onCreate(savedInstanceState)
-       // readAndWritePermissions()
+      readAndWritePermissions()
     }
 
     override fun onStart() {
@@ -47,7 +47,7 @@ open class SmMainActivity : AppCompatActivity() {
         super.onRestart()
     }
 
-/*    fun readAndWritePermissions() {
+    fun readAndWritePermissions() {
     try {
         //检查是否有读写权限
         val permission=ActivityCompat.checkSelfPermission(this,"android.permission.WRITE_EXTERNAL_STORAGE")
@@ -60,6 +60,6 @@ open class SmMainActivity : AppCompatActivity() {
     }catch (e:Exception){
         e.printStackTrace()
     }
-    }*/
+    }
 
 }

@@ -3,6 +3,7 @@ package com.example.yuehaoting.musicpath.service
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
@@ -10,26 +11,29 @@ import android.os.*
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
+import androidx.media.AudioAttributesCompat
 import com.example.yuehaoting.R
+import com.example.yuehaoting.base.sevice.SmService
 import com.example.yuehaoting.musicpath.service.Command.Companion.PLAYSONG
 import com.example.yuehaoting.musicpath.util.Constants.MODE_LOOP
 import com.example.yuehaoting.musicpath.util.Constants.MODE_SHUFFLE
 import com.example.yuehaoting.data.kugousingle.SongLists
-import com.example.yuehaoting.musicpath.data.KuGouSong
+import com.example.yuehaoting.musicpath.data.KuGouSongMp3
+import com.example.yuehaoting.musicpath.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.lang.Exception
 import com.example.yuehaoting.musicpath.tryLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
+import java.lang.Exception
 
 /**
  * 作者: QQ号:1396797522
  * 时间: 2021/6/7 13:04
  * 描述:
  */
-class MusicService : Service(), CoroutineScope by MainScope() {
+class MusicService : SmService(), CoroutineScope by MainScope() {
 
     /**
      * 播放列队
@@ -39,7 +43,7 @@ class MusicService : Service(), CoroutineScope by MainScope() {
     /**
      * MediaPlayer 负责歌曲的播放等
      */
-    var mediaPlayer: MediaPlayer = MediaPlayer()
+    var mediaPlayer = MediaPlayer()
 
     /**
      * 当前是否获得AudioFocus
@@ -72,10 +76,13 @@ class MusicService : Service(), CoroutineScope by MainScope() {
      */
     var playModel: Int = MODE_LOOP
 
-    /**
-     * 当前是否正在播放
-     */
-    private var isPlay: Boolean = false
+    //音频兼容器
+    private val audioAttributes = AudioAttributesCompat.Builder().run {
+        setUsage(AudioAttributesCompat.USAGE_MEDIA)
+        setContentType(AudioAttributesCompat.CONTENT_TYPE_MUSIC)
+        build()
+    }
+/////////////////////////////////////////////生命周期执行////////////////////////////////////////////////////////////////////////////////////////
 
     private val musicBinder = MusicBinder()
 
@@ -86,14 +93,18 @@ class MusicService : Service(), CoroutineScope by MainScope() {
     override fun onCreate() {
         super.onCreate()
         Timber.d("我再后台运行")
-
+        setUpPlayer()
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return super.onStartCommand(intent, flags, startId)
+
+    }
     inner class MusicBinder : Binder() {
         val service: MusicService
             get() = this@MusicService
     }
-
+//////////////////////////////////////////逻辑代码///////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * 设置播放列队
      */
@@ -135,9 +146,52 @@ class MusicService : Service(), CoroutineScope by MainScope() {
     private fun playSelectSong(position: Int) {
         Timber.d("后台播放6 播放位置$position")
         playQueue.setPosition(position)
+
         readyToPlay(playQueue.song)
+
+
     }
 
+    /**
+     * 初始化Mediaplayer
+     */
+    fun setUpPlayer() {
+        mediaPlayer = MediaPlayer()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mediaPlayer.setAudioAttributes(audioAttributes.unwrap() as AudioAttributes)
+        } else {
+            mediaPlayer.setAudioStreamType(audioAttributes.legacyStreamType)
+        }
+        //锁屏休眠继续播放
+        //   mediaPlayer.setWakeMode(this,PowerManager.PARTIAL_WAKE_LOCK)
+        mediaPlayer.setOnPreparedListener {
+
+            mediaPlayer.seekTo(0)
+            play(false)
+        }
+
+
+
+        mediaPlayer.setOnErrorListener { mp, what, extra ->
+            try {
+                mediaPlayer.release()
+                Log.e(what.toString(), extra.toString())
+                return@setOnErrorListener true
+            } catch (e: Exception) {
+
+            }
+            false
+        }
+
+
+    }
+
+    /**
+     * 播放
+     */
+    fun play(fadeIn: Boolean) {
+        mediaPlayer.start()
+    }
 
     /**
      * 准备播放
@@ -147,25 +201,31 @@ class MusicService : Service(), CoroutineScope by MainScope() {
 
     private fun readyToPlay(song: SongLists, requestFocus: Boolean = true) {
 
-        tryLaunch (block = {
-            Timber.v("后台播放8 准备播放", song.toString())
+        tryLaunch(block = {
+            Timber.v("后台播放8 准备播放: %S ", song)
             if (TextUtils.isEmpty(song.FileHash)) {
-                Toast.makeText(this, R.string.path_empty, Toast.LENGTH_SHORT).show()
+                getString(R.string.path_empty).showToast(this)
                 return@tryLaunch
             }
-
-
-            KuGouSong().songID(song.FileHash)
-            val uri: Uri = Uri.parse("")
+            //获取MP3连接
+            val mp3Uri = KuGouSongMp3().songIDMp3(song.FileHash)
+            val uri: Uri = Uri.parse(mp3Uri)
+            mediaPlayer.reset()
             withContext(Dispatchers.IO) {
                 mediaPlayer.setDataSource(this@MusicService, uri)
 
             }
 
-        } ,
-         catch = {
+            mediaPlayer.prepareAsync()
 
-         }
+
+        },
+            catch = {
+                (getString(R.string.play_failed) + it).showToast(this)
+            },
+            catch2 = {
+                it.toString().showToast(this)
+            }
         )
     }
 

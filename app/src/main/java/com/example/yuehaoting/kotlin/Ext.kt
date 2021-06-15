@@ -1,10 +1,13 @@
 package com.example.yuehaoting.musicpath
 
 
+import android.content.Context
+import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.concurrent.thread
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -36,4 +39,30 @@ fun CoroutineScope.tryLaunch(
     }
 }
 
+fun CoroutineScope.tryLaunch(
+    context: CoroutineContext = EmptyCoroutineContext,
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend () -> Unit,
+    catch: ((e: Exception) -> Unit)? = {
+        Timber.w(it)
+    },
+    catch2: ((e: IllegalArgumentException) -> Unit)? = {
+        Timber.w(it)
+    }
+) {
+    launch(context, start) {
+        try {
+            block()
+        } catch (e: Exception) {
+            catch?.invoke(e)
+        } catch (e: IllegalArgumentException) {
+            catch2?.invoke(e)
+        }
+    }
 
+}
+
+fun String.showToast(context: Context) {
+    Toast.makeText(context, this, Toast.LENGTH_SHORT).show()
+
+}

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+  <string name="app_name">乐好听</string>
 
   <string name="path_empty">播放路径为空</string>
+  <string name="play_failed">播放失败</string>
 </resources>

@@ -1,6 +1,5 @@
 <resources>
-  <string name="app_name">乐好听</string>
-
+<string name="app_name">yuehaoting</string>
   <array name="searchTitleArray">
     <item>单曲</item>
     <item>视频</item>
@@ -11,6 +10,7 @@
 
 
   <string name="path_empty">The path is empty</string>
+  <string name="play_failed">unable to play:</string>
 
 
 

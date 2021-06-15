@@ -18,11 +18,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
     }
-//    companion object {
-//        @JvmStatic
-//        lateinit var context: MainActivity
-//            private set
-//    }
+
 
 }
 

@@ -17,13 +17,13 @@ class HttpInterceptor : Interceptor{
         val request = chain.request()
         val response = chain.proceed(request)
 
-       Log.i(TAG,"=========REQUEST==========")
+       Log.i(TAG,"=========拦截==========")
         if(request.method()=="GET"){
             Log.i(TAG,request.url().toString())
             }
 
 
-        Log.i(TAG,"=========REQUEST==========")
+        Log.i(TAG,"=========拦截==========")
 //        response.body()?.let {
 //            Log.i(TAG,it?.string())
 //        }
