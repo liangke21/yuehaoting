@@ -119,9 +119,12 @@ class SearchActivity :  BaseActivity(), View.OnClickListener {
         adapter = PlaceAdapter(viewModel.placeList, object : PlaceAdapter.SearchHintInfo {
             override fun hinInfo(i: String) {
                 etTitleBarSearch.setText(i)
-                var edit = mSharedPreferences.edit()
+              /*  var edit = mSharedPreferences.edit()
                 edit.putString("Single", i)
-                edit.apply()
+                edit.apply()*/
+                intent.putExtra("Single", i)
+                Timber.v("Activity传输数据 : %s" ,i)
+
                 llRecyclerView.visibility = View.GONE
                 llContentFragment.visibility = View.VISIBLE
                 //隐藏键盘

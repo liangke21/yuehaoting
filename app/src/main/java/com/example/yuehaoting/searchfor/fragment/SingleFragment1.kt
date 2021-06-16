@@ -15,6 +15,7 @@ import com.example.yuehaoting.R
 import com.example.yuehaoting.searchfor.adapter.SingleFragment1dapter
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.searchfor.viewmodel.SingleViewModel
+import timber.log.Timber
 
 /**
  * 作者: QQ号:1396797522
@@ -31,17 +32,18 @@ class SingleFragment1( private val mDataList:List<String>):BaseFragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val sp=activity!!.getSharedPreferences("Song",Context.MODE_APPEND)
-        val data=sp.getString("Single",null)
+      /*  val sp=activity!!.getSharedPreferences("Song",Context.MODE_APPEND)
+        val data=sp.getString("Single",null)*/
+        val data=activity!!.intent.getStringExtra("Single")
         viewModel.singlePlaces(data.toString())
-
+       Timber.v("Fragment接收数据 : %s" ,data)
         return inflater.inflate(R.layout.fragment1_search_single,container,false)
     }
 
     override fun lazyInit() {
 
 
-        Toast.makeText(context, "123", Toast.LENGTH_SHORT).show();
+       Timber.v("SingleFragment1 懒加载")
 
         recyclerView= view?.findViewById(R.id.rv_fragment_search_Single)
         val layoutManager = LinearLayoutManager(context)

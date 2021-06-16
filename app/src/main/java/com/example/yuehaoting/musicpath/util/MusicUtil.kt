@@ -11,7 +11,7 @@ import com.example.yuehaoting.musicpath.service.MusicService
 class MusicUtil {
 
 
-    fun makeCodIntent(cmd: Int, shuffle: Boolean): Intent {
+    private fun makeCodIntent(cmd: Int, shuffle: Boolean): Intent {
 
         return Intent(MusicService.ACTION_COM).putExtra(MusicService.EXTRA_CONTROL, cmd)
             .putExtra(MusicService.EXTRA_SHUFFLE,shuffle)
