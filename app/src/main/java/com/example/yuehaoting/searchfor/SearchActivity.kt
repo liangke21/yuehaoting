@@ -40,7 +40,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.Simple
 import timber.log.Timber
 
 
-class SearchActivity :  BaseActivity(), View.OnClickListener {
+class SearchActivity : BaseActivity(), View.OnClickListener {
     private lateinit var recyclerView: RecyclerView
     private lateinit var ivTitleBarSearchBack: ImageView
     private lateinit var etTitleBarSearch: EditText
@@ -56,6 +56,10 @@ class SearchActivity :  BaseActivity(), View.OnClickListener {
 
 
     private lateinit var mSharedPreferences: SharedPreferences
+
+  private  var fragmentList = ArrayList<BaseFragment>()
+  private  var  mAdapter: MyPagerAdapter?=null
+
     private val viewModel by lazy { ViewModelProviders.of(this).get(PlaceViewModel::class.java) }
 
     private lateinit var adapter: PlaceAdapter
@@ -68,15 +72,13 @@ class SearchActivity :  BaseActivity(), View.OnClickListener {
         val channels: Array<String> = resources.getStringArray(R.array.searchTitleArray)
         mDataList = channels.toList() as ArrayList<String>
 
-
         //监听搜索框数据
         placeLiveDataObserve()
         //初始化控件
         initView()
         //标题栏
         initMagicIndicator()
-        //适配fragment
-        initFragment()
+
 
     }
 
@@ -119,12 +121,17 @@ class SearchActivity :  BaseActivity(), View.OnClickListener {
         adapter = PlaceAdapter(viewModel.placeList, object : PlaceAdapter.SearchHintInfo {
             override fun hinInfo(i: String) {
                 etTitleBarSearch.setText(i)
-              /*  var edit = mSharedPreferences.edit()
-                edit.putString("Single", i)
-                edit.apply()*/
-                intent.putExtra("Single", i)
-                Timber.v("Activity传输数据 : %s" ,i)
+                /*  var edit = mSharedPreferences.edit()
+                  edit.putString("Single", i)
+                  edit.apply()*/
+                mAdapter?.clear(fragmentList)
+                viewPager.adapter=mAdapter
+                viewPager. adapter?.notifyDataSetChanged()
+                //适配fragment
 
+                intent.putExtra("Single", i)
+                Timber.v("Activity传输数据 : %s", i)
+                initFragment()
                 llRecyclerView.visibility = View.GONE
                 llContentFragment.visibility = View.VISIBLE
                 //隐藏键盘
@@ -188,14 +195,15 @@ class SearchActivity :  BaseActivity(), View.OnClickListener {
      * 适配fragment
      */
     private fun initFragment() {
-        val fragmentList = ArrayList<BaseFragment>()
+     //   var fragmentList = ArrayList<BaseFragment>()
         fragmentList.add(SingleFragment1(mDataList))
         fragmentList.add(Fragment2())
-        val mAdapter = MyPagerAdapter(
+        mAdapter = MyPagerAdapter(
             supportFragmentManager, fragmentList
         )
         viewPager.adapter = mAdapter
         viewPager.offscreenPageLimit = 2
+
     }
 
 
@@ -251,7 +259,11 @@ class SearchActivity :  BaseActivity(), View.OnClickListener {
             R.id.tv_title_search -> {
             }
             //点击对话框隐藏
-            R.id.et_title_bar_search -> llContentFragment.visibility = View.GONE
+            R.id.et_title_bar_search -> {
+                llContentFragment.visibility = View.GONE
+
+
+            }
 
 
         }

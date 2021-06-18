@@ -1,9 +1,10 @@
 package com.example.yuehaoting.searchfor.pagerview
 
+import android.content.Context
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.fragment.app.FragmentStatePagerAdapter
 import com.example.yuehaoting.searchfor.fragment.BaseFragment
 
 /**
@@ -11,7 +12,7 @@ import com.example.yuehaoting.searchfor.fragment.BaseFragment
  * 时间: 2021/6/3 15:41
  * 描述:
  */
-class MyPagerAdapter(fm: FragmentManager, private var fragmentList:List<BaseFragment>): FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class MyPagerAdapter( fm: FragmentManager, private var fragmentList:ArrayList<BaseFragment>): FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
 
 
@@ -22,4 +23,9 @@ class MyPagerAdapter(fm: FragmentManager, private var fragmentList:List<BaseFrag
     override fun getItem(position: Int): Fragment {
         return fragmentList[position]
     }
+
+fun clear(fragmentList:ArrayList<BaseFragment>){
+    fragmentList.removeAll(fragmentList)
+}
+
 }
