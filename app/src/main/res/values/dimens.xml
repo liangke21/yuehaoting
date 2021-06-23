@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!--播放界面-->
+  <dimen name="pause_bar_width">4dp</dimen>
+  <dimen name="pause_bar_distance">8dp</dimen>
+  <dimen name="pause_bar_height">20dp</dimen>
+  <dimen name="d50_size">50dp</dimen>
+  <dimen name="d56_size">56dp</dimen>
+  <dimen name="d60_size">60dp</dimen>
+
+</resources>

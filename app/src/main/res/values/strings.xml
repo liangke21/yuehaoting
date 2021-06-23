@@ -1,5 +1,4 @@
 <resources>
-<string name="app_name">yuehaoting</string>
   <array name="searchTitleArray">
     <item>单曲</item>
     <item>视频</item>
@@ -7,12 +6,12 @@
     <item>电台</item>
     <item>专辑</item>
   </array>
+  <string name="app_name">yuehaoting</string>
 
 
   <string name="path_empty">The path is empty</string>
   <string name="play_failed">unable to play:</string>
-
-
+  <string name="_00_00">00:00</string>
 
 
 </resources>
