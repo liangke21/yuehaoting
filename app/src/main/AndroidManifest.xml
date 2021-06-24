@@ -14,10 +14,12 @@
     android:supportsRtl="true"
     android:theme="@style/Theme.乐好听"
     tools:targetApi="n">
-    <activity android:name=".playinterface.activity.PlayActivity">
+
+    <activity android:name=".playInterface.activity.PlayActivity">
+
     </activity>
     <activity
-      android:name=".searchfor.SearchActivity"
+      android:name=".searchFor.SearchActivity"
       android:theme="@style/SearchTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -47,14 +49,14 @@
     <service
       android:enabled="true"
       android:exported="true"
-      android:name=".musicpath.service.MusicService">
+      android:name=".musicPath.service.MusicService">
     </service>
   </application>
-  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
   <uses-permission
     android:name="android.permission.WRITE_EXTERNAL_STORAGE"
     tools:ignore="ScopedStorage"/>
-
   <uses-permission android:name="android.permission.INTERNET"/>
+
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
 </manifest>

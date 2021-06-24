@@ -1,18 +1,15 @@
 package com.example.yuehaoting.base.activity
 
-import android.app.Activity
 import android.content.*
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Message
-import androidx.core.app.ActivityCompat
 import com.androidlk.baseactivity.Activity.SmMainActivity
-import com.example.yuehaoting.musicpath.service.MusicService
-import com.example.yuehaoting.musicpath.service.MusicServiceRemote
-import com.example.yuehaoting.musicpath.service.MusicServiceRemote.bindToService
-import com.example.yuehaoting.musicpath.util.MyUtil
+import com.example.yuehaoting.musicPath.service.MusicService
+import com.example.yuehaoting.musicPath.service.MusicServiceRemote
+import com.example.yuehaoting.musicPath.service.MusicServiceRemote.bindToService
+import com.example.yuehaoting.util.MyUtil
 import timber.log.Timber
 import java.lang.ref.WeakReference
 

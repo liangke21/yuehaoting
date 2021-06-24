@@ -12,6 +12,7 @@
   <string name="path_empty">The path is empty</string>
   <string name="play_failed">unable to play:</string>
   <string name="_00_00">00:00</string>
-
+  <string name="list_is_empty">List is empty</string>
+  <string name="song_lose_effect">The song is not available</string>
 
 </resources>

@@ -4,6 +4,7 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:fitsSystemWindows="true"
+  android:id="@+id/player_container"
   android:background="?attr/background_color_main"
   >
   <LinearLayout
@@ -43,7 +44,7 @@
             android:id="@+id/iv_play_guide_03"
             />
         </LinearLayout>
-        <com.example.yuehaoting.playinterface.viewpager.AudioViewPager
+        <com.example.yuehaoting.playInterface.viewpager.AudioViewPager
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:id="@+id/vp_play_viewpager"
@@ -89,7 +90,7 @@
         android:layout_alignParentEnd="true"
         android:textColor="@color/play_time_text_color"/>
     </RelativeLayout>
-<!--播放控件-->
+    <!--播放控件-->
     <include layout="@layout/play_play_layout"
       android:id="@+id/layout_play_layout"/>
 

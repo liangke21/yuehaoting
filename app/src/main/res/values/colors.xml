@@ -8,7 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <!--透明-->
-    <color name="transparent">#0000000</color>
+    <color name="transparent">#00000000</color>
     
     <!--登录-->
     <color name="gray">#A39D9D</color>
@@ -20,9 +20,9 @@
     <color name="search_single">#3F51B5</color>
 
 <!--播放界面-->
-    <!--播放界面下拉-->
-    <color name="play_drop_down">#00000</color>
+
     <!--播放开始时间-->
     <color name="play_time_text_color">#6b6b6b</color>
     <color name="white1">#BD1E1E</color>
+    <color name="light_background_color_main">#ffffff</color>
 </resources>

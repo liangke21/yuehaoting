@@ -1,4 +1,4 @@
-package com.example.yuehaoting.musicpath
+package com.example.yuehaoting.musicPath
 
 
 import android.content.Context
@@ -7,7 +7,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import kotlin.concurrent.thread
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -60,6 +59,19 @@ fun CoroutineScope.tryLaunch(
         }
     }
 
+}
+
+fun CoroutineScope.tryLaunch(
+    context: CoroutineContext = EmptyCoroutineContext,
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend () -> Unit
+) {
+    tryLaunch(context = context,
+        start = start,
+        block = block,
+        catch = {
+            Timber.v(it)
+        })
 }
 
 fun String.showToast(context: Context) {

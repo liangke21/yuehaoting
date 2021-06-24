@@ -2,7 +2,6 @@ package com.example.yuehaoting
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.yuehaoting.searchfor.livedata.Repository
 import com.example.yuehaoting.databinding.ActivityMainBinding
 
 
