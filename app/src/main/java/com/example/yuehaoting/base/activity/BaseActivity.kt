@@ -6,9 +6,11 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Message
 import com.androidlk.baseactivity.Activity.SmMainActivity
-import com.example.yuehaoting.musicPath.service.MusicService
-import com.example.yuehaoting.musicPath.service.MusicServiceRemote
-import com.example.yuehaoting.musicPath.service.MusicServiceRemote.bindToService
+import com.example.yuehaoting.callback.MusicEvenCallback
+import com.example.yuehaoting.data.kugousingle.SongLists
+import com.example.yuehaoting.musicService.service.MusicService
+import com.example.yuehaoting.musicService.service.MusicServiceRemote
+import com.example.yuehaoting.musicService.service.MusicServiceRemote.bindToService
 import com.example.yuehaoting.util.MyUtil
 import timber.log.Timber
 import java.lang.ref.WeakReference
@@ -19,7 +21,7 @@ import java.lang.ref.WeakReference
  * 时间: 2021/6/10 11:16
  * 描述:
  */
-open class BaseActivity : SmMainActivity() {
+open class BaseActivity : SmMainActivity(),MusicEvenCallback {
     private var TAG = this::class.java.simpleName
     private var util = MyUtil()
 
@@ -61,8 +63,9 @@ open class BaseActivity : SmMainActivity() {
         serviceToken = bindToService(this, object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName, service: IBinder) {
                 val musicService = (service as MusicService.MusicBinder).service
-                 this@BaseActivity.onServiceConnected(musicService)
                 Timber.tag(TAG).v("前台服务连接3,app isn't on foreground")
+                 this@BaseActivity.onServiceConnected(musicService)
+
             }
 
             override fun onServiceDisconnected(name: ComponentName) {
@@ -71,11 +74,30 @@ open class BaseActivity : SmMainActivity() {
         })
     }
 
-    private fun onServiceDisConnected() {
 
+    //歌曲标签发生变化
+    override fun onTagChanged(oldSong: SongLists, newSongLists: SongLists) {
+        TODO("Not yet implemented")
+    }
+    //媒体商店的变化
+    override fun onMediaStoreChanged() {
+        TODO("Not yet implemented")
+    }
+    //权限变更
+    override fun onPermissionChanged(has: Boolean) {
+        TODO("Not yet implemented")
+    }
+    //播放列表变化
+    override fun onPlayListChanged(name: String) {
+        TODO("Not yet implemented")
+    }
+    //播放状态变化
+    override fun onPlayStateChange() {
+        TODO("Not yet implemented")
     }
 
-    private fun onServiceConnected(musicService: MusicService) {
+
+    override fun onServiceConnected(musicService: MusicService) {
         Timber.tag(TAG).v("服务连接上2,$musicService")
         if (!receiverRegistered) {
             musicStateReceiver = MusicStatReceiver(this)
@@ -90,9 +112,14 @@ open class BaseActivity : SmMainActivity() {
             receiverRegistered =true
         }
 
+    }
 
+    override fun onServiceDisConnected() {
 
+    }
 
+    override fun onMetaChanged() {
+        TODO("Not yet implemented")
     }
 
     private class MusicStatHandler(activity: BaseActivity) : Handler() {

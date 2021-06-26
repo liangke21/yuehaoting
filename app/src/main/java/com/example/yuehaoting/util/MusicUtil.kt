@@ -1,7 +1,7 @@
 package com.example.yuehaoting.util
 
 import android.content.Intent
-import com.example.yuehaoting.musicPath.service.MusicService
+import com.example.yuehaoting.musicService.service.MusicService
 
 /**
  * 作者: QQ号:1396797522

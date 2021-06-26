@@ -1,4 +1,4 @@
-package com.example.yuehaoting.musicPath.service
+package com.example.yuehaoting.musicService.service
 
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.data.kugousingle.SongLists.Companion.SONG_LIST
@@ -70,6 +70,22 @@ class PlayQueue {
         updateNextSong()
     }
 
+    /**
+     * 播放上一首
+     */
+    fun previous(){
+        Timber.v("position 指针位置: %s",position)
+        if (--position<0){
+            position=_originalQueue.size-1
+        }
+        Timber.v("position 指针位置: %s",position)
+        if (position==-1 || position>_originalQueue.size-1){
+            return
+        }
+        song=_originalQueue[position]
+        Timber.v("播放上一首6: %s","position$position",)
+        updateNextSong()
+    }
      fun updateNextSong() {
         if (_originalQueue.isEmpty()){
             return
@@ -83,7 +99,7 @@ class PlayQueue {
             nextSong=_originalQueue[nextPosition]
         }
 
-        Timber.v("播放下一首7: updateNextSong, curPos: $position nextPos: $nextPosition nextSong=${nextSong.SongName}\n" +
+        Timber.v("播放下一首||播放上一首7: updateNextSong, curPos: $position nextPos: $nextPosition nextSong=${nextSong.SongName}\n" +
                 " }")
     }
 }

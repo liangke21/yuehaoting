@@ -1,4 +1,4 @@
-package com.example.yuehaoting.musicPath.service
+package com.example.yuehaoting.musicService.service
 
 import android.app.Activity
 import android.content.*

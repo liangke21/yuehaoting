@@ -8,6 +8,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface PlaceService {
+
     //搜索关键字请求
     @GET("getSearchTip?MusicTipCount=12")
     fun searchPlaces(@Query("keyword") keyword: String): Call<KuGou>

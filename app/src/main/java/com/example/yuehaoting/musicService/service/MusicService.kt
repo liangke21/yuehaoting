@@ -1,4 +1,4 @@
-package com.example.yuehaoting.musicPath.service
+package com.example.yuehaoting.musicService.service
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -14,14 +14,14 @@ import android.util.Log
 import androidx.media.AudioAttributesCompat
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.sevice.SmService
-import com.example.yuehaoting.musicPath.service.Command.Companion.PLAYSONG
+import com.example.yuehaoting.musicService.service.Command.Companion.PLAYSONG
 import com.example.yuehaoting.util.Constants.MODE_LOOP
 import com.example.yuehaoting.util.Constants.MODE_SHUFFLE
 import com.example.yuehaoting.data.kugousingle.SongLists
-import com.example.yuehaoting.musicPath.data.KuGouSongMp3
-import com.example.yuehaoting.musicPath.showToast
+import com.example.yuehaoting.musicService.data.KuGouSongMp3
+import com.example.yuehaoting.musicService.showToast
 import timber.log.Timber
-import com.example.yuehaoting.musicPath.tryLaunch
+import com.example.yuehaoting.musicService.tryLaunch
 import com.example.yuehaoting.util.Constants
 import com.example.yuehaoting.util.MyUtil
 import kotlinx.coroutines.*
@@ -208,6 +208,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      * 播放上一首
      */
     override fun playPrecious() {
+        Timber.v("播放上一首4: %s",)
         playNextOrPrev(false)
     }
 
@@ -224,7 +225,8 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
             Timber.v("播放下一首5: %s")
             playQueue.next()
         } else {
-            //上一首
+            Timber.v("播放上一首5: %s",)
+            playQueue.previous()
         }
 
         if (playQueue.song == SongLists.SONG_LIST) {
@@ -232,7 +234,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
             Timber.v("播放下一首: %s", "数据为空")
             return
         }
-        Timber.v("播放下一首8: %s", playQueue.song)
+        Timber.v("播放下一首||播放上一首8: %s", playQueue.song)
         readyToPlay(playQueue.song)
     }
 
@@ -260,7 +262,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
     /**
      * 初始化Mediaplayer
      */
-    fun setUpPlayer() {
+    private fun setUpPlayer() {
         mediaPlayer = MediaPlayer()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mediaPlayer.setAudioAttributes(audioAttributes.unwrap() as AudioAttributes)

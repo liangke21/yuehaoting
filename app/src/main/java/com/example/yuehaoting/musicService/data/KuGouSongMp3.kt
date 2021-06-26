@@ -1,4 +1,4 @@
-package com.example.yuehaoting.musicPath.data
+package com.example.yuehaoting.musicService.data
 
 import com.example.yuehaoting.base.retrofit.SongNetwork.songUriID
 import timber.log.Timber

@@ -1,4 +1,4 @@
-package com.example.yuehaoting.musicPath.service
+package com.example.yuehaoting.musicService.service
 
 /**
  * 作者: QQ号:1396797522

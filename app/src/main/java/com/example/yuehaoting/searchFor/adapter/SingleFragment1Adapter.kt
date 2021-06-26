@@ -8,19 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.example.yuehaoting.App
 import com.example.yuehaoting.R
-import com.example.yuehaoting.musicPath.service.Command
-import com.example.yuehaoting.musicPath.service.MusicService
-import com.example.yuehaoting.musicPath.service.MusicServiceRemote.setPlayQueue
+import com.example.yuehaoting.musicService.service.Command
+import com.example.yuehaoting.musicService.service.MusicService
+import com.example.yuehaoting.musicService.service.MusicServiceRemote.setPlayQueue
 import com.example.yuehaoting.util.MusicUtil
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.playInterface.activity.PlayActivity
-import com.example.yuehaoting.searchFor.SearchActivity
 
 import timber.log.Timber
 

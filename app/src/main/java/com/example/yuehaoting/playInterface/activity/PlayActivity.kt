@@ -7,7 +7,7 @@ import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
 
 import com.example.yuehaoting.databinding.PlayActivityBinding
-import com.example.yuehaoting.musicPath.service.MusicService
+import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.util.Constants
 import com.example.yuehaoting.util.MyUtil
 import timber.log.Timber
@@ -15,6 +15,11 @@ import timber.log.Timber
 class PlayActivity : BaseActivity() {
     private lateinit var binding: PlayActivityBinding
     private val myUtil=MyUtil()
+
+    /**
+     * 当前是否播放
+     */
+    private var isPlaying = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = PlayActivityBinding.inflate(layoutInflater)
@@ -53,6 +58,17 @@ class PlayActivity : BaseActivity() {
         myUtil.sendLocalBroadcast(intent)
     }
 
+    override fun onPlayStateChange() {
+        super.onPlayStateChange()
+
+    }
+    /**
+     * 更新播放暂停按钮
+     */
+  private  fun updatePlayButton(isPlay:Boolean){
+       isPlaying=isPlay
+        binding.layoutPlayLayout.ppvPlayPause.updateStRte(isPlay,true)
+    }
     override fun onDestroy() {
         super.onDestroy()
 
