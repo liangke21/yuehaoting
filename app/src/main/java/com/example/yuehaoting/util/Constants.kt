@@ -12,11 +12,6 @@ object Constants {
     const val MODE_LOOP = 1
     const val MODE_SHUFFLE = 2
     const val MODE_REPEAT = 3
-    //上一首
-    const val PREV=1
-    //暂停播放
-    const val PAUSE_PLAYBACK=2
-    //下一首
-    const val NEXT=3
+
 
 }

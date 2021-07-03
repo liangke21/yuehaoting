@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Message
-import com.androidlk.baseactivity.Activity.SmMainActivity
 import com.example.yuehaoting.callback.MusicEvenCallback
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.musicService.service.MusicService
@@ -21,7 +20,7 @@ import java.lang.ref.WeakReference
  * 时间: 2021/6/10 11:16
  * 描述:
  */
-open class BaseActivity : SmMainActivity(),MusicEvenCallback {
+open class BaseActivity :SmMainActivity(),MusicEvenCallback {
     private var TAG = this::class.java.simpleName
     private var util = MyUtil()
 
@@ -93,7 +92,7 @@ open class BaseActivity : SmMainActivity(),MusicEvenCallback {
     }
     //播放状态变化
     override fun onPlayStateChange() {
-        TODO("Not yet implemented")
+
     }
 
 

@@ -15,7 +15,8 @@
     android:theme="@style/Theme.乐好听"
     tools:targetApi="n">
 
-    <activity android:name=".playInterface.activity.PlayActivity">
+    <activity android:name=".playInterface.activity.PlayActivity"
+      android:theme="@style/PlayTheme">
 
     </activity>
     <activity
@@ -37,6 +38,11 @@
     </activity>
     <activity android:name=".MainActivity">
     </activity>
+    <service
+      android:enabled="true"
+      android:exported="true"
+      android:name=".musicService.service.MusicService">
+    </service>
 
     <provider
       android:authorities="${applicationId}.log-trojan"
@@ -46,12 +52,9 @@
       android:name=".base.log.LogTrojanProvider">
     </provider>
 
-    <service
-      android:enabled="true"
-      android:exported="true"
-      android:name=".musicService.service.MusicService">
-    </service>
+
   </application>
+
   <uses-permission
     android:name="android.permission.WRITE_EXTERNAL_STORAGE"
     tools:ignore="ScopedStorage"/>

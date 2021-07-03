@@ -1,7 +1,8 @@
-package com.example.yuehaoting.musicService
+package com.example.yuehaoting.kotlin
 
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -9,6 +10,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.reflect.KProperty
 
 
 /**
@@ -43,10 +45,10 @@ fun CoroutineScope.tryLaunch(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend () -> Unit,
     catch: ((e: Exception) -> Unit)? = {
-        Timber.w(it)
+        Timber.e(it)
     },
     catch2: ((e: IllegalArgumentException) -> Unit)? = {
-        Timber.w(it)
+        Timber.e(it)
     }
 ) {
     launch(context, start) {
@@ -70,7 +72,7 @@ fun CoroutineScope.tryLaunch(
         start = start,
         block = block,
         catch = {
-            Timber.v(it)
+            Timber.e(it)
         })
 }
 
@@ -78,3 +80,41 @@ fun String.showToast(context: Context) {
     Toast.makeText(context, this, Toast.LENGTH_SHORT).show()
 
 }
+
+//-------------------------------------------SharedPreferences------------------------------------------------------------------------------------------
+
+fun setSp(context: Context, data:String="data",block: SharedPreferences.Editor.() -> Unit ) {
+    val sp = context.getSharedPreferences(data, Context.MODE_PRIVATE)
+    val editor = sp.edit()
+    editor.block()
+    editor.apply()
+
+}
+
+inline fun<T> getSp(context: Context,data:String="data",block: SharedPreferences.() -> T): T {
+    val sp = context.getSharedPreferences(data, Context.MODE_PRIVATE)
+   return sp.block()
+}
+//-------------------------------------------SharedPreferences------------------------------------------------------------------------------------------
+
+//-------------------------------------------lazy------------------------------------------------------------------------------------------
+class Later<T> (val block:()->T){
+
+    var value:Any?=null
+    operator fun getValue(any: Any?,prop:KProperty<*>):T{
+        if (value==null){
+            value=block()
+        }
+        return value as T
+    }
+    operator fun  setValue(any: Any?,prop:KProperty<*>,v:T){
+        value=v
+    }
+
+}
+
+fun <T> lazyMy(block: () -> T)=Later(block)
+
+//-------------------------------------------lazy------------------------------------------------------------------------------------------
+
+

@@ -18,6 +18,7 @@ import com.example.yuehaoting.util.MusicUtil
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.playInterface.activity.PlayActivity
+import com.example.yuehaoting.util.MusicConstant.SINGER_ID
 
 import timber.log.Timber
 
@@ -67,13 +68,13 @@ class SingleFragment1Adapter(private val list: List<KuGouSingle.Data.Lists>, val
             )
         )
         //播放监听
-        songPlay(holder, position, songLists)
+        songPlay(holder, position, songLists, list[position].MixSongID)
 
 
     }
 
 
-    private fun songPlay(holder: ViewHolder, position: Int, songLists: ArrayList<SongLists>) {
+    private fun songPlay(holder: ViewHolder, position: Int, songLists: ArrayList<SongLists>, mixSongID: String) {
         holder.itemView.setOnClickListener {
 
             Timber.d("后台播放1")
@@ -81,11 +82,12 @@ class SingleFragment1Adapter(private val list: List<KuGouSingle.Data.Lists>, val
 
             setPlayQueue(
                 songLists,
-                musicUtil.makeCodIntent(Command.PLAYSONG)
+                musicUtil.makeCodIntent(Command.PLAINSONG)
                     .putExtra(MusicService.EXTRA_POSITION, position)
             )
 
            val intent=Intent(activity,PlayActivity::class.java)
+              intent.putExtra(SINGER_ID,mixSongID)
             activity?.startActivity(intent)
         }
     }

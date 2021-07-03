@@ -66,8 +66,6 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
     private lateinit var adapter: PlaceAdapter
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -177,23 +175,29 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
      * 观察数据发生变化时 会把数据添加到集合中
      */
     private fun placeLiveDataObserve() {
-        viewModel.placeLiveData.observe(this, Observer { result ->
-            val places = result.getOrNull() as ArrayList<RecordData>
-            Log.e("请求的曲目数据已经观察到", places[0].HintInfo)
-            if (places != null) {
-                println("11111111111111111111111111111111111111")
-                recyclerView.visibility = View.VISIBLE
-                viewModel.placeList.clear()
-                viewModel.placeList.addAll(places)
-                adapter.notifyDataSetChanged()
 
+            viewModel.placeLiveData.observe(this, Observer { result ->
+                try {
+                val places = result.getOrNull() as ArrayList<RecordData>
+                Log.e("请求的曲目数据已经观察到", places[0].HintInfo)
+                if (places != null) {
+                    println("11111111111111111111111111111111111111")
+                    recyclerView.visibility = View.VISIBLE
+                    viewModel.placeList.clear()
+                    viewModel.placeList.addAll(places)
+                    adapter.notifyDataSetChanged()
 
-            } else {
-                Toast.makeText(this, "未能查询到歌曲", Toast.LENGTH_SHORT).show()
-                result.exceptionOrNull()?.printStackTrace()
-            }
-        })
-
+                } else {
+                    Toast.makeText(this, "未能查询到歌曲", Toast.LENGTH_SHORT).show()
+                    result.exceptionOrNull()?.printStackTrace()
+                }
+                } catch (e: NullPointerException) {
+                    e.printStackTrace()
+                    Timber.e("空指针异常 : %s",e)
+                }catch (e:IndexOutOfBoundsException){
+                    Timber.e("索引越界异常: %s",e)
+                }
+            })
 
     }
 

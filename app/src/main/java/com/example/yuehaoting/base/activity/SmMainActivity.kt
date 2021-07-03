@@ -1,10 +1,12 @@
-package com.androidlk.baseactivity.Activity
+package com.example.yuehaoting.base.activity
 
+import android.content.Context
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import com.example.yuehaoting.base.authority.Authority.readAndWritePermissions
 import java.lang.Exception
 
 open class SmMainActivity : AppCompatActivity() {
@@ -14,7 +16,7 @@ open class SmMainActivity : AppCompatActivity() {
         Log.e(getActivityATG, "onCreate 第一次创建了活动")
 
         super.onCreate(savedInstanceState)
-      readAndWritePermissions()
+      readAndWritePermissions(this)
     }
 
     override fun onStart() {
@@ -47,19 +49,6 @@ open class SmMainActivity : AppCompatActivity() {
         super.onRestart()
     }
 
-    fun readAndWritePermissions() {
-    try {
-        //检查是否有读写权限
-        val permission=ActivityCompat.checkSelfPermission(this,"android.permission.WRITE_EXTERNAL_STORAGE")
-        if (permission!=PackageManager.PERMISSION_GRANTED){
-            //没有读写权限
-            ActivityCompat.requestPermissions(this, arrayOf(
-                    "android.permission.READ_EXTERNAL_STORAGE",
-                "android.permission.WRITE_EXTERNAL_STORAGE" ),1)
-        }
-    }catch (e:Exception){
-        e.printStackTrace()
-    }
-    }
+
 
 }

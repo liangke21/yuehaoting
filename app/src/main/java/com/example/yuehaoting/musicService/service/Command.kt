@@ -8,7 +8,7 @@ package com.example.yuehaoting.musicService.service
 open interface Command {
     companion object {
         //控制命令
-        const val PLAYSONG = 0
+        const val PLAINSONG = 0
 
     }
 }

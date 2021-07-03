@@ -14,15 +14,17 @@ import android.util.Log
 import androidx.media.AudioAttributesCompat
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.sevice.SmService
-import com.example.yuehaoting.musicService.service.Command.Companion.PLAYSONG
+import com.example.yuehaoting.musicService.service.Command.Companion.PLAINSONG
 import com.example.yuehaoting.util.Constants.MODE_LOOP
 import com.example.yuehaoting.util.Constants.MODE_SHUFFLE
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.musicService.data.KuGouSongMp3
-import com.example.yuehaoting.musicService.showToast
+import com.example.yuehaoting.kotlin.showToast
 import timber.log.Timber
-import com.example.yuehaoting.musicService.tryLaunch
-import com.example.yuehaoting.util.Constants
+import com.example.yuehaoting.kotlin.tryLaunch
+import com.example.yuehaoting.util.MusicConstant.NEXT
+import com.example.yuehaoting.util.MusicConstant.PAUSE_PLAYBACK
+import com.example.yuehaoting.util.MusicConstant.PREV
 import com.example.yuehaoting.util.MyUtil
 import kotlinx.coroutines.*
 import java.lang.Exception
@@ -94,6 +96,14 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
     private val controlReceiver: ControlReceiver by lazy {
         ControlReceiver()
     }
+    /**
+     * 当前是否在播放
+     */
+    private var isPlay:Boolean=false
+    /**
+     * 获得是否在播放
+     */
+    val isPlaying:Boolean=isPlay
 /////////////////////////////////////////////生命周期执行////////////////////////////////////////////////////////////////////////////////////////
 
     private val musicBinder = MusicBinder()
@@ -123,19 +133,25 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
             handleStartCommandIntent(intent, action)
         }
         return START_NOT_STICKY
-
-
     }
-
+//_____________________________________________________________________________________________________________________________________________
     private fun handleStartCommandIntent(intent: Intent?, action: String?) {
 
     }
+//_____________________________________________________________________________________________________________________________________________
 
     inner class MusicBinder : Binder() {
         val service: MusicService
             get() = this@MusicService
     }
-//////////////////////////////////////////逻辑代码///////////////////////////////////////////////////////////////////////////////////////////////////
+//_____________________________________________________________________________________________________________________________________________
+
+    /**
+     * 设置播放
+     */
+    private fun setPlay(isPlay:Boolean){
+        this.isPlay=isPlay
+    }
     /**
      * 设置播放列队
      */
@@ -157,7 +173,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
 
         handleCommand(intent)
     }
-
+//_____________________________________________________________________________________________________________
     /**
      * 广播监听 上一首 暂停 下一首
      */
@@ -167,25 +183,25 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
             handleCommand(intent)
         }
     }
-
+//__________________________________________________________________________________________________________
     private fun handleCommand(intent: Intent?) {
         val control = intent?.getIntExtra(EXTRA_CONTROL, -1)
-        Timber.d("后台播放4 $control")
+        Timber.v("后台播放4 $control")
         when (control) {
-            PLAYSONG -> {
-                Timber.d("后台播放5")
+            PLAINSONG -> {
+                Timber.v("后台播放5")
                 playSelectSong(intent.getIntExtra(EXTRA_POSITION, -1))
             }
             //播放上一首
-            Constants.PREV -> {
+           PREV -> {
                 Timber.v("播放上一首3: %s", control)
                 playPrecious()
             }
             //播放暂停
-            Constants.PAUSE_PLAYBACK -> {
+        PAUSE_PLAYBACK -> {
             }
             //播放下一首
-            Constants.NEXT -> {
+           NEXT -> {
                 Timber.v("播放下一首3: %s", control)
                 playNext()
             }
@@ -297,6 +313,8 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      * 播放
      */
     override fun play(fadeIn: Boolean) {
+
+        setPlay(true)
         mediaPlayer.start()
     }
 
@@ -334,6 +352,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
                 it.toString().showToast(this)
             }
         )
+
     }
 
 

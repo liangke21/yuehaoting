@@ -16,4 +16,6 @@ object DataUri {
     const val kuGouApiSingle="http://songsearch.kugou.com/"
     //酷狗歌曲详情id
     const val kuGouSongUriID="https://wwwapi.kugou.com/"
+    //酷狗歌手写真
+    const val kuGouSongPhoto="http://kmrcdn.service.kugou.com/"
 }

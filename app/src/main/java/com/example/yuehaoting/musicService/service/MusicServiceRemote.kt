@@ -62,12 +62,22 @@ object MusicServiceRemote {
         }
     }
 
-    //设置播放列队
+    /**
+     * 设置播放列队
+     */
     @JvmStatic
     fun setPlayQueue(newQueryList: List<SongLists>, intent: Intent) {
         Timber.d("后台播放2")
         service?.setPlayQueue(newQueryList, intent)
 
+    }
+
+    /**
+     *  是否播放
+     */
+    @JvmStatic
+    fun isPlaying():Boolean{
+        return service?.isPlaying ?:false
     }
 }
 

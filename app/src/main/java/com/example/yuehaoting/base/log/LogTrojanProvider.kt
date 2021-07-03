@@ -23,7 +23,7 @@ class LogTrojanProvider : ContentProvider() {
 
     override fun onCreate(): Boolean {
         Timber.plant(LogTree())
-        Timber.v("onCreateq")
+        Timber.v("log 手机日志 onCreate")
         return true
     }
 

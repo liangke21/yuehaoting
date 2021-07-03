@@ -21,7 +21,7 @@ private var tAG:String="LiveData层"
             Log.d(placeResponse.status.toString(), "关键字请求-----------")
             if (placeResponse.status == 1) {
                 val places = placeResponse.data[0]
-                HintInfo = places.RecordDatas
+               HintInfo = places.RecordDatas
                 Result.success(HintInfo)
             } else {
                 Result.failure(RuntimeException("为响应 ${placeResponse.status}"))

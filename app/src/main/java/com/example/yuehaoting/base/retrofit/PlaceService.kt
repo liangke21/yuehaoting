@@ -1,6 +1,7 @@
 package com.example.yuehaoting.base.retrofit
 
 import com.example.yuehaoting.data.kugou.KuGou
+import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhoto
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousonguri.KuGouSongUriID
 import retrofit2.Call
@@ -19,6 +20,6 @@ interface PlaceService {
     //去详情id请求
     @GET("yy/index.php?r=play/getdata&mid=aa2cdd4c0ed76a1623ac0b79f8d132c9")
    fun songUriId(@Query("hash")hash:String,@Query("album_id")album_id:String) :Call<KuGouSongUriID>
-
-
+   @GET("v1/author_image/audio?")
+   fun singerPhoto(@Query("data")data:String):Call<SingerPhoto>
 }

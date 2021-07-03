@@ -1,7 +1,7 @@
 <configuration>
 
   <!--声明一个属性,用来指定log文件存放的路径-->
-  <property name="LOG_DIR" value="/sdcard/Android/data/cn.example.yuehaoting/logs" />
+  <property name="LOG_DIR" value="/sdcard/Android/data/${PACKAGE_NAME}/logs" />
   <!--用于在控制台输出的Appender-->
   <appender name="LOGCAT" class="ch.qos.logback.classic.android.LogcatAppender">
     <tagEncoder>

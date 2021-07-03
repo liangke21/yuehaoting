@@ -12,7 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-        <item name="background_color_main">@color/light_background_color_main</item>
+
     </style>
     <!--登录注册-->
     <style name="TranslucentTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -34,6 +34,8 @@
     </style>
     <style name="recyclerViewAppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar.Bridge">
     </style>
-
-
+     <!--播放界面-->
+   <style name="PlayTheme" parent="Theme.AppCompat.Light.NoActionBar">
+       <item name="background_color_main">@color/light_background_color_main</item>
+   </style>
 </resources>
