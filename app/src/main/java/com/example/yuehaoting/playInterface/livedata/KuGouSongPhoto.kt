@@ -6,7 +6,7 @@ import com.example.yuehaoting.base.retrofit.SongNetwork.singerPhoto
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhoto
 import com.example.yuehaoting.util.MusicConstant.SINGER_ID
-import com.example.yuehaoting.util.MusicConstant.SINGER_PHOTO
+
 import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
 import kotlin.properties.Delegates

@@ -26,12 +26,15 @@ import com.example.yuehaoting.util.MusicConstant.PLAYER_BACKGROUND
 import com.example.yuehaoting.util.MusicConstant.PREV
 import com.example.yuehaoting.util.MusicConstant.SINGER_ID
 import com.example.yuehaoting.statusBar.ThemeStore
+import com.example.yuehaoting.util.MusicConstant.SINGER_NAME
+import com.example.yuehaoting.util.MusicConstant.SONG_NAME
 
 
 class PlayActivity : PlayBaseActivity() {
     private lateinit var binding: PlayActivityBinding
     private val myUtil = MyUtil()
-private val viewModel by lazyMy { ViewModelProviders.of(this).get(PlayViewModel::class.java) }
+    private val viewModel by lazyMy { ViewModelProviders.of(this).get(PlayViewModel::class.java) }
+
     /**
      * 当前是否播放
      */
@@ -41,19 +44,19 @@ private val viewModel by lazyMy { ViewModelProviders.of(this).get(PlayViewModel:
      * 背景
      */
     private val background by lazyMy {
-     getSp(this , NAME){
-        getInt(PLAYER_BACKGROUND, BACKGROUND_ADAPTIVE_COLOR)
+        getSp(this, NAME) {
+            getInt(PLAYER_BACKGROUND, BACKGROUND_ADAPTIVE_COLOR)
         }
     }
 
     override fun setSatuBarColor() {
-       when(background){
-           // 背景自适应  更是封面
-           BACKGROUND_ADAPTIVE_COLOR->{
-             StatusBarUtil.setTransparent(this)
-               Timber.v("播放界面状态栏背景 背景自适应  更是封面 : %s",background)
-           }
-       }
+        when (background) {
+            // 背景自适应  更是封面
+            BACKGROUND_ADAPTIVE_COLOR -> {
+                StatusBarUtil.setTransparent(this)
+                Timber.v("播放界面状态栏背景 背景自适应  更是封面 : %s", background)
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,34 +76,36 @@ private val viewModel by lazyMy { ViewModelProviders.of(this).get(PlayViewModel:
         setThemeColor()
         initView()
     }
+
     //初始化控件
     private fun initView() {
         //标题栏设置 歌手歌词
-     binding.layoutPlayLayoutBar.apply {
-
-
-
-
-
-     }
+        binding.layoutPlayLayoutBar.apply {
+            val songName = intent.getStringExtra(SONG_NAME)
+            tvPlaySongName.text = songName
+            val singerName = intent.getStringExtra(SINGER_NAME)
+            tvPlaySingerName.text = singerName
+        }
     }
 
     //接收数据
     private fun receiveIntent() {
-        val singerId=   intent.getStringExtra(SINGER_ID)
-        Timber.v("歌手id: %S",singerId)
+        val singerId = intent.getStringExtra(SINGER_ID)
+        Timber.v("歌手id: %S", singerId)
         if (singerId != null) {
             viewModel.singerId(singerId)
         }
     }
- private fun observeSingerPhotoData(){
-     viewModel.singerIdObservedData.observe(this) {
-         val singerPhotoUir = it.getOrNull() as ArrayList<SingerPhoto.Data.Imgs.Data4>
+
+    private fun observeSingerPhotoData() {
+        viewModel.singerIdObservedData.observe(this) {
+            val singerPhotoUir = it.getOrNull() as ArrayList<SingerPhoto.Data.Imgs.Data4>
 
 
-         Timber.v("歌手写真连接: %s", singerPhotoUir)
-     }
- }
+            Timber.v("歌手写真连接: %s", singerPhotoUir)
+        }
+    }
+
     /**
      * 播放上一首 暂停 下一首
      */
@@ -136,20 +141,21 @@ private val viewModel by lazyMy { ViewModelProviders.of(this).get(PlayViewModel:
         }
 
     }
+
     /**
      * 根据主题修改颜色
      */
-     private fun setThemeColor(){
-        val accentColor= ThemeStore.accentColor
-        val tintColor= ThemeStore.playerBtnColor
+    private fun setThemeColor() {
+        val accentColor = ThemeStore.accentColor
+        val tintColor = ThemeStore.playerBtnColor
 
 
         //修改控制按钮颜色
-        Theme.tintDrawable(binding.layoutPlayLayout.ibPlayNextTrack,R.drawable.play_btn_next,accentColor)
-        Theme.tintDrawable(binding.layoutPlayLayout.ibPlayPreviousSong,R.drawable.play_btn_pre,accentColor)
+        Theme.tintDrawable(binding.layoutPlayLayout.ibPlayNextTrack, R.drawable.play_btn_next, accentColor)
+        Theme.tintDrawable(binding.layoutPlayLayout.ibPlayPreviousSong, R.drawable.play_btn_pre, accentColor)
         binding.layoutPlayLayout.ppvPlayPause.setBackgroundColor(accentColor)
 
-     }
+    }
 
     /**
      * 更新播放暂停按钮

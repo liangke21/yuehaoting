@@ -19,6 +19,8 @@ import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.playInterface.activity.PlayActivity
 import com.example.yuehaoting.util.MusicConstant.SINGER_ID
+import com.example.yuehaoting.util.MusicConstant.SINGER_NAME
+import com.example.yuehaoting.util.MusicConstant.SONG_NAME
 
 import timber.log.Timber
 
@@ -85,9 +87,11 @@ class SingleFragment1Adapter(private val list: List<KuGouSingle.Data.Lists>, val
                 musicUtil.makeCodIntent(Command.PLAINSONG)
                     .putExtra(MusicService.EXTRA_POSITION, position)
             )
-
+            val song = songDetails(position)
            val intent=Intent(activity,PlayActivity::class.java)
               intent.putExtra(SINGER_ID,mixSongID)
+            intent.putExtra(SONG_NAME,song[0])
+            intent.putExtra(SINGER_NAME,song[1])
             activity?.startActivity(intent)
         }
     }
