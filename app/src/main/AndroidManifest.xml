@@ -16,7 +16,8 @@
     tools:targetApi="n">
 
     <activity android:name=".playInterface.activity.PlayActivity"
-      android:theme="@style/PlayTheme">
+      android:theme="@style/PlayTheme"
+      android:launchMode="singleTask">
 
     </activity>
     <activity

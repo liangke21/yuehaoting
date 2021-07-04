@@ -2,6 +2,9 @@ package com.example.yuehaoting
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.yuehaoting.base.retrofit.SongNetwork
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,6 +23,10 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.example.yuehaoting", appContext.packageName)
-
+        runBlocking {
+            launch {
+                SongNetwork.singerPhoto("[{\"album_audio_id\":32151497}]")
+            }
+        }
     }
 }

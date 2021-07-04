@@ -15,6 +15,7 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.PlayBaseActivity
+import com.example.yuehaoting.base.kapt.YourAppGlideModule
 import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhoto
 import com.example.yuehaoting.databinding.PlayActivityBinding
 import com.example.yuehaoting.kotlin.getSp
@@ -24,6 +25,8 @@ import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.util.BroadcastUtil
 import timber.log.Timber
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.isPlaying
+import com.example.yuehaoting.playInterface.activity.SingerPhoto.photoCycle
+import com.example.yuehaoting.playInterface.activity.SingerPhoto.singerPhotoUrl
 import com.example.yuehaoting.playInterface.viewmodel.PlayViewModel
 import com.example.yuehaoting.theme.GradientDrawableMaker
 import com.example.yuehaoting.theme.StatusBarUtil
@@ -45,6 +48,7 @@ import com.example.yuehaoting.util.MusicConstant.SINGER_NAME
 import com.example.yuehaoting.util.MusicConstant.SONG_NAME
 import com.example.yuehaoting.util.SetPixelUtil
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class PlayActivity : PlayBaseActivity() {
@@ -128,9 +132,13 @@ class PlayActivity : PlayBaseActivity() {
     private fun observeSingerPhotoData() {
         tryNull {
             viewModel.singerIdObservedData.observe(this) {
-                val singerPhotoUir = it.getOrNull()
+                //获取图片连接
+              val urlList=  singerPhotoUrl(it)
+
+                photoCycle(urlList,binding.playerContainer,this,resources)
+               /* val singerPhotoUir = it.getOrNull() as ArrayList<SingerPhoto.Data.Imgs.Data4>
                 viewModel.singerPhotoList.clear()
-                viewModel.singerPhotoList.addAll(singerPhotoUir as Collection<SingerPhoto.Data.Imgs.Data4>)
+                viewModel.singerPhotoList.addAll(singerPhotoUir )
                 Timber.v("歌手写真连接: %s", singerPhotoUir)
 
 
@@ -141,7 +149,7 @@ class PlayActivity : PlayBaseActivity() {
                             binding.playerContainer.background= BitmapDrawable(resources, resource)
                         }
                     })
-                Timber.v("歌手写真单个uri:%s",viewModel.singerPhotoList[10].sizable_portrait)
+                Timber.v("歌手写真单个uri:%s",viewModel.singerPhotoList[10].sizable_portrait)*/
 
             }
         }

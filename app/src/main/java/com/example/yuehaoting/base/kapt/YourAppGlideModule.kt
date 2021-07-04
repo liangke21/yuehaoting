@@ -16,7 +16,7 @@ import com.bumptech.glide.module.AppGlideModule
 class YourAppGlideModule: AppGlideModule (){
     override fun applyOptions(context: Context, builder: GlideBuilder) {
       val diskCacheSizeBytes = 1024 *1024 *100
-        builder.setDiskCache(ExternalCacheDiskCacheFactory(context,"koGouSingerPhoto", diskCacheSizeBytes))
+        builder.setDiskCache(ExternalCacheDiskCacheFactory(context,"Photo", diskCacheSizeBytes))
     }
 }
 
