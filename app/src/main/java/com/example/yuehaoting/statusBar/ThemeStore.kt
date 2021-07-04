@@ -1,15 +1,11 @@
-package remix.myplayer.theme
+package com.example.yuehaoting.statusBar
 
-import android.content.Context
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.graphics.Color
 import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
 import com.example.yuehaoting.App
 import com.example.yuehaoting.R
-import com.example.yuehaoting.statusBar.ColorUtil
-import com.example.yuehaoting.statusBar.SPUtil
 
 
 object ThemeStore {
@@ -76,8 +72,10 @@ object ThemeStore {
   @JvmStatic
   @get:ColorInt
   var accentColor: Int
+
     get() {
       var accentColor = SPUtil.getValue(
+        // 默认颜色
         App.context, KEY_NAME, KEY_ACCENT_COLOR, Color.parseColor("#698cf6")
       )
       if (ColorUtil.isColorCloseToWhite(accentColor)) {
@@ -110,7 +108,29 @@ object ThemeStore {
     get() = ColorUtil.isColorLight(materialPrimaryColor)
 
 
+  @JvmStatic
+  @get:StyleRes
+  val themeRes: Int
+    get() = when (theme) {
+      LIGHT -> R.style.PlayTheme
+      BLACK -> R.style.Theme_yuehaoting_Black
+      DARK -> R.style.Theme_yuehaoting_Base_Diablo
+      else -> R.style.PlayTheme
+    }
 
+  @JvmStatic
+  val isLightTheme: Boolean
+    get() = themeRes == R.style.PlayTheme
+
+  @get:ColorInt
+  val playerBtnColor: Int
+    get() = Color.parseColor(
+      if (isLightTheme) {
+        "#6c6a6c"
+      } else {
+        "#6b6b6b"
+      }
+    )
 
 
 }

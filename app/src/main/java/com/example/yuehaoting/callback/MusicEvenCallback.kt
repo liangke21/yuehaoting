@@ -25,4 +25,5 @@ interface MusicEvenCallback {
     fun onServiceDisConnected()
     // 标签更改
     fun  onTagChanged(oldSong:SongLists,newSongLists: SongLists)
+
 }

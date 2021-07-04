@@ -28,5 +28,8 @@
     <!--播放开始时间-->
     <color name="play_time_text_color">#6b6b6b</color>
     <color name="white1">#BD1E1E</color>
+    <!--主题颜色-->
     <color name="light_background_color_main">#24AA27</color>
+    <color name="black_background_color_main">#000000</color>
+    <color name="Diablo_background_color_main">#242428</color>
 </resources>

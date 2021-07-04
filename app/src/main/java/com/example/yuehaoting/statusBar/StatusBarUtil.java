@@ -3,7 +3,7 @@ package com.example.yuehaoting.statusBar;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
 import static android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-import static remix.myplayer.theme.ThemeStore.getMaterialPrimaryColor;
+import static com.example.yuehaoting.statusBar.ThemeStore.getMaterialPrimaryColor;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -21,7 +21,6 @@ import com.example.yuehaoting.R;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import remix.myplayer.theme.ThemeStore;
 
 /**
  * Created by Remix on 2016/7/28.

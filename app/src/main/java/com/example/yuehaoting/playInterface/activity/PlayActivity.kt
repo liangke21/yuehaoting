@@ -2,10 +2,7 @@ package com.example.yuehaoting.playInterface.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings.Global.putInt
 import android.view.View
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.PlayBaseActivity
@@ -14,14 +11,12 @@ import com.example.yuehaoting.databinding.PlayActivityBinding
 import com.example.yuehaoting.kotlin.getSp
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.musicService.service.MusicService
-import com.example.yuehaoting.util.Constants
 import com.example.yuehaoting.util.MyUtil
 import timber.log.Timber
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.isPlaying
-import com.example.yuehaoting.kotlin.setSp
-import com.example.yuehaoting.playInterface.livedata.KuGouSongPhoto
 import com.example.yuehaoting.playInterface.viewmodel.PlayViewModel
 import com.example.yuehaoting.statusBar.StatusBarUtil
+import com.example.yuehaoting.statusBar.Theme
 
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_ADAPTIVE_COLOR
 import com.example.yuehaoting.util.MusicConstant.NAME
@@ -30,6 +25,7 @@ import com.example.yuehaoting.util.MusicConstant.PAUSE_PLAYBACK
 import com.example.yuehaoting.util.MusicConstant.PLAYER_BACKGROUND
 import com.example.yuehaoting.util.MusicConstant.PREV
 import com.example.yuehaoting.util.MusicConstant.SINGER_ID
+import com.example.yuehaoting.statusBar.ThemeStore
 
 
 class PlayActivity : PlayBaseActivity() {
@@ -74,7 +70,21 @@ private val viewModel by lazyMy { ViewModelProviders.of(this).get(PlayViewModel:
         }
         receiveIntent()
         observeSingerPhotoData()
+        setThemeColor()
+        initView()
     }
+    //初始化控件
+    private fun initView() {
+        //标题栏设置 歌手歌词
+     binding.layoutPlayLayoutBar.apply {
+
+
+
+
+
+     }
+    }
+
     //接收数据
     private fun receiveIntent() {
         val singerId=   intent.getStringExtra(SINGER_ID)
@@ -129,7 +139,17 @@ private val viewModel by lazyMy { ViewModelProviders.of(this).get(PlayViewModel:
     /**
      * 根据主题修改颜色
      */
+     private fun setThemeColor(){
+        val accentColor= ThemeStore.accentColor
+        val tintColor= ThemeStore.playerBtnColor
 
+
+        //修改控制按钮颜色
+        Theme.tintDrawable(binding.layoutPlayLayout.ibPlayNextTrack,R.drawable.play_btn_next,accentColor)
+        Theme.tintDrawable(binding.layoutPlayLayout.ibPlayPreviousSong,R.drawable.play_btn_pre,accentColor)
+        binding.layoutPlayLayout.ppvPlayPause.setBackgroundColor(accentColor)
+
+     }
 
     /**
      * 更新播放暂停按钮

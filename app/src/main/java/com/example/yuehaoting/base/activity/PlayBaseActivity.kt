@@ -2,7 +2,7 @@ package com.example.yuehaoting.base.activity
 
 import android.view.View
 import com.example.yuehaoting.statusBar.StatusBarUtil
-import remix.myplayer.theme.ThemeStore.statusBarColor
+import com.example.yuehaoting.statusBar.ThemeStore.statusBarColor
 
 /**
  * 作者: 天使

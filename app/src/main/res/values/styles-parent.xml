@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+
+  <!--黑色主题-->
+  <style name="Theme.yuehaoting.Base.Black" parent="Theme.AppCompat.NoActionBar">
+    <item name="background_color_main">@color/black_background_color_main</item>
+  </style>
+  <!--暗黑主题-->
+  <style name="Theme.yuehaoting.Base.Diablo" parent="Theme.AppCompat.NoActionBar">
+    <item name="background_color_main">@color/Diablo_background_color_main</item>
+  </style>
+
+
 </resources>
