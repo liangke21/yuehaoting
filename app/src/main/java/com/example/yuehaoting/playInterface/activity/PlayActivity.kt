@@ -1,21 +1,25 @@
 package com.example.yuehaoting.playInterface.activity
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.InsetDrawable
-import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.*
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
 import androidx.lifecycle.ViewModelProviders
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.FutureTarget
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.PlayBaseActivity
 import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhoto
 import com.example.yuehaoting.databinding.PlayActivityBinding
 import com.example.yuehaoting.kotlin.getSp
 import com.example.yuehaoting.kotlin.lazyMy
+import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.util.BroadcastUtil
 import timber.log.Timber
@@ -33,12 +37,14 @@ import com.example.yuehaoting.util.MusicConstant.PLAYER_BACKGROUND
 import com.example.yuehaoting.util.MusicConstant.PREV
 import com.example.yuehaoting.util.MusicConstant.SINGER_ID
 import com.example.yuehaoting.theme.ThemeStore
+import com.example.yuehaoting.util.MusicConstant.BACKGROUND_CUSTOM_IMAGE
 import com.example.yuehaoting.util.MusicConstant.LIST_LOOP
 import com.example.yuehaoting.util.MusicConstant.PLAY_MODEL
 import com.example.yuehaoting.util.MusicConstant.RANDOM_PATTERN
 import com.example.yuehaoting.util.MusicConstant.SINGER_NAME
 import com.example.yuehaoting.util.MusicConstant.SONG_NAME
 import com.example.yuehaoting.util.SetPixelUtil
+import java.util.*
 
 
 class PlayActivity : PlayBaseActivity() {
@@ -66,6 +72,17 @@ class PlayActivity : PlayBaseActivity() {
             BACKGROUND_ADAPTIVE_COLOR -> {
                 StatusBarUtil.setTransparent(this)
                 Timber.v("播放界面状态栏背景 背景自适应  更是封面 : %s", background)
+            }
+            //背景图片定义
+            BACKGROUND_CUSTOM_IMAGE->{
+                StatusBarUtil.setTransparent(this)
+
+              val futureTarget  = Glide.with(this)
+                    .load(viewModel.singerPhotoList[10].sizable_portrait)
+                    .submit() as FutureTarget<Bitmap>
+               val bitmap:Bitmap= futureTarget.get()
+                Timber.v("歌手写真单个uri:%s",viewModel.singerPhotoList[10].sizable_portrait)
+                binding.playerContainer.background= BitmapDrawable(resources, bitmap)
             }
         }
     }
@@ -109,12 +126,26 @@ class PlayActivity : PlayBaseActivity() {
     }
 
     private fun observeSingerPhotoData() {
-        viewModel.singerIdObservedData.observe(this) {
-            val singerPhotoUir = it.getOrNull() as ArrayList<SingerPhoto.Data.Imgs.Data4>
+        tryNull {
+            viewModel.singerIdObservedData.observe(this) {
+                val singerPhotoUir = it.getOrNull()
+                viewModel.singerPhotoList.clear()
+                viewModel.singerPhotoList.addAll(singerPhotoUir as Collection<SingerPhoto.Data.Imgs.Data4>)
+                Timber.v("歌手写真连接: %s", singerPhotoUir)
 
 
-            Timber.v("歌手写真连接: %s", singerPhotoUir)
+               Glide.with(this).asBitmap()
+                    .load(viewModel.singerPhotoList[10].sizable_portrait)
+                    .into(object :SimpleTarget<Bitmap>(){
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            binding.playerContainer.background= BitmapDrawable(resources, resource)
+                        }
+                    })
+                Timber.v("歌手写真单个uri:%s",viewModel.singerPhotoList[10].sizable_portrait)
+
+            }
         }
+
     }
 
     /**

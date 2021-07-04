@@ -4,6 +4,8 @@ import android.nfc.Tag
 import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.Response
+import timber.log.Timber
+import java.util.*
 
 /**
  * 作者: QQ:1396797522
@@ -19,10 +21,8 @@ class HttpInterceptor : Interceptor{
 
        Log.i(TAG,"=========拦截==========")
         if(request.method()=="GET"){
-            Log.i(TAG,request.url().toString())
+            Timber.i("拦截:%s",request.url().toString())
             }
-
-
         Log.i(TAG,"=========拦截==========")
 //        response.body()?.let {
 //            Log.i(TAG,it?.string())

@@ -1,4 +1,4 @@
-package com.edw.bitmapcache.adapter.wan
+package com.example.yuehaoting.base.kapt
 
 import android.content.Context
 import com.bumptech.glide.GlideBuilder
@@ -16,7 +16,7 @@ import com.bumptech.glide.module.AppGlideModule
 class YourAppGlideModule: AppGlideModule (){
     override fun applyOptions(context: Context, builder: GlideBuilder) {
       val diskCacheSizeBytes = 1024 *1024 *100
-        builder.setDiskCache(ExternalCacheDiskCacheFactory(context,"cacheFolderName", diskCacheSizeBytes))
+        builder.setDiskCache(ExternalCacheDiskCacheFactory(context,"koGouSingerPhoto", diskCacheSizeBytes))
     }
 }
 

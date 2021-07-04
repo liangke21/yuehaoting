@@ -3,6 +3,7 @@ package com.example.yuehaoting.playInterface.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhoto
 import com.example.yuehaoting.playInterface.livedata.KuGouSongPhoto
 
 /**
@@ -13,6 +14,8 @@ import com.example.yuehaoting.playInterface.livedata.KuGouSongPhoto
 class PlayViewModel:ViewModel() {
 
     var singerIdLeLiveData=MutableLiveData<String>()
+
+       val singerPhotoList=ArrayList<SingerPhoto.Data.Imgs.Data4>()
 
     val singerIdObservedData=Transformations.switchMap(singerIdLeLiveData){id->
         KuGouSongPhoto.setSingerPhoto(id)
