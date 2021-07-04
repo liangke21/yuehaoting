@@ -10,7 +10,7 @@ import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.bindToService
-import com.example.yuehaoting.util.MyUtil
+import com.example.yuehaoting.util.BroadcastUtil
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -22,7 +22,7 @@ import java.lang.ref.WeakReference
  */
 open class BaseActivity :SmMainActivity(),MusicEvenCallback {
     private var TAG = this::class.java.simpleName
-    private var util = MyUtil()
+    private var util = BroadcastUtil()
 
     private var serviceToken: MusicServiceRemote.ServiceToken? = null
 

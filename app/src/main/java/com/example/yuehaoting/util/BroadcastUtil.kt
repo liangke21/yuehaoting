@@ -17,7 +17,7 @@ import timber.log.Timber
  * 时间: 2021/6/10 17:41
  * 描述: 我的工具类
  */
-class MyUtil {
+class BroadcastUtil {
     /**
      * 注册本地Receiver
      */

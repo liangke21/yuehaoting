@@ -25,7 +25,7 @@ import com.example.yuehaoting.kotlin.tryLaunch
 import com.example.yuehaoting.util.MusicConstant.NEXT
 import com.example.yuehaoting.util.MusicConstant.PAUSE_PLAYBACK
 import com.example.yuehaoting.util.MusicConstant.PREV
-import com.example.yuehaoting.util.MyUtil
+import com.example.yuehaoting.util.BroadcastUtil
 import kotlinx.coroutines.*
 import java.lang.Exception
 
@@ -81,7 +81,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
     /**
      * 初始化工具类
      */
-    var myUtil = MyUtil()
+    var myUtil = BroadcastUtil()
 
     //音频兼容器
     private val audioAttributes = AudioAttributesCompat.Builder().run {

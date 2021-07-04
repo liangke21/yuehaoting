@@ -1,12 +1,8 @@
-package com.example.yuehaoting.statusBar;
+package com.example.yuehaoting.theme;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 

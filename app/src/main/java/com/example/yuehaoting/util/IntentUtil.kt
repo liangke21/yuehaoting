@@ -8,7 +8,7 @@ import com.example.yuehaoting.musicService.service.MusicService
  * 时间: 2021/6/9 14:14
  * 描述:
  */
-class MusicUtil {
+class IntentUtil {
 
 
     private fun makeCodIntent(cmd: Int, shuffle: Boolean): Intent {

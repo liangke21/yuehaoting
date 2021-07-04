@@ -1,8 +1,8 @@
 package com.example.yuehaoting.base.activity
 
 import android.view.View
-import com.example.yuehaoting.statusBar.StatusBarUtil
-import com.example.yuehaoting.statusBar.ThemeStore.statusBarColor
+import com.example.yuehaoting.theme.StatusBarUtil
+import com.example.yuehaoting.theme.ThemeStore.statusBarColor
 
 /**
  * 作者: 天使

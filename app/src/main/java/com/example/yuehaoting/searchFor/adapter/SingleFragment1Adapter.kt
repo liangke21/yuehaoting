@@ -14,7 +14,7 @@ import com.example.yuehaoting.R
 import com.example.yuehaoting.musicService.service.Command
 import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.setPlayQueue
-import com.example.yuehaoting.util.MusicUtil
+import com.example.yuehaoting.util.IntentUtil
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.playInterface.activity.PlayActivity
@@ -31,7 +31,7 @@ import timber.log.Timber
  */
 class SingleFragment1Adapter(private val list: List<KuGouSingle.Data.Lists>, val activity: FragmentActivity?) :
     RecyclerView.Adapter<SingleFragment1Adapter.ViewHolder>() {
-    private val musicUtil = MusicUtil()
+    private val musicUtil = IntentUtil()
     private val songLists = ArrayList<SongLists>()
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

@@ -1,4 +1,4 @@
-package com.example.yuehaoting.statusBar;
+package com.example.yuehaoting.theme;
 
 import static android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
 

@@ -1,9 +1,9 @@
-package com.example.yuehaoting.statusBar;
+package com.example.yuehaoting.theme;
 
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
 import static android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-import static com.example.yuehaoting.statusBar.ThemeStore.getMaterialPrimaryColor;
+import static com.example.yuehaoting.theme.ThemeStore.getMaterialPrimaryColor;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

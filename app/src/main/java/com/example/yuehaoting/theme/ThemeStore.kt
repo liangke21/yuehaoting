@@ -1,4 +1,4 @@
-package com.example.yuehaoting.statusBar
+package com.example.yuehaoting.theme
 
 import android.content.res.Configuration
 import android.graphics.Color

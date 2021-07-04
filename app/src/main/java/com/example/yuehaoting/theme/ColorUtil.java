@@ -1,4 +1,4 @@
-package com.example.yuehaoting.statusBar;
+package com.example.yuehaoting.theme;
 
 import android.graphics.Color;
 import androidx.annotation.ColorInt;
