@@ -19,22 +19,12 @@ class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
 
+
     }
 
-    val lazyValue: String by lazy {
-        println("computed!")
-        val a="adddd"
-        "Hello"+a
-    }
-    @Test
-    fun main() {
-        println(lazyValue)
-
-        println(lazyValue)
 
 
-        println(lazyValue)
-    }
+
 }
 
 

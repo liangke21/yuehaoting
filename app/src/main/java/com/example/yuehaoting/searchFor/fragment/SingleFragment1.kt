@@ -48,7 +48,7 @@ class SingleFragment1( private val mDataList:List<String>):BaseFragment(){
 
         viewModel.singleObservedLiveData.observe(this, Observer { result ->
             val list=result.getOrNull() as ArrayList<KuGouSingle.Data.Lists>
-          Timber.v("请求的曲目数据已经观察到 : %s",list[0].SongName)
+          Timber.v("singleObservedLiveData请求的曲目数据已经观察到 : %s",list[0].SongName)
             viewModel.singleList.clear()
             viewModel.singleList.addAll(list)
             recyclerView?.adapter= SingleFragment1Adapter(viewModel.singleList,activity)

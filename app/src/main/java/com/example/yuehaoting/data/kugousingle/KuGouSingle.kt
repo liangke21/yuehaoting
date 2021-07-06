@@ -1,5 +1,7 @@
 package com.example.yuehaoting.data.kugousingle
 
+import java.util.*
+
 /**
  * Created by 13967 on 2021-06-03
  */
@@ -117,8 +119,7 @@ data class KuGouSingle(
             var HasAlbum: Int,
             var QualityLevel: Int,
             var SourceID: Int,
-            var mGrp: List<Grp>,
-            var SingerId: List<Int>
+            var mGrp: List<Grp>
         ) {
 
 

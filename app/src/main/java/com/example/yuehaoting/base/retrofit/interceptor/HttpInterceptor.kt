@@ -4,6 +4,7 @@ import android.nfc.Tag
 import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.Response
+import timber.log.Timber
 
 /**
  * 作者: QQ:1396797522
@@ -17,13 +18,13 @@ class HttpInterceptor : Interceptor{
         val request = chain.request()
         val response = chain.proceed(request)
 
-       Log.i(TAG,"=========拦截==========")
+      Timber.i(TAG,"=========拦截==========")
         if(request.method()=="GET"){
-            Log.i(TAG,request.url().toString())
+            Timber.i(TAG,request.url().toString())
             }
 
 
-        Log.i(TAG,"=========拦截==========")
+        Timber.i(TAG,"=========拦截==========")
 //        response.body()?.let {
 //            Log.i(TAG,it?.string())
 //        }

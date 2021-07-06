@@ -37,10 +37,12 @@ private var tAG:String="LiveData层"
  fun singlePlaces(query: String) =liveData(Dispatchers.IO) {
      val result = try {
          val singleResponse = SongNetwork.singlePlaces(query)
+         Timber.e("曲目请求成功1-------------------- :%s",singleResponse.status)
          if (singleResponse.status == 1) {
+
              val data = singleResponse.data
              val list=data.lists
-             Timber.e(list[0].SongName,"曲目请求成功--------------------")
+             Timber.e("曲目请求成功2-------------------- :%s",list[0].SongName)
              Result.success(list)
          } else {
              Result.failure(RuntimeException("为响应 ${singleResponse.status}"))

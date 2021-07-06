@@ -32,21 +32,6 @@ class ServiceCreator(api: String) {
 
 
 
-    private suspend fun <T> Call<T>.await(): T {
-        return suspendCoroutine { continuation ->
-            enqueue(object : Callback<T> {
-                override fun onResponse(call: Call<T>, response: Response<T>) {
-                    val body = response.body()
 
-                    if (body != null) continuation.resume(body)
-                    else continuation.resumeWithException(RuntimeException("响应为空"))
-                }
-
-                override fun onFailure(call: Call<T>, t: Throwable) {
-                    continuation.resumeWithException(t)
-                }
-            })
-        }
-    }
 
 }

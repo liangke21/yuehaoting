@@ -23,10 +23,6 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.example.yuehaoting", appContext.packageName)
-        runBlocking {
-            launch {
-                SongNetwork.singerPhoto("[{\"album_audio_id\":32151497}]")
-            }
-        }
+
     }
 }

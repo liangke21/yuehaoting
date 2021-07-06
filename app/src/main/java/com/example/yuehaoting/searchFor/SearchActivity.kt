@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
+import com.example.yuehaoting.base.retrofit.SongNetwork
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.musicService.service.MusicService
