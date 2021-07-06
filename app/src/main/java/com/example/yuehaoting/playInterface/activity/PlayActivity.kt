@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.*
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.widget.SeekBar
 import androidx.lifecycle.ViewModelProviders
@@ -25,6 +26,8 @@ import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.util.BroadcastUtil
 import timber.log.Timber
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.isPlaying
+import com.example.yuehaoting.playInterface.activity.SingerPhoto.handler
+import com.example.yuehaoting.playInterface.activity.SingerPhoto.handlerRemoveCallbacks
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.photoCycle
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.singerPhotoUrl
 import com.example.yuehaoting.playInterface.viewmodel.PlayViewModel
@@ -74,7 +77,7 @@ class PlayActivity : PlayBaseActivity() {
         when (background) {
             // 背景自适应  更是封面
             BACKGROUND_ADAPTIVE_COLOR -> {
-                StatusBarUtil.setTransparent(this)
+               StatusBarUtil.setTransparent(this)
                 Timber.v("播放界面状态栏背景 背景自适应  更是封面 : %s", background)
             }
             //背景图片定义
@@ -96,13 +99,6 @@ class PlayActivity : PlayBaseActivity() {
         binding = PlayActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        arrayOf(
-            binding.layoutPlayLayout.ibPlayPreviousSong,
-            binding.layoutPlayLayout.flPlayContainer,
-            binding.layoutPlayLayout.ibPlayNextTrack
-        ).forEach {
-            it.setOnClickListener(onCtrlClick)
-        }
         receiveIntent()
         observeSingerPhotoData()
         setThemeColor()
@@ -111,6 +107,14 @@ class PlayActivity : PlayBaseActivity() {
 
     //初始化控件
     private fun initView() {
+        arrayOf(
+            binding.layoutPlayLayout.ibPlayPreviousSong,
+            binding.layoutPlayLayout.flPlayContainer,
+            binding.layoutPlayLayout.ibPlayNextTrack
+        ).forEach {
+            it.setOnClickListener(onCtrlClick)
+        }
+
         //标题栏设置 歌手歌词
         binding.layoutPlayLayoutBar.apply {
             val songName = intent.getStringExtra(SONG_NAME)
@@ -134,23 +138,8 @@ class PlayActivity : PlayBaseActivity() {
             viewModel.singerIdObservedData.observe(this) {
                 //获取图片连接
               val urlList=  singerPhotoUrl(it)
-
+                //把图片设置为背景
                 photoCycle(urlList,binding.playerContainer,this,resources)
-               /* val singerPhotoUir = it.getOrNull() as ArrayList<SingerPhoto.Data.Imgs.Data4>
-                viewModel.singerPhotoList.clear()
-                viewModel.singerPhotoList.addAll(singerPhotoUir )
-                Timber.v("歌手写真连接: %s", singerPhotoUir)
-
-
-               Glide.with(this).asBitmap()
-                    .load(viewModel.singerPhotoList[10].sizable_portrait)
-                    .into(object :SimpleTarget<Bitmap>(){
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            binding.playerContainer.background= BitmapDrawable(resources, resource)
-                        }
-                    })
-                Timber.v("歌手写真单个uri:%s",viewModel.singerPhotoList[10].sizable_portrait)*/
-
             }
         }
 
@@ -262,7 +251,23 @@ class PlayActivity : PlayBaseActivity() {
         binding.layoutPlayLayout.ppvPlayPause.updateStRte(isPlay, true)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onPause() {
+        handlerRemoveCallbacks()
+        super.onPause()
+
     }
+
+
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        if(event?.action == KeyEvent.ACTION_UP){
+            if(keyCode == KeyEvent.KEYCODE_BACK){
+                moveTaskToBack(true);
+                return true;
+            }
+        }
+
+        return super.onKeyUp(keyCode, event)
+    }
+
 }

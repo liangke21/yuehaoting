@@ -21,7 +21,20 @@ class ExampleUnitTest {
 
     }
 
+    val lazyValue: String by lazy {
+        println("computed!")
+        val a="adddd"
+        "Hello"+a
+    }
+    @Test
+    fun main() {
+        println(lazyValue)
 
+        println(lazyValue)
+
+
+        println(lazyValue)
+    }
 }
 
 

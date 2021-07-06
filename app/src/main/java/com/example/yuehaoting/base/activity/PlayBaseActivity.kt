@@ -24,7 +24,7 @@ open class PlayBaseActivity:BaseActivity() {
      * 设置状态栏颜色
      */
     protected open fun setSatuBarColor(){
-        StatusBarUtil.setColorNoTranslucent(this, statusBarColor)
+       StatusBarUtil.setColorNoTranslucent(this, statusBarColor)
     }
 
 }
