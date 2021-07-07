@@ -58,7 +58,7 @@ class PlayActivity : PlayBaseActivity() {
     private lateinit var binding: PlayActivityBinding
     private val myUtil = BroadcastUtil()
     private val viewModel by lazyMy { ViewModelProviders.of(this).get(PlayViewModel::class.java) }
-
+    private val mCacheUrl=CacheUrl()
     /**
      * 当前是否播放
      */
@@ -99,6 +99,8 @@ class PlayActivity : PlayBaseActivity() {
         binding = PlayActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        mCacheUrl.init(this)
+
         receiveIntent()
         observeSingerPhotoData()
         setThemeColor()
@@ -127,6 +129,8 @@ class PlayActivity : PlayBaseActivity() {
     //接收数据
     private fun receiveIntent() {
         val singerId = intent.getStringExtra(SINGER_ID)
+
+        mCacheUrl.getFromDisk(singerId.toString())
         Timber.v("歌手id: %S", singerId)
         if (singerId != null) {
             viewModel.singerId(singerId)
@@ -134,10 +138,15 @@ class PlayActivity : PlayBaseActivity() {
     }
 
     private fun observeSingerPhotoData() {
+
+
+
         tryNull {
             viewModel.singerIdObservedData.observe(this) {
                 //获取图片连接
               val urlList=  singerPhotoUrl(it)
+                val singerId = intent.getStringExtra(SINGER_ID)
+                mCacheUrl.putToDisk(singerId.toString(),urlList)
                 //把图片设置为背景
                 photoCycle(urlList,binding.playerContainer,this,resources)
             }
