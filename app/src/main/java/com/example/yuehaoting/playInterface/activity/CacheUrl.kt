@@ -68,7 +68,7 @@ class CacheUrl {
     fun getFromDisk(key: String): ArrayList<String>? {
 
         Timber.v("getFromDisk:%s", key)
-        val list = ArrayList<String>()
+        var list = ArrayList<String>()
 
         var snapshot: DiskLruCache.Snapshot? = null
 
