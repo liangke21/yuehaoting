@@ -9,21 +9,16 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.*
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.View
 import android.widget.SeekBar
-import android.widget.Switch
 import androidx.lifecycle.ViewModelProviders
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import com.example.yuehaoting.App
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.PlayBaseActivity
-import com.example.yuehaoting.base.kapt.YourAppGlideModule
-import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhoto
 import com.example.yuehaoting.databinding.PlayActivityBinding
 import com.example.yuehaoting.kotlin.getSp
 import com.example.yuehaoting.kotlin.lazyMy
@@ -32,7 +27,6 @@ import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.util.BroadcastUtil
 import timber.log.Timber
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.isPlaying
-import com.example.yuehaoting.playInterface.activity.SingerPhoto.handler
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.handlerRemoveCallbacks
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.photoCycle
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.singerPhotoUrl
@@ -57,7 +51,6 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.*
-import java.util.concurrent.Callable
 import kotlin.collections.ArrayList
 
 
@@ -228,7 +221,7 @@ class PlayActivity : PlayBaseActivity() {
         updateSeeKBarColor(accentColor)
 
         //歌曲名颜色
-        binding.layoutPlayLayoutBar.tvPlaySongName.setTextColor(ThemeStore.playerBtnColor)
+        binding.layoutPlayLayoutBar.tvPlaySongName.setTextColor(-1)
 
         //修改顶部部件按钮颜色
         Theme.tintDrawable(binding.layoutPlayLayoutBar.ibPlayDropDown, R.drawable.play_drop_down, tintColor)
@@ -311,7 +304,6 @@ class PlayActivity : PlayBaseActivity() {
                   return@subscribe
               }
               updateViewsColor(swatch)
-              //startBGColorAnimation(swatch)
           }){t:Throwable?->Timber.v(t)}
 
 
@@ -328,10 +320,22 @@ class PlayActivity : PlayBaseActivity() {
       }
 
       updateSeeKBarColor(ColorUtil.adjustAlpha(swatch.rgb, 0.5f))
+      //播放模式
+      val playMode = getSp(this, NAME) {
+          getInt(PLAY_MODEL, LIST_LOOP)
+      }
+      Theme.tintDrawable(
+          binding.layoutPlayLayout.ibPlayPlayMode,
+          if (playMode == LIST_LOOP) R.drawable.play_btn_loop else if (playMode == RANDOM_PATTERN) R.drawable.play_btn_shuffle else R.drawable.play_btn_loop_one,
+          swatch.rgb
+      )
+
+      //播放列队
+      Theme.tintDrawable(binding.layoutPlayLayout.ibMusicList, R.drawable.play_btn_normal_list, swatch.rgb)
 
   }
 
-/*    private fun startBGColorAnimation(swatch: Palette.Swatch) {
+   private fun startBGColorAnimation(swatch: Palette.Swatch) {
         valueAnimator?.cancel()
 
         valueAnimator = ValueAnimator.ofObject(ArgbEvaluator(), Theme.resolveColor(this, R.attr.colorSurface), swatch.rgb)
@@ -343,8 +347,7 @@ class PlayActivity : PlayBaseActivity() {
             binding.playerContainer.background = drawable
         }
         valueAnimator?.setDuration(1000)?.start()
-    }*/
-
+    }
 /*    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
         if (event?.action == KeyEvent.ACTION_UP) {
             if (keyCode == KeyEvent.KEYCODE_BACK) {

@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.util.Log
 import android.widget.FrameLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
@@ -48,7 +49,7 @@ object SingerPhoto {
 
     private  var isRunnable:Boolean = false
     private lateinit var myRunnable : Runnable
-    fun photoCycle(url: ArrayList<String>, fl: FrameLayout, resources: Resources,block:(Bitmap)->Unit) {
+    fun photoCycle(url: ArrayList<String>, fl: CoordinatorLayout, resources: Resources, block:(Bitmap)->Unit) {
         var count = -1
         if (url.size == 0) {
             Glide.with(App.context).asBitmap()

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
@@ -10,6 +10,8 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/play_title_background"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
     <RelativeLayout
       android:layout_width="match_parent"
@@ -99,10 +101,11 @@
     </RelativeLayout>
     <!--播放控件-->
 
-    <include layout="@layout/play_play_layout"
-      android:id="@+id/layout_play_layout"/>
 
+      <include layout="@layout/play_play_layout"
+        android:id="@+id/layout_play_layout"/>
     </LinearLayout>
+
    <!-- <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="0dp"
@@ -110,4 +113,4 @@
   </LinearLayout>
 
 
-</FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
