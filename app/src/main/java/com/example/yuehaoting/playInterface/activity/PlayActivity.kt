@@ -1,16 +1,12 @@
 package com.example.yuehaoting.playInterface.activity
 
-import android.animation.ArgbEvaluator
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.graphics.drawable.*
 import android.os.Bundle
 import android.view.View
-import android.widget.SeekBar
 import androidx.lifecycle.ViewModelProviders
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
@@ -41,16 +37,11 @@ import com.example.yuehaoting.util.MusicConstant.PLAYER_BACKGROUND
 import com.example.yuehaoting.util.MusicConstant.PREV
 import com.example.yuehaoting.util.MusicConstant.SINGER_ID
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_CUSTOM_IMAGE
-import com.example.yuehaoting.util.MusicConstant.LIST_LOOP
-import com.example.yuehaoting.util.MusicConstant.PLAY_MODEL
-import com.example.yuehaoting.util.MusicConstant.RANDOM_PATTERN
 import com.example.yuehaoting.util.MusicConstant.SINGER_NAME
 import com.example.yuehaoting.util.MusicConstant.SONG_NAME
-import com.example.yuehaoting.util.SetPixelUtil
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -60,7 +51,8 @@ class PlayActivity : PlayBaseActivity() {
     private val viewModel by lazyMy { ViewModelProviders.of(this).get(PlayViewModel::class.java) }
     private val mCacheUrl = CacheUrl()
 
-    private var valueAnimator: ValueAnimator? = null
+    private lateinit var playActivityColor: PlayActivityColor
+
     /**
      * 当前是否播放
      */
@@ -86,12 +78,8 @@ class PlayActivity : PlayBaseActivity() {
             BACKGROUND_CUSTOM_IMAGE -> {
                 StatusBarUtil.setTransparent(this)
 
-                val futureTarget = Glide.with(this)
+               Glide.with(this)
                     .load(viewModel.singerPhotoList[10].sizable_portrait)
-                    .submit() as FutureTarget<Bitmap>
-                val bitmap: Bitmap = futureTarget.get()
-                Timber.v("歌手写真单个uri:%s", viewModel.singerPhotoList[10].sizable_portrait)
-                binding.playerContainer.background = BitmapDrawable(resources, bitmap)
             }
         }
     }
@@ -100,12 +88,14 @@ class PlayActivity : PlayBaseActivity() {
         super.onCreate(savedInstanceState)
         binding = PlayActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        //初始化字符缓存
         mCacheUrl.init(this)
+        //初始化ActivityColor
+        playActivityColor = PlayActivityColor(binding, this)
 
         receiveIntent()
         observeSingerPhotoData()
-        setThemeColor()
+        playActivityColor.setThemeColor()
         initView()
     }
 
@@ -134,7 +124,7 @@ class PlayActivity : PlayBaseActivity() {
 
         val list = mCacheUrl.getFromDisk(singerId.toString())
         if (list != null) {
-            photoCycle(list, binding.playerContainer,resources,::updateUi)
+            photoCycle(list, binding.playerContainer, resources, ::updateUi)
         } else {
             Timber.v("歌手id: %S", singerId)
 
@@ -162,7 +152,7 @@ class PlayActivity : PlayBaseActivity() {
                 val singerId = intent.getStringExtra(SINGER_ID)
                 mCacheUrl.putToDisk(singerId.toString(), urlList)
                 //把图片设置为背景
-                photoCycle(urlList, binding.playerContainer,resources,::updateUi)
+                photoCycle(urlList, binding.playerContainer, resources, ::updateUi)
             }
         }
 
@@ -207,66 +197,6 @@ class PlayActivity : PlayBaseActivity() {
     }
 
     /**
-     * 根据主题修改颜色
-     */
-    private fun setThemeColor() {
-        val accentColor = ThemeStore.accentColor
-        val tintColor = ThemeStore.playerBtnColor
-
-        //修改控制按钮颜色
-        Theme.tintDrawable(binding.layoutPlayLayout.ibPlayNextTrack, R.drawable.play_btn_next, accentColor)
-        Theme.tintDrawable(binding.layoutPlayLayout.ibPlayPreviousSong, R.drawable.play_btn_pre, accentColor)
-        binding.layoutPlayLayout.ppvPlayPause.setBackgroundColor(accentColor)
-        //进度条颜色
-        updateSeeKBarColor(accentColor)
-
-        //歌曲名颜色
-        binding.layoutPlayLayoutBar.tvPlaySongName.setTextColor(-1)
-
-        //修改顶部部件按钮颜色
-        Theme.tintDrawable(binding.layoutPlayLayoutBar.ibPlayDropDown, R.drawable.play_drop_down, tintColor)
-        Theme.tintDrawable(binding.layoutPlayLayoutBar.ibPlayNavigation, R.drawable.player_more, tintColor)
-
-        //播放模式
-        val playMode = getSp(this, NAME) {
-            getInt(PLAY_MODEL, LIST_LOOP)
-        }
-        Theme.tintDrawable(
-            binding.layoutPlayLayout.ibPlayPlayMode,
-            if (playMode == LIST_LOOP) R.drawable.play_btn_loop else if (playMode == RANDOM_PATTERN) R.drawable.play_btn_shuffle else R.drawable.play_btn_loop_one,
-            tintColor
-        )
-
-        //播放列队
-        Theme.tintDrawable(binding.layoutPlayLayout.ibMusicList, R.drawable.play_btn_normal_list, tintColor)
-    }
-
-    //进度条颜色
-    private fun updateSeeKBarColor(color: Int) {
-        setProgressDrawable(binding.sbPlay, color)
-        val inset = SetPixelUtil.dip2px(this, 6f)
-        val width = SetPixelUtil.dip2px(this, 2f)
-        val height = SetPixelUtil.dip2px(this, 6f)
-        binding.sbPlay.thumb = InsetDrawable(
-            GradientDrawableMaker()
-                .width(width)
-                .height(height)
-                .color(color)
-                .make(),
-            inset, inset, inset, inset
-        )
-    }
-
-    //绘制进度条
-    private fun setProgressDrawable(seekBar: SeekBar, color: Int) {
-
-        val progressDrawable = seekBar.progressDrawable as LayerDrawable
-        //修改进度条颜色
-        (progressDrawable.getDrawable(0) as GradientDrawable).setColor(ThemeStore.playerBtnColor)
-        progressDrawable.getDrawable(1).setColorFilter(color, PorterDuff.Mode.SRC_IN)
-    }
-
-    /**
      * 更新播放暂停按钮
      */
     private fun updatePlayButton(isPlay: Boolean) {
@@ -281,73 +211,38 @@ class PlayActivity : PlayBaseActivity() {
 
     }
 
-  @SuppressLint("CheckResult")
-  private fun updateUi(bitmap: Bitmap){
 
-      Single.fromCallable{bitmap}.map{ result ->
-          val palette=Palette.from(result).generate()
-          if (palette.mutedSwatch!=null){
-              return@map palette.mutedSwatch
-          }
-          val swatches=ArrayList<Palette.Swatch>(palette.swatches)
+    /**
+     * Bitmap 里面获取颜色
+     */
+    @SuppressLint("CheckResult")
+    fun updateUi(bitmap: Bitmap) {
 
-          swatches.sortWith(Comparator{ O1, O2-> O1.population.compareTo(O2.population) })
-          return@map if (swatches.isEmpty()) swatches[0] else Palette.Swatch(Color.GRAY, 100)
+        Single.fromCallable { bitmap }.map { result ->
+            val palette = Palette.from(result).generate()
+            if (palette.mutedSwatch != null) {
+                return@map palette.mutedSwatch
+            }
+            val swatches = ArrayList<Palette.Swatch>(palette.swatches)
 
-      }
-          .onErrorReturnItem((Palette.Swatch(Color.GRAY,100)))
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe({swatch->
+            swatches.sortWith { O1, O2 -> O1.population.compareTo(O2.population) }
+            return@map if (swatches.isEmpty()) swatches[0] else Palette.Swatch(Color.GRAY, 100)
 
-              if (swatch==null){
-                  return@subscribe
-              }
-              updateViewsColor(swatch)
-          }){t:Throwable?->Timber.v(t)}
-
-
-  }
-
-  private fun updateViewsColor(swatch: Palette.Swatch){
-      Timber.v("图片提取颜色:%s",swatch.rgb.toString() +"||"+ Color.parseColor("#FFFFFFFF").toString())
-      //播放控件
-      binding.layoutPlayLayout.apply {
-        //  ibPlayPreviousSong.setColorFilter(swatch.rgb,PorterDuff.Mode.SRC)
-          Theme.tintDrawable(ibPlayNextTrack, R.drawable.play_btn_next, -1)
-          Theme.tintDrawable(ibPlayPreviousSong,R.drawable.play_btn_pre, -1)
-          ppvPlayPause.setBackgroundColor(swatch.rgb)
-      }
-
-      updateSeeKBarColor(ColorUtil.adjustAlpha(swatch.rgb, 0.5f))
-      //播放模式
-      val playMode = getSp(this, NAME) {
-          getInt(PLAY_MODEL, LIST_LOOP)
-      }
-      Theme.tintDrawable(
-          binding.layoutPlayLayout.ibPlayPlayMode,
-          if (playMode == LIST_LOOP) R.drawable.play_btn_loop else if (playMode == RANDOM_PATTERN) R.drawable.play_btn_shuffle else R.drawable.play_btn_loop_one,
-          swatch.rgb
-      )
-
-      //播放列队
-      Theme.tintDrawable(binding.layoutPlayLayout.ibMusicList, R.drawable.play_btn_normal_list, swatch.rgb)
-
-  }
-
-   private fun startBGColorAnimation(swatch: Palette.Swatch) {
-        valueAnimator?.cancel()
-
-        valueAnimator = ValueAnimator.ofObject(ArgbEvaluator(), Theme.resolveColor(this, R.attr.colorSurface), swatch.rgb)
-
-        valueAnimator?.addUpdateListener { animation ->
-            val drawable = DrawableGradient(GradientDrawable.Orientation.TOP_BOTTOM,
-                intArrayOf(animation.animatedValue as Int,
-                    Theme.resolveColor(this, R.attr.colorSurface)), 0)
-            binding.playerContainer.background = drawable
         }
-        valueAnimator?.setDuration(1000)?.start()
+            .onErrorReturnItem((Palette.Swatch(Color.GRAY, 100)))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ swatch ->
+
+                if (swatch == null) {
+                    return@subscribe
+                }
+                playActivityColor.updateViewsColor(swatch)
+            }) { t: Throwable? -> Timber.v(t) }
+
+
     }
+
 /*    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
         if (event?.action == KeyEvent.ACTION_UP) {
             if (keyCode == KeyEvent.KEYCODE_BACK) {
