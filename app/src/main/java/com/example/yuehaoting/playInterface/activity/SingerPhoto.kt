@@ -50,37 +50,31 @@ object SingerPhoto {
     private lateinit var myRunnable : Runnable
     fun photoCycle(url: ArrayList<String>, fl: FrameLayout, activity: Activity, resources: Resources) {
         var count = -1
-        if (url.size == 0) {
-            Glide.with(App.context).asBitmap()
-                .load(R.drawable.youjing)
-                .into(object : SimpleTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                        fl.background = BitmapDrawable(resources, resource)
-                    }
-                })
-        } else {
+        url.let {
             isRunnable=true
-             myRunnable = Runnable {
-                 handler.setPostDelayed(myRunnable,5000)
-                 Timber.v("url长度 :%s", url.size)
-                 Timber.v("count长度 :%s", count)
+            myRunnable = Runnable {
+                handler.setPostDelayed(myRunnable,5000)
+                Timber.v("url长度 :%s", url.size)
+                Timber.v("count长度 :%s", count)
 
-                 Timber.v("----------------------------------------------------")
-                 if (count == url.size - 1) {
-                     count = -1
-                 }
-                 Glide.with(App.context).asBitmap()
-                     .load(url[++count])
-                     .into(object : SimpleTarget<Bitmap>() {
-                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                             fl.background = BitmapDrawable(resources, resource)
-                         }
-                     })
-             }
+                Timber.v("----------------------------------------------------")
+                if (count == url.size - 1) {
+                    count = -1
+                }
+                Glide.with(App.context).asBitmap()
+                    .load(url[++count])
+                    .into(object : SimpleTarget<Bitmap>() {
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            fl.background = BitmapDrawable(resources, resource)
+                        }
+                    })
+            }
 
             handler.post(myRunnable)
-
         }
+
+
+
 
     }
 

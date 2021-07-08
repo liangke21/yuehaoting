@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
+import com.example.yuehaoting.App
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.PlayBaseActivity
 import com.example.yuehaoting.base.kapt.YourAppGlideModule
@@ -136,6 +137,15 @@ class PlayActivity : PlayBaseActivity() {
             photoCycle(list, binding.playerContainer, this, resources)
         } else {
             Timber.v("歌手id: %S", singerId)
+
+            Glide.with(this).asBitmap()
+                .load(R.drawable.youjing)
+                .into(object : SimpleTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        binding.playerContainer.background = BitmapDrawable(resources, resource)
+                    }
+                })
+
             if (singerId != null) {
                 viewModel.singerId(singerId)
             }
