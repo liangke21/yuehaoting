@@ -4,10 +4,12 @@ import android.app.Activity
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.widget.FrameLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.App
@@ -54,10 +56,12 @@ object SingerPhoto {
         if (url.size == 0) {
             Glide.with(App.context).asBitmap()
                 .load(R.drawable.youjing)
-                .into(object : SimpleTarget<Bitmap>() {
+                .into(object : CustomTarget<Bitmap>() {
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                        fl.background = BitmapDrawable(resources, resource)
+                        fl.background=BitmapDrawable(resources,resource)
                     }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {}
                 })
         } else {
             isRunnable=true
@@ -72,11 +76,12 @@ object SingerPhoto {
                  }
                  Glide.with(App.context).asBitmap()
                      .load(url[++count])
-                     .into(object : SimpleTarget<Bitmap>() {
+                     .into(object : CustomTarget<Bitmap>() {
                          override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                             fl.background = BitmapDrawable(resources, resource)
-                             block(resource)
+                             fl.background=BitmapDrawable(resources,resource)
                          }
+
+                         override fun onLoadCleared(placeholder: Drawable?) {}
                      })
              }
 

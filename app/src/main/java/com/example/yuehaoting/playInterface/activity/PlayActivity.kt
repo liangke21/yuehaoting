@@ -7,11 +7,10 @@ import android.graphics.Color
 import android.graphics.drawable.*
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.FutureTarget
-import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.target.*
 import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.PlayBaseActivity
@@ -48,7 +47,9 @@ import kotlin.collections.ArrayList
 class PlayActivity : PlayBaseActivity() {
     private lateinit var binding: PlayActivityBinding
     private val myUtil = BroadcastUtil()
-    private val viewModel by lazyMy { ViewModelProviders.of(this).get(PlayViewModel::class.java) }
+
+    //  private val viewModel by lazyMy { ViewModelProviders.of(this).get(PlayViewModel::class.java) }
+    private val viewModel by lazyMy { ViewModelProvider(this).get(PlayViewModel::class.java) }
     private val mCacheUrl = CacheUrl()
 
     private lateinit var playActivityColor: PlayActivityColor
@@ -78,7 +79,7 @@ class PlayActivity : PlayBaseActivity() {
             BACKGROUND_CUSTOM_IMAGE -> {
                 StatusBarUtil.setTransparent(this)
 
-               Glide.with(this)
+                Glide.with(this).asBitmap()
                     .load(viewModel.singerPhotoList[10].sizable_portrait)
             }
         }
@@ -130,10 +131,12 @@ class PlayActivity : PlayBaseActivity() {
 
             Glide.with(this).asBitmap()
                 .load(R.drawable.youjing)
-                .into(object : SimpleTarget<Bitmap>() {
+                .into(object : CustomTarget<Bitmap>() {
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                         binding.playerContainer.background = BitmapDrawable(resources, resource)
                     }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {}
                 })
 
             if (singerId != null) {
