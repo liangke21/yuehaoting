@@ -1,5 +1,8 @@
 package com.example.yuehaoting.playInterface.activity
 
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -9,7 +12,9 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.widget.SeekBar
+import android.widget.Switch
 import androidx.lifecycle.ViewModelProviders
+import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.bumptech.glide.request.target.SimpleTarget
@@ -32,9 +37,7 @@ import com.example.yuehaoting.playInterface.activity.SingerPhoto.handlerRemoveCa
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.photoCycle
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.singerPhotoUrl
 import com.example.yuehaoting.playInterface.viewmodel.PlayViewModel
-import com.example.yuehaoting.theme.GradientDrawableMaker
-import com.example.yuehaoting.theme.StatusBarUtil
-import com.example.yuehaoting.theme.Theme
+import com.example.yuehaoting.theme.*
 
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_ADAPTIVE_COLOR
 import com.example.yuehaoting.util.MusicConstant.NAME
@@ -43,7 +46,6 @@ import com.example.yuehaoting.util.MusicConstant.PAUSE_PLAYBACK
 import com.example.yuehaoting.util.MusicConstant.PLAYER_BACKGROUND
 import com.example.yuehaoting.util.MusicConstant.PREV
 import com.example.yuehaoting.util.MusicConstant.SINGER_ID
-import com.example.yuehaoting.theme.ThemeStore
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_CUSTOM_IMAGE
 import com.example.yuehaoting.util.MusicConstant.LIST_LOOP
 import com.example.yuehaoting.util.MusicConstant.PLAY_MODEL
@@ -51,7 +53,11 @@ import com.example.yuehaoting.util.MusicConstant.RANDOM_PATTERN
 import com.example.yuehaoting.util.MusicConstant.SINGER_NAME
 import com.example.yuehaoting.util.MusicConstant.SONG_NAME
 import com.example.yuehaoting.util.SetPixelUtil
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.util.*
+import java.util.concurrent.Callable
 import kotlin.collections.ArrayList
 
 
@@ -61,6 +67,7 @@ class PlayActivity : PlayBaseActivity() {
     private val viewModel by lazyMy { ViewModelProviders.of(this).get(PlayViewModel::class.java) }
     private val mCacheUrl = CacheUrl()
 
+    private var valueAnimator: ValueAnimator? = null
     /**
      * 当前是否播放
      */
@@ -134,7 +141,7 @@ class PlayActivity : PlayBaseActivity() {
 
         val list = mCacheUrl.getFromDisk(singerId.toString())
         if (list != null) {
-            photoCycle(list, binding.playerContainer, this, resources)
+            photoCycle(list, binding.playerContainer,resources,::updateUi)
         } else {
             Timber.v("歌手id: %S", singerId)
 
@@ -162,7 +169,7 @@ class PlayActivity : PlayBaseActivity() {
                 val singerId = intent.getStringExtra(SINGER_ID)
                 mCacheUrl.putToDisk(singerId.toString(), urlList)
                 //把图片设置为背景
-                photoCycle(urlList, binding.playerContainer, this, resources)
+                photoCycle(urlList, binding.playerContainer,resources,::updateUi)
             }
         }
 
@@ -275,11 +282,66 @@ class PlayActivity : PlayBaseActivity() {
     }
 
     override fun onPause() {
+        //结束写真幻影灯片
         handlerRemoveCallbacks()
         super.onPause()
 
     }
 
+  @SuppressLint("CheckResult")
+  private fun updateUi(bitmap: Bitmap){
+
+      Single.fromCallable{bitmap}.map{ result ->
+          val palette=Palette.from(result).generate()
+          if (palette.mutedSwatch!=null){
+              return@map palette.mutedSwatch
+          }
+          val swatches=ArrayList<Palette.Swatch>(palette.swatches)
+
+          swatches.sortWith(Comparator{ O1, O2-> O1.population.compareTo(O2.population) })
+          return@map if (swatches.isEmpty()) swatches[0] else Palette.Swatch(Color.GRAY, 100)
+
+      }
+          .onErrorReturnItem((Palette.Swatch(Color.GRAY,100)))
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe({swatch->
+
+              if (swatch==null){
+                  return@subscribe
+              }
+              updateViewsColor(swatch)
+              //startBGColorAnimation(swatch)
+          }){t:Throwable?->Timber.v(t)}
+
+
+  }
+
+  private fun updateViewsColor(swatch: Palette.Swatch){
+      binding.layoutPlayLayout.apply {
+        //  ibPlayPreviousSong.setColorFilter(swatch.rgb,PorterDuff.Mode.SRC)
+          Theme.tintDrawable(ibPlayNextTrack, R.drawable.play_btn_next, swatch.rgb)
+          Theme.tintDrawable(ibPlayPreviousSong,R.drawable.play_btn_pre, swatch.rgb)
+          ppvPlayPause.setBackgroundColor(swatch.rgb)
+
+
+      }
+
+  }
+
+/*    private fun startBGColorAnimation(swatch: Palette.Swatch) {
+        valueAnimator?.cancel()
+
+        valueAnimator = ValueAnimator.ofObject(ArgbEvaluator(), Theme.resolveColor(this, R.attr.colorSurface), swatch.rgb)
+
+        valueAnimator?.addUpdateListener { animation ->
+            val drawable = DrawableGradient(GradientDrawable.Orientation.TOP_BOTTOM,
+                intArrayOf(animation.animatedValue as Int,
+                    Theme.resolveColor(this, R.attr.colorSurface)), 0)
+            binding.playerContainer.background = drawable
+        }
+        valueAnimator?.setDuration(1000)?.start()
+    }*/
 
 /*    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
         if (event?.action == KeyEvent.ACTION_UP) {
