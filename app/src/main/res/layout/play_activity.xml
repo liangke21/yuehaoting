@@ -51,6 +51,13 @@
           android:layout_above="@id/ll_play_indicator"/>
       </RelativeLayout>
     </RelativeLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="3"
+      android:background="@drawable/play_play_background"
+      android:orientation="vertical">
     <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="0dp"
@@ -91,13 +98,15 @@
         android:textColor="@color/play_time_text_color"/>
     </RelativeLayout>
     <!--播放控件-->
+
     <include layout="@layout/play_play_layout"
       android:id="@+id/layout_play_layout"/>
 
-    <RelativeLayout
+    </LinearLayout>
+   <!-- <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="0dp"
-      android:layout_weight="1.5"/>
+      android:layout_weight="1.5"/>-->
   </LinearLayout>
 
 

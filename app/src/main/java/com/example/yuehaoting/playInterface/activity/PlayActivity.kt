@@ -318,14 +318,16 @@ class PlayActivity : PlayBaseActivity() {
   }
 
   private fun updateViewsColor(swatch: Palette.Swatch){
+      Timber.v("图片提取颜色:%s",swatch.rgb.toString() +"||"+ Color.parseColor("#FFFFFFFF").toString())
+      //播放控件
       binding.layoutPlayLayout.apply {
         //  ibPlayPreviousSong.setColorFilter(swatch.rgb,PorterDuff.Mode.SRC)
-          Theme.tintDrawable(ibPlayNextTrack, R.drawable.play_btn_next, swatch.rgb)
-          Theme.tintDrawable(ibPlayPreviousSong,R.drawable.play_btn_pre, swatch.rgb)
+          Theme.tintDrawable(ibPlayNextTrack, R.drawable.play_btn_next, -1)
+          Theme.tintDrawable(ibPlayPreviousSong,R.drawable.play_btn_pre, -1)
           ppvPlayPause.setBackgroundColor(swatch.rgb)
-
-
       }
+
+      updateSeeKBarColor(ColorUtil.adjustAlpha(swatch.rgb, 0.5f))
 
   }
 
