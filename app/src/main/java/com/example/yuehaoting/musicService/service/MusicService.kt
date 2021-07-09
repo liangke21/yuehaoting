@@ -26,6 +26,9 @@ import com.example.yuehaoting.util.MusicConstant.NEXT
 import com.example.yuehaoting.util.MusicConstant.PAUSE_PLAYBACK
 import com.example.yuehaoting.util.MusicConstant.PREV
 import com.example.yuehaoting.util.BroadcastUtil
+import com.example.yuehaoting.util.MusicConstant.ACTION_CMD
+import com.example.yuehaoting.util.MusicConstant.EXTRA_CONTROL
+import com.example.yuehaoting.util.MusicConstant.EXTRA_SHUFFLE
 import kotlinx.coroutines.*
 import java.lang.Exception
 
@@ -131,7 +134,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val control = intent?.getIntExtra(MusicService.EXTRA_CONTROL, -1)
+        val control = intent?.getIntExtra(EXTRA_CONTROL, -1)
         val action = intent?.action
         Timber.v("onStartCommand, control: $control action: $action flags: $flags startId: $startId")
         tryLaunch {
@@ -258,6 +261,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
             return
         }
         Timber.v("播放下一首||播放上一首8: %s", playQueue.song)
+        setPlay(true)
         readyToPlay(playQueue.song)
     }
 
@@ -391,34 +395,12 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
         //更新通知
         const val UPDATE_NOTIFICATION = 1008
 
-        //包名
-        private const val PACKAGE_NAME = "com.example.yuehaoting"
 
-        //媒体数据库变化
-        const val MEDIA_STORE_CHANGE = "$PACKAGE_NAME.media_store.change"
 
-        //读写权限变化
-        const val PERMISSION_CHANGE = "$PACKAGE_NAME.permission.change"
 
-        //播放列表变换
-        const val PLAYLIST_CHANGE = "$PACKAGE_NAME.playlist.change"
 
-        //播放数据变化
-        const val PLAY_DATA_CHANGES = "$PACKAGE_NAME.meta.change"
 
-        //播放状态变化
-        const val PLAY_STATE_CHANGE = "$PACKAGE_NAME.play_state.change"
 
-        //歌曲标签变化
-        const val TAG_CHANGE = "$PACKAGE_NAME.tag_change"
-
-        //操作命令
-        const val ACTION_CMD = "$PACKAGE_NAME.cmd"
-
-        //额外控制
-        const val EXTRA_CONTROL = "Control"
-
-        const val EXTRA_SHUFFLE = "shuffle"
 
     }
 

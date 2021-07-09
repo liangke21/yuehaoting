@@ -1,5 +1,7 @@
 package com.example.yuehaoting.util
 
+import com.example.yuehaoting.musicService.service.MusicService
+
 /**
  * 作者: 天使
  * 时间: 2021/6/27 13:57
@@ -7,6 +9,8 @@ package com.example.yuehaoting.util
  */
 object MusicConstant {
 //_______________________________________|Sp key|______________________________________________________________________________________________________
+//包名
+private const val PACKAGE_NAME = "com.example.yuehaoting"
     const val NAME = "Setting"  //xml 文件
     const val PLAY_MODEL = "play_model"
 
@@ -28,6 +32,11 @@ object MusicConstant {
     const val PAUSE_PLAYBACK=2
     //下一首
     const val NEXT=3
+    //额外控制  //顺序播放
+    const val EXTRA_CONTROL = "Control"
+    //随机播放
+    const val EXTRA_SHUFFLE = "shuffle"
+
 //_______________________________________|歌手写真|______________________________________________________________________________________________________
     //歌手 id
     const val SINGER_ID="Singer_ID"
@@ -36,4 +45,27 @@ object MusicConstant {
     const val SONG_NAME="SongName"
     //歌曲 歌手名字
     const val SINGER_NAME="SingerName"
+//_______________________________________|回调|______________________________________________________________________________________________________
+
+    //媒体数据库变化
+    const val MEDIA_STORE_CHANGE = "${PACKAGE_NAME}.media_store.change"
+
+    //读写权限变化
+    const val PERMISSION_CHANGE = "${PACKAGE_NAME}.permission.change"
+
+    //播放列表变换
+    const val PLAYLIST_CHANGE = "${PACKAGE_NAME}.playlist.change"
+
+    //播放数据变化
+    const val PLAY_DATA_CHANGES = "${PACKAGE_NAME}.meta.change"
+
+    //播放状态变化
+    const val PLAY_STATE_CHANGE = "${PACKAGE_NAME}.play_state.change"
+
+    //歌曲标签变化
+    const val TAG_CHANGE = "${PACKAGE_NAME}.tag_change"
+
+    //操作命令
+    const val ACTION_CMD = "$PACKAGE_NAME.cmd"
+
 }

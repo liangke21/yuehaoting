@@ -24,6 +24,7 @@ import com.example.yuehaoting.base.retrofit.SongNetwork
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.musicService.service.MusicService
+import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.searchFor.fragment.BaseFragment
 import com.example.yuehaoting.searchFor.fragment.SingleFragment1
 import com.example.yuehaoting.searchFor.fragment.ext.MyCommonNavigator
@@ -279,4 +280,5 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
 
         }
     }
+
 }

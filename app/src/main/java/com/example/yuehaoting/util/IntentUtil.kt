@@ -2,6 +2,9 @@ package com.example.yuehaoting.util
 
 import android.content.Intent
 import com.example.yuehaoting.musicService.service.MusicService
+import com.example.yuehaoting.util.MusicConstant.ACTION_CMD
+import com.example.yuehaoting.util.MusicConstant.EXTRA_CONTROL
+import com.example.yuehaoting.util.MusicConstant.EXTRA_SHUFFLE
 
 /**
  * 作者: QQ号:1396797522
@@ -13,8 +16,8 @@ class IntentUtil {
 
     private fun makeCodIntent(cmd: Int, shuffle: Boolean): Intent {
 
-        return Intent(MusicService.ACTION_CMD).putExtra(MusicService.EXTRA_CONTROL, cmd)
-            .putExtra(MusicService.EXTRA_SHUFFLE,shuffle)
+        return Intent(ACTION_CMD).putExtra(EXTRA_CONTROL, cmd)
+            .putExtra(EXTRA_SHUFFLE,shuffle)
     }
 
     fun makeCodIntent(cmd:Int):Intent{

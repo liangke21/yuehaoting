@@ -15,6 +15,8 @@ import java.util.*
 object MusicServiceRemote {
     val TAG = MusicServiceRemote::class.java.simpleName
 
+
+
     @JvmStatic
     var service: MusicService? = null
 
@@ -51,8 +53,9 @@ object MusicServiceRemote {
             val binder = service as MusicService.MusicBinder
 
             MusicServiceRemote.service = binder.service
-            mCallback?.onServiceConnected(name, service)
             Timber.tag(TAG).v("前台服务连接2,app isn't on foreground")
+            mCallback?.onServiceConnected(name, service)
+
         }
 
         //服务断开时

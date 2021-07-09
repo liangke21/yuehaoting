@@ -11,6 +11,12 @@ import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.bindToService
 import com.example.yuehaoting.util.BroadcastUtil
+import com.example.yuehaoting.util.MusicConstant.MEDIA_STORE_CHANGE
+import com.example.yuehaoting.util.MusicConstant.PERMISSION_CHANGE
+import com.example.yuehaoting.util.MusicConstant.PLAYLIST_CHANGE
+import com.example.yuehaoting.util.MusicConstant.PLAY_DATA_CHANGES
+import com.example.yuehaoting.util.MusicConstant.PLAY_STATE_CHANGE
+import com.example.yuehaoting.util.MusicConstant.TAG_CHANGE
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -23,7 +29,7 @@ import java.lang.ref.WeakReference
 open class BaseActivity :SmMainActivity(),MusicEvenCallback {
     private var TAG = this::class.java.simpleName
     private var util = BroadcastUtil()
-
+   private var myUtil = BroadcastUtil()
     private var serviceToken: MusicServiceRemote.ServiceToken? = null
 
     //待绑定的服务
@@ -37,6 +43,9 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
 
     //音频接收器
     private var musicStateReceiver: MusicStatReceiver? = null
+    //服务监听事件
+    private val serviceEventListeners = ArrayList<MusicEvenCallback>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binToService()
@@ -56,7 +65,7 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
     private fun binToService() {
         if (!util.isAppOnForeground()) {
             Timber.tag(TAG).v("bindToService(),app isn't on foreground APP 不在前台")
-            pendingBindService = false
+            pendingBindService = true
             return
         }
         serviceToken = bindToService(this, object : ServiceConnection {
@@ -71,6 +80,8 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
                    this@BaseActivity.onServiceDisConnected()
             }
         })
+
+        pendingBindService=false
     }
 
 
@@ -96,25 +107,48 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
     }
 
 
-    override fun onServiceConnected(service: MusicService) {
-        Timber.tag(TAG).v("服务连接上2,$service")
+/*    override fun onServiceConnected(service: MusicService) {
+        Timber.tag(TAG).v("服务连接上2,$service  $receiverRegistered")
         if (!receiverRegistered) {
             musicStateReceiver = MusicStatReceiver(this)
             val filter = IntentFilter()
-            filter.addAction(MusicService.PLAYLIST_CHANGE) //播放列表变化
-            filter.addAction(MusicService.PERMISSION_CHANGE) //权限变更
-            filter.addAction(MusicService.MEDIA_STORE_CHANGE) //媒体商店的变化
-            filter.addAction(MusicService.PLAY_DATA_CHANGES) //播放时数据变化
-            filter.addAction(MusicService.PLAY_STATE_CHANGE) //播放状态变化
-            filter.addAction(MusicService.TAG_CHANGE)//歌曲标签发生变化
-            registerReceiver(musicStateReceiver,filter)
+            filter.addAction(PLAYLIST_CHANGE) //播放列表变化
+            filter.addAction(PERMISSION_CHANGE) //权限变更
+            filter.addAction(MEDIA_STORE_CHANGE) //媒体商店的变化
+            filter.addAction(PLAY_DATA_CHANGES) //播放时数据变化
+            filter.addAction(PLAY_STATE_CHANGE) //播放状态变化
+            filter.addAction(TAG_CHANGE)//歌曲标签发生变化
+           myUtil.registerLocalReceiver(musicStateReceiver!!,filter)
             receiverRegistered =true
         }
 
+        musicStateHandler= MusicStatHandler(this)
+
+    }*/
+
+    override fun onServiceConnected(service: MusicService) {
+        Timber.tag(TAG).v("onServiceConnected(), $service")
+        if (!receiverRegistered) {
+            musicStateReceiver = MusicStatReceiver(this)
+            val filter = IntentFilter()
+            filter.addAction(PLAYLIST_CHANGE) //播放列表变化
+            filter.addAction(PERMISSION_CHANGE) //权限变更
+            filter.addAction(MEDIA_STORE_CHANGE) //媒体商店的变化
+            filter.addAction(PLAY_DATA_CHANGES) //播放时数据变化
+            filter.addAction(PLAY_STATE_CHANGE) //播放状态变化
+            filter.addAction(TAG_CHANGE)//歌曲标签发生变化
+            myUtil.registerLocalReceiver(musicStateReceiver!!, filter)
+            receiverRegistered = true
+        }
+        for (listener in serviceEventListeners) {
+            listener.onServiceConnected(service)
+        }
+        musicStateHandler = MusicStatHandler(this)
     }
 
-    override fun onServiceDisConnected() {
 
+    override fun onServiceDisConnected() {
+        musicStateHandler?.removeCallbacksAndMessages(null)
     }
 
     override fun onMetaChanged() {
@@ -124,26 +158,29 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
     private class MusicStatHandler(activity: BaseActivity) : Handler() {
         private val ref: WeakReference<BaseActivity> = WeakReference(activity)
         override fun dispatchMessage(msg: Message) {
-            super.dispatchMessage(msg)
             val action = msg.obj.toString()
             val activity = ref.get()
-            if (action != null && activity != null) {
+            if (activity != null) {
                 when (action) {
-
+                    PLAY_STATE_CHANGE -> {
+                        activity.onPlayStateChange()
+                        Timber.v("isPlay是否播放   播放回调: %s",action)
+                    }
                 }
-            }
 
+            }
         }
     }
-
     /**
      * 动态太监听广播
      */
     private class MusicStatReceiver(activity: BaseActivity) : BroadcastReceiver() {
         private val ref: WeakReference<BaseActivity> = WeakReference(activity)
+
         override fun onReceive(context: Context, intent: Intent) {
             ref.get()?.musicStateHandler?.let {
                 val action = intent.action
+                Timber.v("isPlay是否播放   播放回调2: %s",action)
                 val msg = it.obtainMessage(action.hashCode())
                 msg.obj = action
                 msg.data = intent.extras

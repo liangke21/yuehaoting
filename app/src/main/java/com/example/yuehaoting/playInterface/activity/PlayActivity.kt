@@ -27,6 +27,7 @@ import com.example.yuehaoting.playInterface.activity.SingerPhoto.photoCycle
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.singerPhotoUrl
 import com.example.yuehaoting.playInterface.viewmodel.PlayViewModel
 import com.example.yuehaoting.theme.*
+import com.example.yuehaoting.util.MusicConstant.ACTION_CMD
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_ADAPTIVE_COLOR
 import com.example.yuehaoting.util.MusicConstant.NAME
 import com.example.yuehaoting.util.MusicConstant.NEXT
@@ -35,6 +36,7 @@ import com.example.yuehaoting.util.MusicConstant.PLAYER_BACKGROUND
 import com.example.yuehaoting.util.MusicConstant.PREV
 import com.example.yuehaoting.util.MusicConstant.SINGER_ID
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_CUSTOM_IMAGE
+import com.example.yuehaoting.util.MusicConstant.EXTRA_CONTROL
 import com.example.yuehaoting.util.MusicConstant.SINGER_NAME
 import com.example.yuehaoting.util.MusicConstant.SONG_NAME
 import io.reactivex.Single
@@ -163,17 +165,17 @@ class PlayActivity : PlayBaseActivity() {
      * 播放上一首 暂停 下一首
      */
     private val onCtrlClick = View.OnClickListener { v ->
-        val intent = Intent(MusicService.ACTION_CMD)
+        val intent = Intent(ACTION_CMD)
         when (v.id) {
             R.id.ib_play_Previous_song -> {
-                intent.putExtra(MusicService.EXTRA_CONTROL, PREV)
+                intent.putExtra(EXTRA_CONTROL, PREV)
                 Timber.v("播放上一首1: %s", PREV)
             }
 
-            R.id.fl_play_container -> intent.putExtra(MusicService.EXTRA_CONTROL, PAUSE_PLAYBACK)
+            R.id.fl_play_container -> intent.putExtra(EXTRA_CONTROL, PAUSE_PLAYBACK)
 
             R.id.ib_play_next_track -> {
-                intent.putExtra(MusicService.EXTRA_CONTROL, NEXT)
+                intent.putExtra(EXTRA_CONTROL, NEXT)
                 Timber.v("播放下一首1: %s", NEXT)
             }
         }
