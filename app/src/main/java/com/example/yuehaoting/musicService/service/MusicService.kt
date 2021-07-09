@@ -29,6 +29,7 @@ import com.example.yuehaoting.util.BroadcastUtil
 import com.example.yuehaoting.util.MusicConstant.ACTION_CMD
 import com.example.yuehaoting.util.MusicConstant.EXTRA_CONTROL
 import com.example.yuehaoting.util.MusicConstant.EXTRA_SHUFFLE
+import com.example.yuehaoting.util.MusicConstant.PLAY_STATE_CHANGE
 import kotlinx.coroutines.*
 import java.lang.Exception
 
@@ -161,6 +162,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
     private fun setPlay(isPlay:Boolean){
         this.isPlay=isPlay
         Timber.v("isPlay是否播放: %s", "isPlaying: $isPlaying  isPlay: $isPlay")
+        myUtil.sendLocalBroadcast(Intent(PLAY_STATE_CHANGE))
     }
     /**
      * 设置播放列队

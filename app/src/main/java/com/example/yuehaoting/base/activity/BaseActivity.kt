@@ -105,9 +105,12 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
     override fun onPlayStateChange() {
 
     }
+    override fun onMetaChanged() {
+        TODO("Not yet implemented")
+    }
 
 
-/*    override fun onServiceConnected(service: MusicService) {
+    override fun onServiceConnected(service: MusicService) {
         Timber.tag(TAG).v("服务连接上2,$service  $receiverRegistered")
         if (!receiverRegistered) {
             musicStateReceiver = MusicStatReceiver(this)
@@ -124,35 +127,6 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
 
         musicStateHandler= MusicStatHandler(this)
 
-    }*/
-
-    override fun onServiceConnected(service: MusicService) {
-        Timber.tag(TAG).v("onServiceConnected(), $service")
-        if (!receiverRegistered) {
-            musicStateReceiver = MusicStatReceiver(this)
-            val filter = IntentFilter()
-            filter.addAction(PLAYLIST_CHANGE) //播放列表变化
-            filter.addAction(PERMISSION_CHANGE) //权限变更
-            filter.addAction(MEDIA_STORE_CHANGE) //媒体商店的变化
-            filter.addAction(PLAY_DATA_CHANGES) //播放时数据变化
-            filter.addAction(PLAY_STATE_CHANGE) //播放状态变化
-            filter.addAction(TAG_CHANGE)//歌曲标签发生变化
-            myUtil.registerLocalReceiver(musicStateReceiver!!, filter)
-            receiverRegistered = true
-        }
-        for (listener in serviceEventListeners) {
-            listener.onServiceConnected(service)
-        }
-        musicStateHandler = MusicStatHandler(this)
-    }
-
-
-    override fun onServiceDisConnected() {
-        musicStateHandler?.removeCallbacksAndMessages(null)
-    }
-
-    override fun onMetaChanged() {
-        TODO("Not yet implemented")
     }
 
     private class MusicStatHandler(activity: BaseActivity) : Handler() {
@@ -167,7 +141,6 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
                         Timber.v("isPlay是否播放   播放回调: %s",action)
                     }
                 }
-
             }
         }
     }
@@ -180,7 +153,6 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
         override fun onReceive(context: Context, intent: Intent) {
             ref.get()?.musicStateHandler?.let {
                 val action = intent.action
-                Timber.v("isPlay是否播放   播放回调2: %s",action)
                 val msg = it.obtainMessage(action.hashCode())
                 msg.obj = action
                 msg.data = intent.extras
@@ -189,5 +161,13 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
             }
 
         }
+    }
+
+
+    override fun onServiceDisConnected() {
+        if (receiverRegistered){
+            util.unregisterLocalReceiver(musicStateReceiver!!)
+        }
+        musicStateHandler?.removeCallbacksAndMessages(null)
     }
 }
