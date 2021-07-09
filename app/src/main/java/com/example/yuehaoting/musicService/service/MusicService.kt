@@ -14,7 +14,6 @@ import android.util.Log
 import androidx.media.AudioAttributesCompat
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.sevice.SmService
-import com.example.yuehaoting.musicService.service.Command.Companion.PLAINSONG
 import com.example.yuehaoting.util.Constants.MODE_LOOP
 import com.example.yuehaoting.util.Constants.MODE_SHUFFLE
 import com.example.yuehaoting.data.kugousingle.SongLists
@@ -29,6 +28,7 @@ import com.example.yuehaoting.util.BroadcastUtil
 import com.example.yuehaoting.util.MusicConstant.ACTION_CMD
 import com.example.yuehaoting.util.MusicConstant.EXTRA_CONTROL
 import com.example.yuehaoting.util.MusicConstant.EXTRA_SHUFFLE
+import com.example.yuehaoting.util.MusicConstant.PLAY_SELECTED_SONG
 import com.example.yuehaoting.util.MusicConstant.PLAY_STATE_CHANGE
 import kotlinx.coroutines.*
 import java.lang.Exception
@@ -195,12 +195,15 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
             handleCommand(intent)
         }
     }
-//__________________________________________________________________________________________________________
+
+    /**
+     * 处理命令
+     */
     private fun handleCommand(intent: Intent?) {
         val control = intent?.getIntExtra(EXTRA_CONTROL, -1)
         Timber.v("后台播放4 $control")
         when (control) {
-            PLAINSONG -> {
+            PLAY_SELECTED_SONG -> {
                 Timber.v("后台播放5")
                 playSelectSong(intent.getIntExtra(EXTRA_POSITION, -1))
             }

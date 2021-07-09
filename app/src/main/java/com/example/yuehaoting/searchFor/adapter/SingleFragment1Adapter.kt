@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yuehaoting.R
-import com.example.yuehaoting.musicService.service.Command
 import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.setPlayQueue
 import com.example.yuehaoting.util.IntentUtil
@@ -20,6 +19,7 @@ import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.getCurrentSong
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.isPlaying
 import com.example.yuehaoting.playInterface.activity.PlayActivity
+import com.example.yuehaoting.util.MusicConstant.PLAY_SELECTED_SONG
 import com.example.yuehaoting.util.MusicConstant.SINGER_ID
 import com.example.yuehaoting.util.MusicConstant.SINGER_NAME
 import com.example.yuehaoting.util.MusicConstant.SONG_NAME
@@ -86,7 +86,7 @@ class SingleFragment1Adapter(private val list: List<KuGouSingle.Data.Lists>, val
              val intent=Intent(activity,PlayActivity::class.java)
              activity?.startActivity(intent)
          }else{
-             setPlayQueue(songLists, musicUtil.makeCodIntent(Command.PLAINSONG).putExtra(MusicService.EXTRA_POSITION, position))
+             setPlayQueue(songLists, musicUtil.makeCodIntent(PLAY_SELECTED_SONG).putExtra(MusicService.EXTRA_POSITION, position))
              val song = songDetails(position)
              val intent=Intent(activity,PlayActivity::class.java)
              intent.putExtra(SINGER_ID,mixSongID)

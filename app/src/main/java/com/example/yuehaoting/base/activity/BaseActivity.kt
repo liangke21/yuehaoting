@@ -1,10 +1,7 @@
 package com.example.yuehaoting.base.activity
 
 import android.content.*
-import android.os.Bundle
-import android.os.Handler
-import android.os.IBinder
-import android.os.Message
+import android.os.*
 import com.example.yuehaoting.callback.MusicEvenCallback
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.musicService.service.MusicService
@@ -129,7 +126,7 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
 
     }
 
-    private class MusicStatHandler(activity: BaseActivity) : Handler() {
+    private class MusicStatHandler(activity: BaseActivity) : Handler(Looper.getMainLooper()) {
         private val ref: WeakReference<BaseActivity> = WeakReference(activity)
         override fun dispatchMessage(msg: Message) {
             val action = msg.obj.toString()

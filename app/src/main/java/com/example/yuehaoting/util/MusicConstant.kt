@@ -26,6 +26,7 @@ private const val PACKAGE_NAME = "com.example.yuehaoting"
     //背景自定义图片
     const val  BACKGROUND_CUSTOM_IMAGE=2
 //_______________________________________|播放控制|______________________________________________________________________________________________________
+    const val PLAY_SELECTED_SONG=0
     //上一首
     const val PREV=1
     //暂停播放
