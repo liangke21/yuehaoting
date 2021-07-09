@@ -1,12 +1,10 @@
 package com.example.yuehaoting.playInterface.activity
 
 import android.content.Context
-import android.util.Log
+
 import com.example.yuehaoting.base.diskLruCache.DiskLruCache
 import timber.log.Timber
 import java.io.*
-import java.net.HttpURLConnection
-import java.net.URL
 
 /**
  * 作者: 天使
@@ -70,11 +68,9 @@ class CacheUrl {
         Timber.v("getFromDisk:%s", key)
         val list = ArrayList<String>()
 
-        var snapshot: DiskLruCache.Snapshot? = null
+        val `is`: InputStream?
 
-        var `is`: InputStream? = null
-
-        snapshot = diskLruCache.get(key)
+        val snapshot: DiskLruCache.Snapshot? = diskLruCache.get(key)
 
         if (snapshot == null) {
             Timber.v("getFromDiskListUrlNull:%s", key)
@@ -87,7 +83,7 @@ class CacheUrl {
         val bis = BufferedInputStream(`is`)
 
         val reader = BufferedReader(InputStreamReader(bis))
-        var s: String? = null
+        var s: String?
         while ((reader.readLine().also { s = it }) != null) {
             Timber.v("getFromDiskListUrl:%s", s.toString())
             list.add(s.toString())

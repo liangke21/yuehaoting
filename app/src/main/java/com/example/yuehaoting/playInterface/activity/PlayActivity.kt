@@ -27,7 +27,6 @@ import com.example.yuehaoting.playInterface.activity.SingerPhoto.photoCycle
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.singerPhotoUrl
 import com.example.yuehaoting.playInterface.viewmodel.PlayViewModel
 import com.example.yuehaoting.theme.*
-
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_ADAPTIVE_COLOR
 import com.example.yuehaoting.util.MusicConstant.NAME
 import com.example.yuehaoting.util.MusicConstant.NEXT
@@ -48,7 +47,6 @@ class PlayActivity : PlayBaseActivity() {
     private lateinit var binding: PlayActivityBinding
     private val myUtil = BroadcastUtil()
 
-    //  private val viewModel by lazyMy { ViewModelProviders.of(this).get(PlayViewModel::class.java) }
     private val viewModel by lazyMy { ViewModelProvider(this).get(PlayViewModel::class.java) }
     private val mCacheUrl = CacheUrl()
 
@@ -193,7 +191,7 @@ class PlayActivity : PlayBaseActivity() {
         super.onPlayStateChange()
         //更新按钮状态
         val isPlay = isPlaying()
-        if (isPlay != isPlay) {
+        if (isPlaying != isPlay) {
             updatePlayButton(isPlay)
         }
 

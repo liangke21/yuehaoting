@@ -1,27 +1,21 @@
 package com.example.yuehaoting.playInterface.activity
 
-import android.app.Activity
+
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.util.Log
-import android.widget.FrameLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.App
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.handler.HandlerMy
-import com.example.yuehaoting.base.thread.ThreadMy
 import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhoto
-import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.kotlin.tryNull
 import timber.log.Timber
-import java.util.logging.Handler
-import kotlin.math.log
+
 
 /**
  * 作者: 天使
@@ -30,9 +24,9 @@ import kotlin.math.log
  */
 object SingerPhoto {
     private val url = ArrayList<String>()
-    fun singerPhotoUrl(data4: Result<Any>): ArrayList<String> {
+    fun singerPhotoUrl(data4: Result<List<SingerPhoto.Data.Imgs.Data4>>): ArrayList<String> {
         tryNull {
-            val data = data4.getOrNull() as ArrayList<SingerPhoto.Data.Imgs.Data4>
+            val data :ArrayList<SingerPhoto.Data.Imgs.Data4> = data4.getOrNull() as ArrayList<SingerPhoto.Data.Imgs.Data4>
             url.clear()
             data.forEach {
                 Timber.v("数据长度 ${it.filename}:%s", it.filename.length)
@@ -47,7 +41,7 @@ object SingerPhoto {
 
 
     //定义一个handler来进行隔时间操作
- var handler: HandlerMy = HandlerMy("playUiPhoto")
+    private var handler: HandlerMy = HandlerMy("playUiPhoto")
 
     private  var isRunnable:Boolean = false
     private lateinit var myRunnable : Runnable
@@ -79,6 +73,7 @@ object SingerPhoto {
                      .into(object : CustomTarget<Bitmap>() {
                          override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                              fl.background=BitmapDrawable(resources,resource)
+                             block(resource)
                          }
 
                          override fun onLoadCleared(placeholder: Drawable?) {}

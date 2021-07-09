@@ -19,20 +19,20 @@ import kotlin.properties.Delegates
 object KuGouSongPhoto {
 
   fun setSingerPhoto(MixSongID: String)= liveData(Dispatchers.IO) {
-      val result = try {
+      val result :Result<List<SingerPhoto.Data.Imgs.Data4>> = try {
           run {
               Timber.v("歌手写真ID : %S", MixSongID)
               val singerPhoto = singerPhoto("[{\"album_audio_id\":$MixSongID}]")
-              val phoneSingerPhoto = singerPhoto.data[0][0].imgs.`4`
+            val  phoneSingerPhoto = singerPhoto.data[0][0].imgs.`4`
 
               phoneSingerPhoto.forEach {
                   Timber.v("歌手写真url: %s" ,it)
               }
-              Result.success(phoneSingerPhoto)
+             Result.success(phoneSingerPhoto)
           }
 
-      }catch (e: Exception) {
-          Result.failure<RecordData>(e)
+      }catch (e:Exception){
+          Result.failure(e)
       }
        emit(result)
     }
