@@ -181,8 +181,8 @@ class PlayActivity : PlayBaseActivity() {
         myUtil.sendLocalBroadcast(intent)
     }
 
-    override fun onServiceConnected(musicService: MusicService) {
-        super.onServiceConnected(musicService)
+    override fun onServiceConnected(service: MusicService) {
+        super.onServiceConnected(service)
         onPlayStateChange()
     }
 
@@ -191,7 +191,9 @@ class PlayActivity : PlayBaseActivity() {
         super.onPlayStateChange()
         //更新按钮状态
         val isPlay = isPlaying()
+        Timber.v("isPlay是否播放: %s", "isPlaying: $isPlaying  isPlay: $isPlay")
         if (isPlaying != isPlay) {
+            Timber.v("isPlay不等于:%s","isPlaying: $isPlaying"+"isPlay: $isPlay")
             updatePlayButton(isPlay)
         }
 

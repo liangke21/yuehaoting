@@ -17,6 +17,8 @@ import com.example.yuehaoting.musicService.service.MusicServiceRemote.setPlayQue
 import com.example.yuehaoting.util.IntentUtil
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousingle.SongLists
+import com.example.yuehaoting.musicService.service.MusicServiceRemote.getCurrentSong
+import com.example.yuehaoting.musicService.service.MusicServiceRemote.isPlaying
 import com.example.yuehaoting.playInterface.activity.PlayActivity
 import com.example.yuehaoting.util.MusicConstant.SINGER_ID
 import com.example.yuehaoting.util.MusicConstant.SINGER_NAME
@@ -80,19 +82,20 @@ class SingleFragment1Adapter(private val list: List<KuGouSingle.Data.Lists>, val
         holder.itemView.setOnClickListener {
 
             Timber.d("后台播放1")
+         if(isPlaying() && songLists[position]==getCurrentSong()){
+             val intent=Intent(activity,PlayActivity::class.java)
+             activity?.startActivity(intent)
+         }else{
+             setPlayQueue(songLists, musicUtil.makeCodIntent(Command.PLAINSONG).putExtra(MusicService.EXTRA_POSITION, position))
+             val song = songDetails(position)
+             val intent=Intent(activity,PlayActivity::class.java)
+             intent.putExtra(SINGER_ID,mixSongID)
+             intent.putExtra(SONG_NAME,song[0])
+             intent.putExtra(SINGER_NAME,song[1])
+             activity?.startActivity(intent)
+         }
 
 
-            setPlayQueue(
-                songLists,
-                musicUtil.makeCodIntent(Command.PLAINSONG)
-                    .putExtra(MusicService.EXTRA_POSITION, position)
-            )
-            val song = songDetails(position)
-           val intent=Intent(activity,PlayActivity::class.java)
-              intent.putExtra(SINGER_ID,mixSongID)
-            intent.putExtra(SONG_NAME,song[0])
-            intent.putExtra(SINGER_NAME,song[1])
-            activity?.startActivity(intent)
         }
     }
 

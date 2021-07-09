@@ -68,7 +68,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
 
 
     /**
-     * 是否正在设置mediapplayer的datasource
+     * 是否正在设置mediaAppLayer的datasource
      * 是否设置媒体媒体播放器的数据源
      */
     private var prepared = false
@@ -100,10 +100,16 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      * 当前是否在播放
      */
     private var isPlay:Boolean=false
+
     /**
      * 获得是否在播放
      */
-    val isPlaying:Boolean=isPlay
+    val isPlaying:Boolean
+    get() = isPlay
+
+    // 当前播放的歌曲
+    val currentSong:SongLists
+        get() = playQueue.song
 /////////////////////////////////////////////生命周期执行////////////////////////////////////////////////////////////////////////////////////////
 
     private val musicBinder = MusicBinder()
@@ -151,6 +157,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      */
     private fun setPlay(isPlay:Boolean){
         this.isPlay=isPlay
+        Timber.v("isPlay是否播放: %s", "isPlaying: $isPlaying  isPlay: $isPlay")
     }
     /**
      * 设置播放列队

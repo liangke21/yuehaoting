@@ -77,7 +77,14 @@ object MusicServiceRemote {
      */
     @JvmStatic
     fun isPlaying():Boolean{
+        Timber.v("isPlay是否播放: %s", "isPlaying: ${service?.isPlaying}  ")
         return service?.isPlaying ?:false
     }
+
+    @JvmStatic
+    fun getCurrentSong(): SongLists {
+        return service?.currentSong ?: SongLists.SONG_LIST
+    }
+
 }
 

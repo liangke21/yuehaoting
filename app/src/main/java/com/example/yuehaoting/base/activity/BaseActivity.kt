@@ -96,8 +96,8 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
     }
 
 
-    override fun onServiceConnected(musicService: MusicService) {
-        Timber.tag(TAG).v("服务连接上2,$musicService")
+    override fun onServiceConnected(service: MusicService) {
+        Timber.tag(TAG).v("服务连接上2,$service")
         if (!receiverRegistered) {
             musicStateReceiver = MusicStatReceiver(this)
             val filter = IntentFilter()

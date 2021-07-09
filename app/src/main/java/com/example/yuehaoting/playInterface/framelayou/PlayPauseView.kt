@@ -41,7 +41,7 @@ private val playPauseAnimationDuration = 250L
     //画
     private val mPaint=Paint()
     //动画
-    private lateinit var mAnimator: Animator
+    private  var mAnimator: Animator?=null
     private var mBackgroundColor = 0
     private var mWidth = 0
     private var mHeight = 0
@@ -125,12 +125,16 @@ private val playPauseAnimationDuration = 250L
     }
 
     private fun toggle(withAnim: Boolean) {
+
         if (withAnim){
-            mAnimator.cancel()
+            withAnim.let {
+                mAnimator?.cancel()
+            }
+
             mAnimator=mDrawable.pausePlayAnimator
-            mAnimator.interpolator = DecelerateInterpolator()
-            mAnimator.duration = playPauseAnimationDuration
-            mAnimator.start()
+            mAnimator?.interpolator = DecelerateInterpolator()
+            mAnimator?.duration = playPauseAnimationDuration
+            mAnimator?.start()
 
         }else{
             val isPlay=mDrawable.isPlay
