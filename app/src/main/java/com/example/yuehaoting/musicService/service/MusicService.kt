@@ -30,8 +30,10 @@ import com.example.yuehaoting.util.MusicConstant.EXTRA_CONTROL
 import com.example.yuehaoting.util.MusicConstant.EXTRA_SHUFFLE
 import com.example.yuehaoting.util.MusicConstant.PLAY_SELECTED_SONG
 import com.example.yuehaoting.util.MusicConstant.PLAY_STATE_CHANGE
+import com.example.yuehaoting.util.MusicConstant.UPDATE_PLAY_STATE
 import kotlinx.coroutines.*
 import java.lang.Exception
+import kotlin.coroutines.CoroutineContext
 
 /**
  * 作者: QQ号:1396797522
@@ -114,8 +116,12 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
     // 当前播放的歌曲
     val currentSong:SongLists
         get() = playQueue.song
-/////////////////////////////////////////////生命周期执行////////////////////////////////////////////////////////////////////////////////////////
 
+   private val handler =MusicServiceHandler(this,object :MusicServiceHandler.MusicServiceHandlerData{
+       override val playQueueSong: SongLists
+           get() = playQueue.song
+   })
+//_______________________________________|生命周期|______________________________________________________________________________________________________
     private val musicBinder = MusicBinder()
 
     override fun onBind(intent: Intent): IBinder? {
@@ -128,7 +134,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
         setUp()
 
     }
-
+//_______________________________________||______________________________________________________________________________________________________
     private fun setUp() {
         myUtil.registerLocalReceiver(controlReceiver, IntentFilter(ACTION_CMD))
         setUpPlayer()
@@ -144,7 +150,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
         }
         return START_NOT_STICKY
     }
-//_____________________________________________________________________________________________________________________________________________
+
     private fun handleStartCommandIntent(intent: Intent?, action: String?) {
 
     }
@@ -162,7 +168,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
     private fun setPlay(isPlay:Boolean){
         this.isPlay=isPlay
         Timber.v("isPlay是否播放: %s", "isPlaying: $isPlaying  isPlay: $isPlay")
-        myUtil.sendLocalBroadcast(Intent(PLAY_STATE_CHANGE))
+        handler.sendEmptyMessage(UPDATE_PLAY_STATE)
     }
     /**
      * 设置播放列队
@@ -375,36 +381,6 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
     companion object {
         const val TAG_LIFECYCLE = "服务器生命周期"
         const val EXTRA_POSITION = "Position"
-
-        //更新桌面部件
-        const val UPDATE_APPWIDGET = 1000
-
-        //更新正在播放歌曲
-        const val UPDATE_META_DATA = 1002
-
-        //更新播放状态
-        const val UPDATE_PLAY_STATE = 1003
-
-        //更新桌面歌词内容
-        const val UPDATE_DESKTOP_LRC_CONTENT = 1004
-
-        //移除桌面歌词
-        const val REMOVE_DESKTOP_LRC = 1005
-
-        //添加桌面歌词
-        const val CREATE_DESKTOP_LRC = 1006
-
-        //更新状态栏歌词
-        const val UPDATE_STATUS_BAR_LRC = 1007
-
-        //更新通知
-        const val UPDATE_NOTIFICATION = 1008
-
-
-
-
-
-
 
 
     }
