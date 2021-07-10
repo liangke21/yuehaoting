@@ -291,7 +291,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
             return
         }
         Timber.v("播放下一首||播放上一首8: %s", playQueue.song)
-        setPlay(true)
+        setPlay(false)
         readyToPlay(playQueue.song)
     }
 
