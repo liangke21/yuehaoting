@@ -14,11 +14,13 @@ import com.bumptech.glide.request.target.*
 import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.PlayBaseActivity
+import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.databinding.PlayActivityBinding
 import com.example.yuehaoting.kotlin.getSp
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.musicService.service.MusicService
+import com.example.yuehaoting.musicService.service.MusicServiceRemote.getCurrentSong
 import com.example.yuehaoting.util.BroadcastUtil
 import timber.log.Timber
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.isPlaying
@@ -36,6 +38,7 @@ import com.example.yuehaoting.util.MusicConstant.PLAYER_BACKGROUND
 import com.example.yuehaoting.util.MusicConstant.PREV
 import com.example.yuehaoting.util.MusicConstant.SINGER_ID
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_CUSTOM_IMAGE
+import com.example.yuehaoting.util.MusicConstant.CURRENT_SONG
 import com.example.yuehaoting.util.MusicConstant.EXTRA_CONTROL
 import com.example.yuehaoting.util.MusicConstant.SINGER_NAME
 import com.example.yuehaoting.util.MusicConstant.SONG_NAME
@@ -59,6 +62,10 @@ class PlayActivity : PlayBaseActivity() {
      */
     private var isPlaying = false
 
+    /**
+     * 当前播放歌曲
+     */
+    private lateinit var currentSong :SongLists
     /**
      * 背景
      */
@@ -89,6 +96,12 @@ class PlayActivity : PlayBaseActivity() {
         super.onCreate(savedInstanceState)
         binding = PlayActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+         currentSong = getCurrentSong()
+
+        if (currentSong== SongLists.SONG_LIST && intent.hasExtra(CURRENT_SONG)){
+            currentSong=intent.getParcelableExtra(CURRENT_SONG)!!
+        }
+          Timber.v("currentSong:%s %s ",intent.getParcelableExtra(CURRENT_SONG)!!,currentSong)
         //初始化字符缓存
         mCacheUrl.init(this)
         //初始化ActivityColor
@@ -109,16 +122,22 @@ class PlayActivity : PlayBaseActivity() {
         ).forEach {
             it.setOnClickListener(onCtrlClick)
         }
+        updateTopStatus()
 
-        //标题栏设置 歌手歌词
-        binding.layoutPlayLayoutBar.apply {
-            val songName = intent.getStringExtra(SONG_NAME)
-            tvPlaySongName.text = songName
-            val singerName = intent.getStringExtra(SINGER_NAME)
-            tvPlaySingerName.text = singerName
-        }
     }
 
+    /**
+     * 更新顶部标题
+     */
+   private fun updateTopStatus(){
+       //标题栏设置 歌手歌词
+       binding.layoutPlayLayoutBar.apply {
+           currentSong=intent.getParcelableExtra(CURRENT_SONG)!!
+           tvPlaySongName.text = currentSong.SongName
+
+           tvPlaySingerName.text = currentSong.SingerName
+       }
+   }
     //接收数据
     private fun receiveIntent() {
         val singerId = intent.getStringExtra(SINGER_ID)

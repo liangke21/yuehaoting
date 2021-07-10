@@ -115,9 +115,12 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
     val isPlaying:Boolean
     get() = isPlay
 
-    // 当前播放的歌曲
+    /**
+     * 当前播放的歌曲
+     */
     val currentSong:SongLists
         get() = playQueue.song
+
 
    private val handler =MusicServiceHandler(this,object :MusicServiceHandler.MusicServiceHandlerData{
        override val playQueueSong: SongLists

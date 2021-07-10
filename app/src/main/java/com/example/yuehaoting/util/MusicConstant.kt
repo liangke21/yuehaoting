@@ -46,7 +46,7 @@ object MusicConstant {
 
     //随机播放
     const val EXTRA_SHUFFLE = "shuffle"
-
+    const val CURRENT_SONG ="CurrentSong"
     //_______________________________________|更新状态|______________________________________________________________________________________________________
 //更新正在播放歌曲
     const val UPDATE_META_DATA = 1002
