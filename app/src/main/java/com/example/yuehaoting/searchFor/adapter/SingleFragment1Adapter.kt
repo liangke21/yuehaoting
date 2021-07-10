@@ -69,7 +69,8 @@ class SingleFragment1Adapter(private val list: List<KuGouSingle.Data.Lists>, val
             SongLists(
                 song[0],
                 song[1],
-                list[position].FileHash
+                list[position].FileHash,
+                list[position].MixSongID
             )
         )
         //播放监听

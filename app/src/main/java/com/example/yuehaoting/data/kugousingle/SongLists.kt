@@ -11,9 +11,9 @@ import kotlinx.parcelize.Parcelize
  * 描述:
  */
 @Parcelize
-data class SongLists(var SongName:String,var SingerName:String,var FileHash:String) : Parcelable {
+data class SongLists(var SongName:String,var SingerName:String,var FileHash:String,var mixSongID: String) : Parcelable {
     companion object {
-        val SONG_LIST = SongLists("", "", "")
+        val SONG_LIST = SongLists("", "", "","")
     }
 
 }

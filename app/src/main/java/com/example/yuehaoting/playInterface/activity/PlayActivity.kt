@@ -107,11 +107,11 @@ class PlayActivity : PlayBaseActivity() {
         //初始化ActivityColor
         playActivityColor = PlayActivityColor(binding, this)
 
-        receiveIntent()
+        receiveIntent(currentSong)
         observeSingerPhotoData()
         playActivityColor.setThemeColor()
         initView()
-        updateTopStatus(currentSong)
+      //  updateTopStatus(currentSong)
     }
 
     //初始化控件
@@ -137,8 +137,9 @@ class PlayActivity : PlayBaseActivity() {
        }
    }
     //接收数据
-    private fun receiveIntent() {
-        val singerId = intent.getStringExtra(SINGER_ID)
+    private fun receiveIntent(currentSong:SongLists) {
+       // val singerId = intent.getStringExtra(SINGER_ID)
+        val singerId = currentSong.mixSongID
 
         val list = mCacheUrl.getFromDisk(singerId.toString())
         if (list != null) {
@@ -156,9 +157,7 @@ class PlayActivity : PlayBaseActivity() {
                     override fun onLoadCleared(placeholder: Drawable?) {}
                 })
 
-            if (singerId != null) {
-                viewModel.singerId(singerId)
-            }
+            viewModel.singerId(singerId)
         }
     }
 
@@ -203,7 +202,12 @@ class PlayActivity : PlayBaseActivity() {
     override fun onMetaChanged() {
         super.onMetaChanged()
         currentSong= getCurrentSong()
+        //更新标题
         updateTopStatus(currentSong)
+        //关闭封面幻影灯片
+        handlerRemoveCallbacks()
+        //更新封面
+        receiveIntent(currentSong)
     }
     override fun onServiceConnected(service: MusicService) {
         super.onServiceConnected(service)
