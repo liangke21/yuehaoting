@@ -14,7 +14,7 @@ import timber.log.Timber
  */
 class PlayPauseVolumeController(private val service: MusicService) {
 
-    private val handler: Handler = Handler()
+    private val handler: Handler = Handler(Looper.getMainLooper())
 
     companion object {
         private const val DURATION_IN_MS = 600L
@@ -80,7 +80,6 @@ class PlayPauseVolumeController(private val service: MusicService) {
             Timber.v("非法访问异常IllegalAccessException:%s", e)
         }
     }
-
 
     /**
      * 淡入

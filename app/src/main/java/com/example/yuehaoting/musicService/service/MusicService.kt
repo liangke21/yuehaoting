@@ -366,6 +366,13 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
 
         setPlay(true)
         mediaPlayer.start()
+
+        //渐变
+        if (fadeIn) {
+           playPauseVolumeController.fadeIn()
+        } else {
+            playPauseVolumeController.directTo(1f)
+        }
     }
 
     /**
