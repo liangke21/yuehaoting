@@ -111,6 +111,7 @@ class PlayActivity : PlayBaseActivity() {
         observeSingerPhotoData()
         playActivityColor.setThemeColor()
         initView()
+        updateTopStatus(currentSong)
     }
 
     //初始化控件
@@ -122,17 +123,14 @@ class PlayActivity : PlayBaseActivity() {
         ).forEach {
             it.setOnClickListener(onCtrlClick)
         }
-        updateTopStatus()
-
     }
 
     /**
      * 更新顶部标题
      */
-   private fun updateTopStatus(){
+   private fun updateTopStatus(currentSong:SongLists){
        //标题栏设置 歌手歌词
        binding.layoutPlayLayoutBar.apply {
-           currentSong=intent.getParcelableExtra(CURRENT_SONG)!!
            tvPlaySongName.text = currentSong.SongName
 
            tvPlaySingerName.text = currentSong.SingerName
@@ -204,6 +202,8 @@ class PlayActivity : PlayBaseActivity() {
 
     override fun onMetaChanged() {
         super.onMetaChanged()
+        currentSong= getCurrentSong()
+        updateTopStatus(currentSong)
     }
     override fun onServiceConnected(service: MusicService) {
         super.onServiceConnected(service)

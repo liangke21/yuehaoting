@@ -53,7 +53,7 @@ class MusicServiceHandler(service: MusicService, private val musicServiceHandler
     }
 
 
-    fun updatePlaybackData(){
+    private fun updatePlaybackData(){
         broadcastUtil.sendLocalBroadcast(Intent(PLAY_DATA_CHANGES))
     }
 }

@@ -368,6 +368,9 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
     override fun play(fadeIn: Boolean) {
 
         setPlay(true)
+
+        handler.sendEmptyMessage(UPDATE_META_DATA)
+
         mediaPlayer.start()
 
         //渐变
