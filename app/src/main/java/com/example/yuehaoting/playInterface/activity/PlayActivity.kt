@@ -40,12 +40,11 @@ import com.example.yuehaoting.util.MusicConstant.SINGER_ID
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_CUSTOM_IMAGE
 import com.example.yuehaoting.util.MusicConstant.CURRENT_SONG
 import com.example.yuehaoting.util.MusicConstant.EXTRA_CONTROL
-import com.example.yuehaoting.util.MusicConstant.SINGER_NAME
-import com.example.yuehaoting.util.MusicConstant.SONG_NAME
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlin.collections.ArrayList
+import kotlin.properties.Delegates
 
 
 class PlayActivity : PlayBaseActivity() {
@@ -65,7 +64,8 @@ class PlayActivity : PlayBaseActivity() {
     /**
      * 当前播放歌曲
      */
-    private lateinit var currentSong :SongLists
+    private lateinit var currentSong: SongLists
+
     /**
      * 背景
      */
@@ -74,6 +74,11 @@ class PlayActivity : PlayBaseActivity() {
             getInt(PLAYER_BACKGROUND, BACKGROUND_ADAPTIVE_COLOR)
         }
     }
+
+    /**
+     * 更新封面
+     */
+    private var isUpdateReceiveIntent by Delegates.notNull<Boolean>()
 
     override fun setSatuBarColor() {
         when (background) {
@@ -87,7 +92,14 @@ class PlayActivity : PlayBaseActivity() {
                 StatusBarUtil.setTransparent(this)
 
                 Glide.with(this).asBitmap()
-                    .load(viewModel.singerPhotoList[10].sizable_portrait)
+                    .load(R.drawable.youjing)
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            binding.playerContainer.background = BitmapDrawable(resources, resource)
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {}
+                    })
             }
         }
     }
@@ -96,22 +108,23 @@ class PlayActivity : PlayBaseActivity() {
         super.onCreate(savedInstanceState)
         binding = PlayActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-         currentSong = getCurrentSong()
+        currentSong = getCurrentSong()
 
-        if (currentSong== SongLists.SONG_LIST && intent.hasExtra(CURRENT_SONG)){
-            currentSong=intent.getParcelableExtra(CURRENT_SONG)!!
+        if (currentSong == SongLists.SONG_LIST && intent.hasExtra(CURRENT_SONG)) {
+            currentSong = intent.getParcelableExtra(CURRENT_SONG)!!
         }
-          Timber.v("currentSong:%s %s ",intent.getParcelableExtra(CURRENT_SONG)!!,currentSong)
+        Timber.v("currentSong:%s %s ", intent.getParcelableExtra(CURRENT_SONG)!!, currentSong)
         //初始化字符缓存
         mCacheUrl.init(this)
         //初始化ActivityColor
         playActivityColor = PlayActivityColor(binding, this)
 
         receiveIntent(currentSong)
+        isUpdateReceiveIntent = false
         observeSingerPhotoData()
         playActivityColor.setThemeColor()
         initView()
-      //  updateTopStatus(currentSong)
+        updateTopStatus(currentSong)
     }
 
     //初始化控件
@@ -128,20 +141,20 @@ class PlayActivity : PlayBaseActivity() {
     /**
      * 更新顶部标题
      */
-   private fun updateTopStatus(currentSong:SongLists){
-       //标题栏设置 歌手歌词
-       binding.layoutPlayLayoutBar.apply {
-           tvPlaySongName.text = currentSong.SongName
+    private fun updateTopStatus(currentSong: SongLists) {
+        //标题栏设置 歌手歌词
+        binding.layoutPlayLayoutBar.apply {
+            tvPlaySongName.text = currentSong.SongName
+            Timber.v("currentSong:%s", currentSong)
+            tvPlaySingerName.text = currentSong.SingerName
+        }
+    }
 
-           tvPlaySingerName.text = currentSong.SingerName
-       }
-   }
     //接收数据
-    private fun receiveIntent(currentSong:SongLists) {
-       // val singerId = intent.getStringExtra(SINGER_ID)
+    private fun receiveIntent(currentSong: SongLists) {
+        // val singerId = intent.getStringExtra(SINGER_ID)
         val singerId = currentSong.mixSongID
-
-        val list = mCacheUrl.getFromDisk(singerId.toString())
+        val list = mCacheUrl.getFromDisk(singerId)
         if (list != null) {
             photoCycle(list, binding.playerContainer, resources, ::updateUi)
         } else {
@@ -199,16 +212,24 @@ class PlayActivity : PlayBaseActivity() {
         myUtil.sendLocalBroadcast(intent)
     }
 
+    private val observableCurrentSong = ObservableCurrentSong()
+    private var recordingCurrentSong: String? = ""
     override fun onMetaChanged() {
         super.onMetaChanged()
-        currentSong= getCurrentSong()
+        currentSong = getCurrentSong()
         //更新标题
         updateTopStatus(currentSong)
-        //关闭封面幻影灯片
-        handlerRemoveCallbacks()
-        //更新封面
-        receiveIntent(currentSong)
+
+        observableCurrentSong.nameCurrentSong = currentSong.mixSongID
+
+        if (recordingCurrentSong != currentSong.mixSongID && isUpdateReceiveIntent) {
+            //更新封面
+            receiveIntent(currentSong)
+            recordingCurrentSong = currentSong.mixSongID
+        }
+        isUpdateReceiveIntent = true
     }
+
     override fun onServiceConnected(service: MusicService) {
         super.onServiceConnected(service)
         onPlayStateChange()
@@ -221,7 +242,7 @@ class PlayActivity : PlayBaseActivity() {
         val isPlay = isPlaying()
         Timber.v("isPlay是否播放: %s", "isPlaying: $isPlaying  isPlay: $isPlay")
         if (isPlaying != isPlay) {
-            Timber.v("isPlay不等于:%s","isPlaying: $isPlaying"+"isPlay: $isPlay")
+            Timber.v("isPlay不等于:%s", "isPlaying: $isPlaying" + "isPlay: $isPlay")
             updatePlayButton(isPlay)
         }
 
