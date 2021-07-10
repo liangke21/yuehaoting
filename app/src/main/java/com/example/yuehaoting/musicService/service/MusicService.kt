@@ -17,6 +17,7 @@ import com.example.yuehaoting.base.sevice.SmService
 import com.example.yuehaoting.util.Constants.MODE_LOOP
 import com.example.yuehaoting.util.Constants.MODE_SHUFFLE
 import com.example.yuehaoting.data.kugousingle.SongLists
+import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.musicService.data.KuGouSongMp3
 import com.example.yuehaoting.kotlin.showToast
 import timber.log.Timber
@@ -30,6 +31,7 @@ import com.example.yuehaoting.util.MusicConstant.EXTRA_CONTROL
 import com.example.yuehaoting.util.MusicConstant.EXTRA_SHUFFLE
 import com.example.yuehaoting.util.MusicConstant.PLAY_SELECTED_SONG
 import com.example.yuehaoting.util.MusicConstant.PLAY_STATE_CHANGE
+import com.example.yuehaoting.util.MusicConstant.UPDATE_META_DATA
 import com.example.yuehaoting.util.MusicConstant.UPDATE_PLAY_STATE
 import kotlinx.coroutines.*
 import java.lang.Exception
@@ -121,6 +123,13 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
        override val playQueueSong: SongLists
            get() = playQueue.song
    })
+
+    /**
+     * 播放暂停音量控制器
+     */
+    private val playPauseVolumeController:PlayPauseVolumeController by lazyMy {
+        PlayPauseVolumeController(this)
+    }
 //_______________________________________|生命周期|______________________________________________________________________________________________________
     private val musicBinder = MusicBinder()
 
@@ -167,7 +176,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      */
     private fun setPlay(isPlay:Boolean){
         this.isPlay=isPlay
-        Timber.v("isPlay是否播放: %s", "isPlaying: $isPlaying  isPlay: $isPlay")
+        Timber.v("isPlay是否播放  setPlay()函数 : %s", "isPlaying: $isPlaying  isPlay: $isPlay")
         handler.sendEmptyMessage(UPDATE_PLAY_STATE)
     }
     /**
@@ -220,6 +229,8 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
             }
             //播放暂停
         PAUSE_PLAYBACK -> {
+            Timber.v("暂停播放: %s", control)
+            toggle()
             }
             //播放下一首
            NEXT -> {
@@ -230,7 +241,12 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
     }
 
     override fun toggle() {
-        TODO("Not yet implemented")
+     Timber.v("toggle: %s",mediaPlayer.isPlaying)
+        if(mediaPlayer.isPlaying){
+            pause(false)
+        }else{
+            play(true)
+        }
     }
 
     /**
@@ -276,9 +292,21 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
         readyToPlay(playQueue.song)
     }
 
-
+    /**
+     * 播放暂停
+     */
     override fun pause(updateMediaSessionOnly: Boolean) {
-        TODO("Not yet implemented")
+        Timber.v("pause()  播放暂停:%s",isPlaying)
+        if (updateMediaSessionOnly){
+            //更新锁屏
+        }else{
+            if (!isPlaying){
+                return
+            }
+            setPlay(false)
+            handler.sendEmptyMessage(UPDATE_META_DATA)
+            playPauseVolumeController.fadeOut()
+        }
     }
 
     /**

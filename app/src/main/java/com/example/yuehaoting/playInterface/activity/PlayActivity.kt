@@ -183,6 +183,9 @@ class PlayActivity : PlayBaseActivity() {
         myUtil.sendLocalBroadcast(intent)
     }
 
+    override fun onMetaChanged() {
+        super.onMetaChanged()
+    }
     override fun onServiceConnected(service: MusicService) {
         super.onServiceConnected(service)
         onPlayStateChange()

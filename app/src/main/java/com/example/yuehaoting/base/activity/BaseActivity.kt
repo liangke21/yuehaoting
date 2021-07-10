@@ -103,7 +103,7 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
 
     }
     override fun onMetaChanged() {
-        TODO("Not yet implemented")
+
     }
 
 
@@ -137,6 +137,7 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
                         activity.onPlayStateChange()
                         Timber.v("isPlay是否播放   播放回调: %s",action)
                     }
+                    PLAY_DATA_CHANGES -> activity.onMetaChanged()
                 }
             }
         }

@@ -6,8 +6,11 @@ import android.os.Looper
 import android.os.Message
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.util.BroadcastUtil
+import com.example.yuehaoting.util.MusicConstant.PLAY_DATA_CHANGES
 import com.example.yuehaoting.util.MusicConstant.PLAY_STATE_CHANGE
+import com.example.yuehaoting.util.MusicConstant.UPDATE_META_DATA
 import com.example.yuehaoting.util.MusicConstant.UPDATE_PLAY_STATE
+import timber.log.Timber
 import java.lang.ref.WeakReference
 
 
@@ -24,9 +27,11 @@ class MusicServiceHandler(service: MusicService, private val musicServiceHandler
         if (wrf.get() == null){
             return
         }
-        val musicService =wrf.get() ?:return
+     //   val musicService =wrf.get() ?:return
         when(msg.what){
             UPDATE_PLAY_STATE->handlePlayStateChange()
+
+            UPDATE_META_DATA-> updatePlaybackData()
         }
 
     }
@@ -45,6 +50,11 @@ class MusicServiceHandler(service: MusicService, private val musicServiceHandler
 
     interface MusicServiceHandlerData {
        val playQueueSong:SongLists
+    }
+
+
+    fun updatePlaybackData(){
+        broadcastUtil.sendLocalBroadcast(Intent(PLAY_DATA_CHANGES))
     }
 }
 
