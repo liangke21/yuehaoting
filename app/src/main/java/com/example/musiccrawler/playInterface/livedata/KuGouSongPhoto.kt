@@ -1,0 +1,36 @@
+package com.example.musiccrawler.playInterface.livedata
+
+import androidx.lifecycle.liveData
+import com.example.musiccrawler.base.retrofit.SongNetwork.singerPhoto
+import com.example.musiccrawler.data.kugouSingerPhoto.SingerPhoto
+
+import kotlinx.coroutines.Dispatchers
+import timber.log.Timber
+
+/**
+ * 作者: 天使
+ * 时间: 2021/6/27 15:34
+ * 描述:  酷狗音乐真
+ */
+object KuGouSongPhoto {
+
+  fun setSingerPhoto(MixSongID: String)= liveData(Dispatchers.IO) {
+      val result :Result<List<SingerPhoto.Data.Imgs.Data4>> = try {
+          run {
+              Timber.v("歌手写真ID : %S", MixSongID)
+              val singerPhoto = singerPhoto("[{\"album_audio_id\":$MixSongID}]")
+            val  phoneSingerPhoto = singerPhoto.data[0][0].imgs.`4`
+
+              phoneSingerPhoto.forEach {
+                  Timber.v("歌手写真url: %s" ,it)
+              }
+             Result.success(phoneSingerPhoto)
+          }
+
+      }catch (e:Exception){
+          Result.failure(e)
+      }
+       emit(result)
+    }
+
+}

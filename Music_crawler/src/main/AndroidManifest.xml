@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="com.example.musiccrawler">
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <application>
+    <activity android:name="com.example.musiccrawler.HiginioActivity"
+      android:process="yuehaoting.HiginioService">
+    </activity>
+
+    <service
+      android:enabled="true"
+      android:exported="true"
+      android:name=".hifini.HiginioService">
+    </service>
+  </application>
+
+</manifest>
