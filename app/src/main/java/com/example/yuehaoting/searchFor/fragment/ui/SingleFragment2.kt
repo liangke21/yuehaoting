@@ -6,22 +6,20 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import android.os.Message
+import android.os.Messenger
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.musiccrawler.AidlInterfaceMy
-import com.example.musiccrawler.hifini.DataSearch
 import com.example.musiccrawler.hifini.HiginioService
 import com.example.yuehaoting.R
 import com.example.yuehaoting.databinding.FragmentHifini2Binding
 import com.example.yuehaoting.searchFor.adapter.SingleFragment1Adapter
 import com.example.yuehaoting.searchFor.fragment.BaseFragment
 import com.example.yuehaoting.searchFor.viewmodel.SingleFragment2ViewModel
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import timber.log.Timber
 
 /**
@@ -37,10 +35,11 @@ class SingleFragment2:BaseFragment() {
 
     private var data:String?=null
 
-    private var mIMyAidlInterface: AidlInterfaceMy? = null
+    private var mMessage:Messenger? = null
+
     private val mServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            mIMyAidlInterface = AidlInterfaceMy.Stub.asInterface(service)
+            mMessage = Messenger(service)
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -63,36 +62,29 @@ class SingleFragment2:BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+
        activity?. bindService(Intent(activity, HiginioService::class.java), mServiceConnection, Context.BIND_AUTO_CREATE)
 
     }
 
     override fun lazyOnResume() {
-        Timber.v(json)
+
+
     }
-    val json : String?
-        get()=mIMyAidlInterface?.onCreate()
+
 
     override fun lazyInit() {
-        val person=Person()
-        binding.person=person
-
-
-       person.name.set(mIMyAidlInterface?.onCreate())
+        data=activity!!.intent.getStringExtra("Single")
+        val msg = Message.obtain(null, 1, 0, 0)
+        val bundle=Bundle()
+        bundle.putString("Single",data)
+        msg.data=bundle
+        mMessage?.send(msg)
 
         data=activity!!.intent.getStringExtra("Single")
         viewModel.singlePlaces {
-            mIMyAidlInterface?.keyword(data)
+
         }
-
-    /*  val jsonString=  mIMyAidlInterface?.keyword(data)
-      Timber.v( mIMyAidlInterface?.keyword(data))*/
-/*
-     val gson= Gson()
-        val typeOf= object : TypeToken<List<DataSearch>>(){}.type
-
-        val dataSearchList=gson.fromJson<List<DataSearch>>( person.name.get(),typeOf)*/
-
 
 
 

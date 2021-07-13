@@ -1,5 +1,6 @@
 package com.example.musiccrawler.hifini
 
+import android.app.Service
 import android.text.TextUtils
 import com.alibaba.fastjson.JSON
 import com.google.gson.Gson
@@ -11,10 +12,10 @@ import org.jsoup.Jsoup
  * 描述:
  */
 object JsoupS {
-      lateinit var gson:String
+    lateinit var gson: String
 
-    fun jsoupSHiFiNiSearch(string: String) :String{
-        val attributes=ArrayList<DataSearch.Attributes>()
+    fun jsoupSHiFiNiSearch(string: String, service: Service): String {
+        val attributes = ArrayList<DataSearch.Attributes>()
         val pageNumber = ArrayList<String>()
         try {
             val document = Jsoup.parse(string)
@@ -47,7 +48,7 @@ object JsoupS {
             mulatto.forEach {
                 ++int
                 if (size != 0 && mulatto.size - 1 != size) {
-                 val    lit = it.toString().replace("<li class=\"page-item\"><a href=\"", "").replace("\" class=", "")
+                    val lit = it.toString().replace("<li class=\"page-item\"><a href=\"", "").replace("\" class=", "")
                         .replace("page-link\">", "").replace("</a></li>", "").replace("\"$int", "")
                     pageNumber.add(lit)
 
@@ -58,34 +59,34 @@ object JsoupS {
 
 
 
-            if (pageNumber.isEmpty()){
+            if (pageNumber.isEmpty()) {
                 pageNumber.add("0")
             }
 
 
             val dataSearch = DataSearch(
-                attributes=attributes,
+                attributes = attributes,
                 pageNumber = pageNumber
             )
             val gson = Gson().toJson(dataSearch)
-             this.gson=gson
+            this.gson = gson
             println(gson)
 
             return gson
         } catch (e: Exception) {
-            if (pageNumber.isEmpty()){
+            if (pageNumber.isEmpty()) {
                 pageNumber.add("0")
             }
             attributes.add(DataSearch.Attributes("0", "0"))
 
             val dataSearch = DataSearch(
-                attributes=attributes,
+                attributes = attributes,
                 pageNumber = pageNumber
             )
             val gson = Gson().toJson(dataSearch)
             println(gson)
 
-            this.gson=gson
+            this.gson = gson
             e.printStackTrace()
             return gson
         }
