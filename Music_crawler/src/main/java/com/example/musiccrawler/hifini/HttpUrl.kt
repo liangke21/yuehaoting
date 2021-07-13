@@ -15,7 +15,7 @@ import kotlin.concurrent.thread
  */
 object HttpUrl {
 
-      fun hiFiNiSearch(Keyword:String){
+      fun hiFiNiSearch(Keyword:String):String{
           var conn: HttpURLConnection?
           try {
               thread {
@@ -54,7 +54,7 @@ object HttpUrl {
               e.printStackTrace()
           }
 
-
+return "s"
       }
 
     fun hiFiNiThread(){

@@ -3,24 +3,31 @@ package com.example.musiccrawler.hifini
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.text.TextUtils
-import com.alibaba.fastjson.JSON
+import android.util.Log
 import com.example.musiccrawler.AidlInterfaceMy
 import com.example.musiccrawler.hifini.HttpUrl.hiFiNiSearch
-import com.example.musiccrawler.hifini.HttpUrl.hiFiNiThread
-import org.jsoup.Jsoup
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
-import kotlin.concurrent.thread
+import com.example.musiccrawler.hifini.JsoupS.gson
 
 class HiginioService : Service() {
 
-private val mStud= object :AidlInterfaceMy.Stub(){
+private val mStud= object : AidlInterfaceMy.Stub(){
 
 
     override fun basicTypes(anInt: Int, aLong: Long, aBoolean: Boolean, aFloat: Float, aDouble: Double, aString: String?) {
+
+    }
+
+    override fun keyword(Keyword: String?) {
+        if (Keyword != null) {
+            hiFiNiSearch(Keyword)
+        }
+    }
+
+
+
+    override fun onCreate(): String? {
+        Log.v("运行了吗2","我靠运行了")
+      return gson
     }
 }
 
@@ -31,7 +38,7 @@ private val mStud= object :AidlInterfaceMy.Stub(){
     override fun onCreate() {
         super.onCreate()
         //hiFiNiThread()
-        hiFiNiSearch("六哲")
+
     }
 
 }

@@ -3,8 +3,6 @@ package com.example.musiccrawler.hifini
 import android.text.TextUtils
 import com.alibaba.fastjson.JSON
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonParser
 import org.jsoup.Jsoup
 
 /**
@@ -13,14 +11,14 @@ import org.jsoup.Jsoup
  * 描述:
  */
 object JsoupS {
-
+      lateinit var gson:String
 
     fun jsoupSHiFiNiSearch(string: String) :String{
         val attributes=ArrayList<DataSearch.Attributes>()
         val pageNumber = ArrayList<String>()
         try {
             val document = Jsoup.parse(string)
-            println(string)
+
             val li = document.select("#body > div > div > div > div.card.search > div.card-body")[0].select("ul").select("li")
 
 
@@ -39,7 +37,7 @@ object JsoupS {
 
                 val song = span + span2 + span3
 
-                attributes.add(DataSearch.Attributes(song,href))
+                attributes.add(DataSearch.Attributes(song, href))
 
             }
 
@@ -70,14 +68,15 @@ object JsoupS {
                 pageNumber = pageNumber
             )
             val gson = Gson().toJson(dataSearch)
-
+             this.gson=gson
             println(gson)
+
             return gson
         } catch (e: Exception) {
             if (pageNumber.isEmpty()){
                 pageNumber.add("0")
             }
-            attributes.add(DataSearch.Attributes("0","0"))
+            attributes.add(DataSearch.Attributes("0", "0"))
 
             val dataSearch = DataSearch(
                 attributes=attributes,
@@ -86,7 +85,7 @@ object JsoupS {
             val gson = Gson().toJson(dataSearch)
             println(gson)
 
-
+            this.gson=gson
             e.printStackTrace()
             return gson
         }

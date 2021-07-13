@@ -6,7 +6,7 @@
 
     <fragment
             android:id="@+id/placeFragment"
-            android:name="com.example.musiccrawler.searchFor.fragment.PlaceFragment"
+            android:name="com.example.yuehaoting.searchFor.fragment.PlaceFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

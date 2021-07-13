@@ -3,14 +3,15 @@
   package="com.example.musiccrawler">
   <uses-permission android:name="android.permission.INTERNET"/>
   <application>
-    <activity android:name="com.example.musiccrawler.HiginioActivity"
+    <activity android:name=".HiginioActivity"
       android:process="yuehaoting.HiginioService">
     </activity>
 
     <service
       android:enabled="true"
       android:exported="true"
-      android:name=".hifini.HiginioService">
+      android:name=".hifini.HiginioService"
+      android:process="yuehaoting.HiginioService">
     </service>
   </application>
 

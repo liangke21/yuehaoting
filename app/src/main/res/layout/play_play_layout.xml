@@ -37,7 +37,7 @@
       android:layout_width="@dimen/d56_size"
       android:layout_height="@dimen/d56_size"
       android:id="@+id/fl_play_container">
-      <com.example.musiccrawler.playInterface.framelayou.PlayPauseView
+      <com.example.yuehaoting.playInterface.framelayou.PlayPauseView
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_gravity="center"
