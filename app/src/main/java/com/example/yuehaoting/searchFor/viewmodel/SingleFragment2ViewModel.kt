@@ -19,17 +19,18 @@ class SingleFragment2ViewModel:ViewModel() {
     private var tAG = "PlaceViewModel层 曲目请求"
     private val singleLiveData = MutableLiveData<String>()
 
-  
+   var single:String?=null
 
-    var singleList=ArrayList<KuGouSingle.Data.Lists>()
+    var singleList=ArrayList<String>()
 
 
     val singleObservedLiveData = Transformations.switchMap(singleLiveData) { query ->
         Repository.singlePlaces(query)
     }
 
-    fun singlePlaces(block:()->Unit) {
-            block()
+    fun singlePlaces(single:String) {
+        singleLiveData.value=single
+        this.single=single
     }
 
 

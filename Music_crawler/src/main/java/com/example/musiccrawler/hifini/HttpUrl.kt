@@ -1,6 +1,6 @@
 package com.example.musiccrawler.hifini
 
-import android.app.Service
+import android.os.Messenger
 import com.example.musiccrawler.hifini.JsoupS.jsoupSHiFiNiSearch
 import com.example.musiccrawler.hifini.JsoupS.jsoupSHiFiNiThread
 import java.io.BufferedReader
@@ -16,7 +16,7 @@ import kotlin.concurrent.thread
  */
 object HttpUrl {
 
-      fun hiFiNiSearch(Keyword:String,service: Service):String{
+      fun hiFiNiSearch(Keyword:String,replyTo: Messenger):String{
           var conn: HttpURLConnection?
           try {
               thread {
@@ -46,7 +46,7 @@ object HttpUrl {
                       }
                   }
 
-                  jsoupSHiFiNiSearch(response.toString(),service)
+                  jsoupSHiFiNiSearch(response.toString(),replyTo)
                   bffR.close()
                   `in`?.close()
 

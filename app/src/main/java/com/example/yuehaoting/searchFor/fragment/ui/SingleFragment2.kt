@@ -1,25 +1,28 @@
 package com.example.yuehaoting.searchFor.fragment.ui
 
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.os.Bundle
-import android.os.IBinder
-import android.os.Message
-import android.os.Messenger
+import android.os.*
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.musiccrawler.hifini.DataSearch
 import com.example.musiccrawler.hifini.HiginioService
+import com.example.musiccrawler.hifini.HttpUrl
 import com.example.yuehaoting.R
 import com.example.yuehaoting.databinding.FragmentHifini2Binding
 import com.example.yuehaoting.searchFor.adapter.SingleFragment1Adapter
 import com.example.yuehaoting.searchFor.fragment.BaseFragment
 import com.example.yuehaoting.searchFor.viewmodel.SingleFragment2ViewModel
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import timber.log.Timber
 
 /**
@@ -33,10 +36,9 @@ class SingleFragment2:BaseFragment() {
 
     private  var recyclerView: RecyclerView?=null
 
-    private var data:String?=null
+
 
     private var mMessage:Messenger? = null
-
     private val mServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             mMessage = Messenger(service)
@@ -46,6 +48,31 @@ class SingleFragment2:BaseFragment() {
 
         }
     }
+//_______________________________________||______________________________________________________________________________________________________
+    private val replyToMessage=Messenger(MessengerHandler())
+@SuppressLint("HandlerLeak")
+inner class  MessengerHandler:Handler(Looper.getMainLooper()){
+
+    override fun handleMessage(msg: Message) {
+
+        when(msg.what){
+            100->{
+                    val bundle=msg.data
+                    bundle.classLoader=javaClass.classLoader
+                    val json=bundle.getString("json").toString()
+                    Timber.v("接收到了其他进程的数据:%s",json)
+
+
+                dataAsJson(json)
+
+            }
+
+        }
+
+        super.handleMessage(msg)
+    }
+}
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,7 +81,8 @@ class SingleFragment2:BaseFragment() {
     ): View {
         binding= FragmentHifini2Binding.inflate(inflater)
 
-
+     val   data=activity!!.intent.getStringExtra("Single")
+        viewModel.singlePlaces(data.toString())
         return binding.root
 
     }
@@ -69,22 +97,17 @@ class SingleFragment2:BaseFragment() {
 
     override fun lazyOnResume() {
 
-
     }
 
-
     override fun lazyInit() {
-        data=activity!!.intent.getStringExtra("Single")
+
         val msg = Message.obtain(null, 1, 0, 0)
         val bundle=Bundle()
-        bundle.putString("Single",data)
+        bundle.putString("Single",viewModel.single)
         msg.data=bundle
+        msg.replyTo=replyToMessage
         mMessage?.send(msg)
 
-        data=activity!!.intent.getStringExtra("Single")
-        viewModel.singlePlaces {
-
-        }
 
 
 
@@ -93,14 +116,27 @@ class SingleFragment2:BaseFragment() {
         recyclerView?.layoutManager = layoutManager
 
 
-            //viewModel.singleList.addAll(list)
-            recyclerView?.adapter= SingleFragment1Adapter(viewModel.singleList, activity)
 
 
 
     }
 
 
+fun dataAsJson(json:String){
+    val gson=Gson()
 
+    val typeOf=object :TypeToken<DataSearch>(){}.type
+
+    val appList=gson.fromJson<DataSearch>(json,typeOf)
+
+    Timber.e("String转json:%s",appList)
+
+    appList.attributes.forEach {
+        viewModel.singleList.add(it.songTitle)
+    }
+
+    Timber.e("String转jsonString转json:%s",viewModel.singleList)
+
+}
 
 }

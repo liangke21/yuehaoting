@@ -1,8 +1,12 @@
 package com.example.musiccrawler.hifini
 
 import android.app.Service
+import android.os.Bundle
+import android.os.Message
+import android.os.Messenger
 import android.text.TextUtils
 import com.alibaba.fastjson.JSON
+import com.example.musiccrawler.base.ServiceHandler
 import com.google.gson.Gson
 import org.jsoup.Jsoup
 
@@ -14,7 +18,7 @@ import org.jsoup.Jsoup
 object JsoupS {
     lateinit var gson: String
 
-    fun jsoupSHiFiNiSearch(string: String, service: Service): String {
+    fun jsoupSHiFiNiSearch(string: String,replyTo: Messenger): String {
         val attributes = ArrayList<DataSearch.Attributes>()
         val pageNumber = ArrayList<String>()
         try {
@@ -71,6 +75,14 @@ object JsoupS {
             val gson = Gson().toJson(dataSearch)
             this.gson = gson
             println(gson)
+
+            val msg = Message()
+            msg.what = 2
+            val bundle = Bundle()
+            bundle.putString("json", gson)
+            msg.data = bundle
+            msg.replyTo=replyTo
+            ServiceHandler().sendMessage(msg)
 
             return gson
         } catch (e: Exception) {
