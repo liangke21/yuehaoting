@@ -37,9 +37,10 @@ object JsoupS {
 
                 val span2 = aSplit[2].replace("</span", "")
 
-                val span3 = aSplit[3].replace("FLAC/MP3-320K", "").replace("[]</a", "")
+                val span3 = aSplit[3].replace("[FLAC", "").replace("/MP3", "").replace("-320", "").replace("K]", "")
+                    .replace("</a","").replace("k]","")
 
-
+              println(span3)
                 val song = span + span2 + span3
 
                 attributes.add(DataSearch.Attributes(song, href))

@@ -1,7 +1,7 @@
 <resources>
   <array name="searchTitleArray">
-    <item>单曲</item>
-    <item>视频</item>
+    <item>酷狗</item>
+    <item>HifIni</item>
     <item>歌单</item>
     <item>电台</item>
     <item>专辑</item>

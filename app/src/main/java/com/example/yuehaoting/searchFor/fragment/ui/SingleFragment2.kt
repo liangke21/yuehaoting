@@ -19,6 +19,7 @@ import com.example.musiccrawler.hifini.HttpUrl
 import com.example.yuehaoting.R
 import com.example.yuehaoting.databinding.FragmentHifini2Binding
 import com.example.yuehaoting.searchFor.adapter.SingleFragment1Adapter
+import com.example.yuehaoting.searchFor.adapter.SingleFragment2Adapter
 import com.example.yuehaoting.searchFor.fragment.BaseFragment
 import com.example.yuehaoting.searchFor.viewmodel.SingleFragment2ViewModel
 import com.google.gson.Gson
@@ -73,7 +74,7 @@ inner class  MessengerHandler:Handler(Looper.getMainLooper()){
     }
 }
 
-
+//_______________________________________||______________________________________________________________________________________________________
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -130,13 +131,14 @@ fun dataAsJson(json:String){
     val appList=gson.fromJson<DataSearch>(json,typeOf)
 
     Timber.e("String转json:%s",appList)
-
+     viewModel.singleList.clear()
     appList.attributes.forEach {
-        viewModel.singleList.add(it.songTitle)
+        viewModel.singleList.add(it)
     }
 
     Timber.e("String转jsonString转json:%s",viewModel.singleList)
 
+    recyclerView?.adapter= SingleFragment2Adapter(viewModel.singleList)
 }
 
 }
