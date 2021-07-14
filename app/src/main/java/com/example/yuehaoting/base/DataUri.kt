@@ -18,4 +18,6 @@ object DataUri {
     const val kuGouSongUriID="https://wwwapi.kugou.com/"
     //酷狗歌手写真
     const val kuGouSongPhoto="http://kmrcdn.service.kugou.com/"
+    //HifIni
+    const val HifIni="https://hifini.com/"
 }

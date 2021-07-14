@@ -22,6 +22,7 @@ import com.example.yuehaoting.musicService.data.KuGouSongMp3
 import com.example.yuehaoting.kotlin.showToast
 import timber.log.Timber
 import com.example.yuehaoting.kotlin.tryLaunch
+import com.example.yuehaoting.musicService.data.HifIniSongMp3
 import com.example.yuehaoting.util.MusicConstant.NEXT
 import com.example.yuehaoting.util.MusicConstant.PAUSE_PLAYBACK
 import com.example.yuehaoting.util.MusicConstant.PREV
@@ -29,6 +30,9 @@ import com.example.yuehaoting.util.BroadcastUtil
 import com.example.yuehaoting.util.MusicConstant.ACTION_CMD
 import com.example.yuehaoting.util.MusicConstant.EXTRA_CONTROL
 import com.example.yuehaoting.util.MusicConstant.EXTRA_SHUFFLE
+import com.example.yuehaoting.util.MusicConstant.HIF_INI
+import com.example.yuehaoting.util.MusicConstant.KEY_MUSIC_PLATFORM
+import com.example.yuehaoting.util.MusicConstant.KU_GOU
 import com.example.yuehaoting.util.MusicConstant.PLAY_SELECTED_SONG
 import com.example.yuehaoting.util.MusicConstant.UPDATE_META_DATA
 import com.example.yuehaoting.util.MusicConstant.UPDATE_PLAY_STATE
@@ -221,7 +225,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
         when (control) {
             PLAY_SELECTED_SONG -> {
                 Timber.v("后台播放5")
-                playSelectSong(intent.getIntExtra(EXTRA_POSITION, -1))
+                playSelectSong(intent.getIntExtra(EXTRA_POSITION, -1),intent)
             }
             //播放上一首
            PREV -> {
@@ -315,11 +319,11 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      *
      * @param position 播放位置
      */
-    override fun playSelectSong(position: Int) {
+    override fun playSelectSong(position: Int,intent: Intent?) {
         Timber.d("后台播放6 播放位置$position")
         playQueue.setPosition(position)
 
-        readyToPlay(playQueue.song)
+        readyToPlay(playQueue.song,intent)
         Timber.v("准备播放下一首数据")
         playQueue.updateNextSong()
 
@@ -385,22 +389,46 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      * @param song 播放歌曲的路径
      */
 
-    private fun readyToPlay(song: SongLists, requestFocus: Boolean = true) {
+    private fun readyToPlay(song: SongLists, intent: Intent?=null) {
 
         tryLaunch(block = {
+         val ent=   intent?.getIntExtra(KEY_MUSIC_PLATFORM,0)
+          Timber.v("KEY_MUSIC_PLATFORM:%s",ent)
             Timber.v("后台播放8 准备播放: %S ", song)
-            if (TextUtils.isEmpty(song.FileHash)) {
-                getString(R.string.path_empty).showToast(this)
-                return@tryLaunch
-            }
-            //获取MP3连接
-            val mp3Uri = KuGouSongMp3().songIDMp3(song.FileHash)
-            val uri: Uri = Uri.parse(mp3Uri)
-            mediaPlayer.reset()
-            withContext(Dispatchers.IO) {
-                mediaPlayer.setDataSource(this@MusicService, uri)
+            when(ent){
+               KU_GOU->{
+                   if (TextUtils.isEmpty(song.FileHash)) {
+                       getString(R.string.path_empty).showToast(this)
+                       return@tryLaunch
+                   }
+                   //获取MP3连接
+                   val mp3Uri = KuGouSongMp3().songIDMp3(song.FileHash)
+                   val uri: Uri = Uri.parse(mp3Uri)
+                   mediaPlayer.reset()
+                   withContext(Dispatchers.IO) {
+                       mediaPlayer.setDataSource(this@MusicService, uri)
 
+                   }
+
+               }
+
+             HIF_INI->{
+                 if (TextUtils.isEmpty(song.FileHash)) {
+                     getString(R.string.path_empty).showToast(this)
+                     return@tryLaunch
+                 }
+                 //获取MP3连接
+                 val mp3Uri = HifIniSongMp3.songIDMp3(song.FileHash)
+                 val uri: Uri = Uri.parse(mp3Uri)
+                 mediaPlayer.reset()
+                 withContext(Dispatchers.IO) {
+                     mediaPlayer.setDataSource(this@MusicService, uri)
+
+                 }
+
+             }
             }
+
 
             mediaPlayer.prepareAsync()
 

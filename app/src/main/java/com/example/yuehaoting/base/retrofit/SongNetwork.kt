@@ -29,6 +29,10 @@ object SongNetwork {
     suspend fun singerPhoto(query: String)= singerPhoto.singerPhoto(query).await()
 
 
+    private val hifIni=ServiceCreator(DataUri.HifIni).createHtml(PlaceService::class.java)
+
+    suspend fun hifIniT(thread:String)= hifIni.hifIni(thread).await()
+
 
     private suspend fun <T> Call<T>.await(): T {
         return suspendCoroutine { continuation ->
@@ -46,4 +50,8 @@ object SongNetwork {
             })
         }
     }
+
+
+
+
 }

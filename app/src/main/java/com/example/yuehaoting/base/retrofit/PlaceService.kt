@@ -4,8 +4,10 @@ import com.example.yuehaoting.data.kugou.KuGou
 import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhoto
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousonguri.KuGouSongUriID
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface PlaceService {
@@ -22,4 +24,6 @@ interface PlaceService {
    fun songUriId(@Query("hash")hash:String,@Query("album_id")album_id:String) :Call<KuGouSongUriID>
    @GET("v1/author_image/audio?")
    fun singerPhoto(@Query("data")data:String):Call<SingerPhoto>
+   @GET("/{thread}.htm")
+   fun hifIni(@Path("thread")thread:String):Call<ResponseBody>
 }

@@ -107,7 +107,7 @@ object JsoupS {
     }
 
 
-    fun jsoupSHiFiNiThread(string: String) {
+    fun jsoupSHiFiNiThread(string: String):String {
 
         try {
             val document = Jsoup.parse(string)
@@ -128,10 +128,12 @@ object JsoupS {
                 }
                 lyric.append(text).append("\n")
             }
+
             data = data.replace(
                 "var ap4 = new APlayer({    element: document.getElementById('player4'),    narrow: false,    autoplay: false,\tpreload: 'none',    showlrc: false,    mutex: true,    theme: '#ad7a86',    music: [\t\t",
                 ""
             ).replace(",    ]}); ", "")
+            println("音乐文件${data}")
 
             val music = JSON.parseObject(data, Music::class.java)
             music.type = document.select("li.breadcrumb-item").eq(1).text()
@@ -140,10 +142,12 @@ object JsoupS {
             val mTitle = music.title?.replace("'", "\\\'")
             val mAuthor = music.author?.replace("'", "\\\'")
             val songAttributes: String = "('$mTitle','$mAuthor','${music.url}','${music.pic}','${music.type}','${music.lyric}','${music.hot}'),"
-            println("写入文件${music.url}")
+            println("音乐文件${music.url}")
+            return music.url.toString()
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        return ""
     }
 
 

@@ -138,7 +138,7 @@ fun dataAsJson(json:String){
 
     Timber.e("String转jsonString转json:%s",viewModel.singleList)
 
-    recyclerView?.adapter= SingleFragment2Adapter(viewModel.singleList)
+    recyclerView?.adapter= SingleFragment2Adapter(viewModel.singleList,activity)
 }
 
 }

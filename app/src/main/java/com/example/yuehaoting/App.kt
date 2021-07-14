@@ -1,6 +1,7 @@
 package com.example.yuehaoting
 
 import android.app.Application
+import com.example.musiccrawler.hifini.HttpUrl.hiFiNiThread
 
 /**
  * 作者: QQ号:1396797522

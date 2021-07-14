@@ -1,5 +1,7 @@
 package com.example.yuehaoting.musicService.service
 
+import android.content.Intent
+
 /**
  * 作者: 天使
  * 时间: 2021/6/24 9:18
@@ -7,7 +9,7 @@ package com.example.yuehaoting.musicService.service
  */
 interface Playback {
     //播放选着歌曲
-    fun playSelectSong(position: Int)
+    fun playSelectSong(position: Int,intent: Intent?)
 
     fun toggle()
 

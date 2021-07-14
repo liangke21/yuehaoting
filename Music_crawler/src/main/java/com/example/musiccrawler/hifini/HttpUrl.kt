@@ -8,6 +8,8 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import kotlin.concurrent.thread
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * 作者: 天使
@@ -58,37 +60,76 @@ object HttpUrl {
 return "s"
       }
 
-    fun hiFiNiThread(){
+fun hiFiNiThread(thread:String){
+
+          var conn: HttpURLConnection?
+          try {
+              thread {
+                  val response = StringBuffer()
+
+                  val url = URL("https://hifini.com/thread-90.htm")
+
+                  conn = url.openConnection() as HttpURLConnection
+                  conn?.connectTimeout = 8000
+                  conn?.readTimeout = 8000
+
+                  conn?.setRequestProperty("User-Agent", "PostmanRuntime/7.28.0")
+                  conn?.setRequestProperty(
+                      "Cookie",
+                      "bbs_sid=raktoit60eu0q3et7dav3drk1r; cookie_test=favmLHKdChmrm0spD7uGSEaVYYPBVLO_2BB7n2V7MP1tP9btZH"
+                  )
+                  conn?.doInput = true
+                  conn?.connect()
+
+                  val `in` = conn?.inputStream
+                  val bffR = BufferedReader(InputStreamReader(`in`))
+
+                  bffR.use {
+
+                      bffR.forEachLine {
+                          response.append(it)
+                      }
+                  }
+                  println(response.toString())
+                  jsoupSHiFiNiThread(response.toString())
+              }
+          }catch (e:Exception){
+              e.printStackTrace()
+          }
+    }
+
+
+    fun hiFiNiThreadE(thread:String){
         var conn: HttpURLConnection?
         try {
             thread {
-                    val response = StringBuffer()
+                val response = StringBuffer()
 
-                    val url = URL("https://hifini.com/thread-90.htm")
+                val url = URL("https://hifini.com/thread-90.htm")
 
-                    conn = url.openConnection() as HttpURLConnection
-                    conn?.connectTimeout = 8000
-                    conn?.readTimeout = 8000
+                conn = url.openConnection() as HttpURLConnection
+                conn?.connectTimeout = 8000
+                conn?.readTimeout = 8000
 
-                    conn?.setRequestProperty("User-Agent", "PostmanRuntime/7.28.0")
-                    conn?.setRequestProperty(
-                        "Cookie",
-                        "bbs_sid=raktoit60eu0q3et7dav3drk1r; cookie_test=favmLHKdChmrm0spD7uGSEaVYYPBVLO_2BB7n2V7MP1tP9btZH"
-                    )
-                    conn?.doInput = true
-                    conn?.connect()
+                conn?.setRequestProperty("User-Agent", "PostmanRuntime/7.28.0")
+                conn?.setRequestProperty(
+                    "Cookie",
+                    "bbs_sid=raktoit60eu0q3et7dav3drk1r; cookie_test=favmLHKdChmrm0spD7uGSEaVYYPBVLO_2BB7n2V7MP1tP9btZH"
+                )
+                conn?.doInput = true
+                conn?.connect()
 
-                    val `in` = conn?.inputStream
-                    val bffR = BufferedReader(InputStreamReader(`in`))
+                val `in` = conn?.inputStream
+                val bffR = BufferedReader(InputStreamReader(`in`))
 
-                    bffR.use {
+                bffR.use {
 
-                        bffR.forEachLine {
-                            response.append(it)
-                        }
+                    bffR.forEachLine {
+                        response.append(it)
                     }
-                    println(response.toString())
-                    jsoupSHiFiNiThread(response.toString())
+                }
+                println(response.toString())
+              //  jsoupSHiFiNiThread(response.toString())
             }
         }catch (e:Exception){
             e.printStackTrace()

@@ -1,5 +1,6 @@
 package com.example.yuehaoting.base.retrofit.interceptor
 
+import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.Response
 import timber.log.Timber
@@ -18,7 +19,7 @@ class HttpInterceptor : Interceptor{
 
       Timber.i(TAG,"=========拦截==========")
         if(request.method()=="GET"){
-            Timber.i(TAG,request.url().toString())
+            Log.i(TAG,request.url().toString())
             }
 
 

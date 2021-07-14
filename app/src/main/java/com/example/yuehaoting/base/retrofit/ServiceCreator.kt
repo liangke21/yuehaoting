@@ -23,8 +23,10 @@ class ServiceCreator(api: String) {
     inline fun <reified T> create(): T = create(T::class.java)
 
 
+    private var retrofitHtml: Retrofit = Retrofit.Builder()
+        .baseUrl(api)
+        .client(getClient())
+        .build()
 
-
-
-
+    fun <T> createHtml(serviceClass: Class<T>): T = retrofitHtml.create(serviceClass)
 }

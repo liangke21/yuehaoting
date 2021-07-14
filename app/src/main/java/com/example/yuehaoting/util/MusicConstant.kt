@@ -85,5 +85,9 @@ object MusicConstant {
 
     //操作命令
     const val ACTION_CMD = "$PACKAGE_NAME.cmd"
+//_______________________________________|音乐平台|______________________________________________________________________________________________________
+    const val KEY_MUSIC_PLATFORM="MusicPlatform"
+    const val KU_GOU=1
 
+    const val HIF_INI=2
 }
