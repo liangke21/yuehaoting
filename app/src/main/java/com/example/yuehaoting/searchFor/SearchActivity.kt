@@ -202,7 +202,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
      */
     private fun initFragment() {
         //   var fragmentList = ArrayList<BaseFragment>()
-        fragmentList.add(SingleFragment1(mDataList))
+        fragmentList.add(SingleFragment1())
         fragmentList.add(SingleFragment2())
         mAdapter = MyPagerAdapter(
             supportFragmentManager, fragmentList

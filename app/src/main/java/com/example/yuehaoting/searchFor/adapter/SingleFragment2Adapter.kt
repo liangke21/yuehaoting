@@ -50,7 +50,8 @@ class SingleFragment2Adapter(private val list: List<DataSearch.Attributes>,priva
                 songName,
                 singerName,
                 list[position].songHref,
-                "2325"
+                "2325",
+                HIF_INI
             )
         )
 
@@ -68,8 +69,7 @@ class SingleFragment2Adapter(private val list: List<DataSearch.Attributes>,priva
                 intent.putExtra(MusicConstant.CURRENT_SONG,songLists[position])
                 activity?.startActivity(intent)
             }else{
-                MusicServiceRemote.setPlayQueue(songLists, musicUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(MusicService.EXTRA_POSITION, position)
-                    .putExtra(KEY_MUSIC_PLATFORM, HIF_INI))
+                MusicServiceRemote.setPlayQueue(songLists, musicUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(MusicService.EXTRA_POSITION, position))
                 val intent= Intent(activity, PlayActivity::class.java)
                 intent.putExtra(MusicConstant.SINGER_ID,mixSongID)
                 intent.putExtra(MusicConstant.CURRENT_SONG,songLists[position])

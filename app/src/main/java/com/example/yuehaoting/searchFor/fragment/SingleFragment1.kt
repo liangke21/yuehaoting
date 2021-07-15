@@ -19,7 +19,7 @@ import timber.log.Timber
  * 时间: 2021/6/3 17:32
  * 描述:
  */
-class SingleFragment1( private val mDataList:List<String>):BaseFragment(){
+class SingleFragment1:BaseFragment(){
 
     private val viewModel by lazy { ViewModelProviders.of(this).get( SingleViewModel::class.java) }
     private  var recyclerView: RecyclerView?=null

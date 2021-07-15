@@ -392,7 +392,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
     private fun readyToPlay(song: SongLists, intent: Intent?=null) {
 
         tryLaunch(block = {
-         val ent=   intent?.getIntExtra(KEY_MUSIC_PLATFORM,0)
+         val ent=  song.platform
           Timber.v("KEY_MUSIC_PLATFORM:%s",ent)
             Timber.v("后台播放8 准备播放: %S ", song)
             when(ent){

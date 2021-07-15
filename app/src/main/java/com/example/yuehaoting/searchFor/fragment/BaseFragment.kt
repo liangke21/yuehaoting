@@ -9,21 +9,22 @@ import android.util.Log
  */
 abstract class BaseFragment : MyFragment() {
 
-private var isLoaded=false
+
+    private var isLoaded = false
 
     override fun onResume() {
         super.onResume()
         lazyOnResume()
-        if (!isLoaded && !isHidden){
+        if (!isLoaded && !isHidden) {
             Log.d(TAG, "lazyInit:!!!!!!!")
             lazyInit()
-            isLoaded=true
+            isLoaded = true
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        isLoaded=false
+        isLoaded = false
     }
 
     abstract fun lazyInit()

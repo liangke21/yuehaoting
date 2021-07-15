@@ -70,7 +70,8 @@ class SingleFragment1Adapter(private val list: List<KuGouSingle.Data.Lists>, val
                 song[0],
                 song[1],
                 list[position].FileHash,
-                list[position].MixSongID
+                list[position].MixSongID,
+                KU_GOU
             )
         )
         //播放监听
@@ -89,8 +90,7 @@ class SingleFragment1Adapter(private val list: List<KuGouSingle.Data.Lists>, val
              intent.putExtra(CURRENT_SONG,songLists[position])
              activity?.startActivity(intent)
          }else{
-             setPlayQueue(songLists, musicUtil.makeCodIntent(PLAY_SELECTED_SONG).putExtra(MusicService.EXTRA_POSITION, position)
-                 .putExtra(KEY_MUSIC_PLATFORM, KU_GOU))
+             setPlayQueue(songLists, musicUtil.makeCodIntent(PLAY_SELECTED_SONG).putExtra(MusicService.EXTRA_POSITION, position))
              val intent=Intent(activity,PlayActivity::class.java)
              intent.putExtra(SINGER_ID,mixSongID)
              intent.putExtra(CURRENT_SONG,songLists[position])

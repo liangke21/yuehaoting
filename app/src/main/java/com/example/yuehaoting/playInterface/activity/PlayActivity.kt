@@ -12,6 +12,7 @@ import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.*
 import com.bumptech.glide.request.transition.Transition
+import com.example.yuehaoting.App
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.PlayBaseActivity
 import com.example.yuehaoting.data.kugousingle.SongLists
@@ -150,17 +151,36 @@ class PlayActivity : PlayBaseActivity() {
         }
     }
 
-    //接收数据
+    /**
+     * 接收数据
+     * 2325 表示歌曲写真id来自 HifIni
+     */
     private fun receiveIntent(currentSong: SongLists) {
         // val singerId = intent.getStringExtra(SINGER_ID)
         val singerId = currentSong.mixSongID
-        val list = mCacheUrl.getFromDisk(singerId)
-        if (list != null) {
-            photoCycle(list, binding.playerContainer, resources, ::updateUi)
-        } else {
-            Timber.v("歌手id: %S", singerId)
+        if (singerId !="2325") {
+            val list = mCacheUrl.getFromDisk(singerId)
+            Timber.v("歌手写真url缓存文件:%s", list?.size)
+            if (list != null) {
+                photoCycle(list, binding.playerContainer, resources, ::updateUi)
+            } else {
+                Timber.v("歌手id: %S", singerId)
 
-            Glide.with(this).asBitmap()
+                Glide.with(App.context).asBitmap()
+                    .load(R.drawable.youjing)
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            binding.playerContainer.background = BitmapDrawable(resources, resource)
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {}
+                    })
+
+                viewModel.singerId(singerId)
+            }
+
+        }else{
+            Glide.with(App.context).asBitmap()
                 .load(R.drawable.youjing)
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
@@ -169,8 +189,6 @@ class PlayActivity : PlayBaseActivity() {
 
                     override fun onLoadCleared(placeholder: Drawable?) {}
                 })
-
-            viewModel.singerId(singerId)
         }
     }
 
