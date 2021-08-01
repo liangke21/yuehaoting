@@ -1,4 +1,4 @@
-package com.example.yuehaoting.base.kapt
+package com.example.yuehaoting.base.glide
 
 import android.content.Context
 import com.bumptech.glide.GlideBuilder

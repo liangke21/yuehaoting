@@ -20,6 +20,19 @@ import kotlin.reflect.KProperty
  * 描述:
  */
 
+//协程作用域
+
+fun launchMy(
+    context: CoroutineContext = EmptyCoroutineContext,
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend () -> Unit,
+){
+    val c= CoroutineScope(context)
+    c.launch(context,start) {
+        block()
+    }
+}
+
 /**
  * 异常封装
  */

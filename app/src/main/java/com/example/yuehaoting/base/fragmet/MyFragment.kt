@@ -1,4 +1,4 @@
-package com.example.yuehaoting.searchFor.fragment
+package com.example.yuehaoting.base.fragmet
 
 import android.content.Context
 import android.os.Bundle

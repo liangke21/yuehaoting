@@ -1,4 +1,4 @@
-package com.example.yuehaoting.searchFor.fragment
+package com.example.yuehaoting.searchFor.fragment.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yuehaoting.R
+import com.example.yuehaoting.base.fragmet.BaseFragment
 import com.example.yuehaoting.searchFor.adapter.SingleFragment1Adapter
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.searchFor.viewmodel.SingleViewModel
@@ -19,7 +20,7 @@ import timber.log.Timber
  * 时间: 2021/6/3 17:32
  * 描述:
  */
-class SingleFragment1:BaseFragment(){
+class SingleFragment1: BaseFragment(){
 
     private val viewModel by lazy { ViewModelProviders.of(this).get( SingleViewModel::class.java) }
     private  var recyclerView: RecyclerView?=null

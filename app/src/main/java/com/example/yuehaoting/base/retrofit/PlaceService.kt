@@ -4,11 +4,11 @@ import com.example.yuehaoting.data.kugou.KuGou
 import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhoto
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousonguri.KuGouSongUriID
+import com.example.yuehaoting.data.music163.MusicData
+import com.example.yuehaoting.data.music163.PostMusic
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface PlaceService {
 
@@ -24,6 +24,17 @@ interface PlaceService {
    fun songUriId(@Query("hash")hash:String,@Query("album_id")album_id:String) :Call<KuGouSongUriID>
    @GET("v1/author_image/audio?")
    fun singerPhoto(@Query("data")data:String):Call<SingerPhoto>
+
    @GET("/{thread}.htm")
    fun hifIni(@Path("thread")thread:String):Call<ResponseBody>
+   //网易音乐列表
+
+   @Headers("x-requested-with: XMLHttpRequest")
+   @POST("/")
+   fun music163(@Body postMusic: PostMusic):Call<MusicData>
+
+    @Headers("x-requested-with: XMLHttpRequest")
+    @FormUrlEncoded
+    @POST("/")
+    fun music1631(@Field("input")input:String,@Field("filter")filter:String,@Field("type")type:String,@Field("page")page:Int):Call<MusicData>
 }

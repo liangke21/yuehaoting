@@ -3,7 +3,7 @@ package com.example.yuehaoting.searchFor.pagerview
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.example.yuehaoting.searchFor.fragment.BaseFragment
+import com.example.yuehaoting.base.fragmet.BaseFragment
 
 /**
  * 作者: QQ号:1396797522

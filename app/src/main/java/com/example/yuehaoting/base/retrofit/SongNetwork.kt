@@ -1,9 +1,16 @@
 package com.example.yuehaoting.base.retrofit
 
 import com.example.yuehaoting.base.DataUri
+import com.example.yuehaoting.data.kugousingle.SongLists
+import com.example.yuehaoting.data.music163.MusicData
+import com.example.yuehaoting.data.music163.PostMusic
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.http.Field
+
+
+import timber.log.Timber
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -28,30 +35,12 @@ object SongNetwork {
      */
     suspend fun singerPhoto(query: String)= singerPhoto.singerPhoto(query).await()
 
-
+//_______________________________________|Html|______________________________________________________________________________________________________
     private val hifIni=ServiceCreator(DataUri.HifIni).createHtml(PlaceService::class.java)
 
-    suspend fun hifIniT(thread:String)= hifIni.hifIni(thread).await()
+    suspend fun hifIniT(thread:String)= hifIni.hifIni(thread).awaitHtml()
 
-
-    private suspend fun <T> Call<T>.await(): T {
-        return suspendCoroutine { continuation ->
-            enqueue(object : Callback<T> {
-                override fun onResponse(call: Call<T>, response: Response<T>) {
-                    val body = response.body()
-
-                    if (body != null) continuation.resume(body)
-                    else continuation.resumeWithException(RuntimeException("响应为空"))
-                }
-
-                override fun onFailure(call: Call<T>, t: Throwable) {
-                    continuation.resumeWithException(t)
-                }
-            })
-        }
-    }
-
-
-
-
+    //网易音乐列表
+    private val songLists=ServiceCreator(DataUri.music163).create(PlaceService::class.java)
+    suspend fun songList(input:String,filter:String, type:String, page:Int)=songLists.music1631(input, filter, type, page).await()
 }

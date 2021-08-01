@@ -10,24 +10,26 @@ import timber.log.Timber
  * 时间: 2021/2/26 16:22
  * 描述: 拦截器 /重定向 请求头 加密/解密
  */
-class HttpInterceptor : Interceptor{
-    private val TAG="HTTP"
+class HttpInterceptor : Interceptor {
+    private val TAG = "HTTP"
     override fun intercept(chain: Interceptor.Chain): Response {
-       //请求参数
+        //请求参数
         val request = chain.request()
+        Log.i("TEST", "MyInterceptor.intercept.request.toString -> $request");
         val response = chain.proceed(request)
 
-      Timber.i(TAG,"=========拦截==========")
-        if(request.method()=="GET"){
-            Log.i(TAG,request.url().toString())
-            }
+        Log.i(TAG, "=========拦截==========")
+        if (request.method() == "GET") {
+            Log.i(TAG, request.url().toString())
+        }
 
-
-        Timber.i(TAG,"=========拦截==========")
-//        response.body()?.let {
-//            Log.i(TAG,it?.string())
-//        }
-
+        if (request.method() == "POST") {
+            Log.i(TAG, request.url().toString())
+        }
+        Log.i(TAG, "=========拦截==========")
+     /*   response.body()?.let {
+            Log.i(TAG,it?.string())
+        }*/
 
         return response
     }

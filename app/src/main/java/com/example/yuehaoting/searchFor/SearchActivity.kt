@@ -20,8 +20,8 @@ import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
 import com.example.yuehaoting.data.kugou.RecordData
-import com.example.yuehaoting.searchFor.fragment.BaseFragment
-import com.example.yuehaoting.searchFor.fragment.SingleFragment1
+import com.example.yuehaoting.base.fragmet.BaseFragment
+import com.example.yuehaoting.searchFor.fragment.ui.SingleFragment1
 import com.example.yuehaoting.searchFor.fragment.ext.MyCommonNavigator
 import com.example.yuehaoting.searchFor.fragment.ext.ScaleTransitionPagerTitleView
 import com.example.yuehaoting.searchFor.fragment.ui.SingleFragment2
