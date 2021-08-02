@@ -34,11 +34,7 @@ class App : InitApplication() {
             private set
     }
     private fun test() {
-        launchMy {
-           // val a=   SongNetwork.songList(p)
-            val b=SongNetwork.songList("可不可以勇敢一点","name","netease",1)
-             Timber.v("aaaaaaaaaa:%s",b,)
-        }
+
 
     }
 }

@@ -61,7 +61,7 @@ object Repository {
             val songList = SongNetwork.songList(input, filter, type, page)
             run {
                 if (songList.code == 200) {
-                    Timber.v("网易音乐列表请求成功:%s", songList.code)
+                    Timber.v("网易音乐列表请求成功:%s %s %s", songList.code,songList.data[0].title,songList.data[0].author)
 
                 } else {
                     Timber.e("网易音乐列表请求失败:%s", songList.code)

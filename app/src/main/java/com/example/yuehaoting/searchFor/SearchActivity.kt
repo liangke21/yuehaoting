@@ -25,6 +25,7 @@ import com.example.yuehaoting.searchFor.fragment.ui.SingleFragment1
 import com.example.yuehaoting.searchFor.fragment.ext.MyCommonNavigator
 import com.example.yuehaoting.searchFor.fragment.ext.ScaleTransitionPagerTitleView
 import com.example.yuehaoting.searchFor.fragment.ui.SingleFragment2
+import com.example.yuehaoting.searchFor.fragment.ui.SingleFragment3
 import com.example.yuehaoting.searchFor.pagerview.MyPagerAdapter
 import com.example.yuehaoting.searchFor.viewmodel.PlaceViewModel
 import net.lucode.hackware.magicindicator.MagicIndicator
@@ -204,11 +205,12 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
         //   var fragmentList = ArrayList<BaseFragment>()
         fragmentList.add(SingleFragment1())
         fragmentList.add(SingleFragment2())
+        fragmentList.add(SingleFragment3())
         mAdapter = MyPagerAdapter(
             supportFragmentManager, fragmentList
         )
         viewPager.adapter = mAdapter
-        viewPager.offscreenPageLimit = 2
+        viewPager.offscreenPageLimit = 3
 
     }
 
