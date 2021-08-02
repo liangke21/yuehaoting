@@ -39,7 +39,7 @@
       android:gravity="center"
       android:textSize="12dp"
       android:id="@+id/rv_fragment_search_Single_AlbumName"
-      android:text="歌曲名称"/>
+      android:text="歌手名称"/>
   </LinearLayout>
 
 </LinearLayout>

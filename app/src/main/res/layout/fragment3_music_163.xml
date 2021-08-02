@@ -17,14 +17,14 @@
     app:srlHeaderMaxDragRate="1.3"
     app:srlHeaderHeight="150dp"
     app:srlEnableAutoLoadMore="true"
-    app:srlHeaderInsetStart="?attr/actionBarSize"
+    app:srlHeaderInsetStart="0dp"
     app:srlHeaderTriggerRate="0.5">
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/recyclerView"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:paddingTop="?attr/actionBarSize"
+      android:paddingTop="0dp"
       android:clipToPadding="false"
       android:overScrollMode="never"
       tools:listitem="@layout/item_fragment_search_single_rv_content"/>

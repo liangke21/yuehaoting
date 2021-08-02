@@ -21,10 +21,14 @@ class SingleFragment3ViewModel : ViewModel() {
         Repository.music163(p["key1"] as String, p["key2"] as String, p["key3"] as String, p["key4"] as Int)
     }
 
-
+    /**
+     * 网易音乐请求参数
+     */
     fun requestParameter(input: String, filter: String, type: String, page: Int) {
 
         val numbersMap = mapOf("key1" to input, "key2" to filter, "key3" to type, "key4" to page)
         parameter.value = numbersMap
     }
+
+    val songList = ArrayList<MusicData.Data>()
 }
