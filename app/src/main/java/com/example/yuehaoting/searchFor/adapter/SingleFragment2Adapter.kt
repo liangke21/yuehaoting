@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.musiccrawler.hifini.DataSearch
 import com.example.yuehaoting.R
 import com.example.yuehaoting.data.kugousingle.SongLists
+import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.playInterface.activity.PlayActivity
@@ -39,24 +40,35 @@ class SingleFragment2Adapter(private val list: List<DataSearch.Attributes>,priva
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.songName.text = list[position].songTitle
-
+        var songName=""
+        var singerName=""
         val songLists = list[position].songTitle.split("《")
-        val singerName = songLists[0]
-        val songName = songLists[1].replace("》", "")
+        tryNull {
+            holder.songName.text = list[position].songTitle
+            if (list[position].songTitle.contains("》")) {
+                singerName = songLists[0]
+                songName = songLists[1].replace("》", "")
+            }
 
-        songList.add(
-            SongLists(
-                songName,
-                singerName,
-                list[position].songHref,
-                "2325",
-                HIF_INI
+            if (list[position].songTitle.contains("「")){
+                val songList=  list[position].songTitle.split("「")
+                singerName=songList[0]
+                songName = songList[1].replace("」", "")
+            }
+            Timber.v("songLists:%s",songLists)
+            Timber.v("songName:%s",songName)
+            songList.add(
+                SongLists(
+                    songName,
+                    singerName,
+                    list[position].songHref,
+                    "2325",
+                    HIF_INI
+                )
             )
-        )
 
-        songPlay(holder,position,songList,"")
-
+            songPlay(holder,position,songList,"")
+        }
     }
 
 
