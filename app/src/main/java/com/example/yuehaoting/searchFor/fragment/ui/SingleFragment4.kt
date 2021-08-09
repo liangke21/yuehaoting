@@ -11,13 +11,11 @@ import com.example.yuehaoting.R
 import com.example.yuehaoting.base.fragmet.BaseFragment
 import com.example.yuehaoting.base.recyclerView.adapter.BaseRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
-import com.example.yuehaoting.data.music163.MusicData
 import com.example.yuehaoting.data.musicQQ.QQSongList
 import com.example.yuehaoting.databinding.FragmentMusicBinding
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.kotlin.showToast
 import com.example.yuehaoting.kotlin.tryNull
-import com.example.yuehaoting.searchFor.viewmodel.SingleFragment3ViewModel
 import com.example.yuehaoting.searchFor.viewmodel.SingleFragment4ViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
@@ -80,7 +78,8 @@ class SingleFragment4:BaseFragment() {
 
                         override fun onBindViewHolder(holder: SmartViewHolder?, model: QQSongList.Data.Song.Lists?, position: Int) {
                             holder?.text(R.id.rv_fragment_search_Single_SongName, model?.title)
-                            holder?.text(R.id.rv_fragment_search_Single_AlbumName, model?.name)
+
+                            holder?.text(R.id.rv_fragment_search_Single_AlbumName,songAndAlbum(model))
                             holder?.itemView?.setOnClickListener {
 
                                 Timber.v("歌曲角标:%s 歌曲名称:%s", position, model?.name)
@@ -103,9 +102,11 @@ class SingleFragment4:BaseFragment() {
 
                 binding.refreshLayout.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
                     override fun onRefresh(refreshLayout: RefreshLayout) {
-                        binding.refreshLayout.finishRefresh()
-                        Timber.v("qq音乐列表刷新:%s", page)
-                        binding.refreshLayout.resetNoMoreData()
+                        refreshLayout.layout.postDelayed({
+                            refreshLayout.finishRefresh()
+                            Timber.v("网易音乐列表刷新:%s", page)
+                            refreshLayout.resetNoMoreData()
+                        },2000)
                     }
 
                     override fun onLoadMore(refreshLayout: RefreshLayout) {
@@ -127,4 +128,11 @@ class SingleFragment4:BaseFragment() {
 
     }
 
+    fun songAndAlbum(model: QQSongList.Data.Song.Lists?): String? {
+        return if (model?.album?.name=="") {
+            model?.singer?.get(0)?.name
+        }else{
+            model?.singer?.get(0)?.name+"-《${model?.album?.name}》"
+        }
+    }
 }
