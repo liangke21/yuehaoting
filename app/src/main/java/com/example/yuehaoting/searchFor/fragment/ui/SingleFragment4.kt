@@ -8,25 +8,27 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.yuehaoting.R
-import com.example.yuehaoting.base.recyclerView.adapter.BaseRecyclerAdapter
 import com.example.yuehaoting.base.fragmet.BaseFragment
+import com.example.yuehaoting.base.recyclerView.adapter.BaseRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.data.music163.MusicData
+import com.example.yuehaoting.data.musicQQ.QQSongList
 import com.example.yuehaoting.databinding.FragmentMusicBinding
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.kotlin.showToast
 import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.searchFor.viewmodel.SingleFragment3ViewModel
+import com.example.yuehaoting.searchFor.viewmodel.SingleFragment4ViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import timber.log.Timber
 
 /**
  * 作者: 天使
- * 时间: 2021/7/21 13:18
+ * 时间: 2021/8/9 16:30
  * 描述:
  */
-class SingleFragment3 : BaseFragment() {
+class SingleFragment4:BaseFragment() {
 
     private lateinit var binding: FragmentMusicBinding
 
@@ -38,15 +40,15 @@ class SingleFragment3 : BaseFragment() {
     private var isLoadDataForTheFirstTime = true
 
     //列表适配器
-    private lateinit var mAdapter: BaseRecyclerAdapter<MusicData.Data>
-    private val viewModel by lazyMy { ViewModelProvider(this).get(SingleFragment3ViewModel::class.java) }
+    private lateinit var mAdapter: BaseRecyclerAdapter<QQSongList.Data.Song.Lists>
+    private val viewModel by lazyMy { ViewModelProvider(this).get(SingleFragment4ViewModel::class.java) }
 
     //关键字
     private var keyword = ""
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMusicBinding.inflate(inflater)
         val data = activity!!.intent.getStringExtra("Single")
-        viewModel.requestParameter(data.toString(), "name", "netease", 1)
+        viewModel.requestParameter(1,10,data.toString())
         keyword = data.toString()
         return binding.root
     }
@@ -67,26 +69,23 @@ class SingleFragment3 : BaseFragment() {
             isFirstEnter = false
             binding.refreshLayout.autoRefresh()
         }
-        viewModel.observedData.observe(this) {
+       viewModel.observedData.observe(this) {
             tryNull( {
-                val musicData = it.getOrNull() as MusicData
-                Timber.v("网易音乐数据观察到:%s %s", musicData.data[0], isLoadDataForTheFirstTime)
+                val musicData = it.getOrNull() as QQSongList
+                Timber.v("QQ音乐数据观察到:%s %s", musicData.data?.song?.list?.get(0)?.name, isLoadDataForTheFirstTime)
                 if (isLoadDataForTheFirstTime) {
                     isLoadDataForTheFirstTime = false
-                    viewModel.songList.addAll(musicData.data)
-                    mAdapter = object : BaseRecyclerAdapter<MusicData.Data>(viewModel.songList, R.layout.item_fragment_search_single_rv_content) {
+                    musicData.data?.song?.list?.let { it1 -> viewModel.songList.addAll(it1) }
+                    mAdapter = object : BaseRecyclerAdapter<QQSongList.Data.Song.Lists>(viewModel.songList, R.layout.item_fragment_search_single_rv_content) {
 
-                        override fun onBindViewHolder(holder: SmartViewHolder?, model: MusicData.Data?, position: Int) {
+                        override fun onBindViewHolder(holder: SmartViewHolder?, model: QQSongList.Data.Song.Lists?, position: Int) {
                             holder?.text(R.id.rv_fragment_search_Single_SongName, model?.title)
-                            holder?.text(R.id.rv_fragment_search_Single_AlbumName, model?.author)
+                            holder?.text(R.id.rv_fragment_search_Single_AlbumName, model?.name)
                             holder?.itemView?.setOnClickListener {
-                                  if(model?.songid!! < 300000)  {
-                                      "没有版权".showToast(activity!!)
-                                  }
-                                Timber.v("歌曲角标:%s 歌曲名称:%s", position, model.author)
+
+                                Timber.v("歌曲角标:%s 歌曲名称:%s", position, model?.name)
                             }
                         }
-
                     }
 
                     if (isRefresh) {
@@ -97,7 +96,7 @@ class SingleFragment3 : BaseFragment() {
                 }
 
                 if (page >= 2) {
-                    mAdapter.loadMore(musicData.data)
+                    mAdapter.loadMore(musicData.data?.song?.list)
                     binding.refreshLayout.finishLoadMore()
                 }
 
@@ -105,14 +104,14 @@ class SingleFragment3 : BaseFragment() {
                 binding.refreshLayout.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
                     override fun onRefresh(refreshLayout: RefreshLayout) {
                         binding.refreshLayout.finishRefresh()
-                        Timber.v("网易音乐列表刷新:%s", page)
+                        Timber.v("qq音乐列表刷新:%s", page)
                         binding.refreshLayout.resetNoMoreData()
                     }
 
                     override fun onLoadMore(refreshLayout: RefreshLayout) {
                         ++page
-                            Timber.v("网易音乐列表页数:%s", page)
-                            viewModel.requestParameter(keyword, "name", "netease", page)
+                        Timber.v("qq音乐列表页数:%s", page)
+                        viewModel.requestParameter(page,10,keyword, )
 
 
                     }
@@ -127,6 +126,5 @@ class SingleFragment3 : BaseFragment() {
 
 
     }
-
 
 }

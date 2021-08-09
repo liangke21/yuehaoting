@@ -43,4 +43,8 @@ object SongNetwork {
     //网易音乐列表
     private val songLists=ServiceCreator(DataUri.music163).create(PlaceService::class.java)
     suspend fun songList(input:String,filter:String, type:String, page:Int)=songLists.music1631(input, filter, type, page).await()
+
+    //QQ搜索
+    private val musicQQ=ServiceCreator(DataUri.musicQQ).create<PlaceService>()
+    suspend fun qqSongList(p:Int,n:Int,w:String)= musicQQ.musicQQ(p, n, w).await()
 }

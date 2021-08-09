@@ -5,6 +5,7 @@ import androidx.lifecycle.liveData
 import com.example.yuehaoting.base.retrofit.SongNetwork
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.data.music163.MusicData
+import com.example.yuehaoting.data.musicQQ.QQSongList
 
 import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
@@ -14,7 +15,6 @@ import timber.log.Timber
  */
 object Repository {
     private lateinit var HintInfo: List<RecordData>
-    private var tAG: String = "LiveData层"
     fun searchPlaces(query: String) = liveData(Dispatchers.IO) {
 
         val result = try {
@@ -75,5 +75,31 @@ object Repository {
         }
         emit(result)
     }
+
+    /**
+     * qq音乐列表
+      */
+    fun musicQQ(p:Int,n:Int,w:String)= liveData(Dispatchers.IO) {
+        Timber.v("QQ音乐列表请求成功11111111")
+        val result: Result<QQSongList> = try {
+            Timber.v("QQ音乐列表请求成功222222222")
+            val songList = SongNetwork.qqSongList(p, n, w)
+            Timber.v("QQ音乐列表请求成功:%s",songList.subcode)
+            run {
+                if (songList.subcode == 0) {
+                    Timber.v("QQ音乐列表请求成功:%s %s", songList.subcode, songList.data?.keyword)
+
+                } else {
+                    Timber.v("QQ音乐列表请求失败:%s", songList.subcode)
+                }
+                Result.success(songList)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
+        emit(result)
+    }
+
 }
 

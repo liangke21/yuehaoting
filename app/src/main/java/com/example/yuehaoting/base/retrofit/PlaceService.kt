@@ -5,7 +5,7 @@ import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhoto
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousonguri.KuGouSongUriID
 import com.example.yuehaoting.data.music163.MusicData
-import com.example.yuehaoting.data.music163.PostMusic
+import com.example.yuehaoting.data.musicQQ.QQSongList
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -27,10 +27,14 @@ interface PlaceService {
 
    @GET("/{thread}.htm")
    fun hifIni(@Path("thread")thread:String):Call<ResponseBody>
-   //网易音乐列表
 
+   //网易音乐列表
     @Headers("x-requested-with: XMLHttpRequest")
     @FormUrlEncoded
     @POST("/")
     fun music1631(@Field("input")input:String,@Field("filter")filter:String,@Field("type")type:String,@Field("page")page:Int):Call<MusicData>
+
+    //qq音乐搜索接口
+    @GET("soso/fcgi-bin/client_search_cp?new_json=1&aggr=1&catZhida=1&format=json")
+    fun musicQQ(@Query("p")p:Int,@Query("n")n:Int,@Query("w")w:String):Call<QQSongList>
 }
