@@ -1,11 +1,9 @@
 package com.example.yuehaoting
 
-import android.app.Application
-import com.example.musiccrawler.hifini.HttpUrl.hiFiNiThread
 import com.example.yuehaoting.base.application.InitApplication
-import com.example.yuehaoting.base.retrofit.SongNetwork
-import com.example.yuehaoting.data.music163.PostMusic
 import com.example.yuehaoting.kotlin.launchMy
+import com.example.yuehaoting.kotlin.lazyMy
+import com.example.yuehaoting.searchFor.livedata.Repository
 import timber.log.Timber
 
 /**
@@ -35,6 +33,12 @@ class App : InitApplication() {
     }
     private fun test() {
 
+      val a= Repository.music163("偏爱", "name", "netease", 1)
+
+
+
+
+        Timber.v("运行了吗:%s",a.toString() )
 
     }
 }

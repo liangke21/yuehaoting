@@ -29,10 +29,6 @@ interface PlaceService {
    fun hifIni(@Path("thread")thread:String):Call<ResponseBody>
    //网易音乐列表
 
-   @Headers("x-requested-with: XMLHttpRequest")
-   @POST("/")
-   fun music163(@Body postMusic: PostMusic):Call<MusicData>
-
     @Headers("x-requested-with: XMLHttpRequest")
     @FormUrlEncoded
     @POST("/")

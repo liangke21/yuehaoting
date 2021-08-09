@@ -25,7 +25,7 @@ class KuGouSongMp3 {
         Timber.v("获取id成功 : %s", id)
         val uriMp3 = songUriID(fileHash, id)
         val mp3 = uriMp3.data.play_url
-        Timber.i("获取mpe成功 : %s", mp3)
+        Timber.v("获取酷狗歌曲详细成功 : %s", uriMp3)
         return mp3
 
     }

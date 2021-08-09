@@ -19,12 +19,19 @@
     app:srlEnableAutoLoadMore="true"
     app:srlHeaderInsetStart="0dp"
     app:srlHeaderTriggerRate="0.5">
-
+    <pl.droidsonroids.gif.GifImageView
+      android:id="@+id/gifView"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:src="@mipmap/gif_header_repast"
+      app:layout_srlSpinnerStyle="Scale"
+      app:layout_srlBackgroundColor="@android:color/transparent"/>
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/recyclerView"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:paddingTop="0dp"
+      android:paddingLeft="20dp"
       android:clipToPadding="false"
       android:overScrollMode="never"
       tools:listitem="@layout/item_fragment_search_single_rv_content"/>

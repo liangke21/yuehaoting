@@ -4,16 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.recyclerView.adapter.BaseRecyclerAdapter
-import com.example.yuehaoting.databinding.Fragment3Music163Binding
 import com.example.yuehaoting.base.fragmet.BaseFragment
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.data.music163.MusicData
+import com.example.yuehaoting.databinding.FragmentMusicBinding
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.kotlin.showToast
 import com.example.yuehaoting.kotlin.tryNull
@@ -29,7 +28,7 @@ import timber.log.Timber
  */
 class SingleFragment3 : BaseFragment() {
 
-    private lateinit var binding: Fragment3Music163Binding
+    private lateinit var binding: FragmentMusicBinding
 
     //第一次进入刷新
     private var isFirstEnter = true
@@ -44,8 +43,8 @@ class SingleFragment3 : BaseFragment() {
 
     //关键字
     private var keyword = ""
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = Fragment3Music163Binding.inflate(inflater)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentMusicBinding.inflate(inflater)
         val data = activity!!.intent.getStringExtra("Single")
         viewModel.requestParameter(data.toString(), "name", "netease", 1)
         keyword = data.toString()
@@ -68,8 +67,8 @@ class SingleFragment3 : BaseFragment() {
             isFirstEnter = false
             binding.refreshLayout.autoRefresh()
         }
-        viewModel.observedData.observe(this, Observer {
-            tryNull {
+        viewModel.observedData.observe(this) {
+            tryNull( {
                 val musicData = it.getOrNull() as MusicData
                 Timber.v("网易音乐数据观察到:%s %s", musicData.data[0].author, isLoadDataForTheFirstTime)
                 if (isLoadDataForTheFirstTime) {
@@ -81,10 +80,13 @@ class SingleFragment3 : BaseFragment() {
                             holder?.text(R.id.rv_fragment_search_Single_SongName, model?.title)
                             holder?.text(R.id.rv_fragment_search_Single_AlbumName, model?.author)
                             holder?.itemView?.setOnClickListener {
-
-                                Timber.v("歌曲角标:%s", position)
+                                  if(model?.songid!! < 300000)  {
+                                      "没有版权".showToast(activity!!)
+                                  }
+                                Timber.v("歌曲角标:%s 歌曲名称:%s", position, model.author)
                             }
                         }
+
                     }
 
                     if (isRefresh) {
@@ -109,18 +111,19 @@ class SingleFragment3 : BaseFragment() {
 
                     override fun onLoadMore(refreshLayout: RefreshLayout) {
                         ++page
-                        if (musicData.code == 400) {
-                            "数据全部加载完毕".showToast(activity!!)
-                        } else {
                             Timber.v("网易音乐列表页数:%s", page)
                             viewModel.requestParameter(keyword, "name", "netease", page)
 
-                        }
+
                     }
                 })
-            }
+            },{
+                // catch 处理
+                "数据全部加载完毕".showToast(activity!!)
+                binding.refreshLayout.finishLoadMore()
+            })
 
-        })
+        }
 
 
     }
