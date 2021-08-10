@@ -21,12 +21,9 @@ import com.example.yuehaoting.base.activity.BaseActivity
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.base.fragmet.BaseFragment
-import com.example.yuehaoting.searchFor.fragment.ui.SingleFragment1
 import com.example.yuehaoting.searchFor.fragment.ext.MyCommonNavigator
 import com.example.yuehaoting.searchFor.fragment.ext.ScaleTransitionPagerTitleView
-import com.example.yuehaoting.searchFor.fragment.ui.SingleFragment2
-import com.example.yuehaoting.searchFor.fragment.ui.SingleFragment3
-import com.example.yuehaoting.searchFor.fragment.ui.SingleFragment4
+import com.example.yuehaoting.searchFor.fragment.ui.*
 import com.example.yuehaoting.searchFor.pagerview.MyPagerAdapter
 import com.example.yuehaoting.searchFor.viewmodel.PlaceViewModel
 import net.lucode.hackware.magicindicator.MagicIndicator
@@ -208,6 +205,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
         fragmentList.add(SingleFragment2())
         fragmentList.add(SingleFragment3())
         fragmentList.add(SingleFragment4())
+        fragmentList.add(SingleFragment5())
         mAdapter = MyPagerAdapter(
             supportFragmentManager, fragmentList
         )

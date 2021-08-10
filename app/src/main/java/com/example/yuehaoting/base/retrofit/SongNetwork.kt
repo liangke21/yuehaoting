@@ -1,20 +1,6 @@
 package com.example.yuehaoting.base.retrofit
 
 import com.example.yuehaoting.base.DataUri
-import com.example.yuehaoting.data.kugousingle.SongLists
-import com.example.yuehaoting.data.music163.MusicData
-import com.example.yuehaoting.data.music163.PostMusic
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.http.Field
-
-
-import timber.log.Timber
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
-
 
 object SongNetwork {
      //关键字请求
@@ -47,4 +33,11 @@ object SongNetwork {
     //QQ搜索
     private val musicQQ=ServiceCreator(DataUri.musicQQ).create<PlaceService>()
     suspend fun qqSongList(p:Int,n:Int,w:String)= musicQQ.musicQQ(p, n, w).await()
+
+    //酷我音乐搜索
+    private val musicKuWo=ServiceCreator(DataUri.musicKuWo).create<PlaceService>()
+    suspend fun kuWoList(pages:Int,count:Int,name:String)= musicKuWo.musicKuWo(pages,count,  name).await()
+
+    private val musicMiGu=ServiceCreator(DataUri.musicMiGu).create<PlaceService>()
+    suspend fun miGuList(pages:Int,count:Int,name:String)= musicMiGu.musicMiGu(pages, count, name).await()
 }

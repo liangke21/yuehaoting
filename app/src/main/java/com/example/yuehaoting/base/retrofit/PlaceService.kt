@@ -5,6 +5,8 @@ import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhoto
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousonguri.KuGouSongUriID
 import com.example.yuehaoting.data.music163.MusicData
+import com.example.yuehaoting.data.musicKuWo.KuWoList
+import com.example.yuehaoting.data.musicMiGu.MiGuList
 import com.example.yuehaoting.data.musicQQ.QQSongList
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -37,4 +39,12 @@ interface PlaceService {
     //qq音乐搜索接口
     @GET("soso/fcgi-bin/client_search_cp?new_json=1&aggr=1&catZhida=1&format=json")
     fun musicQQ(@Query("p")p:Int,@Query("n")n:Int,@Query("w")w:String):Call<QQSongList>
+
+    //酷我音乐接口
+    @GET("api.php?source=kuwo&types=search")
+    fun musicKuWo(@Query("pages")pages:Int,@Query("count")count:Int,@Query("name")name:String):Call<KuWoList>
+
+    //咪咕音乐搜索接口
+    @GET("api/web?types=search&source=migu")
+    fun musicMiGu(@Query("pages")pages:Int,@Query("count")count:Int,@Query("name")name:String):Call<MiGuList>
 }

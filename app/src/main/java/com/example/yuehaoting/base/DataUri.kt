@@ -25,4 +25,8 @@ object DataUri {
     const val music163="https://www.769sc.com/"
     //QQ音乐搜索
     const val musicQQ="https://c.y.qq.com/"
+    //酷狗音乐接口
+    const val musicKuWo="http://ali.asdi998.com:880/"
+    //咪咕音乐
+    const val musicMiGu="https://myhkw.cn/"
 }

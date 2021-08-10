@@ -4,19 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.example.yuehaoting.data.musicQQ.QQSongList
+import com.example.yuehaoting.data.musicKuWo.KuWoList
 import com.example.yuehaoting.searchFor.livedata.Repository
 
 /**
  * 作者: 天使
- * 时间: 2021/8/9 16:33
+ * 时间: 2021/8/10 9:49
  * 描述:
  */
-class SingleFragment4ViewModel:ViewModel() {
+class SingleFragment5ViewModel:ViewModel() {
+
     private val parameter = MutableLiveData<Map<*, *>>()
 
-    val observedData: LiveData<Result<QQSongList>> = Transformations.switchMap(parameter) { p ->
-        Repository.musicQQ(p["key1"] as Int, p["key2"] as Int, p["key3"] as String)
+    val observedData: LiveData<Result<KuWoList>> = Transformations.switchMap(parameter) { p ->
+        Repository.musicKuWo(p["key1"] as Int, p["key2"] as Int, p["key3"] as String)
     }
 
     /**
@@ -28,6 +29,6 @@ class SingleFragment4ViewModel:ViewModel() {
         parameter.value = numbersMap
     }
 
-    val songList = ArrayList<QQSongList.Data.Song.Lists>()
+    val songList = ArrayList<KuWoList.KuWoListItem>()
 
 }

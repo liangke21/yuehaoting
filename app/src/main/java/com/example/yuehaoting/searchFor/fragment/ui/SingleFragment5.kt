@@ -11,22 +11,22 @@ import com.example.yuehaoting.R
 import com.example.yuehaoting.base.fragmet.BaseFragment
 import com.example.yuehaoting.base.recyclerView.adapter.BaseRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
-import com.example.yuehaoting.data.musicQQ.QQSongList
+import com.example.yuehaoting.data.musicKuWo.KuWoList
 import com.example.yuehaoting.databinding.FragmentMusicBinding
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.kotlin.showToast
 import com.example.yuehaoting.kotlin.tryNull
-import com.example.yuehaoting.searchFor.viewmodel.SingleFragment4ViewModel
+import com.example.yuehaoting.searchFor.viewmodel.SingleFragment5ViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import timber.log.Timber
 
 /**
  * 作者: 天使
- * 时间: 2021/8/9 16:30
+ * 时间: 2021/8/10 9:23
  * 描述:
  */
-class SingleFragment4:BaseFragment() {
+class SingleFragment5 :BaseFragment(){
 
     private lateinit var binding: FragmentMusicBinding
 
@@ -38,8 +38,8 @@ class SingleFragment4:BaseFragment() {
     private var isLoadDataForTheFirstTime = true
 
     //列表适配器
-    private lateinit var mAdapter: BaseRecyclerAdapter<QQSongList.Data.Song.Lists>
-    private val viewModel by lazyMy { ViewModelProvider(this).get(SingleFragment4ViewModel::class.java) }
+    private lateinit var mAdapter: BaseRecyclerAdapter<KuWoList.KuWoListItem>
+    private val viewModel by lazyMy { ViewModelProvider(this).get(SingleFragment5ViewModel::class.java) }
 
     //关键字
     private var keyword = ""
@@ -67,17 +67,17 @@ class SingleFragment4:BaseFragment() {
             isFirstEnter = false
             binding.refreshLayout.autoRefresh()
         }
-       viewModel.observedData.observe(this) {
+        viewModel.observedData.observe(this) {
             tryNull( {
-                val musicData = it.getOrNull() as QQSongList
-                Timber.v("QQ音乐数据观察到:%s %s", musicData.data?.song?.list?.get(0)?.name, isLoadDataForTheFirstTime)
+                val musicData = it.getOrNull() as KuWoList
+                Timber.v("酷我音乐数据观察到:%s %s", musicData[0].name, isLoadDataForTheFirstTime)
                 if (isLoadDataForTheFirstTime) {
                     isLoadDataForTheFirstTime = false
-                    musicData.data?.song?.list?.let { it1 -> viewModel.songList.addAll(it1) }
-                    mAdapter = object : BaseRecyclerAdapter<QQSongList.Data.Song.Lists>(viewModel.songList, R.layout.item_fragment_search_single_rv_content) {
+                    viewModel.songList.addAll(musicData)
+                    mAdapter = object : BaseRecyclerAdapter<KuWoList.KuWoListItem>(viewModel.songList, R.layout.item_fragment_search_single_rv_content) {
 
-                        override fun onBindViewHolder(holder: SmartViewHolder?, model: QQSongList.Data.Song.Lists?, position: Int) {
-                            holder?.text(R.id.rv_fragment_search_Single_SongName, model?.title)
+                        override fun onBindViewHolder(holder: SmartViewHolder?, model: KuWoList.KuWoListItem?, position: Int) {
+                            holder?.text(R.id.rv_fragment_search_Single_SongName, model?.name)
 
                             holder?.text(R.id.rv_fragment_search_Single_AlbumName,songAndAlbum(model))
                             holder?.itemView?.setOnClickListener {
@@ -95,7 +95,7 @@ class SingleFragment4:BaseFragment() {
                 }
 
                 if (page >= 2) {
-                    mAdapter.loadMore(musicData.data?.song?.list)
+                    mAdapter.loadMore(musicData)
                     binding.refreshLayout.finishLoadMore()
                 }
 
@@ -104,15 +104,15 @@ class SingleFragment4:BaseFragment() {
                     override fun onRefresh(refreshLayout: RefreshLayout) {
                         refreshLayout.layout.postDelayed({
                             refreshLayout.finishRefresh()
-                            Timber.v("qq音乐列表刷新:%s", page)
+                            Timber.v("酷我音乐列表刷新:%s", page)
                             refreshLayout.resetNoMoreData()
                         },2000)
                     }
 
                     override fun onLoadMore(refreshLayout: RefreshLayout) {
                         ++page
-                        Timber.v("qq音乐列表页数:%s", page)
-                        viewModel.requestParameter(page,10,keyword )
+                        Timber.v("酷我音乐列表页数:%s", page)
+                        viewModel.requestParameter(page,10,keyword)
 
 
                     }
@@ -128,11 +128,19 @@ class SingleFragment4:BaseFragment() {
 
     }
 
-  private  fun songAndAlbum(model: QQSongList.Data.Song.Lists?): String? {
-        return if (model?.album?.name=="") {
-            model.singer?.get(0)?.name
+   private fun songAndAlbum(model: KuWoList.KuWoListItem?): String{
+        return if (model?.album =="") {
+            var ar=""
+            model.artist?.forEach {
+                ar+="$it-"
+            }
+          ar
         }else{
-            model?.singer?.get(0)?.name+"-《${model?.album?.name}》"
+            var ar=""
+            model?.artist?.forEach {
+                ar+= "$it-"
+            }
+           ar+"-《${model?.album}》"
         }
     }
 }
