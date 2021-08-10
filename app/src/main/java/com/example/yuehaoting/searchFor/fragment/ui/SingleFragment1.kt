@@ -8,14 +8,12 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.fragmet.BaseFragment
 import com.example.yuehaoting.base.recyclerView.adapter.BaseRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.databinding.FragmentMusicBinding
-import com.example.yuehaoting.kotlin.showToast
 import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.searchFor.viewmodel.SingleFragment1ViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
@@ -73,7 +71,7 @@ class SingleFragment1: BaseFragment(){
         viewModel.singleObservedLiveData.observe(this) {
             tryNull {
                 val musicData = it.getOrNull() as KuGouSingle.Data
-                Timber.v("酷狗音乐数据观察到:%s %s", musicData.lists?.get(0).SongName, isLoadDataForTheFirstTime)
+                Timber.v("酷狗音乐数据观察到:%s %s", musicData.lists[0].SongName, isLoadDataForTheFirstTime)
                 if (isLoadDataForTheFirstTime) {
                     isLoadDataForTheFirstTime = false
                     viewModel.songList.addAll(musicData.lists)
@@ -132,25 +130,23 @@ class SingleFragment1: BaseFragment(){
 
 
     /**
-     * @Param position 数据长度
      * @return songName 表示歌曲标题,singerName表示歌曲歌手,albumName 歌曲专辑
      **/
     private fun songDetails( model: KuGouSingle.Data.Lists?): Array<String?> {
-        val mList =  model
         //歌曲名字
-        var songName = mList?.SongName
-        if (mList?.SongName?.contains("<em>") == true) {
+        var songName = model?.SongName
+        if (model?.SongName?.contains("<em>") == true) {
             songName = songName?.replace("<em>", "")?.replace("</em>", "")
             println(songName)
         }
         //歌手
-        var singerName = mList?.SingerName
+        var singerName = model?.SingerName
         if (singerName?.contains("<em>") == true) {
             singerName = singerName.replace("<em>", "").replace("</em>", "")
 
         }
         //专辑
-        var albumName = mList?.AlbumName
+        var albumName = model?.AlbumName
 
         if (albumName?.contains("<em>") == true) {
             albumName = albumName.replace("<em>", "").replace("</em>", "")

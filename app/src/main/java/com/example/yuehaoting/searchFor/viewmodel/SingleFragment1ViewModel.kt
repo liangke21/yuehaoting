@@ -1,13 +1,10 @@
 package com.example.yuehaoting.searchFor.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
-import com.example.yuehaoting.data.music163.MusicData
-import com.example.yuehaoting.data.musicMiGu.MiGuList
 import com.example.yuehaoting.searchFor.livedata.Repository
 
 /**
@@ -16,11 +13,7 @@ import com.example.yuehaoting.searchFor.livedata.Repository
  * 描述:
  */
 class SingleFragment1ViewModel : ViewModel() {
-    private var tAG = "PlaceViewModel层 曲目请求"
     private val singleLiveData = MutableLiveData<Map<*, *>>()
-
-      var singleList=ArrayList<KuGouSingle.Data.Lists>()
-
 
     val singleObservedLiveData : LiveData<Result<KuGouSingle.Data>> = Transformations.switchMap(singleLiveData) { p ->
         Repository.singlePlaces(p["key1"] as Int, p["key2"] as Int, p["key3"] as String)

@@ -21,7 +21,7 @@ class SingleFragment5ViewModel:ViewModel() {
     }
 
     /**
-     * qq音乐请求参数
+     * 酷我音乐请求参数
      */
     fun requestParameter(p:Int,n:Int,w:String) {
 

@@ -22,7 +22,7 @@ class SingleFragment6ViewModel : ViewModel() {
     }
 
     /**
-     * qq音乐请求参数
+     * 咪咕音乐请求参数
      */
     fun requestParameter(p:Int,n:Int,w:String) {
 
