@@ -3,6 +3,9 @@ package com.example.yuehaoting.kotlin
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.TextView
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -129,5 +132,7 @@ class Later<T> (val block:()->T){
 fun <T> lazyMy(block: () -> T)=Later(block)
 
 //-------------------------------------------lazy------------------------------------------------------------------------------------------
+
+
 
 

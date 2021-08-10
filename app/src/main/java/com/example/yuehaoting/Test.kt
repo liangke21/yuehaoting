@@ -23,10 +23,10 @@ object Test {
         }*/
 
 
-        launchMy {
+   /*     launchMy {
             val b=SongNetwork.kuWoList(1,10,"偏爱")
             Timber.v("运行了吗:%s", b)
-        }
+        }*/
 
     }
 }

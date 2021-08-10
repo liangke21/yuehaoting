@@ -206,6 +206,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
         fragmentList.add(SingleFragment3())
         fragmentList.add(SingleFragment4())
         fragmentList.add(SingleFragment5())
+        fragmentList.add(SingleFragment6())
         mAdapter = MyPagerAdapter(
             supportFragmentManager, fragmentList
         )

@@ -18,7 +18,7 @@ import kotlin.coroutines.suspendCoroutine
  */
 object HttpUrl {
 
-      fun hiFiNiSearch(Keyword:String,replyTo: Messenger):String{
+      fun hiFiNiSearch(Keyword:String,replyTo: Messenger){
           var conn: HttpURLConnection?
           try {
               thread {
@@ -56,9 +56,14 @@ object HttpUrl {
           }catch (e:Exception){
               e.printStackTrace()
           }
-
-return "s"
       }
+
+
+
+
+
+
+
 
 fun hiFiNiThread(thread:String){
 

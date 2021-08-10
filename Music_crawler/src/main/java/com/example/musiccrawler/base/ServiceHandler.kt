@@ -42,6 +42,14 @@ class ServiceHandler: Handler(Looper.getMainLooper()){
                        }
 
                    }
+            20->{
+                val bundle=msg.data
+
+                bundle.classLoader=javaClass.classLoader
+                val page=bundle.getString("page").toString()
+                //hiFiNiSearch(keyword,msg.replyTo)
+                Log.e("接收到了主进程传来的数据",page)
+            }
         }
 
     }
