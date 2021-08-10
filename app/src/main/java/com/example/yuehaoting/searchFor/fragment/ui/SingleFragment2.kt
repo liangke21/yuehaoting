@@ -34,7 +34,7 @@ import timber.log.Timber
  * 时间: 2021/6/3 22:29
  * 描述:
  */
-class SingleFragment2 : BaseFragment(){
+class SingleFragment2 : BaseFragment() {
     private lateinit var binding: FragmentMusicBinding
 
     //第一次进入刷新
@@ -49,7 +49,7 @@ class SingleFragment2 : BaseFragment(){
     private lateinit var mAdapter: BaseRecyclerAdapter<DataSearch.Attributes>
     private val viewModel by lazy { ViewModelProvider(this).get(SingleFragment2ViewModel::class.java) }
 
-   private var recyclerView: RecyclerView? = null
+    private var recyclerView: RecyclerView? = null
 
 
     private var mMessage: Messenger? = null
@@ -125,7 +125,7 @@ class SingleFragment2 : BaseFragment(){
         mMessage?.send(msg)
 
         binding.refreshLayout.setEnableFooterFollowWhenNoMoreData(true)
-      recyclerView = binding.recyclerView
+        recyclerView = binding.recyclerView
 
         recyclerView?.layoutManager = LinearLayoutManager(context)
         recyclerView?.itemAnimator = DefaultItemAnimator()
@@ -139,10 +139,12 @@ class SingleFragment2 : BaseFragment(){
         }
 
     }
-   //页数
+
+    //页数
     private var page = 1
+
     //存储页数
-    private val pageList=ArrayList<String>()
+    private val pageList = ArrayList<String>()
     private fun dataAsJson(json: String) {
         val gson = Gson()
 
@@ -152,38 +154,38 @@ class SingleFragment2 : BaseFragment(){
 
         Timber.e("String转json:%s", appList)
 
-        Timber.v("Higini音乐数据观察到:%s %s",appList.attributes, isLoadDataForTheFirstTime)
+        Timber.v("Higini音乐数据观察到:%s %s", appList.attributes, isLoadDataForTheFirstTime)
         if (isLoadDataForTheFirstTime) {
             isLoadDataForTheFirstTime = false
             pageList.addAll(appList.pageNumber)
             viewModel.singleList.clear()
-              viewModel.singleList.addAll(appList.attributes)
+            viewModel.singleList.addAll(appList.attributes)
             Timber.e("String转jsonString转json:%s", viewModel.singleList)
 
             mAdapter = object : BaseRecyclerAdapter<DataSearch.Attributes>(viewModel.singleList, R.layout.item_fragment_search_single_rv_content) {
 
                 override fun onBindViewHolder(holder: SmartViewHolder?, model: DataSearch.Attributes?, position: Int) {
-                    var songName=""
-                    var singerName=""
+                    var songName = ""
+                    var singerName = ""
                     val songLists = model?.songTitle?.split("《")
                     tryNull {
                         if (model?.songTitle?.contains("》") == true) {
                             singerName = songLists?.get(0).toString()
-                            songName =songLists?.get(1).toString().replace("》", "")
+                            songName = songLists?.get(1).toString().replace("》", "")
                         }
 
-                        if (model?.songTitle?.contains("「") == true){
-                            val songList=  model.songTitle.split("「")
-                            singerName=songList[0]
+                        if (model?.songTitle?.contains("「") == true) {
+                            val songList = model.songTitle.split("「")
+                            singerName = songList[0]
                             songName = songList[1].replace("」", "")
                         }
-                        Timber.v("songLists:%s",songLists)
-                        Timber.v("songName:%s",songName)
+                        Timber.v("songLists:%s", songLists)
+                        Timber.v("songName:%s", songName)
                     }
 
-                    holder?.text(R.id.rv_fragment_search_Single_SongName,songName)
+                    holder?.text(R.id.rv_fragment_search_Single_SongName, songName)
 
-                    holder?.text(R.id.rv_fragment_search_Single_AlbumName,singerName)
+                    holder?.text(R.id.rv_fragment_search_Single_AlbumName, singerName)
                     holder?.itemView?.setOnClickListener {
 
                         Timber.v("歌曲角标:%s 歌曲名称:%s", position, model?.songTitle)
@@ -211,20 +213,20 @@ class SingleFragment2 : BaseFragment(){
                     refreshLayout.finishRefresh()
                     Timber.v("Higini音乐列表刷新:%s", page)
                     refreshLayout.resetNoMoreData()
-                },2000)
+                }, 2000)
             }
 
             override fun onLoadMore(refreshLayout: RefreshLayout) {
-                   ++page
-                if (pageList.size-1>=page-2){
-                    Timber.v("Higini音乐列表页数:%s:%s", page,pageList.size)
+                ++page
+                if (pageList.size - 1 >= page - 2) {
+                    Timber.v("Higini音乐列表页数:%s:%s", page, pageList.size)
                     val msg = Message.obtain(null, 20, 0, 0)
                     val bundle = Bundle()
-                    bundle.putString("page", pageList[page-2])
+                    bundle.putString("page", pageList[page - 2])
                     msg.data = bundle
                     msg.replyTo = replyToMessage
                     mMessage?.send(msg)
-                }else{
+                } else {
                     "数据加载完毕".showToast(activity!!)
                     binding.refreshLayout.finishLoadMore()
                 }

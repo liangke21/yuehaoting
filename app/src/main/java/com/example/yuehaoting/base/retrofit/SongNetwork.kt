@@ -8,7 +8,7 @@ object SongNetwork {
     suspend fun searchPlaces(query: String) = placeService.searchPlaces(query).await()
    //曲目请求
     private val singleService = ServiceCreator(DataUri.kuGouApiSingle).create(PlaceService::class.java)
-    suspend fun singlePlaces(query: String) = singleService.singlePlaces(query).await()
+    suspend fun singlePlaces(pages:Int,count:Int,name:String) = singleService.singlePlaces(pages,count,name).await()
 
     //歌曲id请求
     private val songUriID=ServiceCreator(DataUri.kuGouSongUriID).create(PlaceService::class.java)

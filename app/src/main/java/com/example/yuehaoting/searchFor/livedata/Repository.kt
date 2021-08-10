@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.liveData
 import com.example.yuehaoting.base.retrofit.SongNetwork
 import com.example.yuehaoting.data.kugou.RecordData
+import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.music163.MusicData
 import com.example.yuehaoting.data.musicKuWo.KuWoList
 import com.example.yuehaoting.data.musicMiGu.MiGuList
@@ -17,8 +18,11 @@ import timber.log.Timber
  */
 object Repository {
     private lateinit var HintInfo: List<RecordData>
-    fun searchPlaces(query: String) = liveData(Dispatchers.IO) {
 
+    /**
+     * 酷狗关键字
+     */
+    fun searchPlaces(query: String) = liveData(Dispatchers.IO) {
         val result = try {
             val placeResponse = SongNetwork.searchPlaces(query)
             Log.d(placeResponse.status.toString(), "关键字请求-----------")
@@ -35,22 +39,31 @@ object Repository {
         emit(result)
     }
 
-
-    fun singlePlaces(query: String) = liveData(Dispatchers.IO) {
-        val result = try {
-            val singleResponse = SongNetwork.singlePlaces(query)
+    /**
+     * 酷狗搜索
+     */
+    fun singlePlaces(pages: Int, count: Int, name: String) = liveData(Dispatchers.IO) {
+        val result:Result<KuGouSingle.Data> = try {
+            val singleResponse = SongNetwork.singlePlaces(pages, count, name)
             Timber.e("曲目请求成功1-------------------- :%s", singleResponse.status)
-            if (singleResponse.status == 1) {
 
-                val data = singleResponse.data
-                val list = data.lists
-                Timber.e("曲目请求成功2-------------------- :%s", list[0].SongName)
-                Result.success(list)
-            } else {
-                Result.failure(RuntimeException("为响应 ${singleResponse.status}"))
+
+
+            run{
+             if (singleResponse.status == 1) {
+
+                    val data = singleResponse.data
+                    val list = data.lists
+                    Timber.e("酷狗音乐列表请求成功-------------------- :%s", list[0].SongName)
+
+                } else {
+                 Timber.e("酷狗音乐列表请求失败-------------------- :%s", singleResponse.status)
+                }
+                Result.success(singleResponse.data)
             }
         } catch (e: Exception) {
-            Result.failure<RecordData>(e)
+            e.printStackTrace()
+            Result.failure(e)
         }
         emit(result)
     }
@@ -63,7 +76,7 @@ object Repository {
             val songList = SongNetwork.songList(input, filter, type, page)
             run {
                 if (songList.code == 200) {
-                    Timber.v("网易音乐列表请求成功:%s %s %s", songList.code,songList.data[0].title,songList.data[0].author)
+                    Timber.v("网易音乐列表请求成功:%s %s %s", songList.code, songList.data[0].title, songList.data[0].author)
 
                 } else {
                     Timber.e("网易音乐列表请求失败:%s", songList.code)
@@ -80,8 +93,8 @@ object Repository {
 
     /**
      * qq音乐列表
-      */
-    fun musicQQ(p:Int,n:Int,w:String)= liveData(Dispatchers.IO) {
+     */
+    fun musicQQ(p: Int, n: Int, w: String) = liveData(Dispatchers.IO) {
         val result: Result<QQSongList> = try {
             val songList = SongNetwork.qqSongList(p, n, w)
             run {
@@ -103,29 +116,29 @@ object Repository {
     /**
      * 酷我音乐
      */
-    fun musicKuWo(pages:Int,count:Int,name:String)= liveData(Dispatchers.IO) {
-          val  result:Result<KuWoList> = try {
-              val songList=SongNetwork.kuWoList(pages, count, name)
+    fun musicKuWo(pages: Int, count: Int, name: String) = liveData(Dispatchers.IO) {
+        val result: Result<KuWoList> = try {
+            val songList = SongNetwork.kuWoList(pages, count, name)
 
-             run {
-                 if (songList.isEmpty()) {
-                     Timber.v("酷我音乐列表请求失败")
-                 }else{
-                     Timber.v("酷我音乐请求成功:%s",songList)
-                 }
-                 Result.success(songList)
-              }
-          }catch (e:Exception){
-              e.printStackTrace()
-              Result.failure(e)
-          }
+            run {
+                if (songList.isEmpty()) {
+                    Timber.v("酷我音乐列表请求失败")
+                } else {
+                    Timber.v("酷我音乐请求成功:%s", songList)
+                }
+                Result.success(songList)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
         emit(result)
     }
+
     /**
      * 咪咕音乐
      */
-
-   fun musicMiGu(pages:Int,count:Int,name:String)= liveData(Dispatchers.IO) {
+    fun musicMiGu(pages: Int, count: Int, name: String) = liveData(Dispatchers.IO) {
         val result: Result<MiGuList> = try {
             val songList = SongNetwork.miGuList(pages, count, name)
             run {
