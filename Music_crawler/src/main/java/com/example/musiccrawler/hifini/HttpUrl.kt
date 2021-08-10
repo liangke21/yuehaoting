@@ -60,6 +60,45 @@ object HttpUrl {
 
 
 
+    fun hiFiNiSearchPage(page:String,replyTo: Messenger){
+        var conn: HttpURLConnection?
+        try {
+            thread {
+                val response = StringBuffer()
+
+                val url = URL("https://hifini.com/$page")
+
+                conn = url.openConnection() as HttpURLConnection
+                conn?.connectTimeout = 8000
+                conn?.readTimeout = 8000
+
+                conn?.setRequestProperty("User-Agent", "PostmanRuntime/7.28.0")
+                conn?.setRequestProperty(
+                    "Cookie",
+                    "bbs_sid=raktoit60eu0q3et7dav3drk1r; cookie_test=favmLHKdChmrm0spD7uGSEaVYYPBVLO_2BB7n2V7MP1tP9btZH"
+                )
+                conn?.doInput = true
+                conn?.connect()
+
+                val `in` = conn?.inputStream
+                val bffR = BufferedReader(InputStreamReader(`in`))
+
+                bffR.use {
+
+                    bffR.forEachLine {
+                        response.append(it)
+                    }
+                }
+
+                jsoupSHiFiNiSearch(response.toString(),replyTo)
+                bffR.close()
+                `in`?.close()
+
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+    }
 
 
 

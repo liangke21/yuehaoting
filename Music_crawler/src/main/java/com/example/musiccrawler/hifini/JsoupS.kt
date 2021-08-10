@@ -27,7 +27,6 @@ object JsoupS {
             val li = document.select("#body > div > div > div > div.card.search > div.card-body")[0].select("ul").select("li")
 
 
-
             li.forEach {
                 val a = it.select("div > div")[0].select("a").toString()
                 val aSplit = a.split(">")
@@ -37,9 +36,11 @@ object JsoupS {
 
                 val span2 = aSplit[2].replace("</span", "")
 
-                val span3 = aSplit[3].replace("[FLAC", "").replace("/MP3", "").replace("-320", "").replace("K]", "")
+                var span3 = aSplit[3].replace("[FLAC", "").replace("/MP3", "").replace("-320", "").replace("K]", "")
                     .replace("</a","").replace("k]","")
-
+                 if (!span3.contains("《")){
+                     span3="《$span3》"
+                 }
               println(span3)
                 val song = span + span2 + span3
 

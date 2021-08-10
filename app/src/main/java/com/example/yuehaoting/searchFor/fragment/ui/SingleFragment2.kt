@@ -20,6 +20,7 @@ import com.example.yuehaoting.base.fragmet.BaseFragment
 import com.example.yuehaoting.base.recyclerView.adapter.BaseRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.databinding.FragmentMusicBinding
+import com.example.yuehaoting.kotlin.showToast
 import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.searchFor.viewmodel.SingleFragment2ViewModel
 import com.google.gson.Gson
@@ -214,16 +215,20 @@ class SingleFragment2 : BaseFragment(){
             }
 
             override fun onLoadMore(refreshLayout: RefreshLayout) {
-                ++page
-                Timber.v("Higini音乐列表页数:%s", page)
-              //  viewModel.requestParameter(page,10,keyword)
+                   ++page
+                if (pageList.size-1>=page-2){
+                    Timber.v("Higini音乐列表页数:%s:%s", page,pageList.size)
+                    val msg = Message.obtain(null, 20, 0, 0)
+                    val bundle = Bundle()
+                    bundle.putString("page", pageList[page-2])
+                    msg.data = bundle
+                    msg.replyTo = replyToMessage
+                    mMessage?.send(msg)
+                }else{
+                    "数据加载完毕".showToast(activity!!)
+                    binding.refreshLayout.finishLoadMore()
+                }
 
-                val msg = Message.obtain(null, 20, 0, 0)
-                val bundle = Bundle()
-                bundle.putString("page", pageList[page-2])
-                msg.data = bundle
-                msg.replyTo = replyToMessage
-                mMessage?.send(msg)
 
             }
         })
