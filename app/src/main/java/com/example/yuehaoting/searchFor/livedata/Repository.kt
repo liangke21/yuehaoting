@@ -45,10 +45,7 @@ object Repository {
     fun singlePlaces(pages: Int, count: Int, name: String) = liveData(Dispatchers.IO) {
         val result:Result<KuGouSingle.Data> = try {
             val singleResponse = SongNetwork.singlePlaces(pages, count, name)
-            Timber.e("曲目请求成功1-------------------- :%s", singleResponse.status)
-
-
-
+            Timber.e("酷狗音乐请求成功-------------------- :%s", singleResponse.status)
             run{
              if (singleResponse.status == 1) {
 

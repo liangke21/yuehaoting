@@ -46,6 +46,7 @@ class SingleFragment1: BaseFragment(){
     ): View {
         binding = FragmentMusicBinding.inflate(inflater)
         val data = activity!!.intent.getStringExtra("Single")
+        Timber.v("Activity传输数据3 : %s", data.toString())
         viewModel.requestParameter(1, 10, data.toString())
         keyword = data.toString()
         return binding.root

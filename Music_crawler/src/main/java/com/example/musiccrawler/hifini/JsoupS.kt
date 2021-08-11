@@ -101,6 +101,16 @@ object JsoupS {
             println(gson)
 
             this.gson = gson
+
+
+            val msg = Message()
+            msg.what = 2
+            val bundle = Bundle()
+            bundle.putString("json", gson)
+            msg.data = bundle
+            msg.replyTo=replyTo
+            ServiceHandler().sendMessage(msg)
+
             e.printStackTrace()
             return gson
         }

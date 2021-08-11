@@ -127,6 +127,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
                 mAdapter?.clear(fragmentList)
                 viewPager.adapter = mAdapter
                 viewPager.adapter?.notifyDataSetChanged()
+                initMagicIndicator()
                 //适配fragment
 
                 intent.putExtra("Single", i)
@@ -200,7 +201,6 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
      * 适配fragment
      */
     private fun initFragment() {
-        //   var fragmentList = ArrayList<BaseFragment>()
         fragmentList.add(SingleFragment1())
         fragmentList.add(SingleFragment2())
         fragmentList.add(SingleFragment3())
@@ -211,7 +211,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
             supportFragmentManager, fragmentList
         )
         viewPager.adapter = mAdapter
-        viewPager.offscreenPageLimit = 4
+        viewPager.offscreenPageLimit = 2
 
     }
 
@@ -230,7 +230,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
                 return mDataList.size
             }
 
-            override fun getTitleView(context: Context?, index: Int): IPagerTitleView? {
+            override fun getTitleView(context: Context?, index: Int): IPagerTitleView {
                 val simplePagerTitleView: SimplePagerTitleView =
                     ScaleTransitionPagerTitleView(
                         context
@@ -266,6 +266,30 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
             R.id.iv_title_bar_search_back -> {
             }
             R.id.tv_title_search -> {
+
+               val i= etTitleBarSearch.text.toString()
+
+                mAdapter?.clear(fragmentList)
+                viewPager.adapter = mAdapter
+                viewPager.adapter?.notifyDataSetChanged()
+                initMagicIndicator()
+                //适配fragment
+
+                intent.putExtra("Single", i)
+                Timber.v("Activity传输数据2 : %s", i)
+                initFragment()
+                llRecyclerView.visibility = View.GONE
+                llContentFragment.visibility = View.VISIBLE
+                //隐藏键盘
+                val imm: InputMethodManager =
+                    getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(etTitleBarSearch, InputMethodManager.SHOW_FORCED)
+                imm.hideSoftInputFromWindow(etTitleBarSearch.windowToken, 0)
+                //控制光标位置
+                val etLength = etTitleBarSearch.text.length
+                etTitleBarSearch.setSelection(etLength)
+
+
             }
             //点击对话框隐藏
             R.id.et_title_bar_search -> {

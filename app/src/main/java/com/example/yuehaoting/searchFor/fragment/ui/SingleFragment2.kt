@@ -155,7 +155,7 @@ class SingleFragment2 : BaseFragment() {
         Timber.e("String转json:%s", appList)
 
         Timber.v("Higini音乐数据观察到:%s %s", appList.attributes, isLoadDataForTheFirstTime)
-        if (isLoadDataForTheFirstTime) {
+        if (isLoadDataForTheFirstTime && appList.attributes[0].songTitle != "0") {
             isLoadDataForTheFirstTime = false
             pageList.addAll(appList.pageNumber)
             viewModel.singleList.clear()
@@ -199,6 +199,8 @@ class SingleFragment2 : BaseFragment() {
             }
 
             recyclerView?.adapter = mAdapter
+        }else{
+            "没有该歌曲".showToast(activity!!)
         }
 
         if (page >= 2) {
