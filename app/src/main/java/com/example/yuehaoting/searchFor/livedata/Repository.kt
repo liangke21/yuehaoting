@@ -23,18 +23,28 @@ object Repository {
      * 酷狗关键字
      */
     fun searchPlaces(query: String) = liveData(Dispatchers.IO) {
-        val result = try {
+        val result :Result<List<RecordData>> = try {
             val placeResponse = SongNetwork.searchPlaces(query)
             Log.d(placeResponse.status.toString(), "关键字请求-----------")
+
+
             if (placeResponse.status == 1) {
-                val places = placeResponse.data[0]
-                HintInfo = places.RecordDatas
-                Result.success(HintInfo)
+               Timber.v("酷狗搜索关键字请求成功:%s",placeResponse.status)
             } else {
-                Result.failure(RuntimeException("为响应 ${placeResponse.status}"))
+                Timber.v("酷狗搜索关键字请求失败:%s",placeResponse.status)
+              //  Result.failure(RuntimeException("为响应 ${placeResponse.status}"))
             }
+
+
+
+           run{
+               val places = placeResponse.data[0]
+               HintInfo = places.RecordDatas
+               Result.success(HintInfo)
+           }
+
         } catch (e: Exception) {
-            Result.failure<RecordData>(e)
+            Result.failure(e)
         }
         emit(result)
     }

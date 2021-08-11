@@ -11,7 +11,7 @@ private var tAG=PlaceViewModel::class.java.simpleName
     val placeList = ArrayList<RecordData>()
 
     //Transformations.switchMap 观察这个对象
-    val placeLiveData = Transformations.switchMap(searchLiveData) { query ->
+    val placeLiveData :LiveData<Result<List<RecordData>>> = Transformations.switchMap(searchLiveData) { query ->
 
         //发起网络请求
         Repository.searchPlaces(query) //返回LiveData对象

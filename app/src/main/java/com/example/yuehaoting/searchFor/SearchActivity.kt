@@ -11,8 +11,7 @@ import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
@@ -57,8 +56,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
     private var fragmentList = ArrayList<BaseFragment>()
     private var mAdapter: MyPagerAdapter? = null
 
-    private val viewModel by lazy { ViewModelProviders.of(this).get(PlaceViewModel::class.java) }
-
+    private val viewModel by lazy { ViewModelProvider(this).get(PlaceViewModel::class.java) }
     private lateinit var adapter: PlaceAdapter
 
 
@@ -173,11 +171,11 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
      */
     private fun placeLiveDataObserve() {
 
-            viewModel.placeLiveData.observe(this, Observer { result ->
+            viewModel.placeLiveData.observe(this)  {
                 try {
-                val places = result.getOrNull() as ArrayList<RecordData>
+                val places =it.getOrNull() as ArrayList<RecordData>
                 Log.e("请求的曲目数据已经观察到", places[0].HintInfo)
-                if (places != null) {
+                if (places.isNotEmpty()) {
                     recyclerView.visibility = View.VISIBLE
                     viewModel.placeList.clear()
                     viewModel.placeList.addAll(places)
@@ -185,7 +183,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
 
                 } else {
                     Toast.makeText(this, "未能查询到歌曲", Toast.LENGTH_SHORT).show()
-                    result.exceptionOrNull()?.printStackTrace()
+                    it.exceptionOrNull()?.printStackTrace()
                 }
                 } catch (e: NullPointerException) {
                     e.printStackTrace()
@@ -193,7 +191,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
                 }catch (e:IndexOutOfBoundsException){
                     Timber.e("索引越界异常: %s",e)
                 }
-            })
+            }
 
     }
 
@@ -243,7 +241,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
                 return simplePagerTitleView
             }
 
-            override fun getIndicator(context: Context?): IPagerIndicator? {
+            override fun getIndicator(context: Context?): IPagerIndicator {
                 val indicator = LinePagerIndicator(context)
                 indicator.mode = LinePagerIndicator.MODE_EXACTLY
 
