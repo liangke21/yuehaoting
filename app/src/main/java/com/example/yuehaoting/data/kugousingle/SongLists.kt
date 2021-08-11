@@ -8,12 +8,32 @@ import kotlinx.parcelize.Parcelize
  * 作者: QQ号:1396797522
  * 时间: 2021/6/9 20:00
  * 描述:
+ * SongName: 歌曲名字
+ * SingerName: 歌手
+ * FileHash:歌曲嘻哈 或者 MP3连接 或者歌曲id
+ * mixSongID:歌手id
+ * lyrics:歌词
+ * album:专辑
+ * pic:封面
  * platform 表示歌曲平台 1表示酷狗,2表示HifIni
  */
 @Parcelize
-data class SongLists(var SongName:String,var SingerName:String,var FileHash:String,var mixSongID: String,var platform:Int) : Parcelable {
+data class SongLists(
+    var SongName:String,
+    var SingerName:String,
+    var FileHash:String,
+    var mixSongID: String,
+    var lyrics:String,
+    val album:String,
+    val pic:String,
+    var platform:Int
+    ) : Parcelable {
+
+
+
+
     companion object {
-        val SONG_LIST = SongLists("", "", "","",0)
+        val SONG_LIST = SongLists("", "", "","","", "","",0)
     }
 
 }
