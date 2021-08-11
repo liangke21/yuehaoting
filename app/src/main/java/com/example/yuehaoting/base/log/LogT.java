@@ -16,7 +16,7 @@ public class LogT {
      */
     private static boolean isShowLog = true;
 
-    private static final String DOUBLE_DIVIDER = "------------------------------";
+    private static final String DOUBLE_DIVIDER = "";
 
     public static void init(boolean isShowLog) {
         LogT.isShowLog = isShowLog;
@@ -92,8 +92,8 @@ public class LogT {
             return 0;
         }
         String msg;
-        StringBuilder builder = new StringBuilder(DOUBLE_DIVIDER).append('\n')
-                .append(getFunctionName()).append(DOUBLE_DIVIDER).append('\n').append("  ");
+        StringBuilder builder = new StringBuilder(DOUBLE_DIVIDER).append('|')
+                .append(getFunctionName()).append(DOUBLE_DIVIDER).append('|').append("");
         if (msgObj == null) {
             msg = "";
         } else {
@@ -105,7 +105,7 @@ public class LogT {
         if (tr != null) {
             builder.append('\n').append(Log.getStackTraceString(tr));
         }
-        builder.append('\n').append(DOUBLE_DIVIDER);
+        builder.append('|').append(DOUBLE_DIVIDER);
         switch (type) {
             case Log.VERBOSE:
                 if (LOG_LEVEL <= Log.VERBOSE) {
@@ -138,9 +138,6 @@ public class LogT {
 
     private static String getFunctionName() {
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-        if (elements == null) {
-            return "";
-        }
         for (StackTraceElement ste : elements) {
             if (ste.isNativeMethod()) {
                 continue;
@@ -151,12 +148,14 @@ public class LogT {
             if (ste.getClassName().equals(LogT.class.getName())) {
                 continue;
             }
-            return "  " + ste.getFileName().substring(0, ste.getFileName().indexOf(".")) + "." + ste.getMethodName()
-                    + " (" + ste.getFileName() + ":" + ste.getLineNumber() + ")\n";
+            return " " + ste.getFileName().substring(0, ste.getFileName().indexOf(".")) + "." + ste.getMethodName()
+                    + " (" + ste.getFileName() + ":" + ste.getLineNumber() + ")|";
         }
         return "";
 
 
     }
-
+    public static String lll() {
+       return getFunctionName();
+    }
 }

@@ -199,7 +199,7 @@ class PlayActivity : PlayBaseActivity() {
             viewModel.singerIdObservedData.observe(this) {
                 //获取图片连接
                 val urlList = singerPhotoUrl(it)
-                val singerId = intent.getStringExtra(SINGER_ID)
+                val singerId = currentSong.mixSongID
                 mCacheUrl.putToDisk(singerId.toString(), urlList)
                 //把图片设置为背景
                 photoCycle(urlList, binding.playerContainer, resources, ::updateUi)
@@ -272,6 +272,7 @@ class PlayActivity : PlayBaseActivity() {
     private fun updatePlayButton(isPlay: Boolean) {
         isPlaying = isPlay
         binding.layoutPlayLayout.ppvPlayPause.updateStRte(isPlay, true)
+
     }
 
     override fun onPause() {

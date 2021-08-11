@@ -13,6 +13,7 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.media.AudioAttributesCompat
 import com.example.yuehaoting.R
+import com.example.yuehaoting.base.log.LogT.lll
 import com.example.yuehaoting.base.sevice.SmService
 import com.example.yuehaoting.util.Constants.MODE_LOOP
 import com.example.yuehaoting.util.Constants.MODE_SHUFFLE
@@ -29,6 +30,7 @@ import com.example.yuehaoting.util.MusicConstant.PREV
 import com.example.yuehaoting.util.BroadcastUtil
 import com.example.yuehaoting.util.MusicConstant.ACTION_CMD
 import com.example.yuehaoting.util.MusicConstant.EXTRA_CONTROL
+import com.example.yuehaoting.util.MusicConstant.EXTRA_POSITION
 import com.example.yuehaoting.util.MusicConstant.EXTRA_SHUFFLE
 import com.example.yuehaoting.util.MusicConstant.HIF_INI
 import com.example.yuehaoting.util.MusicConstant.KEY_MUSIC_PLATFORM
@@ -45,8 +47,7 @@ import java.lang.Exception
  * 描述:
  */
 class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
-
-
+      private val play="播放器生命周期"
     /**
      * 播放列队
      */
@@ -188,7 +189,8 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      * 设置播放列队
      */
     fun setPlayQueue(newQueryList: List<SongLists>, intent: Intent) {
-        Timber.d("后台播放3")
+        Timber.tag(play).v("设置播放列队2:%s",lll())
+        //获取是否随机播放的参数 默认为false
         val shuffle = intent.getBooleanExtra(EXTRA_SHUFFLE, false)
         if (newQueryList.isEmpty()) {
             return
@@ -196,6 +198,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
         //设置列队播放
         val equals = newQueryList == playQueue.originalQueue
         if (!equals) {
+            //设置播放列队,当加载进来的数据集合和当前列队不同就会从新设置列队
             playQueue.setPlayQueue(newQueryList)
         }
 
@@ -221,7 +224,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      */
     private fun handleCommand(intent: Intent?) {
         val control = intent?.getIntExtra(EXTRA_CONTROL, -1)
-        Timber.v("后台播放4 $control")
+        Timber.tag(play).v("处理命令3:命令%s,:%s",control,lll())
         when (control) {
             PLAY_SELECTED_SONG -> {
                 Timber.v("后台播放5")
@@ -320,7 +323,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      * @param position 播放位置
      */
     override fun playSelectSong(position: Int,intent: Intent?) {
-        Timber.d("后台播放6 播放位置$position")
+        Timber.tag(play).v("播放选中的歌曲4:位置%s,:%s",position,lll())
         playQueue.setPosition(position)
 
         readyToPlay(playQueue.song,intent)
@@ -334,6 +337,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      * 初始化Mediaplayer
      */
     private fun setUpPlayer() {
+        Timber.tag(play).v("初始化播放器1:%s",lll())
         mediaPlayer = MediaPlayer()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mediaPlayer.setAudioAttributes(audioAttributes.unwrap() as AudioAttributes)
@@ -342,6 +346,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
         }
         //锁屏休眠继续播放
         //   mediaPlayer.setWakeMode(this,PowerManager.PARTIAL_WAKE_LOCK)
+        //准备好监听播放
         mediaPlayer.setOnPreparedListener {
 
             mediaPlayer.seekTo(0)
@@ -368,7 +373,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      * 播放
      */
     override fun play(fadeIn: Boolean) {
-
+        Timber.tag(play).v("播放6:%s",lll())
         setPlay(true)
 
         handler.sendEmptyMessage(UPDATE_META_DATA)
@@ -390,7 +395,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      */
 
     private fun readyToPlay(song: SongLists, intent: Intent?=null) {
-
+        Timber.tag(play).v("歌曲信息添加进播放器5:%s",lll())
         tryLaunch(block = {
          val ent=  song.platform
           Timber.v("KEY_MUSIC_PLATFORM:%s",ent)
@@ -447,7 +452,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
 
     companion object {
         const val TAG_LIFECYCLE = "服务器生命周期"
-        const val EXTRA_POSITION = "Position"
+
 
 
     }

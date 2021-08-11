@@ -16,6 +16,7 @@ import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.playInterface.activity.PlayActivity
 import com.example.yuehaoting.util.IntentUtil
 import com.example.yuehaoting.util.MusicConstant
+import com.example.yuehaoting.util.MusicConstant.EXTRA_POSITION
 import com.example.yuehaoting.util.MusicConstant.HIF_INI
 import com.example.yuehaoting.util.MusicConstant.KEY_MUSIC_PLATFORM
 import timber.log.Timber
@@ -57,7 +58,7 @@ class SingleFragment2Adapter(private val list: List<DataSearch.Attributes>,priva
             }
             Timber.v("songLists:%s",songLists)
             Timber.v("songName:%s",songName)
-            songList.add(
+          /*  songList.add(
                 SongLists(
                     songName,
                     singerName,
@@ -65,7 +66,7 @@ class SingleFragment2Adapter(private val list: List<DataSearch.Attributes>,priva
                     "2325",
                     HIF_INI
                 )
-            )
+            )*/
 
             songPlay(holder,position,songList,"")
         }
@@ -81,7 +82,7 @@ class SingleFragment2Adapter(private val list: List<DataSearch.Attributes>,priva
                 intent.putExtra(MusicConstant.CURRENT_SONG,songLists[position])
                 activity?.startActivity(intent)
             }else{
-                MusicServiceRemote.setPlayQueue(songLists, musicUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(MusicService.EXTRA_POSITION, position))
+                MusicServiceRemote.setPlayQueue(songLists, musicUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(EXTRA_POSITION, position))
                 val intent= Intent(activity, PlayActivity::class.java)
                 intent.putExtra(MusicConstant.SINGER_ID,mixSongID)
                 intent.putExtra(MusicConstant.CURRENT_SONG,songLists[position])

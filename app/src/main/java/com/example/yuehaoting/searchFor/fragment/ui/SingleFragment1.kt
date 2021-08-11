@@ -1,5 +1,6 @@
 package com.example.yuehaoting.searchFor.fragment.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -13,9 +14,18 @@ import com.example.yuehaoting.base.fragmet.BaseFragment
 import com.example.yuehaoting.base.recyclerView.adapter.BaseRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
+import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.databinding.FragmentMusicBinding
 import com.example.yuehaoting.kotlin.tryNull
+import com.example.yuehaoting.musicService.service.MusicService
+import com.example.yuehaoting.musicService.service.MusicServiceRemote
+import com.example.yuehaoting.playInterface.activity.PlayActivity
+import com.example.yuehaoting.searchFor.adapter.SingleFragment1Adapter
 import com.example.yuehaoting.searchFor.viewmodel.SingleFragment1ViewModel
+import com.example.yuehaoting.util.IntentUtil
+import com.example.yuehaoting.util.MusicConstant
+import com.example.yuehaoting.util.MusicConstant.EXTRA_POSITION
+import com.example.yuehaoting.util.MusicConstant.KU_GOU
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import timber.log.Timber
@@ -28,6 +38,9 @@ import timber.log.Timber
 class SingleFragment1: BaseFragment(){
     private lateinit var binding: FragmentMusicBinding
 
+    private val musicUtil = IntentUtil()
+
+    private val songLists = ArrayList<SongLists>()
     //第一次进入刷新
     private var isFirstEnter = true
 
@@ -86,10 +99,22 @@ class SingleFragment1: BaseFragment(){
 
                             songSoundQuality(holder, model)
 
-                            holder?.itemView?.setOnClickListener {
-
-                                Timber.v("歌曲角标:%s 歌曲名称:%s", position, model?.SongName)
+                            model?.apply {
+                                songLists.add(
+                                    SongLists(
+                                        SongName=song[0]!!,
+                                        SingerName=SingerName,
+                                        FileHash=FileHash,
+                                        mixSongID=MixSongID,
+                                        lyrics = "",
+                                        album = AlbumName,
+                                        pic = "",
+                                        platform = KU_GOU
+                                        )
+                                )
                             }
+                            songPlay(holder,songLists,position,model?.MixSongID!!)
+
                         }
                     }
 
@@ -129,6 +154,23 @@ class SingleFragment1: BaseFragment(){
 
     }
 
+    private fun songPlay(holder: SmartViewHolder?,  songLists: ArrayList<SongLists>, position: Int, mixSongID: String) {
+        holder?.itemView?.setOnClickListener {
+            Timber.v("歌曲角标:%s 歌曲名称:%s", position, songLists[0].SongName)
+            Timber.d("后台播放1")
+            if(MusicServiceRemote.isPlaying() && songLists[position]== MusicServiceRemote.getCurrentSong()){
+                val intent= Intent(activity, PlayActivity::class.java)
+                intent.putExtra(MusicConstant.CURRENT_SONG,songLists[position])
+                activity?.startActivity(intent)
+            }else{
+                MusicServiceRemote.setPlayQueue(songLists, musicUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(EXTRA_POSITION, position))
+                val intent= Intent(activity, PlayActivity::class.java)
+                intent.putExtra(MusicConstant.SINGER_ID,mixSongID)
+                intent.putExtra(MusicConstant.CURRENT_SONG,songLists[position])
+                activity?.startActivity(intent)
+            }
+        }
+    }
 
     /**
      * @return songName 表示歌曲标题,singerName表示歌曲歌手,albumName 歌曲专辑

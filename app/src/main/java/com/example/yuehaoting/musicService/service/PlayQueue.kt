@@ -86,6 +86,10 @@ class PlayQueue {
         Timber.v("播放上一首6: %s","position$position",)
         updateNextSong()
     }
+
+    /**
+     * 更新下一首歌曲
+     */
      fun updateNextSong() {
         if (_originalQueue.isEmpty()){
             return
