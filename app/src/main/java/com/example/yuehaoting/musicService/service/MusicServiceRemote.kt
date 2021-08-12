@@ -3,7 +3,9 @@ package com.example.yuehaoting.musicService.service
 import android.app.Activity
 import android.content.*
 import android.os.IBinder
+import com.example.yuehaoting.base.log.LogT
 import com.example.yuehaoting.data.kugousingle.SongLists
+import com.example.yuehaoting.util.Tag
 import timber.log.Timber
 import java.util.*
 
@@ -80,10 +82,17 @@ object MusicServiceRemote {
      */
     @JvmStatic
     fun isPlaying():Boolean{
-        Timber.v("isPlay是否播放: %s", "isPlaying: ${service?.isPlaying}  ")
+        Timber.tag(Tag.isPlay).i("交互播放状态:%s,%s",service?.isPlaying, LogT.lll())
         return service?.isPlaying ?:false
     }
 
+    /**
+     * 修改isPlaying
+     */
+    @JvmStatic
+    fun revisePlaying(){
+        service?.revisePlaying()
+    }
     @JvmStatic
     fun getCurrentSong(): SongLists {
         return service?.currentSong ?: SongLists.SONG_LIST

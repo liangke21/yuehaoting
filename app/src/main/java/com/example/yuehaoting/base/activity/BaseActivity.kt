@@ -23,10 +23,10 @@ import java.lang.ref.WeakReference
  * 时间: 2021/6/10 11:16
  * 描述:
  */
-open class BaseActivity :SmMainActivity(),MusicEvenCallback {
+open class BaseActivity : SmMainActivity(), MusicEvenCallback {
     private var TAG = this::class.java.simpleName
     private var util = BroadcastUtil()
-   private var myUtil = BroadcastUtil()
+    private var myUtil = BroadcastUtil()
     private var serviceToken: MusicServiceRemote.ServiceToken? = null
 
     //待绑定的服务
@@ -40,6 +40,7 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
 
     //音频接收器
     private var musicStateReceiver: MusicStatReceiver? = null
+
     //服务监听事件
     private val serviceEventListeners = ArrayList<MusicEvenCallback>()
 
@@ -69,16 +70,16 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
             override fun onServiceConnected(name: ComponentName, service: IBinder) {
                 val musicService = (service as MusicService.MusicBinder).service
                 Timber.tag(TAG).v("前台服务连接3,app isn't on foreground")
-                 this@BaseActivity.onServiceConnected(musicService)
+                this@BaseActivity.onServiceConnected(musicService)
 
             }
 
             override fun onServiceDisconnected(name: ComponentName) {
-                   this@BaseActivity.onServiceDisConnected()
+                this@BaseActivity.onServiceDisConnected()
             }
         })
 
-        pendingBindService=false
+        pendingBindService = false
     }
 
 
@@ -86,22 +87,27 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
     override fun onTagChanged(oldSong: SongLists, newSongLists: SongLists) {
         TODO("Not yet implemented")
     }
+
     //媒体商店的变化
     override fun onMediaStoreChanged() {
         TODO("Not yet implemented")
     }
+
     //权限变更
     override fun onPermissionChanged(has: Boolean) {
         TODO("Not yet implemented")
     }
+
     //播放列表变化
     override fun onPlayListChanged(name: String) {
         TODO("Not yet implemented")
     }
+
     //播放状态变化
     override fun onPlayStateChange() {
 
     }
+
     override fun onMetaChanged() {
 
     }
@@ -118,11 +124,11 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
             filter.addAction(PLAY_DATA_CHANGES) //播放时数据变化
             filter.addAction(PLAY_STATE_CHANGE) //播放状态变化
             filter.addAction(TAG_CHANGE)//歌曲标签发生变化
-           myUtil.registerLocalReceiver(musicStateReceiver!!,filter)
-            receiverRegistered =true
+            myUtil.registerLocalReceiver(musicStateReceiver!!, filter)
+            receiverRegistered = true
         }
 
-        musicStateHandler= MusicStatHandler(this)
+        musicStateHandler = MusicStatHandler(this)
 
     }
 
@@ -135,13 +141,14 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
                 when (action) {
                     PLAY_STATE_CHANGE -> {
                         activity.onPlayStateChange()
-                        Timber.v("isPlay是否播放   播放回调: %s",action)
+                        Timber.v("isPlay是否播放   播放回调: %s", action)
                     }
-                     PLAY_DATA_CHANGES -> activity.onMetaChanged()
+                    PLAY_DATA_CHANGES -> activity.onMetaChanged()
                 }
             }
         }
     }
+
     /**
      * 动态太监听广播
      */
@@ -163,7 +170,7 @@ open class BaseActivity :SmMainActivity(),MusicEvenCallback {
 
 
     override fun onServiceDisConnected() {
-        if (receiverRegistered){
+        if (receiverRegistered) {
             util.unregisterLocalReceiver(musicStateReceiver!!)
         }
         musicStateHandler?.removeCallbacksAndMessages(null)

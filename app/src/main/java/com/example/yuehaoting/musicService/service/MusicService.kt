@@ -13,6 +13,7 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.media.AudioAttributesCompat
 import com.example.yuehaoting.R
+import com.example.yuehaoting.base.log.LogT
 import com.example.yuehaoting.base.log.LogT.lll
 import com.example.yuehaoting.base.sevice.SmService
 import com.example.yuehaoting.util.Constants.MODE_LOOP
@@ -33,11 +34,12 @@ import com.example.yuehaoting.util.MusicConstant.EXTRA_CONTROL
 import com.example.yuehaoting.util.MusicConstant.EXTRA_POSITION
 import com.example.yuehaoting.util.MusicConstant.EXTRA_SHUFFLE
 import com.example.yuehaoting.util.MusicConstant.HIF_INI
-import com.example.yuehaoting.util.MusicConstant.KEY_MUSIC_PLATFORM
+import com.example.yuehaoting.util.Tag.play
 import com.example.yuehaoting.util.MusicConstant.KU_GOU
 import com.example.yuehaoting.util.MusicConstant.PLAY_SELECTED_SONG
 import com.example.yuehaoting.util.MusicConstant.UPDATE_META_DATA
 import com.example.yuehaoting.util.MusicConstant.UPDATE_PLAY_STATE
+import com.example.yuehaoting.util.Tag
 import kotlinx.coroutines.*
 import java.lang.Exception
 
@@ -47,7 +49,7 @@ import java.lang.Exception
  * 描述:
  */
 class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
-      private val play="播放器生命周期"
+
     /**
      * 播放列队
      */
@@ -110,14 +112,18 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
     /**
      * 当前是否在播放
      */
-    private var isPlay:Boolean=false
+    var isPlayT: Boolean =false
+
+    fun revisePlaying(){
+        isPlayT=false
+        Timber.tag(Tag.isPlay).w("修改播放状态:%s,:%s",this.isPlayT, lll())
+    }
 
     /**
      * 获得是否在播放
      */
     val isPlaying:Boolean
-    get() = isPlay
-
+        get() = isPlayT
     /**
      * 当前播放的歌曲
      */
@@ -139,7 +145,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
 //_______________________________________|生命周期|______________________________________________________________________________________________________
     private val musicBinder = MusicBinder()
 
-    override fun onBind(intent: Intent): IBinder? {
+    override fun onBind(intent: Intent): IBinder{
         return musicBinder
     }
 
@@ -181,8 +187,9 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      * 设置播放
      */
     private fun setPlay(isPlay:Boolean){
-        this.isPlay=isPlay
-        Timber.v("isPlay是否播放  setPlay()函数 : %s", "isPlaying: $isPlaying  isPlay: $isPlay")
+        this.isPlayT=isPlay
+
+        Timber.tag(Tag.isPlay).v("更新播放状态:%s,传入状态:%s,:%s",this.isPlayT,isPlay, lll())
         handler.sendEmptyMessage(UPDATE_PLAY_STATE)
     }
     /**
@@ -190,6 +197,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      */
     fun setPlayQueue(newQueryList: List<SongLists>, intent: Intent) {
         Timber.tag(play).v("设置播放列队2:%s",lll())
+        Timber.tag(Tag.isPlay).i("初始化播放状态:%s,:%s",this.isPlayT, lll())
         //获取是否随机播放的参数 默认为false
         val shuffle = intent.getBooleanExtra(EXTRA_SHUFFLE, false)
         if (newQueryList.isEmpty()) {
@@ -269,7 +277,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      * 播放上一首
      */
     override fun playPrecious() {
-        Timber.v("播放上一首4: %s",)
+        Timber.v("播放上一首4: %s")
         playNextOrPrev(false)
     }
 
@@ -296,6 +304,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
             return
         }
         Timber.v("播放下一首||播放上一首8: %s", playQueue.song)
+        Timber.tag(Tag.isPlay).v("后台播放状态:%s,传入状态:%s,播放 下一首 或则 上一首:%s",isPlaying,false, lll())
         setPlay(false)
         readyToPlay(playQueue.song)
     }
@@ -311,6 +320,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
             if (!isPlaying){
                 return
             }
+            Timber.tag(Tag.isPlay).v("后台播放状态:%s,传入状态:%s,播放暂停:%s",isPlaying,false, lll())
             setPlay(false)
             handler.sendEmptyMessage(UPDATE_META_DATA)
             playPauseVolumeController.fadeOut()
@@ -342,7 +352,8 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mediaPlayer.setAudioAttributes(audioAttributes.unwrap() as AudioAttributes)
         } else {
-            mediaPlayer.setAudioStreamType(audioAttributes.legacyStreamType)
+           // mediaPlayer.setAudioStreamType(audioAttributes.legacyStreamType)
+            mediaPlayer.setAudioAttributes(audioAttributes.unwrap() as AudioAttributes)
         }
         //锁屏休眠继续播放
         //   mediaPlayer.setWakeMode(this,PowerManager.PARTIAL_WAKE_LOCK)
@@ -374,8 +385,8 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      */
     override fun play(fadeIn: Boolean) {
         Timber.tag(play).v("播放6:%s",lll())
+        Timber.tag(Tag.isPlay).v("后台播放状态:%s,传入状态:%s,播放:%s",isPlaying,true, lll())
         setPlay(true)
-
         handler.sendEmptyMessage(UPDATE_META_DATA)
 
         mediaPlayer.start()

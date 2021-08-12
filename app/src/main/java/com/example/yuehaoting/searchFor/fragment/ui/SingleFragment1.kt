@@ -26,6 +26,7 @@ import com.example.yuehaoting.util.IntentUtil
 import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.MusicConstant.EXTRA_POSITION
 import com.example.yuehaoting.util.MusicConstant.KU_GOU
+import com.example.yuehaoting.util.Tag
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import timber.log.Timber
@@ -156,17 +157,16 @@ class SingleFragment1: BaseFragment(){
 
     private fun songPlay(holder: SmartViewHolder?,  songLists: ArrayList<SongLists>, position: Int, mixSongID: String) {
         holder?.itemView?.setOnClickListener {
-            Timber.v("歌曲角标:%s 歌曲名称:%s", position, songLists[0].SongName)
-            Timber.d("后台播放1")
-            if(MusicServiceRemote.isPlaying() && songLists[position]== MusicServiceRemote.getCurrentSong()){
+            Timber.v("酷狗歌曲角标:%s 歌曲名称:%s", position, songLists[0].SongName)
+            if(songLists[position]== MusicServiceRemote.getCurrentSong()){
                 val intent= Intent(activity, PlayActivity::class.java)
                 intent.putExtra(MusicConstant.CURRENT_SONG,songLists[position])
                 activity?.startActivity(intent)
             }else{
                 MusicServiceRemote.setPlayQueue(songLists, musicUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(EXTRA_POSITION, position))
                 val intent= Intent(activity, PlayActivity::class.java)
-                intent.putExtra(MusicConstant.SINGER_ID,mixSongID)
                 intent.putExtra(MusicConstant.CURRENT_SONG,songLists[position])
+                intent.putExtra("isPlay",false)
                 activity?.startActivity(intent)
             }
         }

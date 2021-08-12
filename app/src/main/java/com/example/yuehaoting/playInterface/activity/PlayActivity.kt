@@ -15,6 +15,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.App
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.PlayBaseActivity
+import com.example.yuehaoting.base.log.LogT
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.databinding.PlayActivityBinding
 import com.example.yuehaoting.kotlin.getSp
@@ -25,6 +26,7 @@ import com.example.yuehaoting.musicService.service.MusicServiceRemote.getCurrent
 import com.example.yuehaoting.util.BroadcastUtil
 import timber.log.Timber
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.isPlaying
+import com.example.yuehaoting.musicService.service.MusicServiceRemote.revisePlaying
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.handlerRemoveCallbacks
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.photoCycle
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.singerPhotoUrl
@@ -37,10 +39,10 @@ import com.example.yuehaoting.util.MusicConstant.NEXT
 import com.example.yuehaoting.util.MusicConstant.PAUSE_PLAYBACK
 import com.example.yuehaoting.util.MusicConstant.PLAYER_BACKGROUND
 import com.example.yuehaoting.util.MusicConstant.PREV
-import com.example.yuehaoting.util.MusicConstant.SINGER_ID
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_CUSTOM_IMAGE
 import com.example.yuehaoting.util.MusicConstant.CURRENT_SONG
 import com.example.yuehaoting.util.MusicConstant.EXTRA_CONTROL
+import com.example.yuehaoting.util.Tag
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -258,9 +260,8 @@ class PlayActivity : PlayBaseActivity() {
         super.onPlayStateChange()
         //更新按钮状态
         val isPlay = isPlaying()
-        Timber.v("isPlay是否播放: %s", "isPlaying: $isPlaying  isPlay: $isPlay")
+        Timber.tag(Tag.isPlay).v("前台播放图标转态:%s,后台传入状态:%s,:%s",isPlaying,isPlay, LogT.lll())
         if (isPlaying != isPlay) {
-            Timber.v("isPlay不等于:%s", "isPlaying: $isPlaying" + "isPlay: $isPlay")
             updatePlayButton(isPlay)
         }
 
@@ -271,8 +272,10 @@ class PlayActivity : PlayBaseActivity() {
      */
     private fun updatePlayButton(isPlay: Boolean) {
         isPlaying = isPlay
+        Timber.tag(Tag.isPlay).v("前台播放图标更新:%s,后台传入状态:%s,:%s",isPlay,isPlaying, LogT.lll())
         binding.layoutPlayLayout.ppvPlayPause.updateStRte(isPlay, true)
-
+        revisePlaying()
+        Timber.tag(Tag.isPlay).v("======================================================================")
     }
 
     override fun onPause() {
@@ -312,6 +315,10 @@ class PlayActivity : PlayBaseActivity() {
             }) { t: Throwable? -> Timber.v(t) }
 
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
 /*    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
