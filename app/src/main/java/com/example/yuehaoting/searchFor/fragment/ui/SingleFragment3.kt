@@ -83,7 +83,7 @@ class SingleFragment3 : BaseFragment() {
                                   if(model?.songid!! < 300000)  {
                                       "没有版权".showToast(activity!!)
                                   }
-                                Timber.v("歌曲角标:%s 歌曲名称:%s", position, model.author)
+                                Timber.v("网易歌曲角标:%s 歌曲名称:%s", position, model.author)
                             }
                         }
 

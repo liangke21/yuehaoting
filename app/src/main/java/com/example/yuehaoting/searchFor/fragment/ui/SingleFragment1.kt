@@ -87,6 +87,25 @@ class SingleFragment1: BaseFragment(){
             tryNull {
                 val musicData = it.getOrNull() as KuGouSingle.Data
                 Timber.v("酷狗音乐数据观察到:%s %s", musicData.lists[0].SongName, isLoadDataForTheFirstTime)
+
+                val model=musicData.lists
+                model.forEach {
+                    val song = songDetails(it)
+                    it.apply {
+                        songLists.add(
+                            SongLists(
+                                SongName=song[0]!!,
+                                SingerName=SingerName,
+                                FileHash=FileHash,
+                                mixSongID=MixSongID,
+                                lyrics = "",
+                                album = AlbumName,
+                                pic = "",
+                                platform = KU_GOU
+                            )
+                        )
+                    }
+                }
                 if (isLoadDataForTheFirstTime) {
                     isLoadDataForTheFirstTime = false
                     viewModel.songList.addAll(musicData.lists)
@@ -100,21 +119,7 @@ class SingleFragment1: BaseFragment(){
 
                             songSoundQuality(holder, model)
 
-                            model?.apply {
-                                songLists.add(
-                                    SongLists(
-                                        SongName=song[0]!!,
-                                        SingerName=SingerName,
-                                        FileHash=FileHash,
-                                        mixSongID=MixSongID,
-                                        lyrics = "",
-                                        album = AlbumName,
-                                        pic = "",
-                                        platform = KU_GOU
-                                        )
-                                )
-                            }
-                            songPlay(holder,songLists,position,model?.MixSongID!!)
+                            songPlay(holder,position,model?.MixSongID!!)
 
                         }
                     }
@@ -155,15 +160,16 @@ class SingleFragment1: BaseFragment(){
 
     }
 
-    private fun songPlay(holder: SmartViewHolder?,  songLists: ArrayList<SongLists>, position: Int, mixSongID: String) {
+    private fun songPlay(holder: SmartViewHolder?,  position: Int, mixSongID: String) {
         holder?.itemView?.setOnClickListener {
-            Timber.v("酷狗歌曲角标:%s 歌曲名称:%s", position, songLists[0].SongName)
+            Timber.v("酷狗列表角标:%s 歌曲名称:%s", position, songLists[position].SingerName)
             if(songLists[position]== MusicServiceRemote.getCurrentSong()){
                 val intent= Intent(activity, PlayActivity::class.java)
                 intent.putExtra(MusicConstant.CURRENT_SONG,songLists[position])
                 activity?.startActivity(intent)
             }else{
                 MusicServiceRemote.setPlayQueue(songLists, musicUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(EXTRA_POSITION, position))
+
                 val intent= Intent(activity, PlayActivity::class.java)
                 intent.putExtra(MusicConstant.CURRENT_SONG,songLists[position])
                 intent.putExtra("isPlay",false)

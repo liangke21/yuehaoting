@@ -202,7 +202,7 @@ class PlayActivity : PlayBaseActivity() {
                 //获取图片连接
                 val urlList = singerPhotoUrl(it)
                 val singerId = currentSong.mixSongID
-                mCacheUrl.putToDisk(singerId.toString(), urlList)
+                mCacheUrl.putToDisk(singerId, urlList)
                 //把图片设置为背景
                 photoCycle(urlList, binding.playerContainer, resources, ::updateUi)
             }
@@ -317,9 +317,6 @@ class PlayActivity : PlayBaseActivity() {
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 
 /*    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
         if (event?.action == KeyEvent.ACTION_UP) {
