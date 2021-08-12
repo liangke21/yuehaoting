@@ -195,6 +195,7 @@ class SingleFragment2 : BaseFragment() {
 
             if (isRefresh) {
                 isRefresh = false
+                Timber.v("收起刷新")
                 binding.refreshLayout.finishRefresh()
             }
 
