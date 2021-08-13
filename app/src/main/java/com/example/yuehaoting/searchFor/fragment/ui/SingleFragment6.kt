@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.fragmet.BaseFragment
 import com.example.yuehaoting.base.recyclerView.adapter.BaseRecyclerAdapter
@@ -17,6 +18,7 @@ import com.example.yuehaoting.databinding.FragmentMusicBinding
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.kotlin.showToast
 import com.example.yuehaoting.kotlin.tryNull
+import com.example.yuehaoting.searchFor.fragment.interfacet.ListRefreshInterface
 import com.example.yuehaoting.searchFor.viewmodel.SingleFragment6ViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
@@ -27,7 +29,7 @@ import timber.log.Timber
  * 时间: 2021/8/10 12:07
  * 描述:
  */
-class SingleFragment6 : BaseFragment() {
+class SingleFragment6 : BaseFragment() ,ListRefreshInterface{
 
     private lateinit var binding: FragmentMusicBinding
 
@@ -42,6 +44,8 @@ class SingleFragment6 : BaseFragment() {
     private lateinit var mAdapter: BaseRecyclerAdapter<MiGuList.MiGuListItem>
     private val viewModel by lazyMy { ViewModelProvider(this).get(SingleFragment6ViewModel::class.java) }
 
+    private var recyclerView: RecyclerView? = null
+
     //关键字
     private var keyword = ""
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -55,10 +59,10 @@ class SingleFragment6 : BaseFragment() {
     private var page = 1
     override fun lazyInit() {
         binding.refreshLayout.setEnableFooterFollowWhenNoMoreData(true)
-        val recyclerView = binding.recyclerView
+         recyclerView = binding.recyclerView
 
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.itemAnimator = DefaultItemAnimator()
+        recyclerView?.layoutManager = LinearLayoutManager(context)
+        recyclerView?.itemAnimator = DefaultItemAnimator()
 
         if (isFirstEnter) {
             isFirstEnter = false
@@ -71,24 +75,14 @@ class SingleFragment6 : BaseFragment() {
                 if (isLoadDataForTheFirstTime) {
                     isLoadDataForTheFirstTime = false
                     viewModel.songList.addAll(musicData)
-                    mAdapter = object : BaseRecyclerAdapter<MiGuList.MiGuListItem>(viewModel.songList, R.layout.item_fragment_search_single_rv_content) {
 
-                        override fun onBindViewHolder(holder: SmartViewHolder?, model: MiGuList.MiGuListItem?, position: Int) {
-                            holder?.text(R.id.rv_fragment_search_Single_SongName, model?.name)
-
-                            holder?.text(R.id.rv_fragment_search_Single_AlbumName, songAndAlbum(model))
-                            holder?.itemView?.setOnClickListener {
-
-                                Timber.v("歌曲角标:%s 歌曲名称:%s", position, model?.name)
-                            }
-                        }
-                    }
+                    baseRecyclerAdapter()
 
                     if (isRefresh) {
                         isRefresh = false
                         binding.refreshLayout.finishRefresh()
                     }
-                    recyclerView.adapter = mAdapter
+
                 }
 
                 if (page >= 2) {
@@ -96,24 +90,8 @@ class SingleFragment6 : BaseFragment() {
                     binding.refreshLayout.finishLoadMore()
                 }
 
+                refresh()
 
-                binding.refreshLayout.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
-                    override fun onRefresh(refreshLayout: RefreshLayout) {
-                        refreshLayout.layout.postDelayed({
-                            refreshLayout.finishRefresh()
-                            Timber.v("咪咕音乐列表刷新:%s", page)
-                            refreshLayout.resetNoMoreData()
-                        }, 2000)
-                    }
-
-                    override fun onLoadMore(refreshLayout: RefreshLayout) {
-                        ++page
-                        Timber.v("咪咕音乐列表页数:%s", page)
-                        viewModel.requestParameter(page, 10, keyword)
-
-
-                    }
-                })
             } catch (e: NullPointerException) {
                 // catch 处理
                 "数据全部加载完毕".showToast(activity!!)
@@ -140,6 +118,42 @@ class SingleFragment6 : BaseFragment() {
 
     }
 
+    override fun refresh() {
+        binding.refreshLayout.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
+            override fun onRefresh(refreshLayout: RefreshLayout) {
+                refreshLayout.layout.postDelayed({
+                    refreshLayout.finishRefresh()
+                    Timber.v("咪咕音乐列表刷新:%s", page)
+                    refreshLayout.resetNoMoreData()
+                }, 2000)
+            }
+
+            override fun onLoadMore(refreshLayout: RefreshLayout) {
+                ++page
+                Timber.v("咪咕音乐列表页数:%s", page)
+                viewModel.requestParameter(page, 10, keyword)
+
+
+            }
+        })
+    }
+
+    override fun baseRecyclerAdapter() {
+        mAdapter = object : BaseRecyclerAdapter<MiGuList.MiGuListItem>(viewModel.songList, R.layout.item_fragment_search_single_rv_content) {
+
+            override fun onBindViewHolder(holder: SmartViewHolder?, model: MiGuList.MiGuListItem?, position: Int) {
+                holder?.text(R.id.rv_fragment_search_Single_SongName, model?.name)
+
+                holder?.text(R.id.rv_fragment_search_Single_AlbumName, songAndAlbum(model))
+                holder?.itemView?.setOnClickListener {
+
+                    Timber.v("歌曲角标:%s 歌曲名称:%s", position, model?.name)
+                }
+            }
+        }
+        recyclerView?.adapter = mAdapter
+    }
+
     private fun songAndAlbum(model: MiGuList.MiGuListItem?): String {
         return if (model?.album == "") {
             var ar = ""
@@ -154,5 +168,10 @@ class SingleFragment6 : BaseFragment() {
             }
             ar + "《${model?.album}》"
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        isLoadDataForTheFirstTime=true
     }
 }
