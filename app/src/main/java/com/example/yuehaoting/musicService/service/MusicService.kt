@@ -124,6 +124,12 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      */
     val isPlaying:Boolean
         get() = isPlayT
+
+    /**
+     * 后台暂停播放控制
+     */
+    private var isPlayPause=false
+
     /**
      * 当前播放的歌曲
      */
@@ -188,7 +194,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      */
     private fun setPlay(isPlay:Boolean){
         this.isPlayT=isPlay
-
+          this.isPlayPause=isPlay
         Timber.tag(Tag.isPlay).v("更新播放状态:%s,传入状态:%s,:%s",this.isPlayT,isPlay, lll())
         handler.sendEmptyMessage(UPDATE_PLAY_STATE)
     }
@@ -317,7 +323,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
         if (updateMediaSessionOnly){
             //更新锁屏
         }else{
-            if (!isPlaying){
+            if (!isPlayPause){
                 return
             }
             Timber.tag(Tag.isPlay).v("后台播放状态:%s,传入状态:%s,播放暂停:%s",isPlaying,false, lll())
