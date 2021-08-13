@@ -82,5 +82,5 @@ open class MyFragment:Fragment() {
         super.onHiddenChanged(hidden)
         Log.d(TAG, "onHiddenChanged:hidden-->$hidden")
     }
-
+    lazyOnResume()
 }

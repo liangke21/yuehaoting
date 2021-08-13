@@ -9,6 +9,7 @@ import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +23,7 @@ import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.databinding.FragmentMusicBinding
 import com.example.yuehaoting.kotlin.showToast
 import com.example.yuehaoting.kotlin.tryNull
+import com.example.yuehaoting.searchFor.fragment.interfacet.ListRefreshInterface
 import com.example.yuehaoting.searchFor.viewmodel.SingleFragment2ViewModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -34,7 +36,7 @@ import timber.log.Timber
  * 时间: 2021/6/3 22:29
  * 描述:
  */
-class SingleFragment2 : BaseFragment() {
+class SingleFragment2 : BaseFragment(),ListRefreshInterface {
     private lateinit var binding: FragmentMusicBinding
 
     //第一次进入刷新
@@ -46,7 +48,7 @@ class SingleFragment2 : BaseFragment() {
 
 
     //列表适配器
-    private lateinit var mAdapter: BaseRecyclerAdapter<DataSearch.Attributes>
+    private lateinit  var mAdapter:BaseRecyclerAdapter<DataSearch.Attributes>
     private val viewModel by lazy { ViewModelProvider(this).get(SingleFragment2ViewModel::class.java) }
 
     private var recyclerView: RecyclerView? = null
@@ -80,7 +82,6 @@ class SingleFragment2 : BaseFragment() {
 
 
                     dataAsJson(json)
-
                 }
 
             }
@@ -99,6 +100,9 @@ class SingleFragment2 : BaseFragment() {
 
         val data = activity!!.intent.getStringExtra("Single")
         viewModel.singlePlaces(data.toString())
+
+
+
         return binding.root
 
     }
@@ -111,10 +115,6 @@ class SingleFragment2 : BaseFragment() {
 
     }
 
-    override fun lazyOnResume() {
-
-    }
-
     override fun lazyInit() {
 
         val msg = Message.obtain(null, 1, 0, 0)
@@ -124,20 +124,16 @@ class SingleFragment2 : BaseFragment() {
         msg.replyTo = replyToMessage
         mMessage?.send(msg)
 
+
         binding.refreshLayout.setEnableFooterFollowWhenNoMoreData(true)
-        recyclerView = binding.recyclerView
-
-        recyclerView?.layoutManager = LinearLayoutManager(context)
-        recyclerView?.itemAnimator = DefaultItemAnimator()
-
-
-
-
         if (isFirstEnter) {
             isFirstEnter = false
             binding.refreshLayout.autoRefresh()
         }
 
+        recyclerView = binding.recyclerView
+        recyclerView?.layoutManager = LinearLayoutManager(context)
+        recyclerView?.itemAnimator = DefaultItemAnimator()
     }
 
     //页数
@@ -162,36 +158,7 @@ class SingleFragment2 : BaseFragment() {
             viewModel.singleList.addAll(appList.attributes)
             Timber.e("String转jsonString转json:%s", viewModel.singleList)
 
-            mAdapter = object : BaseRecyclerAdapter<DataSearch.Attributes>(viewModel.singleList, R.layout.item_fragment_search_single_rv_content) {
-
-                override fun onBindViewHolder(holder: SmartViewHolder?, model: DataSearch.Attributes?, position: Int) {
-                    var songName = ""
-                    var singerName = ""
-                    val songLists = model?.songTitle?.split("《")
-                    tryNull {
-                        if (model?.songTitle?.contains("》") == true) {
-                            singerName = songLists?.get(0).toString()
-                            songName = songLists?.get(1).toString().replace("》", "")
-                        }
-
-                        if (model?.songTitle?.contains("「") == true) {
-                            val songList = model.songTitle.split("「")
-                            singerName = songList[0]
-                            songName = songList[1].replace("」", "")
-                        }
-                        Timber.v("songLists:%s", songLists)
-                        Timber.v("songName:%s", songName)
-                    }
-
-                    holder?.text(R.id.rv_fragment_search_Single_SongName, songName)
-
-                    holder?.text(R.id.rv_fragment_search_Single_AlbumName, singerName)
-                    holder?.itemView?.setOnClickListener {
-
-                        Timber.v("歌曲角标:%s 歌曲名称:%s", position, model?.songTitle)
-                    }
-                }
-            }
+            baseRecyclerAdapter()
 
             if (isRefresh) {
                 isRefresh = false
@@ -199,7 +166,6 @@ class SingleFragment2 : BaseFragment() {
                 binding.refreshLayout.finishRefresh()
             }
 
-            recyclerView?.adapter = mAdapter
         }else{
             "没有该歌曲".showToast(activity!!)
         }
@@ -210,6 +176,14 @@ class SingleFragment2 : BaseFragment() {
         }
 
 
+        refresh()
+
+    }
+
+    /**
+     * 刷新
+     */
+    override fun refresh() {
         binding.refreshLayout.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
                 refreshLayout.layout.postDelayed({
@@ -237,8 +211,47 @@ class SingleFragment2 : BaseFragment() {
 
             }
         })
-
-
     }
 
+    /**
+     *数据列表
+     */
+     override fun  baseRecyclerAdapter() {
+         mAdapter = object : BaseRecyclerAdapter<DataSearch.Attributes>(viewModel.singleList, R.layout.item_fragment_search_single_rv_content) {
+
+             override fun onBindViewHolder(holder: SmartViewHolder?, model: DataSearch.Attributes?, position: Int) {
+                 var songName = ""
+                 var singerName = ""
+                 val songLists = model?.songTitle?.split("《")
+                 tryNull {
+                     if (model?.songTitle?.contains("》") == true) {
+                         singerName = songLists?.get(0).toString()
+                         songName = songLists?.get(1).toString().replace("》", "")
+                     }
+
+                     if (model?.songTitle?.contains("「") == true) {
+                         val songList = model.songTitle.split("「")
+                         singerName = songList[0]
+                         songName = songList[1].replace("」", "")
+                     }
+                     //Timber.v("songLists:%s", songLists)
+                   //  Timber.v("songName:%s", songName)
+                 }
+
+                 holder?.text(R.id.rv_fragment_search_Single_SongName, songName)
+
+                 holder?.text(R.id.rv_fragment_search_Single_AlbumName, singerName)
+                 holder?.itemView?.setOnClickListener {
+
+                     Timber.v("歌曲角标:%s 歌曲名称:%s", position, model?.songTitle)
+                 }
+             }
+         }
+        recyclerView?.adapter = mAdapter
+     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        isLoadDataForTheFirstTime=true
+    }
 }

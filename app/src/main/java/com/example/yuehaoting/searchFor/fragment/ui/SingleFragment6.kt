@@ -52,10 +52,6 @@ class SingleFragment6 : BaseFragment() {
         return binding.root
     }
 
-    override fun lazyOnResume() {
-
-    }
-
     private var page = 1
     override fun lazyInit() {
         binding.refreshLayout.setEnableFooterFollowWhenNoMoreData(true)

@@ -13,10 +13,10 @@ abstract class BaseFragment : MyFragment() {
     private var isLoaded = false
 
     override fun onResume() {
+
         super.onResume()
-        lazyOnResume()
+        Log.d(TAG, "lazyInit:!!!!!!! isLoaded=$isLoaded,isHidden=$isHidden")
         if (!isLoaded && !isHidden) {
-            Log.d(TAG, "lazyInit:!!!!!!!")
             lazyInit()
             isLoaded = true
         }
@@ -28,5 +28,5 @@ abstract class BaseFragment : MyFragment() {
     }
 
     abstract fun lazyInit()
-    abstract fun lazyOnResume()
+
 }

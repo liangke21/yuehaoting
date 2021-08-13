@@ -66,9 +66,6 @@ class SingleFragment1: BaseFragment(){
         return binding.root
     }
 
-    override fun lazyOnResume() {
-
-    }
     private var page = 1
 
     override fun lazyInit() {
@@ -220,6 +217,11 @@ class SingleFragment1: BaseFragment(){
         if (!TextUtils.isEmpty(sQFileHash)) {
             holder?.image(R.id.iv_sq,R.drawable.search_sq)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        isLoadDataForTheFirstTime=true
     }
 }
 
