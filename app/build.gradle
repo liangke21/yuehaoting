@@ -114,7 +114,8 @@ dependencies {
     implementation  'com.scwang.smart:refresh-footer-classics:2.0.3'    //经典加载
     //动态图片
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
-
+    //屏幕适配器
+    implementation 'com.github.JessYanCoding:AndroidAutoSize:v1.2.1'
 
 
 }

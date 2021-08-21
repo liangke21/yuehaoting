@@ -1,8 +1,15 @@
 package com.example.yuehaoting.base.activity
 
+import android.content.Context
+import android.os.Build
+import android.os.Bundle
+import android.telephony.TelephonyManager
+import android.util.DisplayMetrics
 import android.view.View
 import com.example.yuehaoting.theme.StatusBarUtil
 import com.example.yuehaoting.theme.ThemeStore.statusBarColor
+import com.example.yuehaoting.util.Tag
+import timber.log.Timber
 
 /**
  * 作者: 天使
@@ -10,6 +17,12 @@ import com.example.yuehaoting.theme.ThemeStore.statusBarColor
  * 描述:
  */
 open class PlayBaseActivity:BaseActivity() {
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
         setSatuBarColor()
@@ -26,5 +39,13 @@ open class PlayBaseActivity:BaseActivity() {
     protected open fun setSatuBarColor(){
        StatusBarUtil.setColorNoTranslucent(this, statusBarColor)
     }
+
+
+
+
+
+
+
+
 
 }

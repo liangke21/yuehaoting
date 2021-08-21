@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.*
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
@@ -15,10 +16,14 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.App
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.PlayBaseActivity
+import com.example.yuehaoting.base.glide.GlideApp
+import com.example.yuehaoting.base.glide.YourAppGlideModule
 import com.example.yuehaoting.base.log.LogT
+import com.example.yuehaoting.base.retrofit.SongNetwork
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.databinding.PlayActivityBinding
 import com.example.yuehaoting.kotlin.getSp
+import com.example.yuehaoting.kotlin.launchMy
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.musicService.service.MusicService
@@ -46,11 +51,12 @@ import com.example.yuehaoting.util.Tag
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import me.jessyan.autosize.internal.CustomAdapt
 import kotlin.collections.ArrayList
 import kotlin.properties.Delegates
 
 
-class PlayActivity : PlayBaseActivity() {
+class PlayActivity : PlayBaseActivity(), View.OnClickListener ,CustomAdapt{
     private lateinit var binding: PlayActivityBinding
     private val myUtil = BroadcastUtil()
 
@@ -139,6 +145,8 @@ class PlayActivity : PlayBaseActivity() {
         ).forEach {
             it.setOnClickListener(onCtrlClick)
         }
+
+        binding.llPlayIndicator.setOnClickListener(this)
     }
 
     /**
@@ -160,7 +168,7 @@ class PlayActivity : PlayBaseActivity() {
     private fun receiveIntent(currentSong: SongLists) {
         // val singerId = intent.getStringExtra(SINGER_ID)
         val singerId = currentSong.mixSongID
-        if (singerId !="2325") {
+        if (singerId != "2325") {
             val list = mCacheUrl.getFromDisk(singerId)
             Timber.v("歌手写真url缓存文件:%s", list?.size)
             if (list != null) {
@@ -181,7 +189,7 @@ class PlayActivity : PlayBaseActivity() {
                 viewModel.singerId(singerId)
             }
 
-        }else{
+        } else {
             Glide.with(App.context).asBitmap()
                 .load(R.drawable.youjing)
                 .into(object : CustomTarget<Bitmap>() {
@@ -260,7 +268,7 @@ class PlayActivity : PlayBaseActivity() {
         super.onPlayStateChange()
         //更新按钮状态
         val isPlay = isPlaying()
-        Timber.tag(Tag.isPlay).v("前台播放图标转态:%s,后台传入状态:%s,:%s",isPlaying,isPlay, LogT.lll())
+        Timber.tag(Tag.isPlay).v("前台播放图标转态:%s,后台传入状态:%s,:%s", isPlaying, isPlay, LogT.lll())
         if (isPlaying != isPlay) {
             updatePlayButton(isPlay)
         }
@@ -272,7 +280,7 @@ class PlayActivity : PlayBaseActivity() {
      */
     private fun updatePlayButton(isPlay: Boolean) {
         isPlaying = isPlay
-        Timber.tag(Tag.isPlay).v("前台播放图标更新:%s,后台传入状态:%s,:%s",isPlay,isPlaying, LogT.lll())
+        Timber.tag(Tag.isPlay).v("前台播放图标更新:%s,后台传入状态:%s,:%s", isPlay, isPlaying, LogT.lll())
         binding.layoutPlayLayout.ppvPlayPause.updateStRte(isPlay, true)
         revisePlaying()
         Timber.tag(Tag.isPlay).v("======================================================================")
@@ -317,16 +325,46 @@ class PlayActivity : PlayBaseActivity() {
 
     }
 
-
-/*    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
-        if (event?.action == KeyEvent.ACTION_UP) {
-            if (keyCode == KeyEvent.KEYCODE_BACK) {
-                moveTaskToBack(true);
-                return true;
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            binding.llPlayIndicator.id -> {
+                Timber.v("手机宽高   %s", windowManager.getDefaultDisplay())
+                showCover()
             }
+
+
+        }
+    }
+
+
+    /**
+     * 显示封面
+     */
+    private fun showCover() {
+
+        launchMy {
+            val uriID = SongNetwork.songUriID(currentSong.FileHash, "")
+            val pic= uriID.data.img
+            Glide.with(App.context).asBitmap()
+                .load(pic)
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        binding.ivPlayGuide01.setImageBitmap(resource)
+                        binding.ivPlayGuide01.scaleType= ImageView.ScaleType.CENTER_CROP
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {}
+                })
         }
 
-        return super.onKeyUp(keyCode, event)
-    }*/
 
+    }
+
+    override fun isBaseOnWidth(): Boolean {
+       return false
+    }
+
+    override fun getSizeInDp(): Float {
+       return 960f
+    }
 }

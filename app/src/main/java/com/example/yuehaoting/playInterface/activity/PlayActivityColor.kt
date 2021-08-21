@@ -89,7 +89,9 @@ class PlayActivityColor(private val binding: PlayActivityBinding,private val act
     }
 
 
-
+    /**
+     * 图标跟随背图片颜色变化
+     */
      fun updateViewsColor(swatch: Palette.Swatch){
         Timber.v("图片提取颜色:%s",swatch.rgb.toString() +"||"+ Color.parseColor("#FFFFFFFF").toString())
         //播放控件
@@ -116,6 +118,9 @@ class PlayActivityColor(private val binding: PlayActivityBinding,private val act
 
     }
 
+    /**
+     * 背景根据图片变化
+     */
     private fun startBGColorAnimation(swatch: Palette.Swatch) {
         valueAnimator?.cancel()
 

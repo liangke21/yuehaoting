@@ -372,7 +372,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
 
 
 
-        mediaPlayer.setOnErrorListener { mp, what, extra ->
+        mediaPlayer.setOnErrorListener { _, what, extra ->
             try {
                 mediaPlayer.release()
                 Log.e(what.toString(), extra.toString())
@@ -416,7 +416,6 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
         tryLaunch(block = {
          val ent=  song.platform
           Timber.v("KEY_MUSIC_PLATFORM:%s",ent)
-            Timber.v("后台播放8 准备播放: %S ", song)
             when(ent){
                KU_GOU->{
                    if (TextUtils.isEmpty(song.FileHash)) {

@@ -3,7 +3,10 @@ package com.example.yuehaoting.searchFor
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -17,17 +20,22 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
-import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
-import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.base.fragmet.BaseFragment
+import com.example.yuehaoting.data.kugou.RecordData
+import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
 import com.example.yuehaoting.searchFor.fragment.ext.MyCommonNavigator
 import com.example.yuehaoting.searchFor.fragment.ext.ScaleTransitionPagerTitleView
 import com.example.yuehaoting.searchFor.fragment.ui.*
 import com.example.yuehaoting.searchFor.pagerview.MyPagerAdapter
 import com.example.yuehaoting.searchFor.viewmodel.PlaceViewModel
+import com.example.yuehaoting.util.Tag.Display
+import com.example.yuehaoting.util.phoneAttributes.ScreenProperties
+import me.jessyan.autosize.internal.CustomAdapt
+import me.jessyan.autosize.utils.ScreenUtils
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.UIUtil
+import net.lucode.hackware.magicindicator.buildins.UIUtil.getScreenWidth
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
@@ -76,9 +84,9 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
         initView()
         //标题栏
         initMagicIndicator()
-
-
+       // ScreenProperties.phoneAttributes(this)
     }
+
 
 
     /**
@@ -91,7 +99,6 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
         etTitleBarSearch.setOnClickListener(this)
         ivTitleBarSearchBack = findViewById(R.id.iv_title_bar_search_back)
         ivTitleBarSearchBack.setOnClickListener(this)
-        etTitleBarSearch = findViewById(R.id.et_title_bar_search)
         tvTitleBarSearch = findViewById(R.id.tv_title_search)
         tvTitleBarSearch.setOnClickListener(this)
         //显示关键字内容
@@ -112,7 +119,11 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
             llContentFragment.visibility = View.GONE
             llRecyclerView.visibility = View.VISIBLE
         }
+        val rect = Rect()
+        window.decorView.getWindowVisibleDisplayFrame(rect)
 
+        val statusBarHeight: Int = rect.top //状态栏高度
+        Timber.v("状态栏高度%s",statusBarHeight)
     }
 
     private fun adapterOnClickListener() {
@@ -299,5 +310,6 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
 
         }
     }
+
 
 }

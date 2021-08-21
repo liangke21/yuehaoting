@@ -25,7 +25,7 @@
 
     <EditText
       android:id="@+id/et_title_bar_search"
-      android:layout_width="300dp"
+      android:layout_width="280dp"
       android:layout_height="35dp"
       android:layout_gravity="center_vertical"
       android:layout_marginStart="10dp"
@@ -38,7 +38,7 @@
 
     <TextView
       android:id="@+id/tv_title_search"
-      android:layout_width="wrap_content"
+      android:layout_width="36dp"
       android:layout_height="wrap_content"
       android:layout_gravity="center_vertical"
       android:text="搜索"
@@ -51,6 +51,7 @@
     android:layout_height="match_parent"
     android:layout_below="@+id/actionBarLayout"
     android:id="@+id/ll_recyclerView"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <androidx.recyclerview.widget.RecyclerView

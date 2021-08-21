@@ -6,6 +6,8 @@ import com.example.yuehaoting.base.retrofit.SongNetwork
 import com.example.yuehaoting.kotlin.launchMy
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.searchFor.livedata.Repository
+import com.example.yuehaoting.util.phoneAttributes.ScreenProperties
+import com.example.yuehaoting.util.phoneAttributes.ScreenUtils
 import timber.log.Timber
 
 /**
@@ -22,7 +24,7 @@ class App : InitApplication() {
         super.onCreate()
         context = this
       test()
-
+    ScreenProperties.phoneAttributes(this)
     }
 
 

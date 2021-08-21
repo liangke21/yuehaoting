@@ -1,14 +1,21 @@
 package com.example.yuehaoting.base.application
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import android.os.Build
+import android.telephony.TelephonyManager
+import android.util.DisplayMetrics
+import android.view.ViewManager
 import com.example.yuehaoting.R
+import com.example.yuehaoting.util.Tag
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.header.ClassicsHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.scwang.smart.refresh.layout.api.RefreshFooter
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.DefaultRefreshFooterCreator
+import timber.log.Timber
 
 
 /**
@@ -16,7 +23,7 @@ import com.scwang.smart.refresh.layout.listener.DefaultRefreshFooterCreator
  * 时间: 2021/8/1 9:37
  * 描述:
  */
-open class InitApplication :Application(){
+open class InitApplication : Application() {
     init {
 
         //设置全局的Header构建器
@@ -30,5 +37,4 @@ open class InitApplication :Application(){
             ClassicsFooter(context).setDrawableSize(20f)
         }
     }
-
 }

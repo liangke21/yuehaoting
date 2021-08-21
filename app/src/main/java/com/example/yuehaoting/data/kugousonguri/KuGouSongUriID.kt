@@ -10,6 +10,7 @@ data class KuGouSongUriID(
 ) {
     data class Data(
         var album_id: String,
-        var play_url:String
+        var play_url:String,
+        val img:String
     )
 }

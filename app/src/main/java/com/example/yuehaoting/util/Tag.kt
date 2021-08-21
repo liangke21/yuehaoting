@@ -6,6 +6,8 @@ package com.example.yuehaoting.util
  * 描述:
  */
 object Tag {
+    const val  Display="手机属性"
+
     const val play = "播放器生命周期"
 
     const val isPlay="播放图标转态"

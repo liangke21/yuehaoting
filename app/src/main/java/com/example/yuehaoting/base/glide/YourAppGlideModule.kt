@@ -3,7 +3,7 @@ package com.example.yuehaoting.base.glide
 import android.content.Context
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.annotation.GlideModule
-import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory
+import com.bumptech.glide.load.engine.cache.ExternalPreferredCacheDiskCacheFactory
 import com.bumptech.glide.module.AppGlideModule
 
 /**
@@ -15,7 +15,7 @@ import com.bumptech.glide.module.AppGlideModule
 class YourAppGlideModule: AppGlideModule (){
     override fun applyOptions(context: Context, builder: GlideBuilder) {
       val diskCacheSizeBytes = 1024 *1024 *100
-        builder.setDiskCache(ExternalCacheDiskCacheFactory(context,"Photo", diskCacheSizeBytes))
+        builder.setDiskCache(ExternalPreferredCacheDiskCacheFactory(context,"Photo", diskCacheSizeBytes.toLong()))
     }
 }
 
