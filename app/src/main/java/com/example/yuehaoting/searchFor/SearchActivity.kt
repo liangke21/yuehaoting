@@ -1,6 +1,7 @@
 package com.example.yuehaoting.searchFor
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Rect
@@ -15,11 +16,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
+import com.example.yuehaoting.App
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
+import com.example.yuehaoting.base.activity.SmMainActivity
 import com.example.yuehaoting.base.fragmet.BaseFragment
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
@@ -28,6 +32,8 @@ import com.example.yuehaoting.searchFor.fragment.ext.ScaleTransitionPagerTitleVi
 import com.example.yuehaoting.searchFor.fragment.ui.*
 import com.example.yuehaoting.searchFor.pagerview.MyPagerAdapter
 import com.example.yuehaoting.searchFor.viewmodel.PlaceViewModel
+import com.example.yuehaoting.util.BroadcastUtil
+import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.Tag.Display
 import com.example.yuehaoting.util.phoneAttributes.ScreenProperties
 import me.jessyan.autosize.internal.CustomAdapt
@@ -85,6 +91,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
         //标题栏
         initMagicIndicator()
        // ScreenProperties.phoneAttributes(this)
+
     }
 
 
@@ -275,6 +282,9 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
             R.id.iv_title_bar_search_back -> {
             }
             R.id.tv_title_search -> {
+                val intent=Intent(MusicConstant.PLAY_DATA_CHANGES)
+             //   sendBroadcast(intent)
+                LocalBroadcastManager.getInstance(App.context).sendBroadcast(intent)
 
                val i= etTitleBarSearch.text.toString()
 

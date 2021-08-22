@@ -9,12 +9,14 @@ import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
+import android.util.Log
 import android.util.Property
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import com.example.yuehaoting.R
+import timber.log.Timber
 
 /**
  * 作者: 天使
@@ -37,7 +39,7 @@ class PlayPauseView(context: Context, attrs: AttributeSet) : FrameLayout(context
     //播放暂停动画持续时间
 private val playPauseAnimationDuration = 250L
     //播放暂停绘制类
-    private lateinit var mDrawable: PlayPauseDrawable
+    private var mDrawable: PlayPauseDrawable
     //画
     private val mPaint=Paint()
     //动画
@@ -111,6 +113,7 @@ private val playPauseAnimationDuration = 250L
      * 显示播放暂停动画
      */
     fun initState(isPlay:Boolean){
+        Timber.e("图标状态333333,%s",isPlay)
         if (isPlay){
             mDrawable.setPlay()
         }else{
@@ -118,6 +121,7 @@ private val playPauseAnimationDuration = 250L
         }
     }
     fun updateStRte(isPlay: Boolean,withAnim:Boolean){
+        Timber.e("图标状态,%s,%s",isPlay,mDrawable.isPlay)
         if (mDrawable.isPlay != isPlay){
             return
         }
@@ -130,7 +134,7 @@ private val playPauseAnimationDuration = 250L
             withAnim.let {
                 mAnimator?.cancel()
             }
-
+            Timber.e("图标状态111111111,%s",withAnim)
             mAnimator=mDrawable.pausePlayAnimator
             mAnimator?.interpolator = DecelerateInterpolator()
             mAnimator?.duration = playPauseAnimationDuration

@@ -9,6 +9,8 @@ import android.content.IntentFilter
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.yuehaoting.App
 import com.example.yuehaoting.App.Companion.context
+import com.example.yuehaoting.kotlin.launchMain
+import com.example.yuehaoting.util.Tag.Broadcast
 import timber.log.Timber
 
 
@@ -17,11 +19,12 @@ import timber.log.Timber
  * 时间: 2021/6/10 17:41
  * 描述: 我的工具类
  */
-class BroadcastUtil {
+object BroadcastUtil {
     /**
      * 注册本地Receiver
      */
     fun registerLocalReceiver(receiver: BroadcastReceiver,filter: IntentFilter){
+        Timber.tag(Broadcast).v("注册广播: %s",filter.toString())
         LocalBroadcastManager.getInstance(App.context).registerReceiver(receiver,filter)
     }
 
@@ -31,9 +34,10 @@ class BroadcastUtil {
     /**
      * 发送本地广播
      */
-    fun sendLocalBroadcast(intent: Intent){
-    LocalBroadcastManager.getInstance(App.context).sendBroadcast(intent)
-}
+    fun sendLocalBroadcast(intent: Intent) {
+        Timber.tag(Broadcast).v("发送广播: %s", intent)
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+    }
 
     /**
      * 判断app是否运行在前台

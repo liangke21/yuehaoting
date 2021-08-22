@@ -29,9 +29,11 @@ import com.example.yuehaoting.musicService.service.MusicServiceRemote.revisePlay
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.handlerRemoveCallbacks
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.photoCycle
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.singerPhotoUrl
+import com.example.yuehaoting.playInterface.framelayou.PlayPauseView
 import com.example.yuehaoting.playInterface.viewmodel.PlayViewModel
 import com.example.yuehaoting.theme.*
 import com.example.yuehaoting.util.BroadcastUtil
+import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.MusicConstant.ACTION_CMD
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_ADAPTIVE_COLOR
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_CUSTOM_IMAGE
@@ -52,13 +54,14 @@ import kotlin.properties.Delegates
 
 class PlayActivity : PlayBaseActivity(), View.OnClickListener {
     private lateinit var binding: PlayActivityBinding
-    private val myUtil = BroadcastUtil()
+   // private val myUtil = BroadcastUtil()
 
     private val viewModel by lazyMy { ViewModelProvider(this).get(PlayViewModel::class.java) }
     private val mCacheUrl = CacheUrl()
 
     private lateinit var playActivityColor: PlayActivityColor
 
+    private lateinit var ppvPlayPause:PlayPauseView
     /**
      * 当前是否播放
      */
@@ -139,6 +142,9 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
     private fun initView() {
         binding.ivPlayGuide01.visibility = View.GONE
 
+        ppvPlayPause=findViewById(R.id.ppv_play_pause)
+
+        binding.layoutPlayLayout.ibPlayPlayMode.setOnClickListener(this)
         arrayOf(
             binding.layoutPlayLayout.ibPlayPreviousSong,
             binding.layoutPlayLayout.flPlayContainer,
@@ -238,7 +244,7 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
             }
         }
 
-        myUtil.sendLocalBroadcast(intent)
+        BroadcastUtil.sendLocalBroadcast(intent)
     }
 
     private val observableCurrentSong = ObservableCurrentSong()
@@ -278,10 +284,10 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
     override fun onPlayStateChange() {
         super.onPlayStateChange()
         //更新按钮状态
-        val isPlay = isPlaying()
-        Timber.tag(Tag.isPlay).v("前台播放图标转态:%s,后台传入状态:%s,:%s", isPlaying, isPlay, LogT.lll())
-        if (isPlaying != isPlay) {
-            updatePlayButton(isPlay)
+        val isPlayful = isPlaying()
+        Timber.tag(Tag.isPlay).v("前台播放图标转态:%s,后台传入状态:%s,:%s", isPlaying, isPlayful, LogT.lll())
+        if (isPlaying != isPlayful) {
+            updatePlayButton(isPlayful)
         }
 
     }
@@ -289,19 +295,21 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
     /**
      * 更新播放暂停按钮
      */
-    private fun updatePlayButton(isPlay: Boolean) {
-        isPlaying = isPlay
-        Timber.tag(Tag.isPlay).v("前台播放图标更新:%s,后台传入状态:%s,:%s", isPlay, isPlaying, LogT.lll())
-        binding.layoutPlayLayout.ppvPlayPause.updateStRte(isPlay, true)
+    private fun updatePlayButton(isPlayful: Boolean) {
+        isPlaying = isPlayful
+        Timber.tag(Tag.isPlay).v("前台播放图标更新:%s,后台传入状态:%s,:%s", isPlayful, isPlaying, LogT.lll())
+        ppvPlayPause.updateStRte(isPlayful, true)
         //封面图片旋转
         // binding.ivPlayGuide01.setRotate(isPlay)
         revisePlaying()
-        Timber.tag(Tag.isPlay).v("======================================================================")
+        Timber.tag(Tag.isPlay).v("======================================================================:%s",currentSong.SongName)
     }
 
     override fun onPause() {
         //结束写真幻影灯片
         handlerRemoveCallbacks()
+        finish()
+
         super.onPause()
 
     }
@@ -355,10 +363,10 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
                     backgroundMode=true
                     receiveIntent(currentSong)
                 }
-
             }
-
-
+binding.layoutPlayLayout.ibPlayPlayMode.id->{
+    BroadcastUtil.sendLocalBroadcast(Intent(MusicConstant.PLAY_DATA_CHANGES))
+}
         }
     }
 
@@ -382,11 +390,12 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
                 .load(pic)
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        binding.ivPlayGuide01.visibility = View.VISIBLE
+                        binding.ivPlayGuide01.setImageBitmap(resource)
                         //结束写真幻影灯片
                         handlerRemoveCallbacks()
                         updateUi(resource, true)
-                        binding.ivPlayGuide01.visibility = View.VISIBLE
-                        binding.ivPlayGuide01.setImageBitmap(resource)
+
 
                     }
 

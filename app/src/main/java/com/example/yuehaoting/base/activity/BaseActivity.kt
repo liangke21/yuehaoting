@@ -14,6 +14,7 @@ import com.example.yuehaoting.util.MusicConstant.PLAYLIST_CHANGE
 import com.example.yuehaoting.util.MusicConstant.PLAY_DATA_CHANGES
 import com.example.yuehaoting.util.MusicConstant.PLAY_STATE_CHANGE
 import com.example.yuehaoting.util.MusicConstant.TAG_CHANGE
+import com.example.yuehaoting.util.Tag
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -25,8 +26,8 @@ import java.lang.ref.WeakReference
  */
 open class BaseActivity : SmMainActivity(), MusicEvenCallback {
     private var TAG = this::class.java.simpleName
-    private var util = BroadcastUtil()
-    private var myUtil = BroadcastUtil()
+   // private var util = BroadcastUtil()
+  //  private var myUtil = BroadcastUtil()
     private var serviceToken: MusicServiceRemote.ServiceToken? = null
 
     //待绑定的服务
@@ -61,7 +62,7 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
      * Activity传递消息 Service
      */
     private fun binToService() {
-        if (!util.isAppOnForeground()) {
+        if (!BroadcastUtil.isAppOnForeground()) {
             Timber.tag(TAG).v("bindToService(),app isn't on foreground APP 不在前台")
             pendingBindService = true
             return
@@ -112,23 +113,30 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
 
     }
 
-
+    /**
+     * 每个Activity连接都会执行onServiceConnected
+     * if(TAG =="PlayActivity") 是判断这个活动可以注册广播
+     * 有其他活动,后期加判断,
+     */
     override fun onServiceConnected(service: MusicService) {
-        Timber.tag(TAG).v("服务连接上2,$service  $receiverRegistered")
-        if (!receiverRegistered) {
-            musicStateReceiver = MusicStatReceiver(this)
-            val filter = IntentFilter()
-            filter.addAction(PLAYLIST_CHANGE) //播放列表变化
-            filter.addAction(PERMISSION_CHANGE) //权限变更
-            filter.addAction(MEDIA_STORE_CHANGE) //媒体商店的变化
-            filter.addAction(PLAY_DATA_CHANGES) //播放时数据变化
-            filter.addAction(PLAY_STATE_CHANGE) //播放状态变化
-            filter.addAction(TAG_CHANGE)//歌曲标签发生变化
-            myUtil.registerLocalReceiver(musicStateReceiver!!, filter)
-            receiverRegistered = true
-        }
+        Timber.tag(TAG).v("服务连接上2,${service}  $receiverRegistered  $TAG")
 
-        musicStateHandler = MusicStatHandler(this)
+        if(TAG =="PlayActivity") {
+            if (!receiverRegistered) {
+                musicStateReceiver = MusicStatReceiver(this)
+                Timber.tag(Tag.Broadcast).v("MusicStatReceiver(this): %s", musicStateReceiver.toString())
+                val filter = IntentFilter()
+                filter.addAction(PLAYLIST_CHANGE) //播放列表变化
+                filter.addAction(PERMISSION_CHANGE) //权限变更
+                filter.addAction(MEDIA_STORE_CHANGE) //媒体商店的变化
+                filter.addAction(PLAY_DATA_CHANGES) //播放时数据变化
+                filter.addAction(PLAY_STATE_CHANGE) //播放状态变化
+                filter.addAction(TAG_CHANGE)//歌曲标签发生变化
+                BroadcastUtil.registerLocalReceiver(musicStateReceiver!!, filter)
+                receiverRegistered = true
+            }
+            musicStateHandler = MusicStatHandler(this)
+        }
 
     }
 
@@ -156,6 +164,7 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
         private val ref: WeakReference<BaseActivity> = WeakReference(activity)
 
         override fun onReceive(context: Context, intent: Intent) {
+            Timber.tag(Tag.Broadcast).v("接收广播: %s", intent.action)
             ref.get()?.musicStateHandler?.let {
                 val action = intent.action
                 val msg = it.obtainMessage(action.hashCode())
@@ -171,8 +180,16 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
 
     override fun onServiceDisConnected() {
         if (receiverRegistered) {
-            util.unregisterLocalReceiver(musicStateReceiver!!)
+            BroadcastUtil.unregisterLocalReceiver(musicStateReceiver!!)
         }
         musicStateHandler?.removeCallbacksAndMessages(null)
     }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        //重点,每次销毁Activity,注销广播
+        BroadcastUtil.unregisterLocalReceiver(musicStateReceiver!!)
+    }
+
 }

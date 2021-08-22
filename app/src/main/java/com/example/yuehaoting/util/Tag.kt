@@ -14,4 +14,8 @@ object Tag {
 
     const val playColor="播放界面颜色"
 
+    const val sMService="Service生命周期"
+
+    const val Broadcast="广播收发器"
+
 }

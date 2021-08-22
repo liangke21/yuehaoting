@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.util.Log
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.util.BroadcastUtil
 import com.example.yuehaoting.util.MusicConstant.PLAY_DATA_CHANGES
@@ -20,7 +21,7 @@ import java.lang.ref.WeakReference
  */
 class MusicServiceHandler(service: MusicService, private val musicServiceHandlerData: MusicServiceHandlerData): Handler(Looper.getMainLooper()) {
 
-    private val broadcastUtil=BroadcastUtil()
+    //private val broadcastUtil=BroadcastUtil()
     private val wrf:WeakReference<MusicService> = WeakReference(service)
     override fun handleMessage(msg: Message) {
         if (wrf.get() == null){
@@ -43,7 +44,7 @@ class MusicServiceHandler(service: MusicService, private val musicServiceHandler
           return
       }
 
-      broadcastUtil.sendLocalBroadcast(Intent(PLAY_STATE_CHANGE))
+        BroadcastUtil.sendLocalBroadcast(Intent(PLAY_STATE_CHANGE))
   }
 
 
@@ -53,7 +54,7 @@ class MusicServiceHandler(service: MusicService, private val musicServiceHandler
 
 
     private fun updatePlaybackData(){
-        broadcastUtil.sendLocalBroadcast(Intent(PLAY_DATA_CHANGES))
+        BroadcastUtil.sendLocalBroadcast(Intent(PLAY_DATA_CHANGES))
     }
 }
 

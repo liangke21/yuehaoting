@@ -94,7 +94,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
     /**
      * 初始化工具类
      */
-    var myUtil = BroadcastUtil()
+   // var myUtil = BroadcastUtil()
 
     //音频兼容器
     private val audioAttributes = AudioAttributesCompat.Builder().run {
@@ -163,7 +163,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
     }
 //_______________________________________||______________________________________________________________________________________________________
     private fun setUp() {
-        myUtil.registerLocalReceiver(controlReceiver, IntentFilter(ACTION_CMD))
+    BroadcastUtil.registerLocalReceiver(controlReceiver, IntentFilter(ACTION_CMD))
         setUpPlayer()
     }
 
