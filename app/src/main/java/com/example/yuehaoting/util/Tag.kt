@@ -12,4 +12,6 @@ object Tag {
 
     const val isPlay="播放图标转态"
 
+    const val playColor="播放界面颜色"
+
 }

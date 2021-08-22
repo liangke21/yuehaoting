@@ -45,7 +45,7 @@ object SingerPhoto {
 
     private  var isRunnable:Boolean = false
     private lateinit var myRunnable : Runnable
-    fun photoCycle(url: ArrayList<String>, fl: CoordinatorLayout, resources: Resources, block:(Bitmap)->Unit) {
+    fun photoCycle(url: ArrayList<String>, fl: CoordinatorLayout, resources: Resources, block:(Bitmap,Boolean)->Unit) {
         var count = -1
         if (url.size == 0) {
             Glide.with(App.context).asBitmap()
@@ -73,7 +73,7 @@ object SingerPhoto {
                      .into(object : CustomTarget<Bitmap>() {
                          override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                              fl.background=BitmapDrawable(resources,resource)
-                             block(resource)
+                             block(resource,false)
                          }
 
                          override fun onLoadCleared(placeholder: Drawable?) {}

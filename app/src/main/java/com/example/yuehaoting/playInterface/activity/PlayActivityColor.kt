@@ -16,6 +16,7 @@ import com.example.yuehaoting.kotlin.getSp
 import com.example.yuehaoting.theme.*
 import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.SetPixelUtil
+import com.example.yuehaoting.util.Tag.playColor
 import timber.log.Timber
 
 /**
@@ -92,8 +93,8 @@ class PlayActivityColor(private val binding: PlayActivityBinding,private val act
     /**
      * 图标跟随背图片颜色变化
      */
-     fun updateViewsColor(swatch: Palette.Swatch){
-        Timber.v("图片提取颜色:%s",swatch.rgb.toString() +"||"+ Color.parseColor("#FFFFFFFF").toString())
+     fun updateViewsColor(swatch: Palette.Swatch,boolean: Boolean){
+        Timber.tag(playColor).v("歌手写真图片颜色:%s",swatch.rgb.toString() +"||"+ Color.parseColor("#FFFFFFFF").toString())
         //播放控件
         binding.layoutPlayLayout.apply {
             //  ibPlayPreviousSong.setColorFilter(swatch.rgb,PorterDuff.Mode.SRC)
@@ -115,6 +116,10 @@ class PlayActivityColor(private val binding: PlayActivityBinding,private val act
 
         //播放列队
         Theme.tintDrawable(binding.layoutPlayLayout.ibMusicList, R.drawable.play_btn_normal_list, -1)
+        //是否开启背景图片为颜色
+          if (boolean){
+              startBGColorAnimation(swatch)
+          }
 
     }
 

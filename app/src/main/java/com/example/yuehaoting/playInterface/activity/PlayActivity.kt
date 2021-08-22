@@ -7,29 +7,23 @@ import android.graphics.Color
 import android.graphics.drawable.*
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.*
 import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.App
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.PlayBaseActivity
-import com.example.yuehaoting.base.glide.GlideApp
-import com.example.yuehaoting.base.glide.YourAppGlideModule
 import com.example.yuehaoting.base.log.LogT
 import com.example.yuehaoting.base.retrofit.SongNetwork
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.databinding.PlayActivityBinding
-import com.example.yuehaoting.kotlin.getSp
-import com.example.yuehaoting.kotlin.launchMy
-import com.example.yuehaoting.kotlin.lazyMy
-import com.example.yuehaoting.kotlin.tryNull
+import com.example.yuehaoting.kotlin.*
 import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.getCurrentSong
-import com.example.yuehaoting.util.BroadcastUtil
-import timber.log.Timber
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.isPlaying
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.revisePlaying
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.handlerRemoveCallbacks
@@ -37,26 +31,26 @@ import com.example.yuehaoting.playInterface.activity.SingerPhoto.photoCycle
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.singerPhotoUrl
 import com.example.yuehaoting.playInterface.viewmodel.PlayViewModel
 import com.example.yuehaoting.theme.*
+import com.example.yuehaoting.util.BroadcastUtil
 import com.example.yuehaoting.util.MusicConstant.ACTION_CMD
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_ADAPTIVE_COLOR
+import com.example.yuehaoting.util.MusicConstant.BACKGROUND_CUSTOM_IMAGE
+import com.example.yuehaoting.util.MusicConstant.CURRENT_SONG
+import com.example.yuehaoting.util.MusicConstant.EXTRA_CONTROL
 import com.example.yuehaoting.util.MusicConstant.NAME
 import com.example.yuehaoting.util.MusicConstant.NEXT
 import com.example.yuehaoting.util.MusicConstant.PAUSE_PLAYBACK
 import com.example.yuehaoting.util.MusicConstant.PLAYER_BACKGROUND
 import com.example.yuehaoting.util.MusicConstant.PREV
-import com.example.yuehaoting.util.MusicConstant.BACKGROUND_CUSTOM_IMAGE
-import com.example.yuehaoting.util.MusicConstant.CURRENT_SONG
-import com.example.yuehaoting.util.MusicConstant.EXTRA_CONTROL
 import com.example.yuehaoting.util.Tag
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import me.jessyan.autosize.internal.CustomAdapt
-import kotlin.collections.ArrayList
+import timber.log.Timber
 import kotlin.properties.Delegates
 
 
-class PlayActivity : PlayBaseActivity(), View.OnClickListener ,CustomAdapt{
+class PlayActivity : PlayBaseActivity(), View.OnClickListener {
     private lateinit var binding: PlayActivityBinding
     private val myUtil = BroadcastUtil()
 
@@ -85,9 +79,14 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener ,CustomAdapt{
     }
 
     /**
-     * 更新封面
+     * 第一次更新封面
      */
     private var isUpdateReceiveIntent by Delegates.notNull<Boolean>()
+
+    /**
+     * 写真背景
+     */
+    private var isPhotoBackground = true
 
     override fun setSatuBarColor() {
         when (background) {
@@ -138,6 +137,8 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener ,CustomAdapt{
 
     //初始化控件
     private fun initView() {
+        binding.ivPlayGuide01.visibility = View.GONE
+
         arrayOf(
             binding.layoutPlayLayout.ibPlayPreviousSong,
             binding.layoutPlayLayout.flPlayContainer,
@@ -242,6 +243,10 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener ,CustomAdapt{
 
     private val observableCurrentSong = ObservableCurrentSong()
     private var recordingCurrentSong: String? = ""
+
+    /**
+     * 元数据更改
+     */
     override fun onMetaChanged() {
         super.onMetaChanged()
         currentSong = getCurrentSong()
@@ -249,10 +254,16 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener ,CustomAdapt{
         updateTopStatus(currentSong)
 
         observableCurrentSong.nameCurrentSong = currentSong.mixSongID
-
+       Timber.v("好大一个BUG,好大一个BUG %s,%s,%s",recordingCurrentSong != currentSong.mixSongID,isUpdateReceiveIntent,isPhotoBackground)
         if (recordingCurrentSong != currentSong.mixSongID && isUpdateReceiveIntent) {
+            Timber.e("好大一个BUG,好大一个BUG,好大一个BUG,好大一个BUG,好大一个BUG2:%s",isPhotoBackground)
             //更新封面
-            receiveIntent(currentSong)
+                if (isPhotoBackground){
+                    receiveIntent(currentSong)
+                }else{
+                    showCover()
+                }
+
             recordingCurrentSong = currentSong.mixSongID
         }
         isUpdateReceiveIntent = true
@@ -282,6 +293,8 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener ,CustomAdapt{
         isPlaying = isPlay
         Timber.tag(Tag.isPlay).v("前台播放图标更新:%s,后台传入状态:%s,:%s", isPlay, isPlaying, LogT.lll())
         binding.layoutPlayLayout.ppvPlayPause.updateStRte(isPlay, true)
+        //封面图片旋转
+        // binding.ivPlayGuide01.setRotate(isPlay)
         revisePlaying()
         Timber.tag(Tag.isPlay).v("======================================================================")
     }
@@ -298,7 +311,7 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener ,CustomAdapt{
      * Bitmap 里面获取颜色
      */
     @SuppressLint("CheckResult")
-    fun updateUi(bitmap: Bitmap) {
+    fun updateUi(bitmap: Bitmap, boolean: Boolean) {
 
         Single.fromCallable { bitmap }.map { result ->
             val palette = Palette.from(result).generate()
@@ -319,17 +332,30 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener ,CustomAdapt{
                 if (swatch == null) {
                     return@subscribe
                 }
-                playActivityColor.updateViewsColor(swatch)
+                playActivityColor.updateViewsColor(swatch, boolean)
             }) { t: Throwable? -> Timber.v(t) }
 
 
     }
 
+    /**
+     * 背景模式
+     */
+    private var backgroundMode=true
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.llPlayIndicator.id -> {
-                Timber.v("手机宽高   %s", windowManager.getDefaultDisplay())
-                showCover()
+                if (backgroundMode){
+                    isPhotoBackground=false
+                    showCover()
+                    backgroundMode=false
+                }else{
+                    isPhotoBackground=true
+                    binding.ivPlayGuide01.visibility = View.GONE
+                    backgroundMode=true
+                    receiveIntent(currentSong)
+                }
+
             }
 
 
@@ -340,17 +366,28 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener ,CustomAdapt{
     /**
      * 显示封面
      */
+    @SuppressLint("CheckResult")
     private fun showCover() {
+        //图片圆角
+        val requestOptions = RequestOptions()
+        // requestOptions.placeholder(R.drawable.ic_launcher_background)
+        RequestOptions.circleCropTransform()
+        requestOptions.transform(RoundedCorners(30))
 
-        launchMy {
+        launchMain {
             val uriID = SongNetwork.songUriID(currentSong.FileHash, "")
-            val pic= uriID.data.img
+            val pic = uriID.data.img
             Glide.with(App.context).asBitmap()
+                .apply(requestOptions)
                 .load(pic)
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        //结束写真幻影灯片
+                        handlerRemoveCallbacks()
+                        updateUi(resource, true)
+                        binding.ivPlayGuide01.visibility = View.VISIBLE
                         binding.ivPlayGuide01.setImageBitmap(resource)
-                        binding.ivPlayGuide01.scaleType= ImageView.ScaleType.CENTER_CROP
+
                     }
 
                     override fun onLoadCleared(placeholder: Drawable?) {}
@@ -360,11 +397,5 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener ,CustomAdapt{
 
     }
 
-    override fun isBaseOnWidth(): Boolean {
-       return false
-    }
 
-    override fun getSizeInDp(): Float {
-       return 960f
-    }
 }

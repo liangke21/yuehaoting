@@ -5,10 +5,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
@@ -23,8 +25,11 @@ import kotlin.reflect.KProperty
  * 描述:
  */
 
-//协程作用域
 
+
+/**
+ * 协程作用域
+ */
 fun launchMy(
     context: CoroutineContext = EmptyCoroutineContext,
     start: CoroutineStart = CoroutineStart.DEFAULT,
@@ -36,6 +41,18 @@ fun launchMy(
     }
 }
 
+/**
+ * 主线程协程
+ */
+fun launchMain(
+    context: CoroutineContext = EmptyCoroutineContext,
+    block: suspend () -> Unit,
+){
+    val c= CoroutineScope(context)
+    c.launch(Dispatchers.Main) {
+        block()
+    }
+}
 /**
  * 异常封装
  */

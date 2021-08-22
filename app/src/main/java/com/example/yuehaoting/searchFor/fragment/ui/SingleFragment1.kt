@@ -92,7 +92,7 @@ class SingleFragment1: BaseFragment(){
                         songLists.add(
                             SongLists(
                                 SongName=song[0]!!,
-                                SingerName=SingerName,
+                                SingerName=song[1]!!,
                                 FileHash=FileHash,
                                 mixSongID=MixSongID,
                                 lyrics = "",
