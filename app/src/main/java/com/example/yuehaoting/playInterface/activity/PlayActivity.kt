@@ -57,14 +57,15 @@ import kotlin.properties.Delegates
 
 class PlayActivity : PlayBaseActivity(), View.OnClickListener {
     private lateinit var binding: PlayActivityBinding
-   // private val myUtil = BroadcastUtil()
+    // private val myUtil = BroadcastUtil()
 
     private val viewModel by lazyMy { ViewModelProvider(this).get(PlayViewModel::class.java) }
     private val mCacheUrl = CacheUrl()
-    private val mCacheString=CacheString()
+    private val mCacheString = CacheString()
     private lateinit var playActivityColor: PlayActivityColor
 
-    private lateinit var ppvPlayPause:PlayPauseView
+    private lateinit var ppvPlayPause: PlayPauseView
+
     /**
      * 当前是否播放
      */
@@ -80,7 +81,7 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
      */
     private val background by lazyMy {
         getSp(this, NAME) {
-            getInt(PLAYER_BACKGROUND, BACKGROUND_ADAPTIVE_COLOR)
+            getInt(PLAYER_BACKGROUND, BACKGROUND_CUSTOM_IMAGE)
         }
     }
 
@@ -113,7 +114,8 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
                         }
 
                         override fun onLoadCleared(placeholder: Drawable?) {}
-                    })
+                    }
+                    )
             }
         }
     }
@@ -131,7 +133,7 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
         //初始化字符集合缓存
         mCacheUrl.init(this)
         //字符集合
-        mCacheString.init(this,"Cover")
+        mCacheString.init(this, "Cover")
         //初始化ActivityColor
         playActivityColor = PlayActivityColor(binding, this)
 
@@ -147,7 +149,7 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
     private fun initView() {
         binding.ivPlayGuide01.visibility = View.GONE
 
-        ppvPlayPause=findViewById(R.id.ppv_play_pause)
+        ppvPlayPause = findViewById(R.id.ppv_play_pause)
 
         binding.layoutPlayLayout.ibPlayPlayMode.setOnClickListener(this)
         arrayOf(
@@ -267,11 +269,11 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
         observableCurrentSong.nameCurrentSong = currentSong.mixSongID
         if (recordingCurrentSong != currentSong.mixSongID && isUpdateReceiveIntent) {
             //更新封面
-                if (isPhotoBackground){
-                    receiveIntent(currentSong)
-                }else{
-                    showCover()
-                }
+            if (isPhotoBackground) {
+                receiveIntent(currentSong)
+            } else {
+                showCover()
+            }
 
             recordingCurrentSong = currentSong.mixSongID
         }
@@ -305,7 +307,7 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
         //封面图片旋转
         // binding.ivPlayGuide01.setRotate(isPlay)
         revisePlaying()
-        Timber.tag(Tag.isPlay).v("======================================================================:%s",currentSong.SongName)
+        Timber.tag(Tag.isPlay).v("======================================================================:%s", currentSong.SongName)
     }
 
     override fun onPause() {
@@ -352,26 +354,28 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
     /**
      * 背景模式
      */
-    private var backgroundMode=true
+    private var backgroundMode = true
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.llPlayIndicator.id -> {
-                if (backgroundMode){
-                    isPhotoBackground=false
+                if (backgroundMode) {
+                    isPhotoBackground = false
                     Timber.e("===============================================================================")
+                    //结束写真幻影灯片
+                    handlerRemoveCallbacks()
                     showCover()
-                    backgroundMode=false
-                }else{
-                    isPhotoBackground=true
+                    backgroundMode = false
+                } else {
+                    isPhotoBackground = true
                     binding.ivPlayGuide01.visibility = View.GONE
-                    backgroundMode=true
+                    backgroundMode = true
                     receiveIntent(currentSong)
 
                 }
             }
-binding.layoutPlayLayout.ibPlayPlayMode.id->{
+            binding.layoutPlayLayout.ibPlayPlayMode.id -> {
 
-}
+            }
         }
     }
 
@@ -391,9 +395,9 @@ binding.layoutPlayLayout.ibPlayPlayMode.id->{
 
             val uriID = SongNetwork.songUriID(currentSong.FileHash, "")
             val key = currentSong.FileHash.lowercase(Locale.ROOT)
-            val img=mCacheString.getFromDisk(key)
-            if (img!=null){
-
+            val img = mCacheString.getFromDisk(key)
+            if (img != null) {
+                Timber.v("加载本地封面:%s", img)
                 Glide.with(App.context).asBitmap()
                     .apply(requestOptions)
                     .load(img)
@@ -401,8 +405,6 @@ binding.layoutPlayLayout.ibPlayPlayMode.id->{
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             binding.ivPlayGuide01.visibility = View.VISIBLE
                             binding.ivPlayGuide01.setImageBitmap(resource)
-                            //结束写真幻影灯片
-                            handlerRemoveCallbacks()
                             updateUi(resource, true)
 
 
@@ -410,11 +412,11 @@ binding.layoutPlayLayout.ibPlayPlayMode.id->{
 
                         override fun onLoadCleared(placeholder: Drawable?) {}
                     })
-            }else {
+            } else {
                 val pic = uriID.data.img
                 mCacheString.putToDisk(key, pic)
 
-                Timber.v("img:%s", img)
+                Timber.v("加载网络封面:%s", img)
                 Glide.with(App.context).asBitmap()
                     .apply(requestOptions)
                     .placeholder(R.drawable.play_activity_album)

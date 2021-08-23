@@ -17,24 +17,38 @@ import timber.log.Timber
  */
 class App : InitApplication() {
 
+  var width = 0
+   var height = 0
 
     //前台活动计数器
     private var foregroundActivityCount = 0
     override fun onCreate() {
         super.onCreate()
         context = this
-      test()
-    ScreenProperties.phoneAttributes(this)
+        test()
+     val display=ScreenProperties.phoneAttributes(this)
+        width=display[0]
+        height=display[1]
     }
 
 
 
     val isAppForeground: Boolean
         get() = foregroundActivityCount > 0
-    companion object{
+
+   companion object {
         @JvmStatic
         lateinit var context: App
             private set
+
+    /*    @JvmStatic
+         var myWidth: Int=context.width
+            private set
+
+        @JvmStatic
+        var myHeight: Int=context.height
+            private set*/
     }
+
 
 }

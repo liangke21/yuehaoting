@@ -19,7 +19,7 @@ import timber.log.Timber
 object ScreenProperties {
 
     @SuppressLint("ServiceCast")
-    fun phoneAttributes(context: Context) {
+    fun phoneAttributes(context: Context) :Array<Int>{
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val metrics = DisplayMetrics()
         wm.defaultDisplay.getRealMetrics(metrics)
@@ -51,6 +51,10 @@ object ScreenProperties {
                     "smallestWidthDP:$smallestWidthDP dp \n" +
                     "手机SDK 版本 : ${Build.VERSION.SDK_INT}"
         )
+        return arrayOf(widthPixels,heightPixels)
     }
+
+
+
 
 }

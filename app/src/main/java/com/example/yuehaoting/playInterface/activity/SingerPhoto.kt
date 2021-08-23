@@ -3,6 +3,7 @@ package com.example.yuehaoting.playInterface.activity
 
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -10,7 +11,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.App
+import com.example.yuehaoting.App.Companion.context
 import com.example.yuehaoting.R
+
 import com.example.yuehaoting.base.handler.HandlerMy
 import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhoto
 import com.example.yuehaoting.kotlin.tryNull
@@ -68,11 +71,12 @@ object SingerPhoto {
                  if (count == url.size - 1) {
                      count = -1
                  }
-
                  val gaga=++count
                  Timber.tag(singerPhoto).v("当前播放在第几张 :%s",  gaga)
-                 Glide.with(App.context).asBitmap()
-                     .load(url[gaga])
+                 Glide.with(context).asBitmap()
+                     .load(url[25])
+                     .override(context.width, context.height) // resizes the image to these dimensions (in pixel)
+                     .centerCrop()
                      .into(object : CustomTarget<Bitmap>() {
                          override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                              fl.background=BitmapDrawable(resources,resource)
@@ -96,4 +100,5 @@ object SingerPhoto {
            handler.setRemoveCallbacks(myRunnable)
        }
    }
+
 }

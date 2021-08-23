@@ -20,7 +20,7 @@ class CacheString {
     fun init(context: Context,folder:String) {
 
         try {
-            diskLruCache = DiskLruCache.open(File(context.externalCacheDir.toString() + folder), 1, 1, 15 * 1024 * 1024)
+            diskLruCache = DiskLruCache.open(File(context.externalCacheDir.toString() + "/$folder/"), 1, 1, 15 * 1024 * 1024)
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -66,7 +66,7 @@ class CacheString {
     fun getFromDisk(key: String): String? {
 
         Timber.v("getFromDisk:%s", key)
-        var list =""
+        val list: String
 
         val `is`: InputStream?
 
@@ -83,7 +83,6 @@ class CacheString {
         val bis = BufferedInputStream(`is`)
 
         val reader = BufferedReader(InputStreamReader(bis))
-        var s: String?
 
       list  = reader.readLine()
 
