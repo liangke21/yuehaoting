@@ -14,6 +14,7 @@ import com.example.yuehaoting.R
 import com.example.yuehaoting.base.handler.HandlerMy
 import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhoto
 import com.example.yuehaoting.kotlin.tryNull
+import com.example.yuehaoting.util.Tag.singerPhoto
 import timber.log.Timber
 
 
@@ -48,6 +49,7 @@ object SingerPhoto {
     fun photoCycle(url: ArrayList<String>, fl: CoordinatorLayout, resources: Resources, block:(Bitmap,Boolean)->Unit) {
         var count = -1
         if (url.size == 0) {
+            Timber.tag(singerPhoto).v("0张图片的适合执行 :%s", url.size)
             Glide.with(App.context).asBitmap()
                 .load(R.drawable.youjing)
                 .into(object : CustomTarget<Bitmap>() {
@@ -60,24 +62,27 @@ object SingerPhoto {
         } else {
             isRunnable=true
              myRunnable = Runnable {
-                 handler.setPostDelayed(myRunnable,5000)
-                 Timber.v("url长度 :%s", url.size)
-                 Timber.v("count长度 :%s", count)
 
-                 Timber.v("----------------------------------------------------")
+                 Timber.tag(singerPhoto).v("多少张图片链接 :%s", url.size)
+
                  if (count == url.size - 1) {
                      count = -1
                  }
+
+                 val gaga=++count
+                 Timber.tag(singerPhoto).v("当前播放在第几张 :%s",  gaga)
                  Glide.with(App.context).asBitmap()
-                     .load(url[++count])
+                     .load(url[gaga])
                      .into(object : CustomTarget<Bitmap>() {
                          override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                              fl.background=BitmapDrawable(resources,resource)
+                             Timber.tag(singerPhoto).v("显示写真 :%s",  resource.toString())
                              block(resource,false)
                          }
 
                          override fun onLoadCleared(placeholder: Drawable?) {}
                      })
+                 handler.setPostDelayed(myRunnable,5000)
              }
 
             handler.post(myRunnable)

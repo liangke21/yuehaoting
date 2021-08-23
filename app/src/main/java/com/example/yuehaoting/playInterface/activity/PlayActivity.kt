@@ -17,6 +17,8 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.App
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.PlayBaseActivity
+import com.example.yuehaoting.base.diskLruCache.myCache.CacheString
+import com.example.yuehaoting.base.diskLruCache.myCache.CacheUrl
 import com.example.yuehaoting.base.log.LogT
 import com.example.yuehaoting.base.retrofit.SongNetwork
 import com.example.yuehaoting.data.kugousingle.SongLists
@@ -33,7 +35,6 @@ import com.example.yuehaoting.playInterface.framelayou.PlayPauseView
 import com.example.yuehaoting.playInterface.viewmodel.PlayViewModel
 import com.example.yuehaoting.theme.*
 import com.example.yuehaoting.util.BroadcastUtil
-import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.MusicConstant.ACTION_CMD
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_ADAPTIVE_COLOR
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_CUSTOM_IMAGE
@@ -49,6 +50,8 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.properties.Delegates
 
 
@@ -58,7 +61,7 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
 
     private val viewModel by lazyMy { ViewModelProvider(this).get(PlayViewModel::class.java) }
     private val mCacheUrl = CacheUrl()
-
+    private val mCacheString=CacheString()
     private lateinit var playActivityColor: PlayActivityColor
 
     private lateinit var ppvPlayPause:PlayPauseView
@@ -125,8 +128,10 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
             currentSong = intent.getParcelableExtra(CURRENT_SONG)!!
         }
         Timber.v("currentSong:%s %s ", intent.getParcelableExtra(CURRENT_SONG)!!, currentSong)
-        //初始化字符缓存
+        //初始化字符集合缓存
         mCacheUrl.init(this)
+        //字符集合
+        mCacheString.init(this,"Cover")
         //初始化ActivityColor
         playActivityColor = PlayActivityColor(binding, this)
 
@@ -260,9 +265,7 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
         updateTopStatus(currentSong)
 
         observableCurrentSong.nameCurrentSong = currentSong.mixSongID
-       Timber.v("好大一个BUG,好大一个BUG %s,%s,%s",recordingCurrentSong != currentSong.mixSongID,isUpdateReceiveIntent,isPhotoBackground)
         if (recordingCurrentSong != currentSong.mixSongID && isUpdateReceiveIntent) {
-            Timber.e("好大一个BUG,好大一个BUG,好大一个BUG,好大一个BUG,好大一个BUG2:%s",isPhotoBackground)
             //更新封面
                 if (isPhotoBackground){
                     receiveIntent(currentSong)
@@ -355,6 +358,7 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
             binding.llPlayIndicator.id -> {
                 if (backgroundMode){
                     isPhotoBackground=false
+                    Timber.e("===============================================================================")
                     showCover()
                     backgroundMode=false
                 }else{
@@ -362,10 +366,11 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
                     binding.ivPlayGuide01.visibility = View.GONE
                     backgroundMode=true
                     receiveIntent(currentSong)
+
                 }
             }
 binding.layoutPlayLayout.ibPlayPlayMode.id->{
-    BroadcastUtil.sendLocalBroadcast(Intent(MusicConstant.PLAY_DATA_CHANGES))
+
 }
         }
     }
@@ -383,24 +388,52 @@ binding.layoutPlayLayout.ibPlayPlayMode.id->{
         requestOptions.transform(RoundedCorners(30))
 
         launchMain {
+
             val uriID = SongNetwork.songUriID(currentSong.FileHash, "")
-            val pic = uriID.data.img
-            Glide.with(App.context).asBitmap()
-                .apply(requestOptions)
-                .load(pic)
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                        binding.ivPlayGuide01.visibility = View.VISIBLE
-                        binding.ivPlayGuide01.setImageBitmap(resource)
-                        //结束写真幻影灯片
-                        handlerRemoveCallbacks()
-                        updateUi(resource, true)
+            val key = currentSong.FileHash.lowercase(Locale.ROOT)
+            val img=mCacheString.getFromDisk(key)
+            if (img!=null){
+
+                Timber.v("img:%s",img)
+                Glide.with(App.context).asBitmap()
+                    .apply(requestOptions)
+                    .load(img)
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            binding.ivPlayGuide01.visibility = View.VISIBLE
+                            binding.ivPlayGuide01.setImageBitmap(resource)
+                            //结束写真幻影灯片
+                            handlerRemoveCallbacks()
+                            updateUi(resource, true)
 
 
-                    }
+                        }
 
-                    override fun onLoadCleared(placeholder: Drawable?) {}
-                })
+                        override fun onLoadCleared(placeholder: Drawable?) {}
+                    })
+            }else {
+                val pic = uriID.data.img
+                mCacheString.putToDisk(key, pic)
+
+                Timber.v("img:%s", img)
+                Glide.with(App.context).asBitmap()
+                    .apply(requestOptions)
+                    .load(pic)
+                    .placeholder(R.drawable.play_activity_album)
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            binding.ivPlayGuide01.visibility = View.VISIBLE
+                            binding.ivPlayGuide01.setImageBitmap(resource)
+                            //结束写真幻影灯片
+                            handlerRemoveCallbacks()
+                            updateUi(resource, true)
+
+
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {}
+                    })
+            }
         }
 
 

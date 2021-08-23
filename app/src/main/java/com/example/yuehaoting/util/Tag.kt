@@ -18,4 +18,7 @@ object Tag {
 
     const val Broadcast="广播收发器"
 
+    const val singerPhoto="歌手写真集合"
+
+
 }

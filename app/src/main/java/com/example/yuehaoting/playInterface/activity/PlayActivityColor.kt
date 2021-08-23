@@ -2,6 +2,7 @@ package com.example.yuehaoting.playInterface.activity
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -26,7 +27,7 @@ import timber.log.Timber
  */
 class PlayActivityColor(private val binding: PlayActivityBinding,private val activity:Activity) {
 
-    private var valueAnimator: ValueAnimator? = null
+    var valueAnimator: ValueAnimator? = null
 
     /**
      * 根据主题修改颜色
@@ -118,6 +119,7 @@ class PlayActivityColor(private val binding: PlayActivityBinding,private val act
         Theme.tintDrawable(binding.layoutPlayLayout.ibMusicList, R.drawable.play_btn_normal_list, -1)
         //是否开启背景图片为颜色
           if (boolean){
+              Timber.tag(playColor).v("是否开启背景图片为颜色歌手写真图片颜色:%s",boolean)
               startBGColorAnimation(swatch)
           }
 
@@ -126,7 +128,9 @@ class PlayActivityColor(private val binding: PlayActivityBinding,private val act
     /**
      * 背景根据图片变化
      */
+    @SuppressLint("Recycle")
     private fun startBGColorAnimation(swatch: Palette.Swatch) {
+
         valueAnimator?.cancel()
 
         valueAnimator = ValueAnimator.ofObject(ArgbEvaluator(), Theme.resolveColor(activity, R.attr.colorSurface), swatch.rgb)
@@ -136,8 +140,10 @@ class PlayActivityColor(private val binding: PlayActivityBinding,private val act
                 intArrayOf(animation.animatedValue as Int,
                     Theme.resolveColor(activity, R.attr.colorSurface)), 0)
             binding.playerContainer.background = drawable
+            Timber.tag(playColor).v("显示颜色背景:%s")
         }
-        valueAnimator?.setDuration(1000)?.start()
+        //这里重点注意,如果设置为1000毫秒,动画会在后台执行,无法代替直到结束
+        valueAnimator?.setDuration(0)?.start()
     }
 
 
