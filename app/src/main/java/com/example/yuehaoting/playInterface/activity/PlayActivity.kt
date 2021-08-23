@@ -394,7 +394,6 @@ binding.layoutPlayLayout.ibPlayPlayMode.id->{
             val img=mCacheString.getFromDisk(key)
             if (img!=null){
 
-                Timber.v("img:%s",img)
                 Glide.with(App.context).asBitmap()
                     .apply(requestOptions)
                     .load(img)
@@ -418,11 +417,10 @@ binding.layoutPlayLayout.ibPlayPlayMode.id->{
                 Timber.v("img:%s", img)
                 Glide.with(App.context).asBitmap()
                     .apply(requestOptions)
-                    .load(pic)
                     .placeholder(R.drawable.play_activity_album)
+                    .load(pic)
                     .into(object : CustomTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            binding.ivPlayGuide01.visibility = View.VISIBLE
                             binding.ivPlayGuide01.setImageBitmap(resource)
                             //结束写真幻影灯片
                             handlerRemoveCallbacks()
@@ -433,6 +431,7 @@ binding.layoutPlayLayout.ibPlayPlayMode.id->{
 
                         override fun onLoadCleared(placeholder: Drawable?) {}
                     })
+                binding.ivPlayGuide01.visibility = View.VISIBLE
             }
         }
 
