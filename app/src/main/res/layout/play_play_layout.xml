@@ -38,11 +38,11 @@
       android:layout_height="@dimen/d56_size"
       android:id="@+id/fl_play_container">
       <com.example.yuehaoting.playInterface.framelayou.PlayPauseView
-        android:layout_width="56dp"
+        android:id="@+id/ppv_play_pause"
+        android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_gravity="center"
-        android:visibility="visible"
-        android:id="@+id/ppv_play_pause"/>
+        android:visibility="visible"/>
     </FrameLayout>
   </LinearLayout>
   <LinearLayout

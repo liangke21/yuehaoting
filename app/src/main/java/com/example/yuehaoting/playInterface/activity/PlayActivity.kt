@@ -140,7 +140,9 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
         receiveIntent(currentSong)
         isUpdateReceiveIntent = false
         observeSingerPhotoData()
+
         playActivityColor.setThemeColor()
+
         initView()
         updateTopStatus(currentSong)
     }

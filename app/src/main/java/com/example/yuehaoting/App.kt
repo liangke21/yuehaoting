@@ -40,14 +40,6 @@ class App : InitApplication() {
         @JvmStatic
         lateinit var context: App
             private set
-
-    /*    @JvmStatic
-         var myWidth: Int=context.width
-            private set
-
-        @JvmStatic
-        var myHeight: Int=context.height
-            private set*/
     }
 
 

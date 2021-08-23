@@ -39,7 +39,7 @@ class PlayActivityColor(private val binding: PlayActivityBinding,private val act
         //修改控制按钮颜色
         Theme.tintDrawable(binding.layoutPlayLayout.ibPlayNextTrack, R.drawable.play_btn_next, accentColor)
         Theme.tintDrawable(binding.layoutPlayLayout.ibPlayPreviousSong, R.drawable.play_btn_pre, accentColor)
-        binding.layoutPlayLayout.ppvPlayPause.setBackgroundColor(accentColor)
+        binding.layoutPlayLayout.ppvPlayPause.setBackgroundColor(65656)
         //进度条颜色
         updateSeeKBarColor(accentColor)
 
@@ -47,9 +47,10 @@ class PlayActivityColor(private val binding: PlayActivityBinding,private val act
         binding.layoutPlayLayoutBar.tvPlaySongName.setTextColor(-1)
         binding.layoutPlayLayoutBar.tvPlaySingerName.setTextColor(-1)
 
+
         //修改顶部部件按钮颜色
-        Theme.tintDrawable(binding.layoutPlayLayoutBar.ibPlayDropDown, R.drawable.play_drop_down, tintColor)
-        Theme.tintDrawable(binding.layoutPlayLayoutBar.ibPlayNavigation, R.drawable.player_more, tintColor)
+        Theme.tintDrawable(binding.layoutPlayLayoutBar.ibPlayDropDown, R.drawable.play_drop_down, -1)
+        Theme.tintDrawable(binding.layoutPlayLayoutBar.ibPlayNavigation, R.drawable.player_more, -1)
 
         //播放模式
         val playMode = getSp(activity, MusicConstant.NAME) {

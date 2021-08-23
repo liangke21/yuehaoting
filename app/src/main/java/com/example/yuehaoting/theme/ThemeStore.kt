@@ -76,7 +76,7 @@ object ThemeStore {
     get() {
       var accentColor = SPUtil.getValue(
         // 默认颜色
-        App.context, KEY_NAME, KEY_ACCENT_COLOR, Color.parseColor("#698cf6")
+        App.context, KEY_NAME, KEY_ACCENT_COLOR, Color.parseColor("#FFFFFF")
       )
       if (ColorUtil.isColorCloseToWhite(accentColor)) {
         accentColor = ColorUtil.getColor(R.color.accent_gray_color)
@@ -126,7 +126,7 @@ object ThemeStore {
   val playerBtnColor: Int
     get() = Color.parseColor(
       if (isLightTheme) {
-        "#6c6a6c"
+        "#DEDEDE"
       } else {
         "#6b6b6b"
       }
