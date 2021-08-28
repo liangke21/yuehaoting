@@ -10,23 +10,20 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.yuehaoting.R
-import com.example.yuehaoting.base.fragmet.BaseFragment
+import com.example.yuehaoting.base.fragmet.LazyBaseFragment
 import com.example.yuehaoting.base.recyclerView.adapter.BaseRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.databinding.FragmentMusicBinding
 import com.example.yuehaoting.kotlin.tryNull
-import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.playInterface.activity.PlayActivity
-import com.example.yuehaoting.searchFor.adapter.SingleFragment1Adapter
 import com.example.yuehaoting.searchFor.viewmodel.SingleFragment1ViewModel
 import com.example.yuehaoting.util.IntentUtil
 import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.MusicConstant.EXTRA_POSITION
 import com.example.yuehaoting.util.MusicConstant.KU_GOU
-import com.example.yuehaoting.util.Tag
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import timber.log.Timber
@@ -36,7 +33,7 @@ import timber.log.Timber
  * 时间: 2021/6/3 17:32
  * 描述:
  */
-class SingleFragment1: BaseFragment(){
+class SingleFragment1: LazyBaseFragment(){
     private lateinit var binding: FragmentMusicBinding
 
     private val musicUtil = IntentUtil()

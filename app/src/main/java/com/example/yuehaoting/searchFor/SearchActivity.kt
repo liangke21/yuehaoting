@@ -5,9 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Rect
-import android.os.Build
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -23,8 +21,7 @@ import androidx.viewpager.widget.ViewPager
 import com.example.yuehaoting.App
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
-import com.example.yuehaoting.base.activity.SmMainActivity
-import com.example.yuehaoting.base.fragmet.BaseFragment
+import com.example.yuehaoting.base.fragmet.LazyBaseFragment
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
 import com.example.yuehaoting.searchFor.fragment.ext.MyCommonNavigator
@@ -32,16 +29,10 @@ import com.example.yuehaoting.searchFor.fragment.ext.ScaleTransitionPagerTitleVi
 import com.example.yuehaoting.searchFor.fragment.ui.*
 import com.example.yuehaoting.searchFor.pagerview.MyPagerAdapter
 import com.example.yuehaoting.searchFor.viewmodel.PlaceViewModel
-import com.example.yuehaoting.util.BroadcastUtil
 import com.example.yuehaoting.util.MusicConstant
-import com.example.yuehaoting.util.Tag.Display
-import com.example.yuehaoting.util.phoneAttributes.ScreenProperties
-import me.jessyan.autosize.internal.CustomAdapt
-import me.jessyan.autosize.utils.ScreenUtils
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.UIUtil
-import net.lucode.hackware.magicindicator.buildins.UIUtil.getScreenWidth
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
@@ -67,7 +58,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
 
     private lateinit var mSharedPreferences: SharedPreferences
 
-    private var fragmentList = ArrayList<BaseFragment>()
+    private var fragmentList = ArrayList<LazyBaseFragment>()
     private var mAdapter: MyPagerAdapter? = null
 
     private val viewModel by lazy { ViewModelProvider(this).get(PlaceViewModel::class.java) }

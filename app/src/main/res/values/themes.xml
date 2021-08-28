@@ -46,4 +46,13 @@
   <style name="Theme.yuehaoting.Diablo" parent="Theme.yuehaoting.Base.Diablo"/>
 
 
+
+  <!--主页界面-->
+
+<style name="MainTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+</style>
+
+
+
 </resources>

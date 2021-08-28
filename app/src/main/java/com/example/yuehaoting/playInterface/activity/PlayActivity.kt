@@ -163,6 +163,8 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
         }
 
         binding.llPlayIndicator.setOnClickListener(this)
+
+
     }
 
     /**

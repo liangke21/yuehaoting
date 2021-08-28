@@ -9,15 +9,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yuehaoting.R
-import com.example.yuehaoting.base.fragmet.BaseFragment
+import com.example.yuehaoting.base.fragmet.LazyBaseFragment
 import com.example.yuehaoting.base.recyclerView.adapter.BaseRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
-import com.example.yuehaoting.data.musicKuWo.KuWoList
 import com.example.yuehaoting.data.musicMiGu.MiGuList
 import com.example.yuehaoting.databinding.FragmentMusicBinding
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.kotlin.showToast
-import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.searchFor.fragment.interfacet.ListRefreshInterface
 import com.example.yuehaoting.searchFor.viewmodel.SingleFragment6ViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
@@ -29,7 +27,7 @@ import timber.log.Timber
  * 时间: 2021/8/10 12:07
  * 描述:
  */
-class SingleFragment6 : BaseFragment() ,ListRefreshInterface{
+class SingleFragment6 : LazyBaseFragment() ,ListRefreshInterface{
 
     private lateinit var binding: FragmentMusicBinding
 

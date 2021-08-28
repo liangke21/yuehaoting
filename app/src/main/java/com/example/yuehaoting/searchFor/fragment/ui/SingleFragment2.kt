@@ -9,7 +9,6 @@ import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.musiccrawler.hifini.DataSearch
 import com.example.musiccrawler.hifini.HiginioService
 import com.example.yuehaoting.R
-import com.example.yuehaoting.base.fragmet.BaseFragment
+import com.example.yuehaoting.base.fragmet.LazyBaseFragment
 import com.example.yuehaoting.base.recyclerView.adapter.BaseRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.databinding.FragmentMusicBinding
@@ -36,7 +35,7 @@ import timber.log.Timber
  * 时间: 2021/6/3 22:29
  * 描述:
  */
-class SingleFragment2 : BaseFragment(),ListRefreshInterface {
+class SingleFragment2 : LazyBaseFragment(),ListRefreshInterface {
     private lateinit var binding: FragmentMusicBinding
 
     //第一次进入刷新
