@@ -14,6 +14,7 @@
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="0.7"
+    android:background="@color/design_default_color_primary"
     android:orientation="horizontal">
     <net.lucode.hackware.magicindicator.MagicIndicator
       android:id="@+id/mi_main_title"

@@ -35,8 +35,6 @@ object Repository {
               //  Result.failure(RuntimeException("为响应 ${placeResponse.status}"))
             }
 
-
-
            run{
                val places = placeResponse.data[0]
                HintInfo = places.RecordDatas

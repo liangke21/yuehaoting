@@ -1,6 +1,7 @@
 package com.example.yuehaoting.base.recyclerView.adapter;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
@@ -89,6 +90,13 @@ public class SmartViewHolder extends RecyclerView.ViewHolder implements View.OnC
         return this;
     }
 
+    public SmartViewHolder image(int id, Bitmap imageId) {
+        View view = findViewById(id);
+        if (view instanceof ImageView) {
+            ((ImageView) view).setImageBitmap(imageId);
+        }
+        return this;
+    }
     public SmartViewHolder gone(int id) {
         View view = findViewById(id);
         if (view != null) {

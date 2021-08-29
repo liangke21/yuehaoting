@@ -1,6 +1,7 @@
 package com.example.yuehaoting.base.retrofit
 
 import com.example.yuehaoting.base.DataUri
+import com.example.yuehaoting.data.kugou.specialRecommend.SetSpecialRecommend
 
 object SongNetwork {
      //关键字请求
@@ -21,6 +22,9 @@ object SongNetwork {
      */
     suspend fun singerPhoto(query: String)= singerPhoto.singerPhoto(query).await()
 
+     private val kuGouSpecialRecommend=ServiceCreator(DataUri.kuGouSpecialRecommend).create<PlaceService>()
+     suspend fun kuGouSpecialRecommend(ssr: SetSpecialRecommend)= kuGouSpecialRecommend.kuGouSpecialRecommend(ssr).await()
+
 //_______________________________________|Html|______________________________________________________________________________________________________
     private val hifIni=ServiceCreator(DataUri.HifIni).createHtml(PlaceService::class.java)
 
@@ -37,7 +41,7 @@ object SongNetwork {
     //酷我音乐搜索
     private val musicKuWo=ServiceCreator(DataUri.musicKuWo).create<PlaceService>()
     suspend fun kuWoList(pages:Int,count:Int,name:String)= musicKuWo.musicKuWo(pages,count,  name).await()
-
+    //咪咕音乐列表
     private val musicMiGu=ServiceCreator(DataUri.musicMiGu).create<PlaceService>()
     suspend fun miGuList(pages:Int,count:Int,name:String)= musicMiGu.musicMiGu(pages, count, name).await()
 }

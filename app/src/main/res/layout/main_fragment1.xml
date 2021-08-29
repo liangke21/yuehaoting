@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  xmlns:tools="http://schemas.android.com/tools"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+  <com.scwang.smart.refresh.layout.SmartRefreshLayout
+    android:id="@+id/refreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="true"
+    android:clipToPadding="true"
+    app:srlDragRate="0.7"
+    app:srlHeaderMaxDragRate="1.3"
+    app:srlHeaderHeight="150dp"
+    app:srlEnableAutoLoadMore="true"
+    app:srlHeaderInsetStart="0dp"
+    app:srlHeaderTriggerRate="0.5">
+    <pl.droidsonroids.gif.GifImageView
+      android:id="@+id/gifView"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:src="@mipmap/gif_header_repast"
+      app:layout_srlSpinnerStyle="Scale"
+      app:layout_srlBackgroundColor="@android:color/transparent"/>
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/recyclerView"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:paddingTop="0dp"
+      android:paddingStart="20dp"
+      android:clipToPadding="false"
+      android:overScrollMode="never"
+      tools:listitem="@layout/main_fragment1_item_song_list"
+      tools:ignore="RtlSymmetry"/>
+    <com.scwang.smart.refresh.footer.ClassicsFooter
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:srlAccentColor="#888"
+      app:srlClassicsSpinnerStyle="Translate"
+      app:srlDrawableProgress="@drawable/fragment3_music_163_cf"/>
+  </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

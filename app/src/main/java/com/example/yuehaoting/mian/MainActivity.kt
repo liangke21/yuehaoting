@@ -6,8 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import com.example.yuehaoting.base.fragmet.BaseFragment
 import com.example.yuehaoting.base.fragmet.LazyBaseFragment
 import com.example.yuehaoting.databinding.ActivityMainBinding
+import com.example.yuehaoting.mian.fragment1.MainFragment1
+import com.example.yuehaoting.mian.pageView.PageViewFragmentAdapter
 import com.example.yuehaoting.searchFor.fragment.ext.MyCommonNavigator
 import com.example.yuehaoting.searchFor.fragment.ext.ScaleTransitionPagerTitleView
 import net.lucode.hackware.magicindicator.ViewPagerHelper
@@ -21,12 +24,12 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.Simple
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
-    private val mTitleList:ArrayList<String> = ArrayList()
+    private val mTitleList: ArrayList<String> = ArrayList()
 
-    private var fragmentList = ArrayList<LazyBaseFragment>()
+    private var fragmentList = ArrayList<BaseFragment>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding=ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         initViewColors()
@@ -38,16 +41,17 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     /**
      * 初始化数据
      */
     private fun initData() {
-       mTitleList.add("推荐")
-       mTitleList.add("视频")
-       mTitleList.add("听书")
+        mTitleList.add("推荐")
+        mTitleList.add("视频")
+        mTitleList.add("听书")
 
-       fragmentList.add()
+        fragmentList.add(MainFragment1())
+        binding.vpMainContent.adapter = PageViewFragmentAdapter(supportFragmentManager, fragmentList)
+        binding.vpMainContent.offscreenPageLimit = 1
     }
 
     /**
