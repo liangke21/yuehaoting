@@ -10,11 +10,8 @@
   android:layout_height="match_parent"
   android:orientation="vertical">
   <LinearLayout
-    android:layout_marginTop="5dp"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="0.7"
-    android:background="@color/design_default_color_primary"
+    android:layout_height="50dp"
     android:orientation="horizontal">
     <net.lucode.hackware.magicindicator.MagicIndicator
       android:id="@+id/mi_main_title"
@@ -22,25 +19,28 @@
       android:layout_height="match_parent"
       android:layout_weight="8"
       tools:ignore="NestedWeights"/>
-
     <LinearLayout
       android:layout_width="0dp"
       android:layout_height="20dp"
-      android:layout_weight="1.5"
+      android:layout_weight="2"
+      android:layout_marginRight="15dp"
+      android:layout_marginBottom="9dp"
       android:layout_gravity="bottom"
       android:orientation="horizontal">
       <Button
-
+        android:id="@+id/bt_main_search"
         android:background="@drawable/search_item_tv"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginEnd="10dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        tools:ignore="NestedWeights"/>
       <Button
+        android:id="@+id/bt_main_navigation"
         android:background="@drawable/main_navigation"
         android:layout_weight="1"
         android:layout_width="0dp"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="15dp"
         android:layout_marginEnd="5dp"
         android:layout_height="wrap_content"/>
     </LinearLayout>
@@ -53,7 +53,7 @@
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="12"
-    android:overScrollMode="never"/>
+   />
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="0dp"

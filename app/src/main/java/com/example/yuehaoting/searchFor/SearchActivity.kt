@@ -24,8 +24,8 @@ import com.example.yuehaoting.base.activity.BaseActivity
 import com.example.yuehaoting.base.fragmet.LazyBaseFragment
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
-import com.example.yuehaoting.searchFor.fragment.ext.MyCommonNavigator
-import com.example.yuehaoting.searchFor.fragment.ext.ScaleTransitionPagerTitleView
+import com.example.yuehaoting.base.magicIndicator.ext.MyCommonNavigator
+import com.example.yuehaoting.base.magicIndicator.ext.ScaleTransitionPagerTitleView
 import com.example.yuehaoting.searchFor.fragment.ui.*
 import com.example.yuehaoting.searchFor.pagerview.MyPagerAdapter
 import com.example.yuehaoting.searchFor.viewmodel.PlaceViewModel

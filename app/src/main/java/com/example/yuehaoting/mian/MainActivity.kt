@@ -4,15 +4,18 @@ import android.content.Context
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import androidx.core.view.marginLeft
 import com.example.yuehaoting.base.fragmet.BaseFragment
-import com.example.yuehaoting.base.fragmet.LazyBaseFragment
+import com.example.yuehaoting.base.magicIndicator.MySimplePagerTitleView
 import com.example.yuehaoting.databinding.ActivityMainBinding
 import com.example.yuehaoting.mian.fragment1.MainFragment1
 import com.example.yuehaoting.mian.pageView.PageViewFragmentAdapter
-import com.example.yuehaoting.searchFor.fragment.ext.MyCommonNavigator
-import com.example.yuehaoting.searchFor.fragment.ext.ScaleTransitionPagerTitleView
+import com.example.yuehaoting.base.magicIndicator.ext.MyCommonNavigator
+import com.example.yuehaoting.base.magicIndicator.ext.ScaleTransitionPagerTitleView
+import com.example.yuehaoting.searchFor.fragment.ui.SingleFragment1
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.UIUtil
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
@@ -58,7 +61,7 @@ class MainActivity : AppCompatActivity() {
      * 初始化控件颜色
      */
     private fun initViewColors() {
-
+          binding.btMainSearch.setTextColor(1)
     }
 
     /**
@@ -83,12 +86,13 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun getTitleView(context: Context?, index: Int): IPagerTitleView {
-                val simplePagerTitleView: SimplePagerTitleView =
-                    ScaleTransitionPagerTitleView(
-                        context
+                val simplePagerTitleView: MySimplePagerTitleView =
+                    MySimplePagerTitleView(
+                        context!!
                     )
                 simplePagerTitleView.text = mTitleList[index]
-                simplePagerTitleView.textSize = 18F
+                simplePagerTitleView.textSize = 16F
+                simplePagerTitleView.gravity=Gravity.BOTTOM
                 simplePagerTitleView.normalColor = Color.parseColor("#1C1C1C")
                 simplePagerTitleView.selectedColor = Color.parseColor("#000000")
                 simplePagerTitleView.setOnClickListener { binding.vpMainContent.currentItem = index }

@@ -1,4 +1,4 @@
-package com.example.yuehaoting.searchFor.fragment.ext;
+package com.example.yuehaoting.base.magicIndicator.ext;
 
 import android.content.Context;
 
