@@ -2,27 +2,26 @@ package com.example.yuehaoting.mian
 
 import android.content.Context
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
-import androidx.core.view.marginLeft
+import androidx.appcompat.app.AppCompatActivity
+import com.example.yuehaoting.App.Companion.context
+import com.example.yuehaoting.R
 import com.example.yuehaoting.base.fragmet.BaseFragment
 import com.example.yuehaoting.base.magicIndicator.MySimplePagerTitleView
+import com.example.yuehaoting.base.magicIndicator.ext.MyCommonNavigator
 import com.example.yuehaoting.databinding.ActivityMainBinding
 import com.example.yuehaoting.mian.fragment1.MainFragment1
 import com.example.yuehaoting.mian.pageView.PageViewFragmentAdapter
-import com.example.yuehaoting.base.magicIndicator.ext.MyCommonNavigator
-import com.example.yuehaoting.base.magicIndicator.ext.ScaleTransitionPagerTitleView
-import com.example.yuehaoting.searchFor.fragment.ui.SingleFragment1
+import com.example.yuehaoting.theme.Theme
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.UIUtil
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -61,7 +60,9 @@ class MainActivity : AppCompatActivity() {
      * 初始化控件颜色
      */
     private fun initViewColors() {
-          binding.btMainSearch.setTextColor(1)
+       // binding.btMainSearch.setBackgroundColor(Color.parseColor("#1C1C1C"))
+        binding.btMainSearch.setImageDrawable(Theme.tintDrawable(context.resources.getDrawable(R.drawable.search_item_tv,null), Color.parseColor("#1C1C1C")))
+        binding.btMainNavigation.setImageDrawable(Theme.tintDrawable(context.resources.getDrawable(R.drawable.main_navigation,null), Color.parseColor("#1C1C1C")))
     }
 
     /**

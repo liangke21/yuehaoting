@@ -24,25 +24,27 @@
       android:layout_height="20dp"
       android:layout_weight="2"
       android:layout_marginRight="15dp"
-      android:layout_marginBottom="9dp"
+      android:layout_marginBottom="8dp"
       android:layout_gravity="bottom"
       android:orientation="horizontal">
-      <Button
+      <ImageButton
         android:id="@+id/bt_main_search"
-        android:background="@drawable/search_item_tv"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:src="@drawable/search_item_tv"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:layout_marginEnd="10dp"
-        android:layout_weight="1"
+        android:background="@color/transparent"
+        android:scaleType="centerCrop"
         tools:ignore="NestedWeights"/>
-      <Button
+      <ImageButton
         android:id="@+id/bt_main_navigation"
-        android:background="@drawable/main_navigation"
-        android:layout_weight="1"
-        android:layout_width="0dp"
+        android:src="@drawable/main_navigation"
+        android:layout_width="18dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="5dp"
-        android:layout_height="wrap_content"/>
+        android:background="@color/transparent"
+        android:scaleType="centerCrop"
+        android:layout_height="18dp"/>
     </LinearLayout>
 
   </LinearLayout>
