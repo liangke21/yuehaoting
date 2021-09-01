@@ -23,6 +23,7 @@
     <TextView
       android:id="@+id/tv_main_fragment1_item"
       android:layout_width="100dp"
+      android:textColor="#1C1C1C"
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
       android:layout_margin="5dp"

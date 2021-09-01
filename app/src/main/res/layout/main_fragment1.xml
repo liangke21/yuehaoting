@@ -24,21 +24,163 @@
       android:src="@mipmap/gif_header_repast"
       app:layout_srlSpinnerStyle="Scale"
       app:layout_srlBackgroundColor="@android:color/transparent"/>
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/recyclerView"
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:paddingTop="0dp"
-      android:paddingStart="20dp"
-      android:clipToPadding="false"
-      android:overScrollMode="never"
-      tools:listitem="@layout/main_fragment1_item_song_list"
-      tools:ignore="RtlSymmetry"/>
+      android:paddingStart="10dp"
+      tools:ignore="RtlSymmetry">
+
+
+      <!--标题页-->
+      <!--AppBarLayout解决遮挡问题,向上滚动着跟着一起隐藏-->
+      <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="353dp"
+        android:id="@+id/appBar">
+        <!--CollapsingToolbarLayout可以让标题栏更加丰富-->
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:id="@+id/collapsingToolbar"
+          android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+          app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <androidx.recyclerview.widget.RecyclerView
+              android:id="@+id/recyclerView"
+              android:layout_width="match_parent"
+              android:layout_height="290dp"
+              android:paddingTop="0dp"
+              android:clipToPadding="false"
+              android:overScrollMode="never"
+              tools:listitem="@layout/main_fragment1_item_song_list"
+              tools:ignore="RtlSymmetry"/>
+            <TextView
+              android:layout_width="match_parent"
+              android:layout_height="25dp"
+              android:layout_marginTop="10dp"
+              android:text="新歌推荐"
+              android:textSize="18sp"
+              android:textColor="#121111"
+              app:layout_srlSpinnerStyle="Scale"
+              app:layout_srlBackgroundColor="@android:color/transparent"
+              tools:ignore="RtlSymmetry"
+              />
+          </LinearLayout>
+
+          <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            app:layout_collapseMode="pin"/>
+
+          <net.lucode.hackware.magicindicator.MagicIndicator
+            android:id="@+id/mi_main_fragment1_new_song_recommendation"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="bottom"
+            tools:ignore="NestedWeights"/>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+      </com.google.android.material.appbar.AppBarLayout>
+
+      <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:orientation="vertical">
+          <androidx.viewpager.widget.ViewPager
+            android:id="@+id/vp_main_fragment1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+
+          <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="#B119B1"/>
+          <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="#489759"/>
+          <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="#8BC548"/>
+          <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="#FF5722"/>
+          <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="#83002D"/>
+          <pl.droidsonroids.gif.GifImageView
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/gif_header_repast"
+            app:layout_srlSpinnerStyle="Scale"
+            app:layout_srlBackgroundColor="@android:color/transparent"/>
+          <pl.droidsonroids.gif.GifImageView
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/gif_header_repast"
+            app:layout_srlSpinnerStyle="Scale"
+            app:layout_srlBackgroundColor="@android:color/transparent"/>
+          <pl.droidsonroids.gif.GifImageView
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/gif_header_repast"
+            app:layout_srlSpinnerStyle="Scale"
+            app:layout_srlBackgroundColor="@android:color/transparent"/>
+          <pl.droidsonroids.gif.GifImageView
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/gif_header_repast"
+            app:layout_srlSpinnerStyle="Scale"
+            app:layout_srlBackgroundColor="@android:color/transparent"/>
+          <pl.droidsonroids.gif.GifImageView
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/gif_header_repast"
+            app:layout_srlSpinnerStyle="Scale"
+            app:layout_srlBackgroundColor="@android:color/transparent"/>
+          <pl.droidsonroids.gif.GifImageView
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/gif_header_repast"
+            app:layout_srlSpinnerStyle="Scale"
+            app:layout_srlBackgroundColor="@android:color/transparent"/>
+
+        </LinearLayout>
+
+      </androidx.core.widget.NestedScrollView>
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
     <com.scwang.smart.refresh.footer.ClassicsFooter
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       app:srlAccentColor="#888"
       app:srlClassicsSpinnerStyle="Translate"
       app:srlDrawableProgress="@drawable/fragment3_music_163_cf"/>
+
   </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

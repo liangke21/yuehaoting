@@ -1,16 +1,17 @@
 package com.example.yuehaoting.mian.fragment1
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -19,6 +20,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.fragmet.BaseFragment
+import com.example.yuehaoting.base.magicIndicator.MySimplePagerTitleView
 import com.example.yuehaoting.base.recyclerView.adapter.CustomLengthRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.data.kugou.specialRecommend.SetSpecialRecommend
@@ -29,10 +31,16 @@ import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.mian.viewModel.MainFragmentViewModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import net.lucode.hackware.magicindicator.ViewPagerHelper
+import net.lucode.hackware.magicindicator.buildins.UIUtil
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ClipPagerTitleView
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView
 import timber.log.Timber
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
 
 
 /**
@@ -46,12 +54,26 @@ class MainFragment1 : BaseFragment() {
     private var viewModel by lazyMy { ViewModelProvider(this).get(MainFragmentViewModel::class.java) }
 
     private lateinit var mAdapter: CustomLengthRecyclerAdapter<SpecialRecommend.Data.Special>
+
+    private val mDataList:ArrayList<String> = ArrayList()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = MainFragment1Binding.inflate(inflater)
-
         viewModel.kuGouSpecialRecommendViewModel(pots())
+        initData()
+        initMagicIndicator()
         return binding.root
     }
+
+    private fun initData() {
+        mDataList.add("全部")
+        mDataList.add("酷狗")
+        mDataList.add("网易")
+        mDataList.add("qq")
+        mDataList.add("酷我")
+        mDataList.add("咪咕")
+    }
+
 
     override fun onResume() {
         super.onResume()
@@ -69,7 +91,7 @@ class MainFragment1 : BaseFragment() {
 
                 viewModel.listLiveData.addAll(mSpecialRecommend.data?.special_list!!)
 
-                mAdapter = object : CustomLengthRecyclerAdapter<SpecialRecommend.Data.Special> (viewModel.listLiveData, R.layout.main_fragment1_item_song_list){
+                mAdapter = object : CustomLengthRecyclerAdapter<SpecialRecommend.Data.Special> (viewModel.listLiveData, R.layout.main_fragment1_item_song_list ){
                     override fun onBindViewHolder(holder: SmartViewHolder, model: SpecialRecommend.Data.Special?, position: Int) {
 
                         holderImage(holder,model,position)
@@ -114,7 +136,44 @@ class MainFragment1 : BaseFragment() {
 
 
     }
+    private fun initMagicIndicator() {
+        val magicIndicator =binding.miMainFragment1NewSongRecommendation
+        // magicIndicator.setBackgroundResource(R.drawable.round_indicator_bg);
+        val commonNavigator = CommonNavigator(context)
+        commonNavigator.scrollPivotX = 0.65f
+        commonNavigator.adapter = object : CommonNavigatorAdapter() {
+            override fun getCount(): Int {
+                return mDataList.size
+            }
 
+            override fun getTitleView(context: Context?, index: Int): IPagerTitleView? {
+                val clipPagerTitleView = SimplePagerTitleView(
+                    context!!
+                )
+                clipPagerTitleView.text = mDataList[index]
+                clipPagerTitleView.textSize=14f
+                clipPagerTitleView.gravity=Gravity.CENTER
+                clipPagerTitleView.normalColor = Color.parseColor("#323131")
+                clipPagerTitleView.selectedColor = Color.WHITE
+                clipPagerTitleView.setOnClickListener { binding.vpMainFragment1.currentItem = index }
+                return clipPagerTitleView
+            }
+
+            override fun getIndicator(context: Context): IPagerIndicator? {
+                val indicator = LinePagerIndicator(context)
+                val navigatorHeight =70f
+                val borderWidth: Int = UIUtil.dip2px(context, 1.0)
+                val lineHeight = navigatorHeight - 2 * borderWidth
+                indicator.lineHeight = lineHeight
+                indicator.roundRadius = lineHeight / 2
+                indicator.yOffset = borderWidth.toFloat()
+                indicator.setColors(Color.parseColor("#ACA7A7"))
+                return indicator
+            }
+        }
+        magicIndicator.navigator = commonNavigator
+        ViewPagerHelper.bind(magicIndicator, binding.vpMainFragment1)
+    }
     private fun pots(): SetSpecialRecommend {
 
         val json = "{\n" +
