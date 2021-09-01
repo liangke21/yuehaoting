@@ -20,7 +20,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.fragmet.BaseFragment
-import com.example.yuehaoting.base.magicIndicator.MySimplePagerTitleView
 import com.example.yuehaoting.base.recyclerView.adapter.CustomLengthRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.data.kugou.specialRecommend.SetSpecialRecommend
@@ -38,7 +37,6 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNav
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ClipPagerTitleView
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView
 import timber.log.Timber
 
@@ -100,13 +98,14 @@ class MainFragment1 : BaseFragment() {
                     }
 
                 }
-
                 binding.recyclerView.adapter=mAdapter
+//                 //todo 刷新不了数据
+//                mAdapter.notifyDataSetChanged()
+
             }
 
 
         }
-
     }
 
     @SuppressLint("CheckResult")
@@ -122,15 +121,22 @@ class MainFragment1 : BaseFragment() {
 
         Glide.with(this).asBitmap()
             .apply(requestOptions)
-            .load(picUrl)
+             .load(picUrl)
+            .placeholder(R.drawable.load_started)
             .diskCacheStrategy(DiskCacheStrategy.NONE)
             .into(object : CustomTarget<Bitmap>(){
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    Timber.v("resource%S",resource.toString())
                     holder.image(R.id.iv_main_fragment1_item,resource)
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {
+                    holder.image(R.id.iv_main_fragment1_item,placeholder)
+                }
 
+                override fun onLoadStarted(placeholder: Drawable?) {
+                    super.onLoadStarted(placeholder)
+                    holder.image(R.id.iv_main_fragment1_item,placeholder)
                 }
             })
 

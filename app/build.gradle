@@ -117,7 +117,7 @@ dependencies {
     //屏幕适配器
     implementation 'com.github.JessYanCoding:AndroidAutoSize:v1.2.1'
 
-
-  //  implementation 'com.google.android.material.material:1.0.0'
+   // android 没有数据页面显示
+   implementation 'io.github.elye:loaderviewlibrary:3.0.0'
 
 }

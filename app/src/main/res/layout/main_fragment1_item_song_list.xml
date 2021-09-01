@@ -14,13 +14,13 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <ImageView
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
       android:id="@+id/iv_main_fragment1_item"
       android:layout_width="match_parent"
       android:layout_height="100dp"
       android:scaleType="centerCrop"
       tools:src="@drawable/main_fragment1_iv"/>
-    <TextView
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
       android:id="@+id/tv_main_fragment1_item"
       android:layout_width="100dp"
       android:textColor="#1C1C1C"
