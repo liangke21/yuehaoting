@@ -12,25 +12,39 @@ import timber.log.Timber
  */
 class HttpInterceptor : Interceptor {
     private val TAG = "HTTP"
+    private lateinit var response: Response
     override fun intercept(chain: Interceptor.Chain): Response {
-        //请求参数
-        val request = chain.request()
-        Log.i("TEST", "MyInterceptor.intercept.request.toString -> $request");
-        val response = chain.proceed(request)
 
-        Log.i(TAG, "=========拦截==========")
-        if (request.method() == "GET") {
-            Log.i(TAG, request.url().toString())
-        }
+           // Timber.e("网络异常4%s", chain.request().)
+            //请求参数
+            val request = chain.request()
+            Log.i("TEST", "MyInterceptor.intercept.request.toString -> $request");
 
-        if (request.method() == "POST") {
-            Log.i(TAG, request.url().toString())
-        }
-        Log.i(TAG, "=========拦截==========")
-     /*   response.body()?.let {
-            Log.i(TAG,it?.string())
-        }*/
 
-        return response
+
+            response = chain.proceed(request)
+
+
+
+            Log.i(TAG, "=========拦截==========")
+            if (request.method() == "GET") {
+                Log.i(TAG, request.url().toString())
+            }
+
+            if (request.method() == "POST") {
+                Log.i(TAG, request.url().toString())
+            }
+            Log.i(TAG, "=========拦截==========")
+            /*   response.body()?.let {
+                   Log.i(TAG,it?.string())
+
+               }*/
+
+
+
+       return response
+
     }
+
+
 }

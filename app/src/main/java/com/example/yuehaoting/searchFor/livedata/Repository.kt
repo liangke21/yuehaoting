@@ -31,7 +31,7 @@ object Repository {
             if (placeResponse.status == 1) {
                Timber.v("酷狗搜索关键字请求成功:%s",placeResponse.status)
             } else {
-                Timber.v("酷狗搜索关键字请求失败:%s",placeResponse.status)
+                Timber.e("酷狗搜索关键字请求失败:%s",placeResponse.status)
               //  Result.failure(RuntimeException("为响应 ${placeResponse.status}"))
             }
 

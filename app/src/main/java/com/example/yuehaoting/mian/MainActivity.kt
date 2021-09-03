@@ -16,12 +16,14 @@ import com.example.yuehaoting.databinding.ActivityMainBinding
 import com.example.yuehaoting.mian.fragment1.MainFragment1
 import com.example.yuehaoting.mian.pageView.PageViewFragmentAdapter
 import com.example.yuehaoting.theme.Theme
+import com.example.yuehaoting.util.NetworkUtils
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.UIUtil
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -40,6 +42,11 @@ class MainActivity : AppCompatActivity() {
 
         initMagicIndicator()
         initPageViewFragment()
+
+
+
+
+
     }
 
 

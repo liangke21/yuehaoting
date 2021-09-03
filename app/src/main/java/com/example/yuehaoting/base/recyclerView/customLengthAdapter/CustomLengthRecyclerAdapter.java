@@ -1,4 +1,4 @@
-package com.example.yuehaoting.base.recyclerView.adapter;
+package com.example.yuehaoting.base.recyclerView.customLengthAdapter;
 
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import androidx.annotation.LayoutRes;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,23 +29,27 @@ public abstract class CustomLengthRecyclerAdapter<T> extends RecyclerView.Adapte
     private boolean mOpenAnimationEnable = true;
     protected AdapterView.OnItemClickListener mListener;
 
-    public CustomLengthRecyclerAdapter(@LayoutRes int layoutId) {
+    private int length;
+    public CustomLengthRecyclerAdapter(@LayoutRes int layoutId,int length) {
         setHasStableIds(false);
         this.mList = new ArrayList<>();
         this.mLayoutId = layoutId;
+        this.length=length;
     }
 
-    public CustomLengthRecyclerAdapter(Collection<T> collection, @LayoutRes int layoutId) {
+    public CustomLengthRecyclerAdapter(Collection<T> collection, @LayoutRes int layoutId,int length) {
         setHasStableIds(false);
         this.mList = new ArrayList<>(collection);
         this.mLayoutId = layoutId;
+        this.length=length;
     }
 
-    public CustomLengthRecyclerAdapter(Collection<T> collection, @LayoutRes int layoutId, AdapterView.OnItemClickListener listener) {
+    public CustomLengthRecyclerAdapter(Collection<T> collection, @LayoutRes int layoutId, AdapterView.OnItemClickListener listener,int length) {
         setHasStableIds(false);
         setOnItemClickListener(listener);
         this.mList = new ArrayList<>(collection);
         this.mLayoutId = layoutId;
+        this.length=length;
     }
     //</editor-fold>
 
@@ -71,7 +76,7 @@ public abstract class CustomLengthRecyclerAdapter<T> extends RecyclerView.Adapte
 
     @Override
     public int getItemCount() {
-        return 6;
+        return length;
     }
 
     @Override

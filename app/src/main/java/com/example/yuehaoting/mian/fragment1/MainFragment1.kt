@@ -20,7 +20,8 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.fragmet.BaseFragment
-import com.example.yuehaoting.base.recyclerView.adapter.CustomLengthRecyclerAdapter
+import com.example.yuehaoting.base.recyclerView.customLengthAdapter.NullAdapter
+import com.example.yuehaoting.base.recyclerView.customLengthAdapter.CustomLengthRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.data.kugou.specialRecommend.SetSpecialRecommend
 import com.example.yuehaoting.data.kugou.specialRecommend.SpecialRecommend
@@ -28,6 +29,7 @@ import com.example.yuehaoting.databinding.MainFragment1Binding
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.mian.viewModel.MainFragmentViewModel
+import com.example.yuehaoting.util.NetworkUtils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import net.lucode.hackware.magicindicator.ViewPagerHelper
@@ -80,7 +82,11 @@ class MainFragment1 : BaseFragment() {
        // val layoutManager = LinearLayoutManager(context)
         binding.recyclerView.layoutManager = layoutManager
 
+        val b= NetworkUtils.isNetWorkAvailable(context!!)
+        Timber.v("网络是否打开%s",b)
 
+        mAdapter = NullAdapter( R.layout.main_fragment1_item_song_list ,6)
+        binding.recyclerView.adapter=mAdapter
         viewModel.observedLiveData.observe(this) {
             tryNull {
                 val mSpecialRecommend = it.getOrNull() as SpecialRecommend
@@ -88,8 +94,10 @@ class MainFragment1 : BaseFragment() {
                 viewModel.listLiveData.clear()
 
                 viewModel.listLiveData.addAll(mSpecialRecommend.data?.special_list!!)
+                binding.recyclerView.adapter=null
+                mAdapter.notifyDataSetChanged()
 
-                mAdapter = object : CustomLengthRecyclerAdapter<SpecialRecommend.Data.Special> (viewModel.listLiveData, R.layout.main_fragment1_item_song_list ){
+                mAdapter = object : CustomLengthRecyclerAdapter<SpecialRecommend.Data.Special>(viewModel.listLiveData, R.layout.main_fragment1_item_song_list,6 ){
                     override fun onBindViewHolder(holder: SmartViewHolder, model: SpecialRecommend.Data.Special?, position: Int) {
 
                         holderImage(holder,model,position)
@@ -99,11 +107,7 @@ class MainFragment1 : BaseFragment() {
 
                 }
                 binding.recyclerView.adapter=mAdapter
-//                 //todo 刷新不了数据
-//                mAdapter.notifyDataSetChanged()
-
             }
-
 
         }
     }
@@ -131,7 +135,7 @@ class MainFragment1 : BaseFragment() {
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {
-                    holder.image(R.id.iv_main_fragment1_item,placeholder)
+                    holder.image(R.id.iv_main_fragment1_item,R.drawable.load_cleared)
                 }
 
                 override fun onLoadStarted(placeholder: Drawable?) {
