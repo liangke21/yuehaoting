@@ -1,5 +1,6 @@
 package com.example.yuehaoting.mian.fragment1
 
+
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
@@ -12,22 +13,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.fragmet.BaseFragment
-import com.example.yuehaoting.base.recyclerView.customLengthAdapter.NullAdapter
-import com.example.yuehaoting.base.recyclerView.customLengthAdapter.CustomLengthRecyclerAdapter
+import com.example.yuehaoting.base.glide.GlideApp
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
+import com.example.yuehaoting.base.recyclerView.customLengthAdapter.CustomLengthRecyclerAdapter
+import com.example.yuehaoting.base.recyclerView.customLengthAdapter.NullAdapter
 import com.example.yuehaoting.data.kugou.specialRecommend.SetSpecialRecommend
 import com.example.yuehaoting.data.kugou.specialRecommend.SpecialRecommend
 import com.example.yuehaoting.databinding.MainFragment1Binding
-import com.example.yuehaoting.kotlin.lazyMy
-import com.example.yuehaoting.kotlin.tryNull
+import com.example.yuehaoting.kotlin.*
 import com.example.yuehaoting.mian.viewModel.MainFragmentViewModel
 import com.example.yuehaoting.util.NetworkUtils
 import com.google.gson.Gson
@@ -55,7 +54,7 @@ class MainFragment1 : BaseFragment() {
 
     private lateinit var mAdapter: CustomLengthRecyclerAdapter<SpecialRecommend.Data.Special>
 
-    private val mDataList:ArrayList<String> = ArrayList()
+    private val mDataList: ArrayList<String> = ArrayList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = MainFragment1Binding.inflate(inflater)
@@ -78,76 +77,136 @@ class MainFragment1 : BaseFragment() {
     override fun onResume() {
         super.onResume()
 
-       val layoutManager = GridLayoutManager(context, 3)
-       // val layoutManager = LinearLayoutManager(context)
+        val layoutManager = GridLayoutManager(context, 3)
+        // val layoutManager = LinearLayoutManager(context)
         binding.recyclerView.layoutManager = layoutManager
+        //是否打开网络
+        val isNetWork = NetworkUtils.isNetWorkAvailable(context!!)
+        if (isNetWork) {
+            haveInternet()
+        } else {
+            noInternet()
+        }
 
-        val b= NetworkUtils.isNetWorkAvailable(context!!)
-        Timber.v("网络是否打开%s",b)
 
-        mAdapter = NullAdapter( R.layout.main_fragment1_item_song_list ,6)
-        binding.recyclerView.adapter=mAdapter
-        viewModel.observedLiveData.observe(this) {
-            tryNull {
-                val mSpecialRecommend = it.getOrNull() as SpecialRecommend
-                Timber.v("观察到酷狗特别预览数据%s",mSpecialRecommend.data?.special_list?.get(0)?.specialname)
-                viewModel.listLiveData.clear()
+    }
 
-                viewModel.listLiveData.addAll(mSpecialRecommend.data?.special_list!!)
-                binding.recyclerView.adapter=null
-                mAdapter.notifyDataSetChanged()
+    /**
+     * 没有网络
+     */
+    private fun noInternet() {
+        noInternetSpeciallyRecommendedPlaylistData()
+    }
 
-                mAdapter = object : CustomLengthRecyclerAdapter<SpecialRecommend.Data.Special>(viewModel.listLiveData, R.layout.main_fragment1_item_song_list,6 ){
-                    override fun onBindViewHolder(holder: SmartViewHolder, model: SpecialRecommend.Data.Special?, position: Int) {
+    /**
+     * 有网络
+     */
+    private fun haveInternet() {
+        haveInternetSpeciallyRecommendedPlaylistData()
+    }
 
-                        holderImage(holder,model,position)
+    /**
+     * 没有网落
+     * 获取特别预览的数据
+     */
+    private fun noInternetSpeciallyRecommendedPlaylistData() {
+        val json = getSp(context!!, "SpecialRecommend") {
+            getString("Special", "")
+        }
+        val gson = Gson()
+        val typeOf = object : TypeToken<List<SpecialRecommend.Data.Special>>() {}.type
+        val special: List<SpecialRecommend.Data.Special> = gson.fromJson(json, typeOf)
 
-                        holder.text(R.id.tv_main_fragment1_item,model?.specialname)
-                    }
+        Timber.v("观察到酷狗特别预览缓存数据数据%s", special[0].specialname)
+        viewModel.listLiveData.clear()
+        viewModel.listLiveData.addAll(special)
+        mAdapter = object : CustomLengthRecyclerAdapter<SpecialRecommend.Data.Special>(viewModel.listLiveData, R.layout.main_fragment1_item_song_list, 6) {
+            override fun onBindViewHolder(holder: SmartViewHolder, model: SpecialRecommend.Data.Special?, position: Int) {
 
-                }
-                binding.recyclerView.adapter=mAdapter
+                holderImage(holder, model)
+
+                holder.text(R.id.tv_main_fragment1_item, model?.specialname)
             }
 
         }
+        binding.recyclerView.adapter = mAdapter
+
     }
 
+    /**
+     * 有网落
+     * 获取特别预览的数据
+     */
+    @SuppressLint("VisibleForTests")
+    private fun haveInternetSpeciallyRecommendedPlaylistData() {
+        mAdapter = NullAdapter(R.layout.main_fragment1_item_song_list, 6)
+        binding.recyclerView.adapter = mAdapter
+        viewModel.observedLiveData.observe(this) {
+            tryNull {
+                val mSpecialRecommend = it.getOrNull() as SpecialRecommend
+                val gson = Gson().toJson(mSpecialRecommend.data?.special_list)
+                setSp(context!!, "SpecialRecommend") {
+                    putString("Special", gson)
+                }
+                Timber.v("观察到酷狗特别预览数据%s", mSpecialRecommend.data?.special_list?.get(0)?.specialname)
+                viewModel.listLiveData.clear()
+
+                viewModel.listLiveData.addAll(mSpecialRecommend.data?.special_list!!)
+                binding.recyclerView.adapter = null
+                mAdapter.notifyDataSetChanged()
+
+                mAdapter = object : CustomLengthRecyclerAdapter<SpecialRecommend.Data.Special>(viewModel.listLiveData, R.layout.main_fragment1_item_song_list, 6) {
+                    override fun onBindViewHolder(holder: SmartViewHolder, model: SpecialRecommend.Data.Special?, position: Int) {
+
+                        holderImage(holder, model)
+
+                        holder.text(R.id.tv_main_fragment1_item, model?.specialname)
+                    }
+
+                }
+                binding.recyclerView.adapter = mAdapter
+            }
+
+        }
+
+    }
+
+
     @SuppressLint("CheckResult")
-    private fun holderImage(holder: SmartViewHolder, model: SpecialRecommend.Data.Special?, position: Int) {
+    private fun holderImage(holder: SmartViewHolder, model: SpecialRecommend.Data.Special?) {
         //图片圆角
         val requestOptions = RequestOptions()
         // requestOptions.placeholder(R.drawable.ic_launcher_background)
         RequestOptions.circleCropTransform()
         requestOptions.transform(RoundedCorners(30))
 
-            val img= model?.imgurl
-            val picUrl=  img?.replace("{size}","400")
+        val img = model?.imgurl
+        val picUrl = img?.replace("{size}", "400")
 
-        Glide.with(this).asBitmap()
+        GlideApp.with(this).asBitmap()
             .apply(requestOptions)
-             .load(picUrl)
+            .load(picUrl)
             .placeholder(R.drawable.load_started)
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .into(object : CustomTarget<Bitmap>(){
+            .into(object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    Timber.v("resource%S",resource.toString())
-                    holder.image(R.id.iv_main_fragment1_item,resource)
+                    Timber.v("resource%S", resource.toString())
+                    holder.image(R.id.iv_main_fragment1_item, resource)
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {
-                    holder.image(R.id.iv_main_fragment1_item,R.drawable.load_cleared)
+                    holder.image(R.id.iv_main_fragment1_item, R.drawable.load_cleared)
                 }
 
                 override fun onLoadStarted(placeholder: Drawable?) {
                     super.onLoadStarted(placeholder)
-                    holder.image(R.id.iv_main_fragment1_item,placeholder)
+                    holder.image(R.id.iv_main_fragment1_item, placeholder)
                 }
             })
 
-
     }
+
     private fun initMagicIndicator() {
-        val magicIndicator =binding.miMainFragment1NewSongRecommendation
+        val magicIndicator = binding.miMainFragment1NewSongRecommendation
         // magicIndicator.setBackgroundResource(R.drawable.round_indicator_bg);
         val commonNavigator = CommonNavigator(context)
         commonNavigator.scrollPivotX = 0.65f
@@ -156,22 +215,22 @@ class MainFragment1 : BaseFragment() {
                 return mDataList.size
             }
 
-            override fun getTitleView(context: Context?, index: Int): IPagerTitleView? {
+            override fun getTitleView(context: Context?, index: Int): IPagerTitleView {
                 val clipPagerTitleView = SimplePagerTitleView(
                     context!!
                 )
                 clipPagerTitleView.text = mDataList[index]
-                clipPagerTitleView.textSize=14f
-                clipPagerTitleView.gravity=Gravity.CENTER
+                clipPagerTitleView.textSize = 14f
+                clipPagerTitleView.gravity = Gravity.CENTER
                 clipPagerTitleView.normalColor = Color.parseColor("#323131")
                 clipPagerTitleView.selectedColor = Color.WHITE
                 clipPagerTitleView.setOnClickListener { binding.vpMainFragment1.currentItem = index }
                 return clipPagerTitleView
             }
 
-            override fun getIndicator(context: Context): IPagerIndicator? {
+            override fun getIndicator(context: Context): IPagerIndicator {
                 val indicator = LinePagerIndicator(context)
-                val navigatorHeight =70f
+                val navigatorHeight = 70f
                 val borderWidth: Int = UIUtil.dip2px(context, 1.0)
                 val lineHeight = navigatorHeight - 2 * borderWidth
                 indicator.lineHeight = lineHeight
@@ -184,6 +243,10 @@ class MainFragment1 : BaseFragment() {
         magicIndicator.navigator = commonNavigator
         ViewPagerHelper.bind(magicIndicator, binding.vpMainFragment1)
     }
+
+    /**
+     * 特别推荐歌单 请求头
+     */
     private fun pots(): SetSpecialRecommend {
 
         val json = "{\n" +

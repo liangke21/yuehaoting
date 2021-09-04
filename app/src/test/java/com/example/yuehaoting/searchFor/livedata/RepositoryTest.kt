@@ -17,8 +17,8 @@ class RepositoryTest {
     fun singlePlaces() {
         runBlocking {
             launch {
-                val singleResponse = SongNetwork.singlePlaces("哇咔咔")
-                println(singleResponse.status)
+                //val singleResponse = SongNetwork.singlePlaces("哇咔咔")
+                //println(singleResponse.status)
             }
         }
     }

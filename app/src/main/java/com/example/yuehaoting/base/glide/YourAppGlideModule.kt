@@ -17,5 +17,7 @@ class YourAppGlideModule: AppGlideModule (){
       val diskCacheSizeBytes = 1024 *1024 *100
         builder.setDiskCache(ExternalPreferredCacheDiskCacheFactory(context,"Photo", diskCacheSizeBytes.toLong()))
     }
+
+
 }
 
