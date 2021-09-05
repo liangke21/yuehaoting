@@ -27,6 +27,9 @@ import com.example.yuehaoting.data.kugou.specialRecommend.SetSpecialRecommend
 import com.example.yuehaoting.data.kugou.specialRecommend.SpecialRecommend
 import com.example.yuehaoting.databinding.MainFragment1Binding
 import com.example.yuehaoting.kotlin.*
+import com.example.yuehaoting.mian.fragment1.newSongRecommendationFragment.BaseFragmentNewSongRecommendation
+import com.example.yuehaoting.mian.fragment1.newSongRecommendationFragment.Fragment1KuGou
+import com.example.yuehaoting.mian.fragment1.pageView.PageViewFragmentNewSongRecommendationAdapter
 import com.example.yuehaoting.mian.viewModel.MainFragmentViewModel
 import com.example.yuehaoting.util.NetworkUtils
 import com.google.gson.Gson
@@ -56,6 +59,7 @@ class MainFragment1 : BaseFragment() {
 
     private val mDataList: ArrayList<String> = ArrayList()
 
+    private val fragmentList:ArrayList<BaseFragmentNewSongRecommendation> = ArrayList()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = MainFragment1Binding.inflate(inflater)
         viewModel.kuGouSpecialRecommendViewModel(pots())
@@ -71,6 +75,11 @@ class MainFragment1 : BaseFragment() {
         mDataList.add("qq")
         mDataList.add("酷我")
         mDataList.add("咪咕")
+
+        fragmentList.add(Fragment1KuGou())
+        binding.vpMainFragment1.adapter = PageViewFragmentNewSongRecommendationAdapter(childFragmentManager, fragmentList)
+        binding.vpMainFragment1.offscreenPageLimit = 5
+
     }
 
 
@@ -205,6 +214,9 @@ class MainFragment1 : BaseFragment() {
 
     }
 
+    /**
+     * 新歌推荐标题栏
+     */
     private fun initMagicIndicator() {
         val magicIndicator = binding.miMainFragment1NewSongRecommendation
         // magicIndicator.setBackgroundResource(R.drawable.round_indicator_bg);

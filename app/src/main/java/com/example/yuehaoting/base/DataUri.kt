@@ -20,6 +20,8 @@ object DataUri {
     const val kuGouSongPhoto="http://kmrcdn.service.kugou.com/"
     //酷狗手机主页歌单数据
     const val kuGouSpecialRecommend="http://gateway.kugou.com/"
+    //酷狗新歌推荐
+    const val kuGouNewSong="http://mobilecdnbj.kugou.com/"
     //HifIni
     const val HifIni="https://hifini.com/"
     //网易音乐列表

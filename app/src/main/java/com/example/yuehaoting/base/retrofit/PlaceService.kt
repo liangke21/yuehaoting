@@ -1,6 +1,7 @@
 package com.example.yuehaoting.base.retrofit
 
 import com.example.yuehaoting.data.kugou.KuGou
+import com.example.yuehaoting.data.kugou.NewSong
 import com.example.yuehaoting.data.kugou.specialRecommend.SetSpecialRecommend
 import com.example.yuehaoting.data.kugou.specialRecommend.SpecialRecommend
 import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhoto
@@ -33,6 +34,9 @@ interface PlaceService {
    @POST("specialrec.service/special_recommend")
    fun kuGouSpecialRecommend(@Body ssr: SetSpecialRecommend):Call<SpecialRecommend>
 
+   //酷狗新歌推荐
+   @GET("api/v3/rank/newsong?version=9108&plat=0&with_cover=1&pagesize=5&type=1&area_code=1&page=1")
+   fun kuGouNewSongPlaceService():Call<NewSong>
 
    @GET("/{thread}.htm")
    fun hifIni(@Path("thread")thread:String):Call<ResponseBody>

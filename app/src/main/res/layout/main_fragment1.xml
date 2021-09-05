@@ -101,7 +101,7 @@
           <androidx.viewpager.widget.ViewPager
             android:id="@+id/vp_main_fragment1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="360dp"
             />
 
 

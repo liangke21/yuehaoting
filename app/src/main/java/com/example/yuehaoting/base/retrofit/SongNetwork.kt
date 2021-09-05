@@ -21,9 +21,13 @@ object SongNetwork {
      * 歌手写真数据
      */
     suspend fun singerPhoto(query: String)= singerPhoto.singerPhoto(query).await()
-
+    //酷狗歌单特别推荐
      private val kuGouSpecialRecommend=ServiceCreator(DataUri.kuGouSpecialRecommend).create<PlaceService>()
      suspend fun kuGouSpecialRecommend(ssr: SetSpecialRecommend)= kuGouSpecialRecommend.kuGouSpecialRecommend(ssr).await()
+    //酷狗新歌推荐
+
+    private val kuGouNewSong = ServiceCreator(DataUri.kuGouNewSong).create<PlaceService> ()
+    suspend fun kuGouNewSongSongNetwork()= kuGouNewSong.kuGouNewSongPlaceService().await()
 
 //_______________________________________|Html|______________________________________________________________________________________________________
     private val hifIni=ServiceCreator(DataUri.HifIni).createHtml(PlaceService::class.java)

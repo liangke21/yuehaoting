@@ -1,11 +1,13 @@
 package com.example.yuehaoting
 
+import android.util.MalformedJsonException
 import com.example.musiccrawler.hifini.DataSearch
 import com.example.yuehaoting.base.DataUri.kuGouSpecialRecommend
 import com.example.yuehaoting.base.retrofit.SongNetwork
 import com.example.yuehaoting.base.retrofit.SongNetwork.kuGouSpecialRecommend
 import com.example.yuehaoting.data.kugou.specialRecommend.SetSpecialRecommend
 import com.example.yuehaoting.kotlin.launchMy
+import com.example.yuehaoting.kotlin.tryNull
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import timber.log.Timber
@@ -71,6 +73,20 @@ object Test {
       Timber.v("SpecialRecommend数据:%s",kuGouSpecialRecommend(appList))
       }
 */
+
+/*        launchMy {
+
+
+   try {
+       val ss=SongNetwork.kuGouNewSongSongNetwork()
+
+       Timber.v("sssss%s",ss)
+   }catch (e:Exception){
+       e.message
+   }
+
+
+        }*/
 
     }
 }
