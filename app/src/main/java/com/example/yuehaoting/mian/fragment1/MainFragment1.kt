@@ -20,6 +20,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.fragmet.BaseFragment
 import com.example.yuehaoting.base.glide.GlideApp
+import com.example.yuehaoting.base.magicIndicator.ext.CustomCommonNavigator
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.base.recyclerView.customLengthAdapter.CustomLengthRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.customLengthAdapter.NullAdapter
@@ -28,7 +29,7 @@ import com.example.yuehaoting.data.kugou.specialRecommend.SpecialRecommend
 import com.example.yuehaoting.databinding.MainFragment1Binding
 import com.example.yuehaoting.kotlin.*
 import com.example.yuehaoting.mian.fragment1.newSongRecommendationFragment.BaseFragmentNewSongRecommendation
-import com.example.yuehaoting.mian.fragment1.newSongRecommendationFragment.Fragment1KuGou
+import com.example.yuehaoting.mian.fragment1.newSongRecommendationFragment.Fragment1QuanBu
 import com.example.yuehaoting.mian.fragment1.pageView.PageViewFragmentNewSongRecommendationAdapter
 import com.example.yuehaoting.mian.viewModel.MainFragmentViewModel
 import com.example.yuehaoting.util.NetworkUtils
@@ -36,7 +37,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.UIUtil
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
@@ -72,11 +72,11 @@ class MainFragment1 : BaseFragment() {
         mDataList.add("全部")
         mDataList.add("酷狗")
         mDataList.add("网易")
-        mDataList.add("qq")
+        mDataList.add("QQ")
         mDataList.add("酷我")
         mDataList.add("咪咕")
 
-        fragmentList.add(Fragment1KuGou())
+        fragmentList.add(Fragment1QuanBu())
         binding.vpMainFragment1.adapter = PageViewFragmentNewSongRecommendationAdapter(childFragmentManager, fragmentList)
         binding.vpMainFragment1.offscreenPageLimit = 5
 
@@ -220,7 +220,8 @@ class MainFragment1 : BaseFragment() {
     private fun initMagicIndicator() {
         val magicIndicator = binding.miMainFragment1NewSongRecommendation
         // magicIndicator.setBackgroundResource(R.drawable.round_indicator_bg);
-        val commonNavigator = CommonNavigator(context)
+        val commonNavigator = CustomCommonNavigator(context)
+        commonNavigator.isAdjustMode=true
         commonNavigator.scrollPivotX = 0.65f
         commonNavigator.adapter = object : CommonNavigatorAdapter() {
             override fun getCount(): Int {
@@ -252,6 +253,8 @@ class MainFragment1 : BaseFragment() {
                 return indicator
             }
         }
+
+
         magicIndicator.navigator = commonNavigator
         ViewPagerHelper.bind(magicIndicator, binding.vpMainFragment1)
     }
