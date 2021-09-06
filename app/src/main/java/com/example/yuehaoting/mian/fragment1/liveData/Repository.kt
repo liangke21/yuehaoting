@@ -13,11 +13,11 @@ import timber.log.Timber
  */
 object Repository {
 
-    fun kuGouNewSongRepository() = liveData(Dispatchers.IO) {
+    fun kuGouNewSongRepository(page:Int, size:Int) = liveData(Dispatchers.IO) {
 
         val result: Result<NewSong> = try {
 
-            val kuGouNewSong = SongNetwork.kuGouNewSongSongNetwork()
+            val kuGouNewSong = SongNetwork.kuGouNewSongSongNetwork(page, size)
 
             run {
                 if (kuGouNewSong.status == 1) {

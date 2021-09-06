@@ -21,7 +21,7 @@
   android:orientation="vertical">
   <com.elyeproj.loaderviewlibrary.LoaderTextView
     android:id="@+id/tv_main_fragment1_fragment_a_ku_gou_item_song"
-    android:layout_width="wrap_content"
+    android:layout_width="200dp"
     android:layout_height="wrap_content"
     android:textSize="14sp"
     tools:text="星月神话"/>
@@ -30,8 +30,9 @@
   <com.elyeproj.loaderviewlibrary.LoaderTextView
     android:id="@+id/tv_main_fragment1_fragment_a_ku_gou_item_song_album"
     android:layout_marginTop="8dp"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="200dp"
+    android:textColor="#1C1C1C"
+    android:layout_height="match_parent"
     android:textSize="10sp"
     tools:text="金莎 - 星月神话"
     tools:ignore="SmallSp"/>

@@ -64,6 +64,7 @@ public abstract class CustomLengthRecyclerAdapter<T> extends RecyclerView.Adapte
     //<editor-fold desc="RecyclerAdapter">
     @Override
     public SmartViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         return new SmartViewHolder(LayoutInflater.from(parent.getContext()).inflate(mLayoutId, parent, false),mListener);
     }
 

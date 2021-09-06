@@ -12,7 +12,15 @@ class MyMain() {
         block1("哇咔咔")
         block2()
     }
+
+    private var a =0
+
+    fun seta(a:Int){
+        this.a=a
+    }
 }
+
+
 
 fun main() {
     MyMain().test({

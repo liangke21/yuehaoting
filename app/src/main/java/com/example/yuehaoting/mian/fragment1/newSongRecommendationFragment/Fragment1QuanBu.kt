@@ -11,7 +11,7 @@ import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.base.recyclerView.customLengthAdapter.CustomLengthRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.customLengthAdapter.NullAdapter
 import com.example.yuehaoting.data.kugou.NewSong
-import com.example.yuehaoting.databinding.MainFragment1FragmentAKugouBinding
+import com.example.yuehaoting.databinding.MainFragment1FragmentAQuanbuBinding
 import com.example.yuehaoting.kotlin.getSp
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.kotlin.setSp
@@ -27,16 +27,16 @@ import timber.log.Timber
  * 描述:
  */
 class Fragment1QuanBu : BaseFragmentNewSongRecommendation(), ShowNewSongList {
-    private lateinit var binding: MainFragment1FragmentAKugouBinding
+    private lateinit var binding: MainFragment1FragmentAQuanbuBinding
 
     private var viewModel by lazyMy { ViewModelProvider(this).get(FragmentAKuGouViewModel::class.java) }
 
     private lateinit var mAdapter: CustomLengthRecyclerAdapter<NewSong.Data.Info>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = MainFragment1FragmentAKugouBinding.inflate(layoutInflater)
+        binding = MainFragment1FragmentAQuanbuBinding.inflate(layoutInflater)
 
-        viewModel.kuGouSpecialRecommendViewModel("请求")
+        viewModel.kuGouSpecialRecommendViewModel(1,5)
 
         return binding.root
     }

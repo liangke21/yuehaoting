@@ -2,6 +2,7 @@ package com.example.yuehaoting.base.retrofit
 
 import com.example.yuehaoting.base.DataUri
 import com.example.yuehaoting.data.kugou.specialRecommend.SetSpecialRecommend
+import retrofit2.http.Query
 
 object SongNetwork {
      //关键字请求
@@ -27,7 +28,7 @@ object SongNetwork {
     //酷狗新歌推荐
 
     private val kuGouNewSong = ServiceCreator(DataUri.kuGouNewSong).create<PlaceService> ()
-    suspend fun kuGouNewSongSongNetwork()= kuGouNewSong.kuGouNewSongPlaceService().await()
+    suspend fun kuGouNewSongSongNetwork(page:Int, size:Int)= kuGouNewSong.kuGouNewSongPlaceService(page,size).await()
 
 //_______________________________________|Html|______________________________________________________________________________________________________
     private val hifIni=ServiceCreator(DataUri.HifIni).createHtml(PlaceService::class.java)

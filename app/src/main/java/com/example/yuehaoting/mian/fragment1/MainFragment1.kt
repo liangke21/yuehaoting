@@ -29,6 +29,7 @@ import com.example.yuehaoting.data.kugou.specialRecommend.SpecialRecommend
 import com.example.yuehaoting.databinding.MainFragment1Binding
 import com.example.yuehaoting.kotlin.*
 import com.example.yuehaoting.mian.fragment1.newSongRecommendationFragment.BaseFragmentNewSongRecommendation
+import com.example.yuehaoting.mian.fragment1.newSongRecommendationFragment.Fragment1KuGou
 import com.example.yuehaoting.mian.fragment1.newSongRecommendationFragment.Fragment1QuanBu
 import com.example.yuehaoting.mian.fragment1.pageView.PageViewFragmentNewSongRecommendationAdapter
 import com.example.yuehaoting.mian.viewModel.MainFragmentViewModel
@@ -77,6 +78,7 @@ class MainFragment1 : BaseFragment() {
         mDataList.add("咪咕")
 
         fragmentList.add(Fragment1QuanBu())
+        fragmentList.add(Fragment1KuGou())
         binding.vpMainFragment1.adapter = PageViewFragmentNewSongRecommendationAdapter(childFragmentManager, fragmentList)
         binding.vpMainFragment1.offscreenPageLimit = 5
 
@@ -97,7 +99,7 @@ class MainFragment1 : BaseFragment() {
             noInternet()
         }
 
-
+        binding.refreshLayout.setEnableRefresh(false)
     }
 
     /**

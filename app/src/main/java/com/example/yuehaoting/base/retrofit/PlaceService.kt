@@ -35,8 +35,8 @@ interface PlaceService {
    fun kuGouSpecialRecommend(@Body ssr: SetSpecialRecommend):Call<SpecialRecommend>
 
    //酷狗新歌推荐
-   @GET("api/v3/rank/newsong?version=9108&plat=0&with_cover=1&pagesize=5&type=1&area_code=1&page=1")
-   fun kuGouNewSongPlaceService():Call<NewSong>
+   @GET("api/v3/rank/newsong?version=9108&plat=0&with_cover=1&type=1&area_code=1&page=1&pagesize=5")
+   fun kuGouNewSongPlaceService(@Query("page")page:Int,@Query("pagesize")pagesize:Int):Call<NewSong>
 
    @GET("/{thread}.htm")
    fun hifIni(@Path("thread")thread:String):Call<ResponseBody>

@@ -14,15 +14,16 @@ import com.example.yuehaoting.mian.fragment1.liveData.Repository
  */
 class FragmentAKuGouViewModel : ViewModel() {
 
-    private val liveData = MutableLiveData<String>()
+    private val liveData = MutableLiveData<List<Int>>()
 
     val observedLiveData: LiveData<Result<NewSong>> = Transformations.switchMap(liveData) {
 
-        Repository.kuGouNewSongRepository()
+        Repository.kuGouNewSongRepository(it[0], it[1])
     }
 
-    fun kuGouSpecialRecommendViewModel(string: String) {
-        liveData.value=string
+    fun kuGouSpecialRecommendViewModel(page:Int, size:Int) {
+        val list= arrayListOf(page,size)
+        liveData.value= list
     }
 
     val listLiveData = ArrayList<NewSong.Data.Info>()

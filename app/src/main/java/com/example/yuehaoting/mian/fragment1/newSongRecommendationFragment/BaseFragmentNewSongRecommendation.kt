@@ -3,6 +3,7 @@ package com.example.yuehaoting.mian.fragment1.newSongRecommendationFragment
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Bundle
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
@@ -11,6 +12,7 @@ import com.example.yuehaoting.R
 import com.example.yuehaoting.base.fragmet.MyFragment
 import com.example.yuehaoting.base.glide.GlideApp
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
+import com.example.yuehaoting.util.NetworkUtils
 import timber.log.Timber
 
 /**
@@ -19,6 +21,13 @@ import timber.log.Timber
  * 描述:
  */
 open class BaseFragmentNewSongRecommendation: MyFragment() {
+    /**
+     * 是有网络
+     * @return Boolean
+     */
+       fun isNetWork():Boolean{
+           return  NetworkUtils.isNetWorkAvailable(context!!)
+       }
     /**
      * 子类工具
      * @param img String  图片连接
