@@ -32,7 +32,7 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = MainFragment1FragmentBKugouBinding.inflate(layoutInflater)
 
-        viewModel.kuGouSpecialRecommendViewModel(1,56)
+        viewModel.kuGouSpecialRecommendViewModel(1,26)
         return binding.root
     }
 
@@ -64,27 +64,28 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
                    val newSong=it.getOrNull()
                    viewModel.listLiveData.clear()
                    viewModel.listLiveData.addAll(newSong?.data?.info!!)
-                   for (i in 1..5 ){
+                   for (i in 0..4 ){
                        //每次都删除0索引
                        viewModel.listLiveData.removeAt(0)
                    }
 
                    binding.recyclerView.adapter=null
-
-                   mAdapter =object :CustomLengthRecyclerAdapter<NewSong.Data.Info> (viewModel.listLiveData,R.layout.main_fragment1_fragment_item,51){
+                 mAdapter.notifyDataSetChanged()
+                   mAdapter =object :CustomLengthRecyclerAdapter<NewSong.Data.Info> (viewModel.listLiveData,R.layout.main_fragment1_fragment_item,21){
                        override fun onBindViewHolder(holder: SmartViewHolder?, model: NewSong.Data.Info?, position: Int) {
-
-
                                val img = model?.album_cover
-                               holderImage(img!!, "100", 20, holder!!, R.id.iv_main_fragment1_fragment_a_ku_gou_item)
-                               val listFilename = model.filename?.split("- ")
+                             holderImage(img!!, "100", 20, holder!!, R.id.iv_main_fragment1_fragment_a_ku_gou_item)
+                               val listFilename = model?.filename?.split("- ")
 
-                               holder.text(R.id.tv_main_fragment1_fragment_a_ku_gou_item_song, listFilename?.get(1))
-                               holder.text(R.id.tv_main_fragment1_fragment_a_ku_gou_item_song_album, listFilename?.get(0))
-
-
+                           holder?.text(R.id.tv_main_fragment1_fragment_a_ku_gou_item_song, listFilename?.get(1))
+                           holder?.text(R.id.tv_main_fragment1_fragment_a_ku_gou_item_song_album, listFilename?.get(0))
 
                        }
+
+                       override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SmartViewHolder {
+                           return super.onCreateViewHolder(parent, viewType)
+                       }
+
                    }
                   binding.recyclerView.adapter=mAdapter
                }

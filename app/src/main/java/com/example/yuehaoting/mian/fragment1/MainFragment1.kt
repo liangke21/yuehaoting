@@ -11,6 +11,8 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -21,6 +23,7 @@ import com.example.yuehaoting.R
 import com.example.yuehaoting.base.fragmet.BaseFragment
 import com.example.yuehaoting.base.glide.GlideApp
 import com.example.yuehaoting.base.magicIndicator.ext.CustomCommonNavigator
+import com.example.yuehaoting.base.pageView.ViewPager2Helper
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.base.recyclerView.customLengthAdapter.CustomLengthRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.customLengthAdapter.NullAdapter
@@ -79,18 +82,15 @@ class MainFragment1 : BaseFragment() {
 
         fragmentList.add(Fragment1QuanBu())
         fragmentList.add(Fragment1KuGou())
-        binding.vpMainFragment1.adapter = PageViewFragmentNewSongRecommendationAdapter(childFragmentManager, fragmentList)
-        binding.vpMainFragment1.offscreenPageLimit = 5
+
 
     }
 
 
     override fun onResume() {
         super.onResume()
+        initView()
 
-        val layoutManager = GridLayoutManager(context, 3)
-        // val layoutManager = LinearLayoutManager(context)
-        binding.recyclerView.layoutManager = layoutManager
         //是否打开网络
         val isNetWork = NetworkUtils.isNetWorkAvailable(context!!)
         if (isNetWork) {
@@ -98,6 +98,21 @@ class MainFragment1 : BaseFragment() {
         } else {
             noInternet()
         }
+
+
+    }
+
+    private fun initView() {
+        binding.vpMainFragment1.adapter = PageViewFragmentNewSongRecommendationAdapter(childFragmentManager, fragmentList, LifecycleRegistry(this).apply {
+            currentState = Lifecycle.State.RESUMED
+        })
+        binding.vpMainFragment1.offscreenPageLimit = 5
+
+
+        //binding.vpMainFragment1.isUserInputEnabled=false
+
+        val layoutManager = GridLayoutManager(context, 3)
+        binding.recyclerView.layoutManager = layoutManager
 
         binding.refreshLayout.setEnableRefresh(false)
     }
@@ -258,7 +273,7 @@ class MainFragment1 : BaseFragment() {
 
 
         magicIndicator.navigator = commonNavigator
-        ViewPagerHelper.bind(magicIndicator, binding.vpMainFragment1)
+        ViewPager2Helper.bind(magicIndicator, binding.vpMainFragment1)
     }
 
     /**
