@@ -2,13 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
+  android:layout_height="wrap_content"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools">
   <com.scwang.smart.refresh.layout.SmartRefreshLayout
     android:id="@+id/refreshLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:clipChildren="true"
     android:clipToPadding="true"
     app:srlDragRate="0.7"
@@ -16,14 +16,16 @@
     app:srlHeaderHeight="150dp"
     app:srlEnableAutoLoadMore="true"
     app:srlHeaderInsetStart="0dp"
-    app:srlHeaderTriggerRate="0.5">
+    app:srlHeaderTriggerRate="0.5"
+    tools:ignore="MissingConstraints">
     <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/recyclerView"
+      android:id="@+id/recyclerView2"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="wrap_content"
       tools:layout_editor_absoluteX="1dp"
       tools:layout_editor_absoluteY="1dp"
-      tools:listitem="@layout/main_fragment1_fragment_item"/>
+      tools:listitem="@layout/main_fragment1_fragment_item"
+      />
     <com.scwang.smart.refresh.footer.ClassicsFooter
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

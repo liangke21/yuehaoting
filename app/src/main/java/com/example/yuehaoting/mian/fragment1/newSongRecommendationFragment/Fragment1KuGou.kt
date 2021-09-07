@@ -32,14 +32,16 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = MainFragment1FragmentBKugouBinding.inflate(layoutInflater)
 
-        viewModel.kuGouSpecialRecommendViewModel(1,26)
+        viewModel.kuGouSpecialRecommendViewModel(1,25)
         return binding.root
     }
 
     override fun onResume() {
         super.onResume()
         val layoutManager = LinearLayoutManager(context)
-        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView2.layoutManager = layoutManager
+
+       // binding.refreshLayout.setEnableRefresh(false)   //禁用下拉刷新
 
         if (isNetWork()) {
             haveInternet()
@@ -57,8 +59,8 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
     }
 
     override fun haveInternetShowNewSongList() {
-        mAdapter=NullAdapter(R.layout.main_fragment1_fragment_item,50)
-        binding.recyclerView.adapter=mAdapter
+        mAdapter=NullAdapter(R.layout.main_fragment1_fragment_item,21)
+        binding.recyclerView2.adapter=mAdapter
 
                viewModel.observedLiveData.observe(this){
                    val newSong=it.getOrNull()
@@ -69,12 +71,13 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
                        viewModel.listLiveData.removeAt(0)
                    }
 
-                   binding.recyclerView.adapter=null
+                   binding.recyclerView2.adapter=null
+                   binding.recyclerView2.adapter?.notifyDataSetChanged()
                  mAdapter.notifyDataSetChanged()
                    mAdapter =object :CustomLengthRecyclerAdapter<NewSong.Data.Info> (viewModel.listLiveData,R.layout.main_fragment1_fragment_item,21){
                        override fun onBindViewHolder(holder: SmartViewHolder?, model: NewSong.Data.Info?, position: Int) {
                                val img = model?.album_cover
-                             holderImage(img!!, "100", 20, holder!!, R.id.iv_main_fragment1_fragment_a_ku_gou_item)
+                           img?.let { it1 -> holderImage(it1, "100", 20, holder!!, R.id.iv_main_fragment1_fragment_a_ku_gou_item) }
                                val listFilename = model?.filename?.split("- ")
 
                            holder?.text(R.id.tv_main_fragment1_fragment_a_ku_gou_item_song, listFilename?.get(1))
@@ -87,7 +90,9 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
                        }
 
                    }
-                  binding.recyclerView.adapter=mAdapter
+                  binding.recyclerView2.adapter=mAdapter
+
+
                }
     }
 

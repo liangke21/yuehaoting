@@ -104,17 +104,13 @@ class MainFragment1 : BaseFragment() {
 
     private fun initView() {
         binding.vpMainFragment1.adapter = PageViewFragmentNewSongRecommendationAdapter(childFragmentManager, fragmentList, LifecycleRegistry(this).apply {
-            currentState = Lifecycle.State.RESUMED
+            currentState = Lifecycle.State.STARTED
         })
         binding.vpMainFragment1.offscreenPageLimit = 5
-
-
-        //binding.vpMainFragment1.isUserInputEnabled=false
 
         val layoutManager = GridLayoutManager(context, 3)
         binding.recyclerView.layoutManager = layoutManager
 
-        binding.refreshLayout.setEnableRefresh(false)
     }
 
     /**
@@ -238,7 +234,7 @@ class MainFragment1 : BaseFragment() {
         val magicIndicator = binding.miMainFragment1NewSongRecommendation
         // magicIndicator.setBackgroundResource(R.drawable.round_indicator_bg);
         val commonNavigator = CustomCommonNavigator(context)
-        commonNavigator.isAdjustMode=true
+        commonNavigator.isAdjustMode=true  //标题自适应
         commonNavigator.scrollPivotX = 0.65f
         commonNavigator.adapter = object : CommonNavigatorAdapter() {
             override fun getCount(): Int {
@@ -273,7 +269,7 @@ class MainFragment1 : BaseFragment() {
 
 
         magicIndicator.navigator = commonNavigator
-        ViewPager2Helper.bind(magicIndicator, binding.vpMainFragment1)
+        ViewPager2Helper.bind(magicIndicator, binding.vpMainFragment1,childFragmentManager)
     }
 
     /**
