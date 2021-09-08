@@ -1,15 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content">
-  <androidx.recyclerview.widget.RecyclerView
-    android:layout_width="358dp"
+  android:layout_height="wrap_content"
+  android:background="@color/purple_500"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+  <com.scwang.smart.refresh.layout.SmartRefreshLayout
+    android:id="@+id/refreshLayout"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:layout_editor_absoluteX="1dp"
-    tools:layout_editor_absoluteY="1dp"
-    android:id="@+id/recyclerview"
-    tools:listitem="@layout/main_fragment1_fragment_item"
-    tools:ignore="MissingConstraints"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    android:clipChildren="true"
+    android:clipToPadding="true"
+    app:srlDragRate="0.7"
+    app:srlHeaderMaxDragRate="1.3"
+    app:srlHeaderHeight="150dp"
+    app:srlEnableAutoLoadMore="true"
+    app:srlHeaderInsetStart="0dp"
+    app:srlHeaderTriggerRate="0.5">
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/recyclerview"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      tools:layout_editor_absoluteX="1dp"
+      tools:layout_editor_absoluteY="1dp"
+      tools:listitem="@layout/main_fragment1_fragment_item"
+      />
+    <com.scwang.smart.refresh.footer.ClassicsFooter
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:srlAccentColor="#888"
+      app:srlClassicsSpinnerStyle="Translate"
+      app:srlDrawableProgress="@drawable/fragment3_music_163_cf"/>
+  </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+</LinearLayout>

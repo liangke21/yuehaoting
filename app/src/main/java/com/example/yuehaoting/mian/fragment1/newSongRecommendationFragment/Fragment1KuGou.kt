@@ -38,16 +38,21 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
 
     override fun onResume() {
         super.onResume()
+        binding.root.requestLayout()
+    }
+
+    override fun lazyInit() {
         val layoutManager = LinearLayoutManager(context)
         binding.recyclerView2.layoutManager = layoutManager
 
-       // binding.refreshLayout.setEnableRefresh(false)   //禁用下拉刷新
+        // binding.refreshLayout.setEnableRefresh(false)   //禁用下拉刷新
 
         if (isNetWork()) {
             haveInternet()
         } else {
             noInternet()
         }
+
     }
 
     override fun haveInternet() {

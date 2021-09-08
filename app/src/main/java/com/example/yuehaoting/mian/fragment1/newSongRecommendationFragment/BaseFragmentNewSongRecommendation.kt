@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
@@ -20,7 +21,7 @@ import timber.log.Timber
  * 时间: 2021/9/4 18:11
  * 描述:
  */
-open class BaseFragmentNewSongRecommendation: MyFragment() {
+abstract class BaseFragmentNewSongRecommendation: MyFragment() {
     /**
      * 是有网络
      * @return Boolean
@@ -53,7 +54,6 @@ open class BaseFragmentNewSongRecommendation: MyFragment() {
             .placeholder(R.drawable.load_started)
             .into(object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    Timber.v("resource%S", resource.toString())
                     holder.image(id, resource)
                 }
 
@@ -68,5 +68,18 @@ open class BaseFragmentNewSongRecommendation: MyFragment() {
             })
 
     }
+    private var isLoaded = false
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "lazyInit:!!!!!!! isLoaded=$isLoaded,isHidden=$isHidden")
+        if (!isLoaded && !isHidden) {
+            lazyInit()
+            isLoaded = true
+        }
+
+
+    }
+
+    abstract fun lazyInit()
 
 }

@@ -43,6 +43,9 @@ class Fragment1QuanBu : BaseFragmentNewSongRecommendation(), ShowNewSongList {
 
     override fun onResume() {
         super.onResume()
+        binding.root.requestLayout()
+    }
+    override fun lazyInit() {
         val layoutManager = LinearLayoutManager(context)
         binding.recyclerview.layoutManager = layoutManager
 
