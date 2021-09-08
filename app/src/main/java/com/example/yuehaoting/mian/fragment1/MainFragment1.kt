@@ -89,6 +89,7 @@ class MainFragment1 : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
+        binding.root.requestLayout()
         initView()
 
         //是否打开网络

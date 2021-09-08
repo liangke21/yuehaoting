@@ -64,7 +64,11 @@ public class ViewPager2Helper {
 
             if (pager.getLayoutParams().height != view.getMeasuredHeight()){
               Log.v("OnPageChangeCallback()获取当前fragment的高度 ",String.valueOf( view.getMeasuredHeight() ));
-             pager.getLayoutParams().height = view.getMeasuredHeight();
+
+                 pager.getLayoutParams().height = view.getMeasuredHeight();
+
+                 pager.requestLayout();  //把每页通知给父布局
+
               //todo 布局显示异常
               Log.v("OnPageChangeCallback()当前viewpage高度 ",String.valueOf(  pager.getLayoutParams().height ));
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
     app:srlEnableAutoLoadMore="true"
     app:srlHeaderInsetStart="0dp"
     app:srlHeaderTriggerRate="0.5"
-    tools:ignore="MissingConstraints">
+    >
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/recyclerView2"
       android:layout_width="match_parent"
@@ -34,4 +34,4 @@
       app:srlClassicsSpinnerStyle="Translate"
       app:srlDrawableProgress="@drawable/fragment3_music_163_cf"/>
   </com.scwang.smart.refresh.layout.SmartRefreshLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

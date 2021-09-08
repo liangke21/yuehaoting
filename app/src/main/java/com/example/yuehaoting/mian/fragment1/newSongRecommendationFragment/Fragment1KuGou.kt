@@ -98,6 +98,7 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
                   binding.recyclerView2.adapter=mAdapter
 
 
+
                }
     }
 
