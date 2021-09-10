@@ -201,7 +201,7 @@ public abstract class CustomLengthRecyclerAdapter<T> extends RecyclerView.Adapte
      */
     public CustomLengthRecyclerAdapter<T> loadMore(Collection<T> collection,int length) {
         mList.addAll(collection);
-        mLength+=length;
+        mLength=mList.size();
         notifyDataSetChanged();
         notifyListDataSetChanged();
         return this;
