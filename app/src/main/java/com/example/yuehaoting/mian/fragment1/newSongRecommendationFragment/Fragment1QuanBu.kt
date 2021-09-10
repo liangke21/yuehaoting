@@ -49,6 +49,8 @@ class Fragment1QuanBu : BaseFragmentNewSongRecommendation(), ShowNewSongList {
         val layoutManager = LinearLayoutManager(context)
         binding.recyclerview.layoutManager = layoutManager
 
+      //  binding.refreshLayout.setEnableRefresh(false)   //禁用下拉刷新
+
         val isNetWork = NetworkUtils.isNetWorkAvailable(context!!)
         if (isNetWork) {
             haveInternet()

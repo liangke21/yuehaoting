@@ -89,7 +89,7 @@ class MainFragment1 : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        binding.root.requestLayout()
+
         initView()
 
         //是否打开网络
@@ -107,7 +107,10 @@ class MainFragment1 : BaseFragment() {
         binding.vpMainFragment1.adapter = PageViewFragmentNewSongRecommendationAdapter(childFragmentManager, fragmentList, LifecycleRegistry(this).apply {
             currentState = Lifecycle.State.STARTED
         })
+
         binding.vpMainFragment1.offscreenPageLimit = 5
+
+        binding.refreshLayout. setEnableLoadMore(false) // 关闭上拉加载更多
 
         val layoutManager = GridLayoutManager(context, 3)
         binding.recyclerView.layoutManager = layoutManager

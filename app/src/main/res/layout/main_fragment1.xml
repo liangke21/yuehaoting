@@ -57,6 +57,8 @@
               android:paddingTop="0dp"
               android:clipToPadding="false"
               android:overScrollMode="never"
+              tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+              tools:spanCount="3"
               tools:listitem="@layout/main_fragment1_item_song_list"
               tools:ignore="RtlSymmetry"/>
             <TextView
@@ -109,6 +111,7 @@
             app:layout_constraintTop_toTopOf="parent"
             />
 
+<!--
 
           <ImageView
             android:layout_width="match_parent"
@@ -172,6 +175,7 @@
             android:src="@mipmap/gif_header_repast"
             app:layout_srlSpinnerStyle="Scale"
             app:layout_srlBackgroundColor="@android:color/transparent"/>
+-->
 
         </LinearLayout>
 

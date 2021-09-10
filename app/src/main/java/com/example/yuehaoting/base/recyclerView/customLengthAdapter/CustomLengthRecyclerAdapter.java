@@ -29,19 +29,19 @@ public abstract class CustomLengthRecyclerAdapter<T> extends RecyclerView.Adapte
     private boolean mOpenAnimationEnable = true;
     protected AdapterView.OnItemClickListener mListener;
 
-    private int length;
+    private int mLength;
     public CustomLengthRecyclerAdapter(@LayoutRes int layoutId,int length) {
         setHasStableIds(false);
         this.mList = new ArrayList<>();
         this.mLayoutId = layoutId;
-        this.length=length;
+        this.mLength=length;
     }
 
     public CustomLengthRecyclerAdapter(Collection<T> collection, @LayoutRes int layoutId,int length) {
         setHasStableIds(false);
         this.mList = new ArrayList<>(collection);
         this.mLayoutId = layoutId;
-        this.length=length;
+        this.mLength=length;
     }
 
     public CustomLengthRecyclerAdapter(Collection<T> collection, @LayoutRes int layoutId, AdapterView.OnItemClickListener listener,int length) {
@@ -49,7 +49,7 @@ public abstract class CustomLengthRecyclerAdapter<T> extends RecyclerView.Adapte
         setOnItemClickListener(listener);
         this.mList = new ArrayList<>(collection);
         this.mLayoutId = layoutId;
-        this.length=length;
+        this.mLength=length;
     }
     //</editor-fold>
 
@@ -77,7 +77,7 @@ public abstract class CustomLengthRecyclerAdapter<T> extends RecyclerView.Adapte
 
     @Override
     public int getItemCount() {
-        return length;
+        return mLength;
     }
 
     @Override
@@ -199,8 +199,9 @@ public abstract class CustomLengthRecyclerAdapter<T> extends RecyclerView.Adapte
      * @param collection
      * @return
      */
-    public CustomLengthRecyclerAdapter<T> loadMore(Collection<T> collection) {
+    public CustomLengthRecyclerAdapter<T> loadMore(Collection<T> collection,int length) {
         mList.addAll(collection);
+        mLength+=length;
         notifyDataSetChanged();
         notifyListDataSetChanged();
         return this;

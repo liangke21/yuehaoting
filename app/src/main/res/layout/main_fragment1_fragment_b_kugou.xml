@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<!--<LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  >
+  >-->
   <com.scwang.smart.refresh.layout.SmartRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/refreshLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -18,20 +21,36 @@
     app:srlEnableAutoLoadMore="true"
     app:srlHeaderInsetStart="0dp"
     app:srlHeaderTriggerRate="0.5"
+
     >
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/recyclerView2"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      tools:layout_editor_absoluteX="1dp"
-      tools:layout_editor_absoluteY="1dp"
-      tools:listitem="@layout/main_fragment1_fragment_item"
-      />
+  <com.scwang.smart.refresh.header.ClassicsHeader
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/recyclerView2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toBottomOf="parent"
+    tools:ignore="MissingConstraints"
+    tools:layout_editor_absoluteX="-16dp"
+    tools:listitem="@layout/main_fragment1_fragment_item"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.scwang.smart.refresh.footer.ClassicsFooter
+      android:id="@+id/classicsFooter"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       app:srlAccentColor="#888"
-      app:srlClassicsSpinnerStyle="Translate"
+
+      app:srlTextPulling="上拉加载"
+      app:srlTextLoading="加载更多ww"
+
       app:srlDrawableProgress="@drawable/fragment3_music_163_cf"/>
   </com.scwang.smart.refresh.layout.SmartRefreshLayout>
-</LinearLayout>
+<!--
+</LinearLayout>-->
