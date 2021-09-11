@@ -23,13 +23,9 @@
     app:srlHeaderTriggerRate="0.5"
 
     >
-  <com.scwang.smart.refresh.header.ClassicsHeader
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
 
-<androidx.constraintlayout.widget.ConstraintLayout
-  android:layout_width="match_parent"
-  android:layout_height="match_parent">
+
+
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/recyclerView2"
     android:layout_width="match_parent"
@@ -39,7 +35,6 @@
     tools:layout_editor_absoluteX="-16dp"
     tools:listitem="@layout/main_fragment1_fragment_item"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.scwang.smart.refresh.footer.ClassicsFooter
       android:id="@+id/classicsFooter"

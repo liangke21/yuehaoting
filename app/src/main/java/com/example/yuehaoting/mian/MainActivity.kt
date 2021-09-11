@@ -1,9 +1,11 @@
 package com.example.yuehaoting.mian
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +17,7 @@ import com.example.yuehaoting.base.magicIndicator.ext.MyCommonNavigator
 import com.example.yuehaoting.databinding.ActivityMainBinding
 import com.example.yuehaoting.mian.fragment1.MainFragment1
 import com.example.yuehaoting.mian.pageView.PageViewFragmentMainAdapter
+import com.example.yuehaoting.searchFor.SearchActivity
 import com.example.yuehaoting.theme.Theme
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.UIUtil
@@ -23,7 +26,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerInd
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding: ActivityMainBinding
 
     private val mTitleList: ArrayList<String> = ArrayList()
@@ -40,9 +43,6 @@ class MainActivity : AppCompatActivity() {
 
         initMagicIndicator()
         initPageViewFragment()
-
-
-
 
 
     }
@@ -65,16 +65,16 @@ class MainActivity : AppCompatActivity() {
      * 初始化控件颜色
      */
     private fun initViewColors() {
-       // binding.btMainSearch.setBackgroundColor(Color.parseColor("#1C1C1C"))
-        binding.btMainSearch.setImageDrawable(Theme.tintDrawable(context.resources.getDrawable(R.drawable.search_item_tv,null), Color.parseColor("#1C1C1C")))
-        binding.btMainNavigation.setImageDrawable(Theme.tintDrawable(context.resources.getDrawable(R.drawable.main_navigation,null), Color.parseColor("#1C1C1C")))
+        // binding.btMainSearch.setBackgroundColor(Color.parseColor("#1C1C1C"))
+        binding.btMainSearch.setImageDrawable(Theme.tintDrawable(context.resources.getDrawable(R.drawable.search_item_tv, null), Color.parseColor("#1C1C1C")))
+        binding.btMainNavigation.setImageDrawable(Theme.tintDrawable(context.resources.getDrawable(R.drawable.main_navigation, null), Color.parseColor("#1C1C1C")))
     }
 
     /**
      * 初始化控件
      */
     private fun initView() {
-
+        binding.btMainSearch.setOnClickListener(this)
     }
 
     /**
@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                     )
                 simplePagerTitleView.text = mTitleList[index]
                 simplePagerTitleView.textSize = 16F
-                simplePagerTitleView.gravity=Gravity.BOTTOM
+                simplePagerTitleView.gravity = Gravity.BOTTOM
                 simplePagerTitleView.normalColor = Color.parseColor("#1C1C1C")
                 simplePagerTitleView.selectedColor = Color.parseColor("#000000")
                 simplePagerTitleView.setOnClickListener { binding.vpMainContent.currentItem = index }
@@ -127,5 +127,16 @@ class MainActivity : AppCompatActivity() {
      */
     private fun initPageViewFragment() {
 
+    }
+
+    override fun onClick(v: View) {
+        when (v.id) {
+            binding.btMainSearch.id -> {
+                val intent = Intent(this, SearchActivity::class.java)
+
+                startActivity(intent)
+
+            }
+        }
     }
 }

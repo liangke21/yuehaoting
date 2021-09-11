@@ -3,6 +3,7 @@ package com.example.yuehaoting.base.recyclerView.customLengthAdapter;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -13,6 +14,7 @@ import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import timber.log.Timber;
 
 /**
  *
@@ -199,7 +201,7 @@ public abstract class CustomLengthRecyclerAdapter<T> extends RecyclerView.Adapte
      * @param collection
      * @return
      */
-    public CustomLengthRecyclerAdapter<T> loadMore(Collection<T> collection,int length) {
+    public CustomLengthRecyclerAdapter<T> loadMore(Collection<T> collection) {
         mList.addAll(collection);
         mLength=mList.size();
         notifyDataSetChanged();
@@ -214,5 +216,6 @@ public abstract class CustomLengthRecyclerAdapter<T> extends RecyclerView.Adapte
         return this;
     }
     //</editor-fold>
+
 
 }

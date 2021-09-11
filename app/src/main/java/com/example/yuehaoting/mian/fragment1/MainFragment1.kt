@@ -11,6 +11,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelProvider
@@ -64,6 +65,7 @@ class MainFragment1 : BaseFragment() {
     private val mDataList: ArrayList<String> = ArrayList()
 
     private val fragmentList:ArrayList<BaseFragmentNewSongRecommendation> = ArrayList()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = MainFragment1Binding.inflate(inflater)
         viewModel.kuGouSpecialRecommendViewModel(pots())
@@ -103,6 +105,8 @@ class MainFragment1 : BaseFragment() {
 
     }
 
+
+    @SuppressLint("WrongConstant")
     private fun initView() {
         binding.vpMainFragment1.adapter = PageViewFragmentNewSongRecommendationAdapter(childFragmentManager, fragmentList, LifecycleRegistry(this).apply {
             currentState = Lifecycle.State.STARTED
@@ -114,6 +118,21 @@ class MainFragment1 : BaseFragment() {
 
         val layoutManager = GridLayoutManager(context, 3)
         binding.recyclerView.layoutManager = layoutManager
+
+     //Timber.v(" isFillViewport():%s",binding.nestedScrollView.isFillViewport)
+ //binding.nestedScrollView.fling(300)
+ //binding.nestedScrollView.scrollTo(300,300)
+        //binding.nestedScrollView.startNestedScroll(300,300)
+      //  binding.nestedScrollView.stopNestedScroll()
+
+///binding.nestedScrollView.setNestedScrollingEnabled(false)//设置嵌套滚动启用
+
+   /*     binding.nestedScrollView.setOnScrollChangeListener(object :NestedScrollView.OnScrollChangeListener{
+
+            override fun onScrollChange(v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
+               Timber.v("滚动视图%s"," NestedScrollView: $v | scrollX: $scrollX | oldScrollX: $oldScrollX | oldScrollY: $oldScrollY")
+            }
+        })*/
 
     }
 
@@ -191,6 +210,7 @@ class MainFragment1 : BaseFragment() {
 
                 }
                 binding.recyclerView.adapter = mAdapter
+
             }
 
         }

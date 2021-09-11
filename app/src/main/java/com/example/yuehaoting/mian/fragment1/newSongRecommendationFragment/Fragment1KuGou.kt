@@ -1,5 +1,6 @@
 package com.example.yuehaoting.mian.fragment1.newSongRecommendationFragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -44,7 +45,7 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
 
     override fun onResume() {
         super.onResume()
-        binding.root.requestLayout()
+     //   binding.root.requestLayout()
     }
 
     override fun lazyInit() {
@@ -53,8 +54,10 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
 
         binding.refreshLayout.setEnableRefresh(false)   //禁用下拉刷新
 
-       /* binding.refreshLayout.autoRefresh()
-        binding.refreshLayout.finishRefresh()*/
+
+
+        /* binding.refreshLayout.autoRefresh()
+         binding.refreshLayout.finishRefresh()*/
         //binding.refreshLayout.setFooterInsetStartPx(200)
 
        // Timber.v(" binding.classicsFooter.isInEditMode%s", binding.classicsFooter.isInEditMode)
@@ -62,7 +65,7 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
       //  binding.refreshLayout.setNoMoreData(true)
        //todo 实现上拉加载数据
 
-
+        binding.recyclerView2.requestDisallowInterceptTouchEvent(false)
 
         if (isNetWork()) {
             haveInternet()
@@ -80,6 +83,7 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
         TODO("Not yet implemented")
     }
     private var page = 1
+    @SuppressLint("WrongConstant")
     override fun haveInternetShowNewSongList() {
         mAdapter=NullAdapter(R.layout.main_fragment1_fragment_item,20)
         binding.recyclerView2.adapter=mAdapter
@@ -117,7 +121,7 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
                    }
 
                    if (page >= 2) {
-                       mAdapter.loadMore(newSong?.data?.info!!,20)
+                       mAdapter.loadMore(newSong?.data?.info!!)
                        binding.refreshLayout.finishLoadMore()//完成加载
                    }
 

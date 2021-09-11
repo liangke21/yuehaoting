@@ -16,7 +16,8 @@
     app:srlHeaderHeight="150dp"
     app:srlEnableAutoLoadMore="true"
     app:srlHeaderInsetStart="0dp"
-    app:srlHeaderTriggerRate="0.5">
+    app:srlHeaderTriggerRate="0.5"
+    app:srlEnablePreviewInEditMode="false">
     <pl.droidsonroids.gif.GifImageView
       android:id="@+id/gifView"
       android:layout_width="match_parent"
@@ -37,6 +38,7 @@
       <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="353dp"
+       tools:background="@color/white"
         android:id="@+id/appBar">
         <!--CollapsingToolbarLayout可以让标题栏更加丰富-->
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -82,24 +84,26 @@
 
           <net.lucode.hackware.magicindicator.MagicIndicator
             android:id="@+id/mi_main_fragment1_new_song_recommendation"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="25dp"
             android:layout_marginTop="5dp"
             android:layout_gravity="bottom"
-            tools:ignore="NestedWeights"/>
+            />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
       </com.google.android.material.appbar.AppBarLayout>
 
-      <androidx.core.widget.NestedScrollView
+      <com.example.yuehaoting.JudgeNestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:orientation="vertical">
+          android:orientation="vertical"
+         >
           <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/vp_main_fragment1"
             android:layout_width="match_parent"
@@ -111,75 +115,75 @@
             app:layout_constraintTop_toTopOf="parent"
             />
 
-<!--
+          <!--
 
-          <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="#B119B1"/>
-          <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="#489759"/>
-          <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="#8BC548"/>
-          <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="#FF5722"/>
-          <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="#83002D"/>
-          <pl.droidsonroids.gif.GifImageView
+                    <ImageView
+                      android:layout_width="match_parent"
+                      android:layout_height="30dp"
+                      android:background="#B119B1"/>
+                    <ImageView
+                      android:layout_width="match_parent"
+                      android:layout_height="30dp"
+                      android:background="#489759"/>
+                    <ImageView
+                      android:layout_width="match_parent"
+                      android:layout_height="30dp"
+                      android:background="#8BC548"/>
+                    <ImageView
+                      android:layout_width="match_parent"
+                      android:layout_height="30dp"
+                      android:background="#FF5722"/>
+                    <ImageView
+                      android:layout_width="match_parent"
+                      android:layout_height="30dp"
+                      android:background="#83002D"/>
+                    <pl.droidsonroids.gif.GifImageView
 
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@mipmap/gif_header_repast"
-            app:layout_srlSpinnerStyle="Scale"
-            app:layout_srlBackgroundColor="@android:color/transparent"/>
-          <pl.droidsonroids.gif.GifImageView
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:src="@mipmap/gif_header_repast"
+                      app:layout_srlSpinnerStyle="Scale"
+                      app:layout_srlBackgroundColor="@android:color/transparent"/>
+                    <pl.droidsonroids.gif.GifImageView
 
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@mipmap/gif_header_repast"
-            app:layout_srlSpinnerStyle="Scale"
-            app:layout_srlBackgroundColor="@android:color/transparent"/>
-          <pl.droidsonroids.gif.GifImageView
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:src="@mipmap/gif_header_repast"
+                      app:layout_srlSpinnerStyle="Scale"
+                      app:layout_srlBackgroundColor="@android:color/transparent"/>
+                    <pl.droidsonroids.gif.GifImageView
 
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@mipmap/gif_header_repast"
-            app:layout_srlSpinnerStyle="Scale"
-            app:layout_srlBackgroundColor="@android:color/transparent"/>
-          <pl.droidsonroids.gif.GifImageView
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:src="@mipmap/gif_header_repast"
+                      app:layout_srlSpinnerStyle="Scale"
+                      app:layout_srlBackgroundColor="@android:color/transparent"/>
+                    <pl.droidsonroids.gif.GifImageView
 
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@mipmap/gif_header_repast"
-            app:layout_srlSpinnerStyle="Scale"
-            app:layout_srlBackgroundColor="@android:color/transparent"/>
-          <pl.droidsonroids.gif.GifImageView
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:src="@mipmap/gif_header_repast"
+                      app:layout_srlSpinnerStyle="Scale"
+                      app:layout_srlBackgroundColor="@android:color/transparent"/>
+                    <pl.droidsonroids.gif.GifImageView
 
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@mipmap/gif_header_repast"
-            app:layout_srlSpinnerStyle="Scale"
-            app:layout_srlBackgroundColor="@android:color/transparent"/>
-          <pl.droidsonroids.gif.GifImageView
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:src="@mipmap/gif_header_repast"
+                      app:layout_srlSpinnerStyle="Scale"
+                      app:layout_srlBackgroundColor="@android:color/transparent"/>
+                    <pl.droidsonroids.gif.GifImageView
 
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@mipmap/gif_header_repast"
-            app:layout_srlSpinnerStyle="Scale"
-            app:layout_srlBackgroundColor="@android:color/transparent"/>
--->
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:src="@mipmap/gif_header_repast"
+                      app:layout_srlSpinnerStyle="Scale"
+                      app:layout_srlBackgroundColor="@android:color/transparent"/>
+          -->
 
         </LinearLayout>
 
-      </androidx.core.widget.NestedScrollView>
+      </com.example.yuehaoting.JudgeNestedScrollView>
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
