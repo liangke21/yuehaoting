@@ -11,7 +11,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelProvider
@@ -34,13 +33,12 @@ import com.example.yuehaoting.databinding.MainFragment1Binding
 import com.example.yuehaoting.kotlin.*
 import com.example.yuehaoting.mian.fragment1.newSongRecommendationFragment.BaseFragmentNewSongRecommendation
 import com.example.yuehaoting.mian.fragment1.newSongRecommendationFragment.Fragment1KuGou
-import com.example.yuehaoting.mian.fragment1.newSongRecommendationFragment.Fragment1QuanBu
+import com.example.yuehaoting.mian.fragment1.newSongRecommendationFragment.Fragment1All
 import com.example.yuehaoting.mian.fragment1.pageView.PageViewFragmentNewSongRecommendationAdapter
 import com.example.yuehaoting.mian.viewModel.MainFragmentViewModel
 import com.example.yuehaoting.util.NetworkUtils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.UIUtil
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
@@ -82,7 +80,7 @@ class MainFragment1 : BaseFragment() {
         mDataList.add("酷我")
         mDataList.add("咪咕")
 
-        fragmentList.add(Fragment1QuanBu())
+        fragmentList.add(Fragment1All())
         fragmentList.add(Fragment1KuGou())
 
 
@@ -118,14 +116,6 @@ class MainFragment1 : BaseFragment() {
 
         val layoutManager = GridLayoutManager(context, 3)
         binding.recyclerView.layoutManager = layoutManager
-
-     //Timber.v(" isFillViewport():%s",binding.nestedScrollView.isFillViewport)
- //binding.nestedScrollView.fling(300)
- //binding.nestedScrollView.scrollTo(300,300)
-        //binding.nestedScrollView.startNestedScroll(300,300)
-      //  binding.nestedScrollView.stopNestedScroll()
-
-///binding.nestedScrollView.setNestedScrollingEnabled(false)//设置嵌套滚动启用
 
    /*     binding.nestedScrollView.setOnScrollChangeListener(object :NestedScrollView.OnScrollChangeListener{
 
@@ -235,7 +225,7 @@ class MainFragment1 : BaseFragment() {
             .placeholder(R.drawable.load_started)
             .into(object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    Timber.v("resource%S", resource.toString())
+
                     holder.image(R.id.iv_main_fragment1_item, resource)
                 }
 

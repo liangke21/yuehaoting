@@ -1,14 +1,12 @@
-package com.example.yuehaoting;
+package com.example.yuehaoting.base.nestedScrollView;
 
 import android.content.Context;
-
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import androidx.annotation.NonNull;
-
 import androidx.core.widget.NestedScrollView;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -88,7 +86,7 @@ public class JudgeNestedScrollView extends NestedScrollView {
                 }
             }
 
-
+       //tODO 触点滑动反馈 交给子类
         return false; /*重点 */
 
     }
@@ -109,10 +107,10 @@ public class JudgeNestedScrollView extends NestedScrollView {
 
     }
 
-    @Override
+/*    @Override
     public boolean onTouchEvent(MotionEvent ev) {
         switch (ev.getAction()){
-            case MotionEvent.ACTION_DOWN: Log.v("手指触碰到%s","ssss");
+            case MotionEvent.ACTION_DOWN: Log.v("手指触碰到%s","");
 
             case MotionEvent.ACTION_MOVE:{
                 Timber.v("手指在移动%s");
@@ -124,5 +122,5 @@ public class JudgeNestedScrollView extends NestedScrollView {
 
         return super.onTouchEvent(ev);
 
-    }
+    }*/
 }

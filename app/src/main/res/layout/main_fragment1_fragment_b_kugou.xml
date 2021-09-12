@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  >-->
   <com.scwang.smart.refresh.layout.SmartRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -18,13 +11,11 @@
     app:srlDragRate="0.7"
     app:srlHeaderMaxDragRate="1.3"
     app:srlHeaderHeight="150dp"
-    app:srlEnableAutoLoadMore="true"
+    app:srlEnableAutoLoadMore="false"
     app:srlHeaderInsetStart="0dp"
     app:srlHeaderTriggerRate="0.5"
 
     >
-
-
 
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/recyclerView2"
@@ -35,17 +26,14 @@
     tools:layout_editor_absoluteX="-16dp"
     tools:listitem="@layout/main_fragment1_fragment_item"/>
 
-
     <com.scwang.smart.refresh.footer.ClassicsFooter
       android:id="@+id/classicsFooter"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="60dp"
+      android:gravity="center_vertical"
       app:srlAccentColor="#888"
-
       app:srlTextPulling="上拉加载"
-      app:srlTextLoading="加载更多ww"
-
+      app:srlTextLoading="加载更多"
       app:srlDrawableProgress="@drawable/fragment3_music_163_cf"/>
   </com.scwang.smart.refresh.layout.SmartRefreshLayout>
-<!--
-</LinearLayout>-->
+

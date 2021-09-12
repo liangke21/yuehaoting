@@ -26,7 +26,7 @@ import timber.log.Timber
  * 时间: 2021/9/4 18:13
  * 描述:
  */
-class Fragment1QuanBu : BaseFragmentNewSongRecommendation(), ShowNewSongList {
+class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
     private lateinit var binding: MainFragment1FragmentAQuanbuBinding
 
     private var viewModel by lazyMy { ViewModelProvider(this).get(FragmentAKuGouViewModel::class.java) }
@@ -49,7 +49,7 @@ class Fragment1QuanBu : BaseFragmentNewSongRecommendation(), ShowNewSongList {
         val layoutManager = LinearLayoutManager(context)
         binding.recyclerview.layoutManager = layoutManager
 
-      //  binding.refreshLayout.setEnableRefresh(false)   //禁用下拉刷新
+       binding.refreshLayout.setEnableRefresh(false)   //禁用下拉刷新
 
         val isNetWork = NetworkUtils.isNetWorkAvailable(context!!)
         if (isNetWork) {
