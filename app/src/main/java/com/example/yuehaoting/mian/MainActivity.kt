@@ -1,5 +1,6 @@
 package com.example.yuehaoting.mian
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -10,6 +11,10 @@ import android.view.VelocityTracker
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import android.widget.FrameLayout
+import androidx.drawerlayout.widget.DrawerLayout
+
+
 import com.example.yuehaoting.App.Companion.context
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
@@ -27,6 +32,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNav
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
+import timber.log.Timber
 import kotlin.math.abs
 
 
@@ -36,6 +42,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     private val mTitleList: ArrayList<String> = ArrayList()
 
     private var fragmentList = ArrayList<BaseFragment>()
+    private var isDrawer :Boolean =true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -80,6 +87,26 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     private fun initView() {
         binding.btMainSearch.setOnClickListener(this)
         binding.btMainNavigation.setOnClickListener(this)
+
+      binding.drawer.addDrawerListener(object :DrawerLayout.DrawerListener{
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+
+            }
+
+            override fun onDrawerOpened(drawerView: View) {
+                isDrawer=false
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+               isDrawer=true
+            }
+
+            override fun onDrawerStateChanged(newState: Int) {
+                Timber.v("onDrawerStateChanged %s",newState)
+
+            }
+        })
+
     }
 
     /**
@@ -134,6 +161,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     }
 
+    @SuppressLint("RtlHardcoded")
     override fun onClick(v: View) {
         when (v.id) {
             binding.btMainSearch.id -> {
@@ -144,19 +172,20 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             }
 
             binding.btMainNavigation.id->{
-                binding.drawer.openDrawer(binding.llMainLeft)
+                Timber.v("openDrawer%s",Gravity.RIGHT)
+                binding.drawer.openDrawer(Gravity.RIGHT)
             }
         }
     }
 
     //手指上下滑动时的最小速度
-    private val YSPEED_MIN = 1000
+    private val minIMumSpeed = 1000
 
     //手指向右滑动时的最小距离
-    private val XDISTANCE_MIN = 50
+    private val shortestDistance = 50
 
     //手指向上滑或下滑时的最小距离
-    private val YDISTANCE_MIN = 100
+    private val minimumDistanceToSlide = 100
 
     //记录手指按下时的横坐标。
     private var xDown = 0f
@@ -200,8 +229,9 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 //2.y轴滑动的距离在YDISTANCE_MIN范围内
                 //3.y轴上（即上下滑动的速度）<XSPEED_MIN，如果大于，则认为用户意图是在上下滑动而非左滑结束Activity
                val fragment= intent.getIntExtra("fragment",1)
-                if (fragment==0){
-                    if (distanceX > XDISTANCE_MIN && distanceY < YDISTANCE_MIN && distanceY > -YDISTANCE_MIN && ySpeed < YSPEED_MIN) {
+                if (fragment==0 && isDrawer){
+                    if (distanceX > shortestDistance && distanceY < minimumDistanceToSlide && distanceY > -minimumDistanceToSlide && ySpeed < minIMumSpeed) {
+                        Timber.v("openDrawer%s", distanceX )
                         binding.drawer.openDrawer(binding.llMainLeft)
                         return false
                     }

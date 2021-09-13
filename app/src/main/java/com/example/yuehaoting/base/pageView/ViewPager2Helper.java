@@ -35,7 +35,7 @@ public class ViewPager2Helper {
 
       if (childFragmentManager.getFragments().size()>position){
         Fragment fragment = childFragmentManager.getFragments().get(position);
-       // updatePagerHeightForChild(Objects.requireNonNull(fragment.getView()),viewPager2);
+        updatePagerHeightForChild(Objects.requireNonNull(fragment.getView()),viewPager2);
       }
       }
       @SuppressLint("LongLogTag")
