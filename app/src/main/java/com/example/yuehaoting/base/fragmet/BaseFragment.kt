@@ -8,4 +8,7 @@ package com.example.yuehaoting.base.fragmet
  * 描述:
  */
 open class BaseFragment:MyFragment(){
+
+
+
 }

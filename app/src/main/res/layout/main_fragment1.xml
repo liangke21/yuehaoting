@@ -115,13 +115,13 @@
             app:layout_constraintTop_toTopOf="parent"
             />
 
-          <!--
+
 
                     <ImageView
                       android:layout_width="match_parent"
                       android:layout_height="30dp"
                       android:background="#B119B1"/>
-                    <ImageView
+            <!--             <ImageView
                       android:layout_width="match_parent"
                       android:layout_height="30dp"
                       android:background="#489759"/>

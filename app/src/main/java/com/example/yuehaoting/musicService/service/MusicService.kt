@@ -36,6 +36,7 @@ import com.example.yuehaoting.util.MusicConstant.EXTRA_SHUFFLE
 import com.example.yuehaoting.util.MusicConstant.HIF_INI
 import com.example.yuehaoting.util.Tag.play
 import com.example.yuehaoting.util.MusicConstant.KU_GOU
+import com.example.yuehaoting.util.MusicConstant.NEW_SONG_KU_GOU
 import com.example.yuehaoting.util.MusicConstant.PLAY_SELECTED_SONG
 import com.example.yuehaoting.util.MusicConstant.UPDATE_META_DATA
 import com.example.yuehaoting.util.MusicConstant.UPDATE_PLAY_STATE
@@ -448,6 +449,24 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
                  }
 
              }
+                NEW_SONG_KU_GOU  ->{
+                    if (TextUtils.isEmpty(song.FileHash)) {
+                        getString(R.string.path_empty).showToast(this)
+                        return@tryLaunch
+                    }
+                    //获取MP3连接
+                    val mp3Uri = KuGouSongMp3().songIDMp3(song.FileHash)
+                    val uri: Uri = Uri.parse(mp3Uri)
+                    mediaPlayer.reset()
+                    withContext(Dispatchers.IO) {
+                        mediaPlayer.setDataSource(this@MusicService, uri)
+
+                    }
+
+
+                }
+
+
             }
 
 

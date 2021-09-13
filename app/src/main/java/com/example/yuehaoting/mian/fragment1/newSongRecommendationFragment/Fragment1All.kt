@@ -43,7 +43,7 @@ class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
 
     override fun onResume() {
         super.onResume()
-        binding.root.requestLayout()
+       // binding.root.requestLayout()
     }
     override fun lazyInit() {
         val layoutManager = LinearLayoutManager(context)
@@ -131,5 +131,7 @@ class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
         binding.recyclerview.adapter = mAdapter
     }
 
-
+    override fun songPlay(holder: SmartViewHolder?, position: Int) {
+        TODO("Not yet implemented")
+    }
 }

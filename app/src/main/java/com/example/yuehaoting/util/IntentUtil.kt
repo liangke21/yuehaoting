@@ -15,10 +15,15 @@ class IntentUtil {
 
     private fun makeCodIntent(cmd: Int, shuffle: Boolean): Intent {
 
-        return Intent(ACTION_CMD).putExtra(EXTRA_CONTROL, cmd)
-            .putExtra(EXTRA_SHUFFLE,shuffle)
+        return Intent(ACTION_CMD).putExtra(EXTRA_CONTROL, cmd)    //顺序播放
+            .putExtra(EXTRA_SHUFFLE,shuffle)  //随机播放
     }
 
+    /**
+     * 后台控制播放
+     * @param cmd Int  当前选中歌曲
+     * @return Intent
+     */
     fun makeCodIntent(cmd:Int):Intent{
         return makeCodIntent(cmd,false)
     }

@@ -113,7 +113,7 @@ class SingleFragment1: LazyBaseFragment(){
 
                             songSoundQuality(holder, model)
 
-                            songPlay(holder,position,model?.MixSongID!!)
+                            songPlay(holder,position)
 
                         }
                     }
@@ -154,19 +154,19 @@ class SingleFragment1: LazyBaseFragment(){
 
     }
 
-    private fun songPlay(holder: SmartViewHolder?,  position: Int, mixSongID: String) {
+    private fun songPlay(holder: SmartViewHolder?,  position: Int) {
         holder?.itemView?.setOnClickListener {
             Timber.v("酷狗列表角标:%s 歌曲名称:%s", position, songLists[position].SingerName)
             if(songLists[position]== MusicServiceRemote.getCurrentSong()){
                 val intent= Intent(activity, PlayActivity::class.java)
-                intent.putExtra(MusicConstant.CURRENT_SONG,songLists[position])
+                intent.putExtra(MusicConstant.CURRENT_SONG,songLists[position])  //向下一个Activity传入当前播放的歌曲
                 activity?.startActivity(intent)
             }else{
                 MusicServiceRemote.setPlayQueue(songLists, musicUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(EXTRA_POSITION, position))
 
                 val intent= Intent(activity, PlayActivity::class.java)
                 intent.putExtra(MusicConstant.CURRENT_SONG,songLists[position])
-                intent.putExtra("isPlay",false)
+               // intent.putExtra("isPlay",false)  作废  2021.9.12 |14.32
                 activity?.startActivity(intent)
             }
         }

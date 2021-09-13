@@ -11,6 +11,7 @@ import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import com.example.yuehaoting.App.Companion.context
 import com.example.yuehaoting.R
+import com.example.yuehaoting.base.activity.BaseActivity
 import com.example.yuehaoting.base.fragmet.BaseFragment
 import com.example.yuehaoting.base.magicIndicator.MySimplePagerTitleView
 import com.example.yuehaoting.base.magicIndicator.ext.MyCommonNavigator

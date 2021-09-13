@@ -1,5 +1,7 @@
 package com.example.yuehaoting.util
 
+import com.example.yuehaoting.data.kugou.NewSong
+
 /**
  * 作者: 天使
  * 时间: 2021/6/27 13:57
@@ -105,6 +107,7 @@ object MusicConstant {
 //_______________________________________|音乐平台|______________________________________________________________________________________________________
     const val KEY_MUSIC_PLATFORM="MusicPlatform"
     const val KU_GOU=1
-
     const val HIF_INI=2
+
+    const val NEW_SONG_KU_GOU = 3
 }

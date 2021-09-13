@@ -16,15 +16,7 @@ import com.example.yuehaoting.mian.fragment1.newSongRecommendationFragment.BaseF
 class PageViewFragmentNewSongRecommendationAdapter (fm: FragmentManager, private var fragmentList:ArrayList<BaseFragmentNewSongRecommendation>,lifecycle: Lifecycle): FragmentStateAdapter(
     fm, lifecycle )  {
 
-/*
-    override fun getCount(): Int {
 
-    }
-
-    override fun getItem(position: Int): Fragment {
-        return fragmentList[position]
-    }
-*/
 
     override fun getItemCount(): Int {
         return fragmentList.size
@@ -33,4 +25,5 @@ class PageViewFragmentNewSongRecommendationAdapter (fm: FragmentManager, private
     override fun createFragment(position: Int): Fragment {
         return fragmentList[position]
     }
+
 }

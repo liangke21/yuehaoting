@@ -189,7 +189,9 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
     override fun onDestroy() {
         super.onDestroy()
         //重点,每次销毁Activity,注销广播
-        BroadcastUtil.unregisterLocalReceiver(musicStateReceiver!!)
+        if(TAG =="PlayActivity") {
+            BroadcastUtil.unregisterLocalReceiver(musicStateReceiver!!)
+        }
     }
 
 }
