@@ -3,6 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
+  android:id="@+id/drawer"
   android:layout_height="match_parent">
 
 <LinearLayout
@@ -65,10 +66,17 @@
   </LinearLayout>
 
 </LinearLayout>
-  <TextView
+  <com.google.android.material.navigation.NavigationView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="start"
-    android:text="dgdgfdgdgddf"/>
+    android:id="@+id/ll_main_left">
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/purple_200"
+      android:text="dgdgfdgdgddf"/>
+  </com.google.android.material.navigation.NavigationView>
+
 </androidx.drawerlayout.widget.DrawerLayout>
 

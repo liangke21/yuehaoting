@@ -277,7 +277,7 @@ class MainFragment1 : BaseFragment() {
 
 
        magicIndicator.navigator = commonNavigator
-      ViewPager2Helper.bind(magicIndicator, binding.vpMainFragment1, childFragmentManager)
+      ViewPager2Helper.bind(magicIndicator, binding.vpMainFragment1, childFragmentManager,activity?.intent)
 
      //binding.vpMainFragment1.requestLayout()
    }

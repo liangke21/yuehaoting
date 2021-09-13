@@ -2,7 +2,9 @@ package com.example.yuehaoting.base.pageView;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.ViewGroup.LayoutParams;
@@ -22,7 +24,7 @@ import net.lucode.hackware.magicindicator.MagicIndicator;
  * 作者: LiangKe 时间: 2021/9/7 1:38 描述:
  */
 public class ViewPager2Helper {
-  public static void bind(final MagicIndicator magicIndicator, ViewPager2 viewPager2, FragmentManager childFragmentManager) {
+  public static void bind(final MagicIndicator magicIndicator, ViewPager2 viewPager2, FragmentManager childFragmentManager, Intent intent) {
    // viewPager.addOnAttachStateChangeListener();
     viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
       @SuppressLint("LongLogTag")
@@ -45,7 +47,7 @@ public class ViewPager2Helper {
         每次到第一页就禁止滚动
          */
         viewPager2.setUserInputEnabled(position != 0);
-
+       intent.putExtra("fragment",position); //intent 传到 MainActivity 判断滑动使用
 
       }
 

@@ -22,4 +22,6 @@ class PageViewFragmentMainAdapter(fm: FragmentManager, private var fragmentList:
     override fun getItem(position: Int): Fragment {
         return fragmentList[position]
     }
+
+
 }
