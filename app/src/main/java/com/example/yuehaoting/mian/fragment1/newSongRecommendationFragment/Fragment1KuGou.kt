@@ -33,7 +33,7 @@ import timber.log.Timber
 /**
  * 作者: LiangKe
  * 时间: 2021/9/6 22:13
- * 描述:
+ * 描述: 新歌推荐 酷狗
  */
 class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
     private lateinit var binding: MainFragment1FragmentBKugouBinding

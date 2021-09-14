@@ -23,6 +23,7 @@ import com.example.yuehaoting.base.magicIndicator.MySimplePagerTitleView
 import com.example.yuehaoting.base.magicIndicator.ext.MyCommonNavigator
 import com.example.yuehaoting.databinding.ActivityMainBinding
 import com.example.yuehaoting.mian.fragment1.MainFragment1
+import com.example.yuehaoting.mian.fragment2.MainFragment2
 import com.example.yuehaoting.mian.pageView.PageViewFragmentMainAdapter
 import com.example.yuehaoting.searchFor.SearchActivity
 import com.example.yuehaoting.theme.Theme
@@ -68,8 +69,9 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         mTitleList.add("听书")
 
         fragmentList.add(MainFragment1())
+        fragmentList.add(MainFragment2())
         binding.vpMainContent.adapter = PageViewFragmentMainAdapter(supportFragmentManager, fragmentList)
-        binding.vpMainContent.offscreenPageLimit = 1
+        binding.vpMainContent.offscreenPageLimit = 2
     }
 
     /**
@@ -87,6 +89,10 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     private fun initView() {
         binding.btMainSearch.setOnClickListener(this)
         binding.btMainNavigation.setOnClickListener(this)
+
+        val layout= DrawerLayout.LayoutParams(DrawerLayout.LayoutParams.MATCH_PARENT,DrawerLayout.LayoutParams.MATCH_PARENT)
+         layout.gravity=Gravity.START
+        binding.llMainLeft.layoutParams=layout
 
       binding.drawer.addDrawerListener(object :DrawerLayout.DrawerListener{
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
@@ -271,7 +277,5 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         val velocity = mVelocityTracker!!.yVelocity.toInt()
         return abs(velocity)
     }
-
-
 
 }

@@ -70,7 +70,7 @@
   <com.google.android.material.navigation.NavigationView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="start"
+    tools:layout_gravity="start"
     android:id="@+id/ll_main_left">
 
     <TextView
@@ -79,6 +79,18 @@
       android:background="@color/purple_200"
       android:text="导航布局"/>
   </com.google.android.material.navigation.NavigationView>
+  <!--右侧侧导航栏-->
+  <com.google.android.material.navigation.NavigationView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="right"
+    android:id="@+id/ll_main_end">
 
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/purple_200"
+      android:text="右侧导航布局"/>
+  </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>
 
