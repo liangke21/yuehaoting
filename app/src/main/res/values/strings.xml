@@ -18,5 +18,11 @@
   <string name="_00_00">00:00</string>
   <string name="InputSong">InputSong</string>
 
+  <!--navigation-->
+  <string name="title_discover" >discover</string>
+  <string name="title_featured" >featured</string>
+  <string name="title_list" >list</string>
+  <string name="title_my" >my</string>
+
 
 </resources>

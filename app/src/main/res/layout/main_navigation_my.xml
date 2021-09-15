@@ -4,12 +4,11 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".main.fragment2.MainFragment2">
+  tools:context=".main.ui.my.MyFragment">
 
   <TextView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:text="开发中"/>
+    android:text="Hello"/>
 
 </FrameLayout>

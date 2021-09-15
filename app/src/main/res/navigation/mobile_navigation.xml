@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/mobile_navigation"
+  app:startDestination="@+id/navigation_discover">
+<!--发现-->
+  <fragment
+    android:id="@+id/navigation_discover"
+    android:label="@string/title_discover"
+    android:name="com.example.yuehaoting.main.ui.discover.DiscoverFragment"
+    tools:layout="@layout/main_navigation_discover"/>
+<!--精选-->
+  <fragment
+    android:id="@+id/navigation_featured"
+    android:label="@string/title_featured"
+    android:name="com.example.yuehaoting.main.ui.featured.FeaturedFragment"
+    tools:layout="@layout/main_navigation_featured"/>
+<!--榜单-->
+  <fragment
+    android:id="@+id/navigation_list"
+    android:label="@string/title_list"
+    android:name="com.example.yuehaoting.main.ui.list.ListFragment"
+    tools:layout="@layout/main_navigation_list"/>
+  <!--我的-->
+  <fragment
+    android:id="@+id/navigation_my"
+    android:label="@string/title_my"
+    android:name="com.example.yuehaoting.main.ui.my.MyFragment"
+    tools:layout="@layout/main_navigation_my"/>
+</navigation>

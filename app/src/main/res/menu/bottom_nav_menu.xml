@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <item
+    android:id="@+id/navigation_discover"
+    android:icon="@drawable/main_discover"
+    android:title="@string/title_discover"/>
+
+  <item
+    android:id="@+id/navigation_featured"
+    android:icon="@drawable/main_featured"
+    android:title="@string/title_featured"/>
+
+  <item
+    android:id="@+id/navigation_home"
+    android:title=""
+  />
+
+  <item
+    android:id="@+id/navigation_list"
+    android:icon="@drawable/main_list"
+    android:title="榜单"/>
+
+  <item
+    android:id="@+id/navigation_my"
+    android:icon="@drawable/main_my"
+    android:title="我的"/>
+</menu>

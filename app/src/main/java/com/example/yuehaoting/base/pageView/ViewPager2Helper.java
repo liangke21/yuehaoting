@@ -1,23 +1,14 @@
 package com.example.yuehaoting.base.pageView;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.MeasureSpec;
-import android.view.ViewGroup.LayoutParams;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
-import com.example.yuehaoting.R;
-import com.example.yuehaoting.mian.fragment1.newSongRecommendationFragment.BaseFragmentNewSongRecommendation;
-import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Timer;
 import net.lucode.hackware.magicindicator.MagicIndicator;
 
 /**
