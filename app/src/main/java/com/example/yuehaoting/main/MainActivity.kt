@@ -12,6 +12,7 @@ import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.drawerlayout.widget.DrawerLayout
+import com.example.yuehaoting.base.view.MusicButtonLayout
 
 
 import com.example.yuehaoting.App.Companion.context
@@ -42,7 +43,9 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     private val mTitleList: ArrayList<String> = ArrayList()
 
     private var fragmentList = ArrayList<BaseFragment>()
-    private var isDrawer :Boolean =true
+    private var isDrawer: Boolean = true
+
+    private lateinit var musicButton: MusicButtonLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -55,7 +58,14 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         initMagicIndicator()
         initPageViewFragment()
 
+        musicButton = findViewById(R.id.musicButton)
+        binding.rlMain.bringChildToFront(musicButton)
 
+        musicButton.setTotalProgress(300)
+        musicButton.playMusic()
+        musicButton.setOnClickListener {
+            musicButton.playMusic()
+        }
     }
 
 
@@ -89,25 +99,25 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         binding.btMainSearch.setOnClickListener(this)
         binding.btMainNavigation.setOnClickListener(this)
 
-        val layout= DrawerLayout.LayoutParams(DrawerLayout.LayoutParams.MATCH_PARENT,DrawerLayout.LayoutParams.MATCH_PARENT)
-         layout.gravity=Gravity.START
-        binding.llMainLeft.layoutParams=layout
-
-      binding.drawer.addDrawerListener(object :DrawerLayout.DrawerListener{
+        val layout = DrawerLayout.LayoutParams(DrawerLayout.LayoutParams.MATCH_PARENT, DrawerLayout.LayoutParams.MATCH_PARENT)
+        layout.gravity = Gravity.START
+        binding.llMainLeft.layoutParams = layout
+        //左右侧导航栏
+        binding.drawer.addDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
 
             }
 
             override fun onDrawerOpened(drawerView: View) {
-                isDrawer=false
+                isDrawer = false
             }
 
             override fun onDrawerClosed(drawerView: View) {
-               isDrawer=true
+                isDrawer = true
             }
 
             override fun onDrawerStateChanged(newState: Int) {
-                Timber.v("onDrawerStateChanged %s",newState)
+                Timber.v("onDrawerStateChanged %s", newState)
 
             }
         })
@@ -176,8 +186,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
             }
 
-            binding.btMainNavigation.id->{
-                Timber.v("openDrawer%s",Gravity.RIGHT)
+            binding.btMainNavigation.id -> {
+                Timber.v("openDrawer%s", Gravity.RIGHT)
                 binding.drawer.openDrawer(Gravity.RIGHT)
             }
         }
@@ -233,10 +243,10 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 //1.x轴滑动的距离>XDISTANCE_MIN
                 //2.y轴滑动的距离在YDISTANCE_MIN范围内
                 //3.y轴上（即上下滑动的速度）<XSPEED_MIN，如果大于，则认为用户意图是在上下滑动而非左滑结束Activity
-               val fragment= intent.getIntExtra("fragment",1)
-                if (fragment==0 && isDrawer){
+                val fragment = intent.getIntExtra("fragment", 1)
+                if (fragment == 0 && isDrawer) {
                     if (distanceX > shortestDistance && distanceY < minimumDistanceToSlide && distanceY > -minimumDistanceToSlide && ySpeed < minIMumSpeed) {
-                        Timber.v("openDrawer%s", distanceX )
+                        Timber.v("openDrawer%s", distanceX)
                         binding.drawer.openDrawer(binding.llMainLeft)
                         return false
                     }

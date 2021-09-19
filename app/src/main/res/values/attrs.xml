@@ -4,4 +4,18 @@
 
   <attr name="background_color_main" format="color|reference" />
 
+  <!--圆弧进度条-->
+  <declare-styleable name="TasksCompletedView">
+    <!--进度字体-->
+    <attr name="textSizeL" format="dimension"/>
+    <!--外圆弧背景大小-->
+    <attr name="strokeWidthBackground" format="dimension"/>
+    <!--外圆弧内大小-->
+    <attr name="strokeWidthL" format="dimension"/>
+    <!--内圆颜色-->
+    <attr name="circleColor" format="color"/>
+    <attr name="ringColor" format="color"/>
+    <attr name="ringBgColor" format="color"/>
+  </declare-styleable>
+
 </resources>

@@ -5,11 +5,13 @@
   android:layout_width="match_parent"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:id="@+id/drawer"
+
   android:layout_height="match_parent">
 
-<LinearLayout
+<RelativeLayout
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  android:id="@+id/rl_main"
   android:orientation="vertical">
   <LinearLayout
     android:layout_width="match_parent"
@@ -55,26 +57,45 @@
   <androidx.viewpager.widget.ViewPager
     android:id="@+id/vp_main_content"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="12"
+    android:layout_height="400dp"
+
+
    />
+
+
+<!--    android:background="?android:attr/windowBackground"-->
   <com.google.android.material.bottomnavigation.BottomNavigationView
     android:id="@+id/nav_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="0dp"
-    android:layout_marginEnd="0dp"
-    android:background="?android:attr/windowBackground"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:itemIconTint="@color/purple_500"
+    android:layout_alignParentBottom="true"
+    app:itemIconTint="@color/Diablo_background_color_main"
     app:itemTextColor="@color/purple_200"
     app:labelVisibilityMode="labeled"
+    android:background="@color/white"
     app:menu="@menu/bottom_nav_menu"/>
 
 
-</LinearLayout>
+
+    <com.example.yuehaoting.base.view.MusicButtonLayout
+      android:id="@+id/musicButton"
+      android:layout_width="70dp"
+      android:layout_height="70dp"
+      android:elevation="8dp"
+      android:layout_marginBottom="10dp"
+      android:layout_alignParentBottom="true"
+      android:layout_centerHorizontal="true"
+      app:circleColor="@color/colorAccent"
+      app:ringBgColor="#F6F1F1"
+      app:ringColor="#0885E8"
+      app:strokeWidthBackground="3dp"
+      app:strokeWidthL="3dp"
+      app:textSizeL="16sp"/>
+
+
+
+
+</RelativeLayout>
   <!--左侧侧导航栏-->
   <com.google.android.material.navigation.NavigationView
     android:layout_width="match_parent"
