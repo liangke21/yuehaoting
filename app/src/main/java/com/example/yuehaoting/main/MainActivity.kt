@@ -84,7 +84,7 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         //播放按钮
         musicButton = findViewById(R.id.musicButton)
 
-        musicButton.setTotalProgress(300)
+        musicButton.setTotalProgress(3000)
 
 
 
@@ -103,11 +103,9 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         //更新按钮状态
         val isPlayful = MusicServiceRemote.isPlaying()
         if (isPlayful){
-            musicButton.playMusic()
-        }
-        Timber.tag(Tag.isPlay).v("前台播放图标转态:%s,后台传入状态:%s,:%s", isPlaying, isPlayful, LogT.lll())
-        if (isPlaying != isPlayful) {
-            updatePlayButton(isPlayful)
+            musicButton.playMusic(2)
+        }else{
+            musicButton.playMusic(3)
         }
 
     }
@@ -121,9 +119,7 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         isPlaying = isPlayful
         Timber.tag(Tag.isPlay).v("前台播放图标更新:%s,后台传入状态:%s,:%s", isPlayful, isPlaying, LogT.lll())
 
-        //封面图片旋转
-        // binding.ivPlayGuide01.setRotate(isPlay)
-        MusicServiceRemote.revisePlaying()
+
     }
 
 

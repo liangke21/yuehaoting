@@ -75,7 +75,7 @@ class MusicButtonLayout(context: Context, attrs: AttributeSet) : FrameLayout(con
         musicButtonViewInnerCircle.setBitmap(bitmap)
     }
     private fun init() {
-        state = stop
+        state = playing
         objectAnimator = ObjectAnimator.ofFloat(
             musicButtonViewInnerCircle,
             "rotation",
@@ -118,6 +118,37 @@ class MusicButtonLayout(context: Context, attrs: AttributeSet) : FrameLayout(con
             }
         }
     }
+
+    /**
+     * 开始动画
+     */
+    fun playMusic(int: Int) {
+        val start=1
+        val resume=2
+        val pause=3
+        when (int) {
+            start -> {
+                objectAnimator.start() //动画开始
+                jumpOut = false
+                Thread(ProgressRunnable()).start()
+            }
+            resume -> {
+                objectAnimator.resume()
+                //动画重新开始
+                jumpOut = false
+                Thread(ProgressRunnable()).start()
+            }
+            pause -> {
+                objectAnimator.pause()
+                //动画暂停
+                jumpOut = true
+            }
+        }
+    }
+    /**
+     * 暂停动画
+     */
+
 
     /**
      * 结束动画

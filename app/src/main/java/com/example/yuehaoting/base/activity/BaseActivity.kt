@@ -1,5 +1,6 @@
 package com.example.yuehaoting.base.activity
 
+import android.annotation.SuppressLint
 import android.content.*
 import android.os.*
 import com.example.yuehaoting.callback.MusicEvenCallback
@@ -121,7 +122,7 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
     override fun onServiceConnected(service: MusicService) {
         Timber.tag(TAG).v("服务连接上2,${service}  $receiverRegistered  $TAG")
 
-        if(TAG =="PlayActivity") {
+    //    if(TAG =="PlayActivity") {
             if (!receiverRegistered) {
                 musicStateReceiver = MusicStatReceiver(this)
                 Timber.tag(Tag.Broadcast).v("MusicStatReceiver(this): %s", musicStateReceiver.toString())
@@ -135,12 +136,14 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
                 BroadcastUtil.registerLocalReceiver(musicStateReceiver!!, filter)
                 receiverRegistered = true
             }
+
             musicStateHandler = MusicStatHandler(this)
-        }
+     //   }
 
     }
 
-    private class MusicStatHandler(activity: BaseActivity) : Handler(Looper.getMainLooper()) {
+   @SuppressLint("HandlerLeak")
+   private inner class MusicStatHandler(activity: BaseActivity) : Handler(Looper.getMainLooper()) {
         private val ref: WeakReference<BaseActivity> = WeakReference(activity)
         override fun dispatchMessage(msg: Message) {
             val action = msg.obj.toString()
@@ -149,7 +152,7 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
                 when (action) {
                     PLAY_STATE_CHANGE -> {
                         activity.onPlayStateChange()
-                        Timber.v("isPlay是否播放   播放回调: %s", action)
+                        Timber.v("isPlay是否播放   播放回调: %s 当前活动 %s ", action,TAG)
                     }
                     PLAY_DATA_CHANGES -> activity.onMetaChanged()
                 }
@@ -160,11 +163,11 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
     /**
      * 动态太监听广播
      */
-    private class MusicStatReceiver(activity: BaseActivity) : BroadcastReceiver() {
+    private inner class MusicStatReceiver(activity: BaseActivity) : BroadcastReceiver() {
         private val ref: WeakReference<BaseActivity> = WeakReference(activity)
 
         override fun onReceive(context: Context, intent: Intent) {
-            Timber.tag(Tag.Broadcast).v("接收广播: %s", intent.action)
+            Timber.tag(Tag.Broadcast).v("接收广播: %s 当前活动 %s", intent.action ,TAG)
             ref.get()?.musicStateHandler?.let {
                 val action = intent.action
                 val msg = it.obtainMessage(action.hashCode())
@@ -190,7 +193,7 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
         super.onDestroy()
         //重点,每次销毁Activity,注销广播
         if(TAG =="PlayActivity") {
-            BroadcastUtil.unregisterLocalReceiver(musicStateReceiver!!)
+         //   BroadcastUtil.unregisterLocalReceiver(musicStateReceiver!!)
         }
     }
 
