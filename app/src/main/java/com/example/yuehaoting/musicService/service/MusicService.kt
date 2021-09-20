@@ -116,8 +116,11 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
     var isPlayT: Boolean =false
 
     fun revisePlaying(){
-        isPlayT=false
-        Timber.tag(Tag.isPlay).w("修改播放状态:%s,:%s",this.isPlayT, lll())
+
+            isPlayT=false
+            Timber.tag(Tag.isPlay).w("修改播放状态:%s,:%s",this.isPlayT, lll())
+
+
     }
 
     /**
@@ -204,6 +207,11 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      */
     fun setPlayQueue(newQueryList: List<SongLists>, intent: Intent) {
         Timber.tag(play).v("设置播放列队2:%s",lll())
+
+        //每次播放心歌曲的时候播放状态为false
+        isPlayT=false
+
+
         Timber.tag(Tag.isPlay).i("初始化播放状态:%s,:%s",this.isPlayT, lll())
         //获取是否随机播放的参数 默认为false
         val shuffle = intent.getBooleanExtra(EXTRA_SHUFFLE, false)

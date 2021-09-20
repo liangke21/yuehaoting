@@ -63,7 +63,7 @@ class MusicButtonLayout(context: Context, attrs: AttributeSet) : FrameLayout(con
     fun setTotalProgress(TotalProgress: Int) {
         this.mTotalProgress = TotalProgress
         mTasksView?.setTotalProgress(TotalProgress)
-        Thread(ProgressRunnable()).start()
+        //Thread(ProgressRunnable()).start()
         this.addView(mTasksView)
     }
 

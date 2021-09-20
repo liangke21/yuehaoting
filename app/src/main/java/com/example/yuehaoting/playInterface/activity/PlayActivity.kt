@@ -308,9 +308,8 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
         isPlaying = isPlayful
         Timber.tag(Tag.isPlay).v("前台播放图标更新:%s,后台传入状态:%s,:%s", isPlayful, isPlaying, LogT.lll())
         ppvPlayPause.updateStRte(isPlayful, true)
-        //封面图片旋转
-        // binding.ivPlayGuide01.setRotate(isPlay)
-        revisePlaying()
+
+       // revisePlaying()
         Timber.tag(Tag.isPlay).v("======================================================================:%s", currentSong.SongName)
     }
 

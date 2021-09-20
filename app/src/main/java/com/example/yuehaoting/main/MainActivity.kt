@@ -14,8 +14,12 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.yuehaoting.base.view.MusicButtonLayout
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
+import com.example.yuehaoting.base.log.LogT
 import com.example.yuehaoting.databinding.ActivityMainBinding
 import com.example.yuehaoting.main.ui.discover.DiscoverFragment
+import com.example.yuehaoting.musicService.service.MusicService
+import com.example.yuehaoting.musicService.service.MusicServiceRemote
+import com.example.yuehaoting.util.Tag
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import timber.log.Timber
 import java.lang.StrictMath.abs
@@ -26,6 +30,11 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
 
     private lateinit var musicButton: MusicButtonLayout
     private var isDrawer: Boolean = true
+
+    /**
+     * 当前是否播放
+     */
+    private var isPlaying = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -74,14 +83,50 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
 
         //播放按钮
         musicButton = findViewById(R.id.musicButton)
-        binding.rlMain.bringChildToFront(musicButton)
 
         musicButton.setTotalProgress(300)
-        musicButton.playMusic()
-        musicButton.setOnClickListener {
+
+
+
+
+    }
+
+
+    override fun onServiceConnected(service: MusicService) {
+        super.onServiceConnected(service)
+        onPlayStateChange()
+    }
+
+    //播放状态已更改
+    override fun onPlayStateChange() {
+        super.onPlayStateChange()
+        //更新按钮状态
+        val isPlayful = MusicServiceRemote.isPlaying()
+        if (isPlayful){
             musicButton.playMusic()
         }
+        Timber.tag(Tag.isPlay).v("前台播放图标转态:%s,后台传入状态:%s,:%s", isPlaying, isPlayful, LogT.lll())
+        if (isPlaying != isPlayful) {
+            updatePlayButton(isPlayful)
+        }
+
     }
+
+
+
+    /**
+     * 更新播放暂停按钮
+     */
+    private fun updatePlayButton(isPlayful: Boolean) {
+        isPlaying = isPlayful
+        Timber.tag(Tag.isPlay).v("前台播放图标更新:%s,后台传入状态:%s,:%s", isPlayful, isPlaying, LogT.lll())
+
+        //封面图片旋转
+        // binding.ivPlayGuide01.setRotate(isPlay)
+        MusicServiceRemote.revisePlaying()
+    }
+
+
 
     /**
      * 监听fragment传过来的监听事件
