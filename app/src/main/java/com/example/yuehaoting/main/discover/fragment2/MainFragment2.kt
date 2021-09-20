@@ -1,4 +1,4 @@
-package com.example.yuehaoting.main.fragment2
+package com.example.yuehaoting.main.discover.fragment2
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -20,7 +20,7 @@ class MainFragment2 : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.main_fragment2_fragment, container, false)
+        return inflater.inflate(R.layout.main_navigation_discover_fragment2, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

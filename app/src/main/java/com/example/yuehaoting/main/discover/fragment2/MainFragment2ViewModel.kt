@@ -1,4 +1,4 @@
-package com.example.yuehaoting.main.fragment2
+package com.example.yuehaoting.main.discover.fragment2
 
 import androidx.lifecycle.ViewModel
 

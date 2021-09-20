@@ -24,7 +24,7 @@
     app:layout_constraintBottom_toBottomOf="parent"
     tools:ignore="MissingConstraints"
     tools:layout_editor_absoluteX="-16dp"
-    tools:listitem="@layout/main_fragment1_fragment_item"/>
+    tools:listitem="@layout/main_navigation_discover_fragment1_item_b"/>
 
     <com.scwang.smart.refresh.footer.ClassicsFooter
       android:id="@+id/classicsFooter"

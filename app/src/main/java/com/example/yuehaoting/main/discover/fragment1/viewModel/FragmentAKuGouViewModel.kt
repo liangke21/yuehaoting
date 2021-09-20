@@ -1,11 +1,11 @@
-package com.example.yuehaoting.main.fragment1.viewModel
+package com.example.yuehaoting.main.discover.fragment1.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.example.yuehaoting.data.kugou.NewSong
-import com.example.yuehaoting.main.fragment1.liveData.Repository
+import com.example.yuehaoting.main.discover.fragment1.liveData.Repository
 
 /**
  * 作者: 天使

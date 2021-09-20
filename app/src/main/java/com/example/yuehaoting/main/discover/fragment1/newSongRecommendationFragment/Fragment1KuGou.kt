@@ -1,4 +1,4 @@
-package com.example.yuehaoting.main.fragment1.newSongRecommendationFragment
+package com.example.yuehaoting.main.discover.fragment1.newSongRecommendationFragment
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -14,11 +14,11 @@ import com.example.yuehaoting.base.recyclerView.customLengthAdapter.CustomLength
 import com.example.yuehaoting.base.recyclerView.customLengthAdapter.NullAdapter
 import com.example.yuehaoting.data.kugou.NewSong
 import com.example.yuehaoting.data.kugousingle.SongLists
-import com.example.yuehaoting.databinding.MainFragment1FragmentBKugouBinding
+import com.example.yuehaoting.databinding.MainNavigationDiscoverFragment1KugouBinding
 import com.example.yuehaoting.kotlin.getSp
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.kotlin.setSp
-import com.example.yuehaoting.main.fragment1.viewModel.FragmentAKuGouViewModel
+import com.example.yuehaoting.main.discover.fragment1.viewModel.FragmentAKuGouViewModel
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.playInterface.activity.PlayActivity
 import com.example.yuehaoting.util.IntentUtil
@@ -36,7 +36,7 @@ import timber.log.Timber
  * 描述: 新歌推荐 酷狗
  */
 class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
-    private lateinit var binding: MainFragment1FragmentBKugouBinding
+    private lateinit var binding: MainNavigationDiscoverFragment1KugouBinding
     private val viewModel by lazyMy { ViewModelProvider(this).get(FragmentAKuGouViewModel::class.java) }
 
     private lateinit var mAdapter:CustomLengthRecyclerAdapter<NewSong.Data.Info>
@@ -48,7 +48,7 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
     private val musicUtil = IntentUtil()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = MainFragment1FragmentBKugouBinding.inflate(layoutInflater)
+        binding = MainNavigationDiscoverFragment1KugouBinding.inflate(layoutInflater)
 
         viewModel.kuGouSpecialRecommendViewModel(1,25)
         return binding.root
@@ -79,7 +79,7 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
     private var page = 1
     @SuppressLint("WrongConstant")
     override fun haveInternetShowNewSongList() {
-        mAdapter=NullAdapter(R.layout.main_fragment1_fragment_item,20)
+        mAdapter=NullAdapter(R.layout.main_navigation_discover_fragment1_item_b,20)
         binding.recyclerView2.adapter=mAdapter
 
                viewModel.observedLiveData.observe(this){
@@ -129,7 +129,7 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
                        binding.recyclerView2.adapter=null
 
                        mAdapter.notifyDataSetChanged()
-                       mAdapter =object :CustomLengthRecyclerAdapter<NewSong.Data.Info> (viewModel.listLiveData,R.layout.main_fragment1_fragment_item,20){
+                       mAdapter =object :CustomLengthRecyclerAdapter<NewSong.Data.Info> (viewModel.listLiveData,R.layout.main_navigation_discover_fragment1_item_b,20){
                            override fun onBindViewHolder(holder: SmartViewHolder?, model: NewSong.Data.Info?, position: Int) {
                                val img = model?.album_cover
                                img?.let { it1 -> holderImage(it1, "100", 20, holder!!, R.id.iv_main_fragment1_fragment_a_ku_gou_item) }
@@ -191,7 +191,7 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
             viewModel.listLiveData.removeAt(0)
         }
 
-        mAdapter =object :CustomLengthRecyclerAdapter<NewSong.Data.Info> (viewModel.listLiveData,R.layout.main_fragment1_fragment_item,20){
+        mAdapter =object :CustomLengthRecyclerAdapter<NewSong.Data.Info> (viewModel.listLiveData,R.layout.main_navigation_discover_fragment1_item_b,20){
             override fun onBindViewHolder(holder: SmartViewHolder?, model: NewSong.Data.Info?, position: Int) {
                 val img = model?.album_cover
                 img?.let { it1 -> holderImage(it1, "100", 20, holder!!, R.id.iv_main_fragment1_fragment_a_ku_gou_item) }

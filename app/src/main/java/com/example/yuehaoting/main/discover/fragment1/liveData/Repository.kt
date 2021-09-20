@@ -1,4 +1,4 @@
-package com.example.yuehaoting.main.fragment1.liveData
+package com.example.yuehaoting.main.discover.fragment1.liveData
 
 import androidx.lifecycle.liveData
 import com.example.yuehaoting.base.retrofit.SongNetwork

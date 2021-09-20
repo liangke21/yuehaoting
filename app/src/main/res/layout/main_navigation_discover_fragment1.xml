@@ -61,7 +61,7 @@
               android:overScrollMode="never"
               tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
               tools:spanCount="3"
-              tools:listitem="@layout/main_fragment1_item_song_list"
+              tools:listitem="@layout/main_navigation_discover_fragment1_item_a"
               tools:ignore="RtlSymmetry"/>
             <TextView
               android:layout_width="match_parent"

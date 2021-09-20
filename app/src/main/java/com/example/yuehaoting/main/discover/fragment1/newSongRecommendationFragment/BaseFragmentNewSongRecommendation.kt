@@ -1,4 +1,4 @@
-package com.example.yuehaoting.main.fragment1.newSongRecommendationFragment
+package com.example.yuehaoting.main.discover.fragment1.newSongRecommendationFragment
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap

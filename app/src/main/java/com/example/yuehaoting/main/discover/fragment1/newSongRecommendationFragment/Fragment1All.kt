@@ -1,4 +1,4 @@
-package com.example.yuehaoting.main.fragment1.newSongRecommendationFragment
+package com.example.yuehaoting.main.discover.fragment1.newSongRecommendationFragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,11 +11,11 @@ import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.base.recyclerView.customLengthAdapter.CustomLengthRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.customLengthAdapter.NullAdapter
 import com.example.yuehaoting.data.kugou.NewSong
-import com.example.yuehaoting.databinding.MainFragment1FragmentAQuanbuBinding
+import com.example.yuehaoting.databinding.MainNavigationDiscoverFragment1QuanbuBinding
 import com.example.yuehaoting.kotlin.getSp
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.kotlin.setSp
-import com.example.yuehaoting.main.fragment1.viewModel.FragmentAKuGouViewModel
+import com.example.yuehaoting.main.discover.fragment1.viewModel.FragmentAKuGouViewModel
 import com.example.yuehaoting.util.NetworkUtils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -27,14 +27,14 @@ import timber.log.Timber
  * 描述:
  */
 class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
-    private lateinit var binding: MainFragment1FragmentAQuanbuBinding
+    private lateinit var binding: MainNavigationDiscoverFragment1QuanbuBinding
 
     private var viewModel by lazyMy { ViewModelProvider(this).get(FragmentAKuGouViewModel::class.java) }
 
     private lateinit var mAdapter: CustomLengthRecyclerAdapter<NewSong.Data.Info>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = MainFragment1FragmentAQuanbuBinding.inflate(layoutInflater)
+        binding = MainNavigationDiscoverFragment1QuanbuBinding.inflate(layoutInflater)
 
         viewModel.kuGouSpecialRecommendViewModel(1,5)
 
@@ -70,7 +70,7 @@ class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
     }
 
     override fun haveInternetShowNewSongList() {
-        mAdapter=NullAdapter(R.layout.main_fragment1_fragment_item, 5)
+        mAdapter=NullAdapter(R.layout.main_navigation_discover_fragment1_item_b, 5)
         binding.recyclerview.adapter=mAdapter
 
         viewModel.observedLiveData.observe(this) {
@@ -87,7 +87,7 @@ class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
             binding.recyclerview.adapter = null
             mAdapter.notifyDataSetChanged()
 
-            mAdapter = object : CustomLengthRecyclerAdapter<NewSong.Data.Info>(newSong.data.info, R.layout.main_fragment1_fragment_item, 5) {
+            mAdapter = object : CustomLengthRecyclerAdapter<NewSong.Data.Info>(newSong.data.info, R.layout.main_navigation_discover_fragment1_item_b, 5) {
 
                 override fun onBindViewHolder(holder: SmartViewHolder?, model: NewSong.Data.Info?, position: Int) {
                     val img = model?.album_cover
@@ -116,7 +116,7 @@ class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
 
 
 
-        mAdapter = object : CustomLengthRecyclerAdapter<NewSong.Data.Info>(listInfo, R.layout.main_fragment1_fragment_item, 5) {
+        mAdapter = object : CustomLengthRecyclerAdapter<NewSong.Data.Info>(listInfo, R.layout.main_navigation_discover_fragment1_item_b, 5) {
 
             override fun onBindViewHolder(holder: SmartViewHolder?, model: NewSong.Data.Info?, position: Int) {
                 val img = model?.album_cover

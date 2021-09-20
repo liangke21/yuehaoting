@@ -1,4 +1,4 @@
-package com.example.yuehaoting.main.fragment1
+package com.example.yuehaoting.main.discover.fragment1
 
 
 import android.annotation.SuppressLint
@@ -29,12 +29,12 @@ import com.example.yuehaoting.base.recyclerView.customLengthAdapter.CustomLength
 import com.example.yuehaoting.base.recyclerView.customLengthAdapter.NullAdapter
 import com.example.yuehaoting.data.kugou.specialRecommend.SetSpecialRecommend
 import com.example.yuehaoting.data.kugou.specialRecommend.SpecialRecommend
-import com.example.yuehaoting.databinding.MainFeaturedFragment1Binding
+import com.example.yuehaoting.databinding.MainNavigationDiscoverFragment1Binding
 import com.example.yuehaoting.kotlin.*
-import com.example.yuehaoting.main.fragment1.newSongRecommendationFragment.BaseFragmentNewSongRecommendation
-import com.example.yuehaoting.main.fragment1.newSongRecommendationFragment.Fragment1KuGou
-import com.example.yuehaoting.main.fragment1.newSongRecommendationFragment.Fragment1All
-import com.example.yuehaoting.main.fragment1.pageView.PageViewFragmentNewSongRecommendationAdapter
+import com.example.yuehaoting.main.discover.fragment1.newSongRecommendationFragment.BaseFragmentNewSongRecommendation
+import com.example.yuehaoting.main.discover.fragment1.newSongRecommendationFragment.Fragment1KuGou
+import com.example.yuehaoting.main.discover.fragment1.newSongRecommendationFragment.Fragment1All
+import com.example.yuehaoting.main.discover.fragment1.pageView.PageViewFragmentNewSongRecommendationAdapter
 import com.example.yuehaoting.main.viewModel.MainFragmentViewModel
 import com.example.yuehaoting.util.NetworkUtils
 import com.google.gson.Gson
@@ -54,7 +54,7 @@ import timber.log.Timber
  * 描述:
  */
 class MainFragment1 : BaseFragment() {
-    private lateinit var binding: MainFeaturedFragment1Binding
+    private lateinit var binding: MainNavigationDiscoverFragment1Binding
 
     private var viewModel by lazyMy { ViewModelProvider(this).get(MainFragmentViewModel::class.java) }
 
@@ -65,7 +65,7 @@ class MainFragment1 : BaseFragment() {
     private val fragmentList:ArrayList<BaseFragmentNewSongRecommendation> = ArrayList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = MainFeaturedFragment1Binding.inflate(inflater)
+        binding = MainNavigationDiscoverFragment1Binding.inflate(inflater)
         viewModel.kuGouSpecialRecommendViewModel(pots())
 
         initData()
@@ -148,7 +148,7 @@ class MainFragment1 : BaseFragment() {
        Timber.v("观察到酷狗特别预览缓存数据数据%s", special[0].specialname)
        viewModel.listLiveData.clear()
        viewModel.listLiveData.addAll(special)
-       mAdapter = object : CustomLengthRecyclerAdapter<SpecialRecommend.Data.Special>(viewModel.listLiveData, R.layout.main_fragment1_item_song_list, 6) {
+       mAdapter = object : CustomLengthRecyclerAdapter<SpecialRecommend.Data.Special>(viewModel.listLiveData, R.layout.main_navigation_discover_fragment1_item_a, 6) {
            override fun onBindViewHolder(holder: SmartViewHolder, model: SpecialRecommend.Data.Special?, position: Int) {
 
                holderImage(holder, model)
@@ -167,7 +167,7 @@ class MainFragment1 : BaseFragment() {
     */
    @SuppressLint("VisibleForTests")
    private fun haveInternetSpeciallyRecommendedPlaylistData() {
-       mAdapter = NullAdapter(R.layout.main_fragment1_item_song_list, 6)
+       mAdapter = NullAdapter(R.layout.main_navigation_discover_fragment1_item_a, 6)
        binding.recyclerView.adapter = mAdapter
        viewModel.observedLiveData.observe(this) {
            tryNull {
@@ -183,7 +183,7 @@ class MainFragment1 : BaseFragment() {
                binding.recyclerView.adapter = null
                mAdapter.notifyDataSetChanged()
 
-               mAdapter = object : CustomLengthRecyclerAdapter<SpecialRecommend.Data.Special>(viewModel.listLiveData, R.layout.main_fragment1_item_song_list, 6) {
+               mAdapter = object : CustomLengthRecyclerAdapter<SpecialRecommend.Data.Special>(viewModel.listLiveData, R.layout.main_navigation_discover_fragment1_item_a, 6) {
                    override fun onBindViewHolder(holder: SmartViewHolder, model: SpecialRecommend.Data.Special?, position: Int) {
 
                        holderImage(holder, model)
