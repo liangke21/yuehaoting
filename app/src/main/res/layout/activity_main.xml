@@ -5,62 +5,12 @@
   android:layout_width="match_parent"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:id="@+id/drawer"
-
   android:layout_height="match_parent">
 
 <RelativeLayout
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:id="@+id/rl_main"
-  android:orientation="vertical">
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:orientation="horizontal">
-    <net.lucode.hackware.magicindicator.MagicIndicator
-      android:id="@+id/mi_main_title"
-      android:layout_width="0dp"
-      android:layout_height="match_parent"
-      android:layout_weight="8"
-      tools:ignore="NestedWeights"/>
-    <LinearLayout
-      android:layout_width="0dp"
-      android:layout_height="20dp"
-      android:layout_weight="2"
-      android:layout_marginRight="15dp"
-      android:layout_marginBottom="8dp"
-      android:layout_gravity="bottom"
-      android:orientation="horizontal">
-      <ImageButton
-        android:id="@+id/bt_main_search"
-        android:src="@drawable/search_item_tv"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
-        android:layout_marginEnd="10dp"
-        android:background="@color/transparent"
-        android:scaleType="centerCrop"
-        tools:ignore="NestedWeights"/>
-      <ImageButton
-        android:id="@+id/bt_main_navigation"
-        android:src="@drawable/main_navigation"
-        android:layout_width="18dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="5dp"
-        android:background="@color/transparent"
-        android:scaleType="centerCrop"
-        android:layout_height="18dp"/>
-    </LinearLayout>
-
-  </LinearLayout>
-
-
-  <androidx.viewpager.widget.ViewPager
-    android:id="@+id/vp_main_content"
-    android:layout_width="match_parent"
-    android:layout_height="400dp"
-
-
-   />
+  android:id="@+id/rl_main">
 
 
 <!--    android:background="?android:attr/windowBackground"-->
@@ -76,7 +26,7 @@
     app:menu="@menu/bottom_nav_menu"/>
 
 
-
+<!--elevation可以凸出显示-->
     <com.example.yuehaoting.base.view.MusicButtonLayout
       android:id="@+id/musicButton"
       android:layout_width="70dp"
@@ -92,11 +42,22 @@
       app:strokeWidthL="3dp"
       app:textSizeL="16sp"/>
 
-
+  <fragment
+    android:id="@+id/nav_host_fragment_activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:name="androidx.navigation.fragment.NavHostFragment"
+    app:defaultNavHost="true"
+    app:layout_constraintBottom_toTopOf="@id/nav_view"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:navGraph="@navigation/mobile_navigation"
+    />
 
 
 </RelativeLayout>
-  <!--左侧侧导航栏-->
+
   <com.google.android.material.navigation.NavigationView
     android:layout_width="match_parent"
     android:layout_height="match_parent"

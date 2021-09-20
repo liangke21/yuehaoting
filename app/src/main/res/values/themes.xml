@@ -49,7 +49,7 @@
 
   <!--主页界面-->
 
-<style name="MainTheme" parent="Theme.AppCompat.Light.NoActionBar">
+<style name="MainTheme" parent="Theme.乐好听">
 
 </style>
   <style name="footButton" parent="Theme.AppCompat.Light">

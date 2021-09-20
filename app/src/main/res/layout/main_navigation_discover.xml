@@ -1,23 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".main.ui.discover.DiscoverFragment">
-
-  <TextView
-    android:id="@+id/text_home"
+  tools:context=".main.ui.discover.DiscoverFragment"
+  android:orientation="vertical">
+  <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
-    android:textAlignment="center"
-    android:textSize="20sp"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    android:layout_height="50dp"
+    android:orientation="horizontal">
+    <net.lucode.hackware.magicindicator.MagicIndicator
+      android:id="@+id/mi_main_title"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="8"
+      tools:ignore="NestedWeights"/>
+    <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="20dp"
+      android:layout_weight="2"
+      android:layout_marginRight="15dp"
+      android:layout_marginBottom="8dp"
+      android:layout_gravity="bottom"
+      android:orientation="horizontal">
+      <ImageButton
+        android:id="@+id/bt_main_search"
+        android:src="@drawable/search_item_tv"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginEnd="10dp"
+        android:background="@color/transparent"
+        android:scaleType="centerCrop"
+        tools:ignore="NestedWeights"/>
+      <ImageButton
+        android:id="@+id/bt_main_navigation"
+        android:src="@drawable/main_navigation"
+        android:layout_width="18dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="5dp"
+        android:background="@color/transparent"
+        android:scaleType="centerCrop"
+        android:layout_height="18dp"/>
+    </LinearLayout>
+
+  </LinearLayout>
+
+
+  <androidx.viewpager.widget.ViewPager
+    android:id="@+id/vp_main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    />
+</LinearLayout>
