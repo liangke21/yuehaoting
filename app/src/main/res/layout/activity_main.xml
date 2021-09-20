@@ -7,20 +7,20 @@
   android:id="@+id/drawer"
   android:layout_height="match_parent">
 
+
 <RelativeLayout
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:id="@+id/rl_main">
 
-
-<!--    android:background="?android:attr/windowBackground"-->
+  <!--    android:background="?android:attr/windowBackground"-->
   <com.google.android.material.bottomnavigation.BottomNavigationView
     android:id="@+id/nav_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    app:itemIconTint="@color/Diablo_background_color_main"
-    app:itemTextColor="@color/purple_200"
+    app:itemIconTint="#DE24F3"
+    app:itemTextColor="#DE24F3"
     app:labelVisibilityMode="labeled"
     android:background="@color/white"
     app:menu="@menu/bottom_nav_menu"/>

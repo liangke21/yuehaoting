@@ -34,7 +34,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTit
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 import timber.log.Timber
 
-class DiscoverFragment : Fragment(),View.OnClickListener{
+class DiscoverFragment : Fragment(), View.OnClickListener {
 
     private lateinit var homeViewModel: DiscoverViewModel
     private var _binding: MainNavigationDiscoverBinding? = null
@@ -46,7 +46,8 @@ class DiscoverFragment : Fragment(),View.OnClickListener{
     private val mTitleList: ArrayList<String> = ArrayList()
 
     private var fragmentList = ArrayList<BaseFragment>()
-    private var isDrawer: Boolean = true
+
+    private lateinit var mCallbackActivity: CallbackActivity
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         homeViewModel = ViewModelProvider(this).get(DiscoverViewModel::class.java)
@@ -58,9 +59,9 @@ class DiscoverFragment : Fragment(),View.OnClickListener{
 
         initMagicIndicator()
 
+        mCallbackActivity = activity as CallbackActivity
         return binding.root
     }
-
 
 
     /**
@@ -141,7 +142,6 @@ class DiscoverFragment : Fragment(),View.OnClickListener{
     }
 
 
-
     @SuppressLint("RtlHardcoded")
     override fun onClick(v: View) {
         when (v.id) {
@@ -152,9 +152,15 @@ class DiscoverFragment : Fragment(),View.OnClickListener{
 
             }
 
+            binding.btMainNavigation.id -> {
+                mCallbackActivity.activityMonitoringFragment()
+            }
         }
     }
 
+    interface CallbackActivity {
+        fun activityMonitoringFragment()
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
