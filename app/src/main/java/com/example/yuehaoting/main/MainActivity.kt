@@ -146,7 +146,8 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
                 //2.y轴滑动的距离在YDISTANCE_MIN范围内
                 //3.y轴上（即上下滑动的速度）<XSPEED_MIN，如果大于，则认为用户意图是在上下滑动而非左滑结束Activity
                 val fragment = intent.getIntExtra("fragment", 1)
-                if (fragment == 0 && isDrawer) {
+                val discover = intent.getIntExtra("discover",1)
+                if (fragment == 0 && isDrawer && discover==0) {
                     if (distanceX > shortestDistance && distanceY < minimumDistanceToSlide && distanceY > -minimumDistanceToSlide && ySpeed < minIMumSpeed) {
                         Timber.v("openDrawer%s", distanceX)
                         binding.drawer.openDrawer(binding.llMainLeft)

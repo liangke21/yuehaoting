@@ -18,6 +18,7 @@ import com.example.yuehaoting.R
 import com.example.yuehaoting.base.fragmet.BaseFragment
 import com.example.yuehaoting.base.magicIndicator.MySimplePagerTitleView
 import com.example.yuehaoting.base.magicIndicator.ext.MyCommonNavigator
+import com.example.yuehaoting.base.pageView.ViewPageHelperDiscover
 import com.example.yuehaoting.databinding.MainNavigationDiscoverBinding
 import com.example.yuehaoting.main.discover.fragment1.MainFragment1
 import com.example.yuehaoting.main.discover.fragment2.MainFragment2
@@ -46,7 +47,7 @@ class DiscoverFragment : Fragment(), View.OnClickListener {
 
     private lateinit var mCallbackActivity: CallbackActivity
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         homeViewModel = ViewModelProvider(this).get(DiscoverViewModel::class.java)
 
         _binding = MainNavigationDiscoverBinding.inflate(inflater)
@@ -135,7 +136,7 @@ class DiscoverFragment : Fragment(), View.OnClickListener {
             }
         }
         magicIndicator.navigator = commonNavigator7
-        ViewPagerHelper.bind(magicIndicator, binding.vpMainContent)
+        ViewPageHelperDiscover.bind(magicIndicator, binding.vpMainContent,activity!!.intent)
     }
 
 
