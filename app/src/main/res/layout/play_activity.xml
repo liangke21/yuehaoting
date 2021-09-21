@@ -84,7 +84,7 @@
       <SeekBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/sb_play"
+        android:id="@+id/seekbar"
         android:minHeight="2dp"
         android:maxHeight="2dp"
         android:progressDrawable="@drawable/play_seekbar"

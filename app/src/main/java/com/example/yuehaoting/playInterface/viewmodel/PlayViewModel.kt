@@ -20,6 +20,7 @@ class PlayViewModel:ViewModel() {
     }
 
 
+
     fun singerId(id:String){
         singerIdLeLiveData.value=id
     }

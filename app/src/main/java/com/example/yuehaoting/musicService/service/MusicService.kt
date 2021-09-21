@@ -41,6 +41,7 @@ import com.example.yuehaoting.util.MusicConstant.PLAY_SELECTED_SONG
 import com.example.yuehaoting.util.MusicConstant.UPDATE_META_DATA
 import com.example.yuehaoting.util.MusicConstant.UPDATE_PLAY_STATE
 import com.example.yuehaoting.util.Tag
+import com.example.yuehaoting.util.Tag.songDuration
 import kotlinx.coroutines.*
 import java.lang.Exception
 
@@ -140,8 +141,31 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
     val currentSong:SongLists
         get() = playQueue.song
 
+    /**
+     * 获取当前歌曲进度
+     */
+    val progress: Int
+    get() {
+        try {
+            if (prepared){
+                return mediaPlayer.currentPosition
+            }
+        }catch (e:IllegalArgumentException){
+            Timber.tag(songDuration).e("获取当前歌曲进度出错 %s",e.printStackTrace())
+        }
+        return 0
+    }
 
-   private val handler =MusicServiceHandler(this,object :MusicServiceHandler.MusicServiceHandlerData{
+    /**
+     * 获取当前歌曲时长
+     */
+    val duration: Int
+        get() = if (prepared) {
+            mediaPlayer.duration
+        } else 0
+
+
+    private val handler =MusicServiceHandler(this,object :MusicServiceHandler.MusicServiceHandlerData{
        override val playQueueSong: SongLists
            get() = playQueue.song
    })
@@ -370,6 +394,7 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
            // mediaPlayer.setAudioStreamType(audioAttributes.legacyStreamType)
             mediaPlayer.setAudioAttributes(audioAttributes.unwrap() as AudioAttributes)
         }
+
         //锁屏休眠继续播放
         //   mediaPlayer.setWakeMode(this,PowerManager.PARTIAL_WAKE_LOCK)
         //准备好监听播放
@@ -380,10 +405,13 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
         }
 
 
-
+         //错误监听
         mediaPlayer.setOnErrorListener { _, what, extra ->
             try {
+                prepared = false
                 mediaPlayer.release()
+                setUpPlayer()
+                "播放器正在从新初始h化".showToast(this)
                 Log.e(what.toString(), extra.toString())
                 return@setOnErrorListener true
             } catch (e: Exception) {
@@ -402,8 +430,8 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
         Timber.tag(play).v("播放6:%s",lll())
         Timber.tag(Tag.isPlay).v("后台播放状态:%s,传入状态:%s,播放:%s",isPlaying,true, lll())
         setPlay(true)
-        handler.sendEmptyMessage(UPDATE_META_DATA)
 
+        handler.sendEmptyMessage(UPDATE_META_DATA)
         mediaPlayer.start()
 
         //渐变
@@ -411,6 +439,14 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
            playPauseVolumeController.fadeIn()
         } else {
             playPauseVolumeController.directTo(1f)
+        }
+    }
+    /**
+     * 设置MediaPlayer播放进度
+     */
+    fun setProgressL(position: Int){
+        if (prepared){
+            mediaPlayer.seekTo(position)
         }
     }
 
@@ -425,6 +461,8 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
         tryLaunch(block = {
          val ent=  song.platform
           Timber.v("KEY_MUSIC_PLATFORM:%s",ent)
+            prepared = false
+
             when(ent){
                KU_GOU->{
                    if (TextUtils.isEmpty(song.FileHash)) {
@@ -479,14 +517,16 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
 
 
             mediaPlayer.prepareAsync()
-
+            prepared = true
 
         },
             catch = {
                 (getString(R.string.play_failed) + it).showToast(this)
+                prepared = false
             },
             catch2 = {
                 it.toString().showToast(this)
+                prepared = false
             }
         )
 

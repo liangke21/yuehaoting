@@ -97,6 +97,8 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         onPlayStateChange()
     }
 
+
+
     //播放状态已更改
     override fun onPlayStateChange() {
         super.onPlayStateChange()
@@ -107,18 +109,6 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         }else{
             musicButton.playMusic(3)
         }
-
-    }
-
-
-
-    /**
-     * 更新播放暂停按钮
-     */
-    private fun updatePlayButton(isPlayful: Boolean) {
-        isPlaying = isPlayful
-        Timber.tag(Tag.isPlay).v("前台播放图标更新:%s,后台传入状态:%s,:%s", isPlayful, isPlaying, LogT.lll())
-
 
     }
 

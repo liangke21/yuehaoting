@@ -20,5 +20,5 @@ object Tag {
 
     const val singerPhoto="歌手写真集合"
 
-
+    const val songDuration="歌曲时长"
 }

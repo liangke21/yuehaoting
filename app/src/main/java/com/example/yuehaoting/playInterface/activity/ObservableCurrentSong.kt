@@ -7,7 +7,7 @@ import kotlin.properties.Delegates
 /**
  * 作者: 天使
  * 时间: 2021/7/10 17:18
- * 描述:
+ * 描述: 观察是不是显示的当前图片
  */
 class ObservableCurrentSong {
 

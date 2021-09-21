@@ -29,6 +29,10 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
     private var TAG = this::class.java.simpleName
    // private var util = BroadcastUtil()
   //  private var myUtil = BroadcastUtil()
+    /**
+     * 用于是否更新歌曲时间进度条
+     */
+    protected var isForeground = false
     private var serviceToken: MusicServiceRemote.ServiceToken? = null
 
     //待绑定的服务
@@ -53,6 +57,7 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
 
     override fun onResume() {
         super.onResume()
+        isForeground = true
         Timber.tag(TAG).v("onResume")
         if (pendingBindService) {
             binToService()
@@ -188,7 +193,10 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
         musicStateHandler?.removeCallbacksAndMessages(null)
     }
 
-
+    override fun onPause() {
+        super.onPause()
+        isForeground=false
+    }
     override fun onDestroy() {
         super.onDestroy()
         //重点,每次销毁Activity,注销广播

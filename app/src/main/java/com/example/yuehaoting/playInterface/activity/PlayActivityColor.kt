@@ -68,11 +68,11 @@ class PlayActivityColor(private val binding: PlayActivityBinding,private val act
 
     //进度条颜色
     private fun updateSeeKBarColor(color: Int) {
-        setProgressDrawable(binding.sbPlay, color)
+        setProgressDrawable(binding.seekbar, color)
         val inset = SetPixelUtil.dip2px(activity, 6f)
         val width = SetPixelUtil.dip2px(activity, 2f)
         val height = SetPixelUtil.dip2px(activity, 6f)
-        binding.sbPlay.thumb = InsetDrawable(
+        binding.seekbar.thumb = InsetDrawable(
             GradientDrawableMaker()
                 .width(width)
                 .height(height)

@@ -6,7 +6,9 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.*
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.SeekBar
 import androidx.lifecycle.ViewModelProvider
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
@@ -25,9 +27,11 @@ import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.databinding.PlayActivityBinding
 import com.example.yuehaoting.kotlin.*
 import com.example.yuehaoting.musicService.service.MusicService
+import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.getCurrentSong
+import com.example.yuehaoting.musicService.service.MusicServiceRemote.getDuration
+import com.example.yuehaoting.musicService.service.MusicServiceRemote.getProgress
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.isPlaying
-import com.example.yuehaoting.musicService.service.MusicServiceRemote.revisePlaying
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.handlerRemoveCallbacks
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.photoCycle
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.singerPhotoUrl
@@ -45,6 +49,9 @@ import com.example.yuehaoting.util.MusicConstant.NEXT
 import com.example.yuehaoting.util.MusicConstant.PAUSE_PLAYBACK
 import com.example.yuehaoting.util.MusicConstant.PLAYER_BACKGROUND
 import com.example.yuehaoting.util.MusicConstant.PREV
+import com.example.yuehaoting.util.MusicConstant.UPDATE_TIME_ALL
+import com.example.yuehaoting.util.MusicConstant.UPDATE_TIME_ONLY
+import com.example.yuehaoting.util.MyUtil
 import com.example.yuehaoting.util.Tag
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -55,7 +62,7 @@ import kotlin.collections.ArrayList
 import kotlin.properties.Delegates
 
 
-class PlayActivity : PlayBaseActivity(), View.OnClickListener {
+class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCallback {
     private lateinit var binding: PlayActivityBinding
     // private val myUtil = BroadcastUtil()
 
@@ -94,6 +101,10 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
      * 写真背景
      */
     private var isPhotoBackground = true
+
+    private val handler: PlayActivityHandler by lazyMy {
+        PlayActivityHandler(binding, this)
+    }
 
     override fun setSatuBarColor() {
         when (background) {
@@ -139,13 +150,144 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
 
         receiveIntent(currentSong)
         isUpdateReceiveIntent = false
+
         observeSingerPhotoData()
 
         playActivityColor.setThemeColor()
 
         initView()
         updateTopStatus(currentSong)
+
+        seekBarRenew()
     }
+
+    /**
+     * 当前歌曲时长
+     */
+    private var duration = 0
+
+    /**
+     * 当前播放时间
+     */
+    private var currentTime = 0
+
+    /**
+     * 是否正在拖动进度条
+     */
+    var isDragSeekBarFromUser = false
+
+    @SuppressLint("CheckResult")
+    private fun seekBarRenew() {
+
+        //初始化已播放时间与剩余时间
+        duration = getDuration()
+        val temp = getProgress()
+        /*
+        if (temp in 1 until duration) temp else 0
+        in until 判断当前进度值 有没有在在当前时长里面
+         */
+        currentTime = if (temp in 1 until duration) temp else 0
+        if (duration > 0 && duration - currentTime > 0) {
+            binding.tvPlaySongStartingTime.text = MyUtil.getTime(currentTime.toLong())
+            binding.tvPlaySongEndTime.text = MyUtil.getTime((duration - currentTime).toLong())
+        }
+
+        //初始化seekbar
+        if (duration > 0 && duration < Int.MAX_VALUE) {
+            binding.seekbar.max = duration
+        } else {
+            binding.seekbar.max = 1000
+        }
+        if (currentTime in 1 until duration) {
+            binding.seekbar.progress = currentTime
+        } else {
+            binding.seekbar.progress = 0
+        }
+        binding.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            @SuppressLint("LongLogTag")
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+
+                Log.e("setOnSeekBarChangeListeneronProgressChanged", "$seekBar $progress $fromUser")
+                if (fromUser) {
+                    updateProgressText(progress)
+                }
+                handler.sendEmptyMessage(UPDATE_TIME_ONLY)
+                currentTime = progress
+                // lrcView?.seekTo(progress, true, fromUser)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+                isDragSeekBarFromUser = true
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                //没有播放拖动进度条无效
+//                if(!mIsPlay){
+//                    seekBar.setProgress(0);
+//                }
+                MusicServiceRemote.setProgress(seekBar.progress)
+                isDragSeekBarFromUser = false
+            }
+        })
+    }
+
+    override fun onUpdateProgressByHandler() {
+        updateProgressByHandler()
+    }
+
+    override fun onUpdateSeekBarByHandler() {
+        updateProgressByHandler()
+        updateSeekBarByHandler()
+    }
+
+    /**
+     * 更新进度条左右显示时间
+     * @param progress Int
+     */
+    private fun updateProgressText(progress: Int) {
+
+        if (progress > 0 && duration - progress > 0) {
+            binding.tvPlaySongStartingTime.text = MyUtil.getTime(progress.toLong())
+            binding.tvPlaySongEndTime.text = MyUtil.getTime((duration).toLong())
+        }
+    }
+
+    /**
+     * Handler 更新 进度条两端显示时间
+     */
+    private fun updateProgressByHandler() {
+        updateProgressText(currentTime)
+    }
+
+    /**
+     * Handler 更新seekBar显示进度
+     */
+    private fun updateSeekBarByHandler() {
+        binding.seekbar.progress = currentTime
+    }
+
+    /**
+     * 更新进度条线程
+     */
+    private inner class ProgressThread : Thread() {
+        override fun run() {
+            while (isForeground) {
+                Log.e("isForeground",isForeground.toString())
+                try {
+                    val progress = getProgress()
+                    if (progress in 1 until duration) {
+                        Log.e("isForeground",progress.toString())
+                        currentTime = progress
+                        handler.sendEmptyMessage(UPDATE_TIME_ALL)
+                        sleep(500)
+                    }
+                }catch (e:Exception){
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
 
     //初始化控件
     private fun initView() {
@@ -167,6 +309,10 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        ProgressThread().start()
+    }
     /**
      * 更新顶部标题
      */
@@ -269,7 +415,13 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
         currentSong = getCurrentSong()
         //更新标题
         updateTopStatus(currentSong)
+        //更新进度条
+        val temp = getProgress()
+        currentTime = if (temp in 1 until duration) temp else 0
+        duration = getDuration()
+        binding.seekbar.max = duration
 
+        //播放界面写真和封面更改
         observableCurrentSong.nameCurrentSong = currentSong.mixSongID
         if (recordingCurrentSong != currentSong.mixSongID && isUpdateReceiveIntent) {
             //更新封面
@@ -282,6 +434,8 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
             recordingCurrentSong = currentSong.mixSongID
         }
         isUpdateReceiveIntent = true
+
+
     }
 
     override fun onServiceConnected(service: MusicService) {
@@ -309,7 +463,7 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener {
         Timber.tag(Tag.isPlay).v("前台播放图标更新:%s,后台传入状态:%s,:%s", isPlayful, isPlaying, LogT.lll())
         ppvPlayPause.updateStRte(isPlayful, true)
 
-       // revisePlaying()
+        // revisePlaying()
         Timber.tag(Tag.isPlay).v("======================================================================:%s", currentSong.SongName)
     }
 

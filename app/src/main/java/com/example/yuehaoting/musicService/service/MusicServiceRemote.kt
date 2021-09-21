@@ -93,10 +93,39 @@ object MusicServiceRemote {
     fun revisePlaying(){
         service?.revisePlaying()
     }
+
+    /**
+     * 当前歌曲属性
+     * @return SongLists
+     */
     @JvmStatic
     fun getCurrentSong(): SongLists {
         return service?.currentSong ?: SongLists.SONG_LIST
     }
 
+    /**
+     * 当前歌曲时长
+     * @return Int
+     */
+    @JvmStatic
+    fun getDuration(): Int {
+        return service?.duration ?: 0
+    }
+
+    /**
+     * 获取当前歌曲时长
+     * @return Int
+     */
+     @JvmStatic
+    fun getProgress():Int{
+       return service?.progress ?:0
+    }
+    /**
+     * 设置播放进度
+     */
+    @JvmStatic
+    fun setProgress(progress: Int) {
+         service?.setProgressL(progress)
+    }
 }
 

@@ -145,9 +145,6 @@ class MusicButtonLayout(context: Context, attrs: AttributeSet) : FrameLayout(con
             }
         }
     }
-    /**
-     * 暂停动画
-     */
 
 
     /**
