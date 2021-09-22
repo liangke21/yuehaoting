@@ -17,7 +17,7 @@ interface MusicEvenCallback {
     fun onPlayListChanged(name:String)
     //服务连接撒上
     fun  onServiceConnected(service:MusicService)
-
+    //播放数据改遍
     fun onMetaChanged()
     //播放状态更改
     fun onPlayStateChange()

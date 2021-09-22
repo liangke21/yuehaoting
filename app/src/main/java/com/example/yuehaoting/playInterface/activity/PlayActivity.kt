@@ -176,6 +176,9 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
      */
     var isDragSeekBarFromUser = false
 
+    /**
+     * 歌曲进度条初始化
+     */
     @SuppressLint("CheckResult")
     private fun seekBarRenew() {
 
@@ -294,10 +297,13 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
         ppvPlayPause = findViewById(R.id.ppv_play_pause)
 
         binding.layoutPlayLayout.ibPlayPlayMode.setOnClickListener(this)
+        //
         arrayOf(
+            binding.layoutPlayLayout.ibPlayPlayMode,
             binding.layoutPlayLayout.ibPlayPreviousSong,
             binding.layoutPlayLayout.flPlayContainer,
-            binding.layoutPlayLayout.ibPlayNextTrack
+            binding.layoutPlayLayout.ibPlayNextTrack,
+            binding.layoutPlayLayout.ibMusicList
         ).forEach {
             it.setOnClickListener(onCtrlClick)
         }
@@ -382,21 +388,27 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
     }
 
     /**
-     * 播放上一首 暂停 下一首
+     *   上一首 播放暂停 下一首
      */
     private val onCtrlClick = View.OnClickListener { v ->
         val intent = Intent(ACTION_CMD)
         when (v.id) {
-            R.id.ib_play_Previous_song -> {
+            binding.layoutPlayLayout.ibPlayPlayMode.id -> {
+
+            }
+            binding.layoutPlayLayout.ibPlayPreviousSong.id -> {
                 intent.putExtra(EXTRA_CONTROL, PREV)
                 Timber.v("播放上一首1: %s", PREV)
             }
 
-            R.id.fl_play_container -> intent.putExtra(EXTRA_CONTROL, PAUSE_PLAYBACK)
+            binding.layoutPlayLayout.flPlayContainer.id -> intent.putExtra(EXTRA_CONTROL, PAUSE_PLAYBACK)
 
-            R.id.ib_play_next_track -> {
+            binding.layoutPlayLayout.ibPlayNextTrack.id -> {
                 intent.putExtra(EXTRA_CONTROL, NEXT)
                 Timber.v("播放下一首1: %s", NEXT)
+            }
+            binding.layoutPlayLayout.ibMusicList.id -> {
+
             }
         }
 

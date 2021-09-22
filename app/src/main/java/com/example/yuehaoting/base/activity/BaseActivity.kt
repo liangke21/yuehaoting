@@ -65,6 +65,25 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
     }
 
     /**
+     * 添加要实现的接口
+     * @param listener MusicEvenCallback? 实现接口的类
+     */
+    fun addMusicServiceEventListener(listener: MusicEvenCallback?) {
+        if (listener != null) {
+            serviceEventListeners.add(listener)
+        }
+    }
+
+    /**
+     * 移除实现的接口
+     * @param listener MusicEvenCallback? 实现接口的类
+     */
+    fun removeMusicServiceEventListener(listener: MusicEvenCallback?) {
+        if (listener != null) {
+            serviceEventListeners.remove(listener)
+        }
+    }
+    /**
      * Activity传递消息 Service
      */
     private fun binToService() {
@@ -112,11 +131,15 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
 
     //播放状态变化
     override fun onPlayStateChange() {
-
+       for (listener in serviceEventListeners){
+           listener.onPlayStateChange()
+       }
     }
-
+   //播放数据改变
     override fun onMetaChanged() {
-
+    for (listener in serviceEventListeners){
+        listener.onPlayStateChange()
+    }
     }
 
     /**
@@ -141,7 +164,9 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
                 BroadcastUtil.registerLocalReceiver(musicStateReceiver!!, filter)
                 receiverRegistered = true
             }
-
+            for (listener in serviceEventListeners){
+                listener.onServiceConnected(service)
+            }
             musicStateHandler = MusicStatHandler(this)
      //   }
 
@@ -204,5 +229,8 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
          //   BroadcastUtil.unregisterLocalReceiver(musicStateReceiver!!)
         }
     }
+
+
+
 
 }
