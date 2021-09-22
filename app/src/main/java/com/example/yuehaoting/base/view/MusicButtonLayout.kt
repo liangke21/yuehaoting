@@ -45,6 +45,7 @@ class MusicButtonLayout(context: Context, attrs: AttributeSet) : FrameLayout(con
         mTasksView = MusicButtonView(context, attrs)
         musicButtonViewInnerCircle = MusicButtonViewInnerCircle(context, attrs)
         init()
+        this.addView(mTasksView)
     }
 
 
@@ -64,7 +65,15 @@ class MusicButtonLayout(context: Context, attrs: AttributeSet) : FrameLayout(con
         this.mTotalProgress = TotalProgress
         mTasksView?.setTotalProgress(TotalProgress)
         //Thread(ProgressRunnable()).start()
-        this.addView(mTasksView)
+
+    }
+
+    /**
+     * 设置进度条当前值
+     * @param Progress Int
+     */
+    fun setProgress(Progress: Int){
+        mTasksView?.setProgress(Progress)
     }
 
     /**
@@ -101,14 +110,12 @@ class MusicButtonLayout(context: Context, attrs: AttributeSet) : FrameLayout(con
                 objectAnimator.start() //动画开始
                 state = playing
                 jumpOut = false
-                Thread(ProgressRunnable()).start()
             }
             pause -> {
                 objectAnimator.resume()
                 //动画重新开始
                 state = playing
                 jumpOut = false
-                Thread(ProgressRunnable()).start()
             }
             playing -> {
                 objectAnimator.pause()
@@ -126,22 +133,23 @@ class MusicButtonLayout(context: Context, attrs: AttributeSet) : FrameLayout(con
         val start=1
         val resume=2
         val pause=3
+        val stop=4
         when (int) {
             start -> {
                 objectAnimator.start() //动画开始
-                jumpOut = false
-                Thread(ProgressRunnable()).start()
+
             }
             resume -> {
                 objectAnimator.resume()
                 //动画重新开始
-                jumpOut = false
-                Thread(ProgressRunnable()).start()
+
             }
             pause -> {
                 objectAnimator.pause()
                 //动画暂停
-                jumpOut = true
+            }
+            stop -> {
+                objectAnimator.end()
             }
         }
     }

@@ -32,5 +32,8 @@ object MyUtil {
         }
     }
 
+    fun getSecond(duration: Int): Int {
+        return duration /1000
+    }
 
 }

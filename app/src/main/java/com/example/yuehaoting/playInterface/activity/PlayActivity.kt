@@ -272,16 +272,14 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
     private inner class ProgressThread : Thread() {
         override fun run() {
             while (isForeground) {
-                Log.e("isForeground",isForeground.toString())
                 try {
                     val progress = getProgress()
                     if (progress in 1 until duration) {
-                        Log.e("isForeground",progress.toString())
                         currentTime = progress
                         handler.sendEmptyMessage(UPDATE_TIME_ALL)
                         sleep(500)
                     }
-                }catch (e:Exception){
+                } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
@@ -313,6 +311,7 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
         super.onResume()
         ProgressThread().start()
     }
+
     /**
      * 更新顶部标题
      */

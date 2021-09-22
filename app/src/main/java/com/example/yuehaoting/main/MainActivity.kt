@@ -2,6 +2,7 @@ package com.example.yuehaoting.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.VelocityTracker
@@ -19,6 +20,8 @@ import com.example.yuehaoting.databinding.ActivityMainBinding
 import com.example.yuehaoting.main.ui.discover.DiscoverFragment
 import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
+import com.example.yuehaoting.util.MusicConstant
+import com.example.yuehaoting.util.MyUtil.getSecond
 import com.example.yuehaoting.util.Tag
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import timber.log.Timber
@@ -84,10 +87,6 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         //播放按钮
         musicButton = findViewById(R.id.musicButton)
 
-        musicButton.setTotalProgress(3000)
-
-
-
 
     }
 
@@ -98,6 +97,18 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
     }
 
 
+    private var currentTime=0
+
+    private var duration=0
+
+    override fun onMetaChanged() {
+        super.onMetaChanged()
+        //更新进度条
+        val temp = MusicServiceRemote.getProgress()
+        currentTime = if (temp in 1 until duration) temp else 0
+        duration = MusicServiceRemote.getDuration()
+        musicButton.setTotalProgress(duration)
+    }
 
     //播放状态已更改
     override fun onPlayStateChange() {
@@ -106,14 +117,42 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         val isPlayful = MusicServiceRemote.isPlaying()
         if (isPlayful){
             musicButton.playMusic(2)
+            musicButton.playMusic(1)
         }else{
             musicButton.playMusic(3)
         }
 
     }
+    /**
+     * 更新进度条线程
+     */
+    private inner class ProgressThread : Thread() {
+        override fun run() {
+            while (isForeground) {
+                try {
+                    val progress = MusicServiceRemote.getProgress()
+                    if (progress in 1 until duration) {
+                        musicButton.setProgress(progress)
+                       // Log.e(getSecond(progress).toString(),getSecond(duration).toString())  //打印进度时间和当前时长
+                        if (getSecond(progress)==getSecond(duration)){
+                            runOnUiThread {
+                                musicButton.playMusic(4)
+                            }
 
+                        }
+                        sleep(500)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
 
-
+    override fun onResume() {
+        super.onResume()
+        ProgressThread().start()
+    }
     /**
      * 监听fragment传过来的监听事件
      */
