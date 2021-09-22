@@ -1,5 +1,6 @@
 package com.example.yuehaoting.main.discover.fragment1.newSongRecommendationFragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,11 +12,16 @@ import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.base.recyclerView.customLengthAdapter.CustomLengthRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.customLengthAdapter.NullAdapter
 import com.example.yuehaoting.data.kugou.NewSong
+import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.databinding.MainNavigationDiscoverFragment1QuanbuBinding
 import com.example.yuehaoting.kotlin.getSp
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.kotlin.setSp
 import com.example.yuehaoting.main.discover.fragment1.viewModel.FragmentAKuGouViewModel
+import com.example.yuehaoting.musicService.service.MusicServiceRemote
+import com.example.yuehaoting.playInterface.activity.PlayActivity
+import com.example.yuehaoting.util.IntentUtil
+import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.NetworkUtils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -32,6 +38,10 @@ class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
     private var viewModel by lazyMy { ViewModelProvider(this).get(FragmentAKuGouViewModel::class.java) }
 
     private lateinit var mAdapter: CustomLengthRecyclerAdapter<NewSong.Data.Info>
+
+    private var songList:ArrayList<SongLists> = ArrayList()
+
+    private val musicUtil = IntentUtil()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = MainNavigationDiscoverFragment1QuanbuBinding.inflate(layoutInflater)
@@ -77,6 +87,27 @@ class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
             val newSong = it.getOrNull()
             Timber.v("酷狗新歌推荐%s", newSong.toString())
 
+
+            newSong?.data?.info?.forEach { info ->
+                val listFilename = info.filename!!.split("- ")
+                val picUrl = info.album_cover?.replace("{size}", "400")
+                info.apply {
+                    songList.add(
+                        SongLists(
+                            SongName= listFilename[1],
+                            SingerName=listFilename[0],
+                            FileHash=hash!!,
+                            mixSongID=album_audio_id.toString(),
+                            lyrics = "",
+                            album = "",
+                            pic = picUrl!!,
+                            platform = MusicConstant.NEW_SONG_KU_GOU
+                        )
+                    )
+                }
+            }
+
+
             val gson = Gson().toJson(newSong?.data?.info)
             setSp(context!!, "NewSong") {
                 putString("Info", gson)
@@ -96,6 +127,7 @@ class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
 
                     holder.text(R.id.tv_main_fragment1_fragment_a_ku_gou_item_song, listFilename?.get(1))
                     holder.text(R.id.tv_main_fragment1_fragment_a_ku_gou_item_song_album, listFilename?.get(0))
+                    songPlay(holder, position)
                 }
             }
 
@@ -125,6 +157,7 @@ class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
 
                 holder.text(R.id.tv_main_fragment1_fragment_a_ku_gou_item_song, listFilename?.get(1))
                 holder.text(R.id.tv_main_fragment1_fragment_a_ku_gou_item_song_album, listFilename?.get(0))
+                songPlay(holder, position)
             }
         }
 
@@ -132,6 +165,20 @@ class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
     }
 
     override fun songPlay(holder: SmartViewHolder?, position: Int) {
-        TODO("Not yet implemented")
+        holder?.itemView?.setOnClickListener {
+            Timber.v("酷狗列表角标:%s 歌曲名称:%s", position, songList[position].SingerName)
+            if(songList[position]== MusicServiceRemote.getCurrentSong()){
+                val intent= Intent(activity, PlayActivity::class.java)
+                intent.putExtra(MusicConstant.CURRENT_SONG,songList[position])  //向下一个Activity传入当前播放的歌曲
+                activity?.startActivity(intent)
+            }else{
+                MusicServiceRemote.setPlayQueue(songList, musicUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(MusicConstant.EXTRA_POSITION, position))
+
+                val intent= Intent(activity, PlayActivity::class.java)
+                intent.putExtra(MusicConstant.CURRENT_SONG,songList[position])
+                // intent.putExtra("isPlay",false)  作废  2021.9.12 |14.32
+                activity?.startActivity(intent)
+            }
+        }
     }
 }
