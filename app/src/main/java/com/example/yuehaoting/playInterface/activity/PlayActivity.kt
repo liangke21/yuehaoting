@@ -32,6 +32,7 @@ import com.example.yuehaoting.musicService.service.MusicServiceRemote.getCurrent
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.getDuration
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.getProgress
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.isPlaying
+import com.example.yuehaoting.playInterface.activity.PlayActivityDialogFragment.Companion.newInstance
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.handlerRemoveCallbacks
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.photoCycle
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.singerPhotoUrl
@@ -408,7 +409,8 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
                 Timber.v("播放下一首1: %s", NEXT)
             }
             binding.layoutPlayLayout.ibMusicList.id -> {
-
+                newInstance()
+                    .show(supportFragmentManager, PlayActivityDialogFragment::class.java.simpleName)
             }
         }
 

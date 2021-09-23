@@ -35,7 +35,6 @@ import timber.log.Timber
  */
 class SingleFragment1Adapter(private val list: List<KuGouSingle.Data.Lists>, val activity: FragmentActivity?) :
     RecyclerView.Adapter<SingleFragment1Adapter.ViewHolder>() {
-    private val musicUtil = IntentUtil()
     private val songLists = ArrayList<SongLists>()
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -91,7 +90,7 @@ class SingleFragment1Adapter(private val list: List<KuGouSingle.Data.Lists>, val
              intent.putExtra(CURRENT_SONG,songLists[position])
              activity?.startActivity(intent)
          }else{
-             setPlayQueue(songLists, musicUtil.makeCodIntent(PLAY_SELECTED_SONG).putExtra(EXTRA_POSITION, position))
+             setPlayQueue(songLists, IntentUtil.makeCodIntent(PLAY_SELECTED_SONG).putExtra(EXTRA_POSITION, position))
              val intent=Intent(activity,PlayActivity::class.java)
              intent.putExtra(SINGER_ID,mixSongID)
              intent.putExtra(CURRENT_SONG,songLists[position])

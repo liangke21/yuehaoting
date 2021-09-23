@@ -1,7 +1,5 @@
 package com.example.yuehaoting.util
 
-import com.example.yuehaoting.data.kugou.NewSong
-
 /**
  * 作者: 天使
  * 时间: 2021/6/27 13:57
@@ -11,9 +9,19 @@ object MusicConstant {
     //_______________________________________|Sp key|______________________________________________________________________________________________________
 //包名
     private const val PACKAGE_NAME = "com.example.yuehaoting"
+    //_______________________________________|Setting|______________________________________________________________________________________________________
     const val NAME = "Setting"  //xml 文件
-    const val PLAY_MODEL = "play_model"
 
+    //黑名单
+    const val BLACKLIST = "blacklist"
+
+    //过滤大小
+    const val SCAN_SIZE = "scan_size"
+
+    //移除歌曲
+    var BLACKLIST_SONG = "black_list_song"
+
+    //_______________________________________|播放背景模式|______________________________________________________________________________________________________
     //自定义播放背景
     const val PLAYER_BACKGROUND = "player_background"
 
@@ -49,6 +57,8 @@ object MusicConstant {
      * 如 播放选定歌曲 上一首 下一首
      */
     const val EXTRA_CONTROL = "Control"
+    //播放模式
+    const val PLAY_MODEL = "play_model"
 
     //随机播放
     const val EXTRA_SHUFFLE = "shuffle"
@@ -56,12 +66,13 @@ object MusicConstant {
     /**
      * 当前播放歌曲
      */
-    const val CURRENT_SONG ="CurrentSong"
+    const val CURRENT_SONG = "CurrentSong"
 
     /**
      * 当前歌曲角标
      */
     const val EXTRA_POSITION = "Position"
+
     //_______________________________________|更新状态|______________________________________________________________________________________________________
     //更新正在播放歌曲
     const val UPDATE_META_DATA = 1002
@@ -104,18 +115,20 @@ object MusicConstant {
 
     //操作命令
     const val ACTION_CMD = "$PACKAGE_NAME.cmd"
-//_______________________________________|音乐播放平台|______________________________________________________________________________________________________
-    const val KEY_MUSIC_PLATFORM="MusicPlatform"
-    const val KU_GOU=1
-    const val HIF_INI=2
+
+    //_______________________________________|音乐播放平台|______________________________________________________________________________________________________
+    const val KEY_MUSIC_PLATFORM = "MusicPlatform"
+    const val KU_GOU = 1
+    const val HIF_INI = 2
 
     const val NEW_SONG_KU_GOU = 3
-//_______________________________________|PlayActivityHandler|______________________________________________________________________________________________________
-    //更新播放进度时间
-   const val UPDATE_TIME_ONLY = 1
-    //更新播放进度全部时间
-   const val UPDATE_TIME_ALL = 2
 
+    //_______________________________________|PlayActivityHandler|______________________________________________________________________________________________________
+    //更新播放进度时间
+    const val UPDATE_TIME_ONLY = 1
+
+    //更新播放进度全部时间
+    const val UPDATE_TIME_ALL = 2
 
 
 }

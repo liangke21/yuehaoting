@@ -45,7 +45,7 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
 
     private var songList:ArrayList<SongLists> = ArrayList()
 
-    private val musicUtil = IntentUtil()
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = MainNavigationDiscoverFragment1KugouBinding.inflate(layoutInflater)
@@ -93,6 +93,7 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
                          info.apply {
                              songList.add(
                                  SongLists(
+                                     id = 0,
                                      SongName= listFilename[1],
                                      SingerName=listFilename[0],
                                      FileHash=hash!!,
@@ -217,7 +218,7 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
                 intent.putExtra(MusicConstant.CURRENT_SONG,songList[position])  //向下一个Activity传入当前播放的歌曲
                 activity?.startActivity(intent)
             }else{
-                MusicServiceRemote.setPlayQueue(songList, musicUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(MusicConstant.EXTRA_POSITION, position))
+                MusicServiceRemote.setPlayQueue(songList, IntentUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(MusicConstant.EXTRA_POSITION, position))
 
                 val intent= Intent(activity, PlayActivity::class.java)
                 intent.putExtra(MusicConstant.CURRENT_SONG,songList[position])

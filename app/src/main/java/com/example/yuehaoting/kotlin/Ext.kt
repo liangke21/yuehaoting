@@ -128,6 +128,7 @@ inline fun<T> getSp(context: Context,data:String="data",block: SharedPreferences
     val sp = context.getSharedPreferences(data, Context.MODE_PRIVATE)
    return sp.block()
 }
+
 //-------------------------------------------SharedPreferences------------------------------------------------------------------------------------------
 
 //-------------------------------------------lazy------------------------------------------------------------------------------------------

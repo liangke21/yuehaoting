@@ -1,5 +1,6 @@
 package com.example.yuehaoting.base.dialogFragment
 
+import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -38,5 +39,11 @@ open class SmDialogFragment:DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Timber.v("onViewCreated","紧随onCreateView调用，表示view已初始化完成")
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        Timber.v("onCreateDialog","重写以生成自己的对话框，通常用于显示AlertDialog，而不是常规对话框；执行此操作时，不需要实现OnCreateView），因为AlertDialog会处理自己的内容。")
+        return super.onCreateDialog(savedInstanceState)
+
     }
 }

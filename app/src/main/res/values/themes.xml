@@ -44,6 +44,10 @@
   <style name="Theme.yuehaoting.Black" parent="Theme.yuehaoting.Base.Black"/>
   <!--暗黑色主题-->
   <style name="Theme.yuehaoting.Diablo" parent="Theme.yuehaoting.Base.Diablo"/>
+  <style name="DialogAnimBottom" parent="@android:style/Animation">
+    <item name="android:windowEnterAnimation">@anim/slide_bottom_in</item>
+    <item name="android:windowExitAnimation">@anim/slide_bottom_out</item>
+  </style>
 
 
   <!--主页界面-->

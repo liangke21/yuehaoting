@@ -123,4 +123,13 @@ dependencies {
    // android 没有数据页面显示
    implementation 'io.github.elye:loaderviewlibrary:3.0.0'
 
+
+    def room_version = "2.3.0"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    //bugly
+    implementation 'com.tencent.bugly:crashreport:3.3.3'
+    //materialDialog
+    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 }

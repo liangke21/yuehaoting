@@ -10,7 +10,7 @@ import com.example.yuehaoting.util.MusicConstant.EXTRA_SHUFFLE
  * 时间: 2021/6/9 14:14
  * 描述:
  */
-class IntentUtil {
+object IntentUtil {
 
 
     private fun makeCodIntent(cmd: Int, shuffle: Boolean): Intent {

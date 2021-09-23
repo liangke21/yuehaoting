@@ -36,8 +36,6 @@ import timber.log.Timber
 class SingleFragment1: LazyBaseFragment(){
     private lateinit var binding: FragmentMusicBinding
 
-    private val musicUtil = IntentUtil()
-
     private val songLists = ArrayList<SongLists>()
     //第一次进入刷新
     private var isFirstEnter = true
@@ -88,6 +86,7 @@ class SingleFragment1: LazyBaseFragment(){
                     it.apply {
                         songLists.add(
                             SongLists(
+                                id = 0,
                                 SongName=song[0]!!,
                                 SingerName=song[1]!!,
                                 FileHash=FileHash,
@@ -162,7 +161,7 @@ class SingleFragment1: LazyBaseFragment(){
                 intent.putExtra(MusicConstant.CURRENT_SONG,songLists[position])  //向下一个Activity传入当前播放的歌曲
                 activity?.startActivity(intent)
             }else{
-                MusicServiceRemote.setPlayQueue(songLists, musicUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(EXTRA_POSITION, position))
+                MusicServiceRemote.setPlayQueue(songLists, IntentUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(EXTRA_POSITION, position))
 
                 val intent= Intent(activity, PlayActivity::class.java)
                 intent.putExtra(MusicConstant.CURRENT_SONG,songLists[position])

@@ -14,4 +14,5 @@
   <string name="title_featured" >精选</string>
   <string name="title_list" >榜单</string>
   <string name="title_my" >我的</string>
+  <string name="play_queue">播放列队(%d)</string>
 </resources>

@@ -19,6 +19,7 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class SongLists(
+    val id: Long,
     var SongName:String,
     var SingerName:String,
     var FileHash:String,
@@ -33,7 +34,7 @@ data class SongLists(
 
 
     companion object {
-        val SONG_LIST = SongLists("", "", "","","", "","",0)
+        val SONG_LIST = SongLists(0,"", "", "","","", "","",0)
     }
 
 }

@@ -131,6 +131,16 @@ object ThemeStore {
         "#6b6b6b"
       }
     )
+  @JvmStatic
+  @get:ColorInt
+  val textColorPrimary: Int
+    get() = ColorUtil.getColor(
+      if (isLightTheme) {
+        R.color.light_text_color_primary
+      } else {
+        R.color.dark_text_color_primary
+      }
+    )
 
 
 }

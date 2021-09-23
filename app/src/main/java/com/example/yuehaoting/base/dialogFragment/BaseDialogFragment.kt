@@ -17,7 +17,7 @@ import com.example.yuehaoting.musicService.service.MusicService
 open class BaseDialogFragment :SmDialogFragment(),MusicEvenCallback{
     private  var mBaseActivity: BaseActivity?=null
 
-
+    protected var hasPermission=false
     override fun onAttach(context: Context) {
         super.onAttach(context)
         try {
