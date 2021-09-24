@@ -2,12 +2,16 @@ package com.example.yuehaoting.base.db
 
 import com.example.yuehaoting.App
 import com.example.yuehaoting.base.db.model.PlayQueue
+import com.example.yuehaoting.base.log.LogT.lll
 import com.example.yuehaoting.data.kugousingle.SongLists
+import com.example.yuehaoting.util.MusicConstant
+import com.example.yuehaoting.util.Tag
 import com.tencent.bugly.crashreport.CrashReport
 import io.reactivex.Single
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.Callable
+import kotlin.collections.ArrayList
 
 /**
  * 作者: LiangKe
@@ -15,48 +19,52 @@ import java.util.concurrent.Callable
  * 描述:
  */
 class DatabaseRepository() {
-  private val db=AppDataBase.getInstance(App.context.applicationContext)
-  /**
-   * 获取播放队列
-   */
-  fun getPlayQueue(): Single<List<Long>> {
-    return Single
-      .fromCallable {
-        db.playQueueDao().selectAll()
-          .map {
-            it.audio_id
-          }
-      }
-  }
+    private val db = AppDataBase.getInstance(App.context.applicationContext)
 
-  /**
-   * 插入多首歌曲到播放队列
-   */
-  fun insertToPlayQueue(audioIds: List<Long>): Single<Int> {
-    val actual = audioIds.toMutableList()
-    return getPlayQueue()
-      .map {
-        //不重复添加
-        actual.removeAll(it)
-
-        db.playQueueDao().insertPlayQueue(convertAudioIdsToPlayQueues(actual))
-
-        actual.size
-      }
-  }
-
-  /**
-   * id 转换为 列表
-   * @param audioIds List<Long>
-   * @return List<PlayQueue>
-   */
-  private fun convertAudioIdsToPlayQueues(audioIds: List<Long>): List<PlayQueue> {
-    val playQueues = ArrayList<PlayQueue>()
-    for (audioId in audioIds) {
-      playQueues.add(PlayQueue(0, audioId))
+    /**
+     * 获取播放队列
+     */
+    private fun getPlayQueue(): Single<List<Long>> {
+        return Single
+            .fromCallable {
+                db.playQueueDao().selectAll()
+                    .map {
+                        it.audioId
+                    }
+            }
     }
-    return playQueues
-  }
+
+    /**
+     * 插入多首歌曲到播放队列
+     */
+    fun insertToPlayQueue(audioIds: List<Long>): Single<Int> {
+
+        val actual = audioIds.toMutableList()
+        return getPlayQueue()
+            .map {
+                //不重复添加
+                actual.removeAll(it)
+                Timber.tag(Tag.queueDatabase).v("插入的数据  id %s %s", actual.toString(), lll())
+                db.playQueueDao().insertPlayQueue(convertAudioIdsToPlayQueues(actual))
+
+                actual.size
+            }
+    }
+
+    /**
+     * id 转换为 列表
+     * @param audioIds List<Long>
+     * @return List<PlayQueue>
+     */
+    private fun convertAudioIdsToPlayQueues(audioIds: List<Long>): List<PlayQueue> {
+
+        val playQueues = ArrayList<PlayQueue>()
+        for (audioId in audioIds) {
+            playQueues.add(PlayQueue(0, audioId))
+        }
+        return playQueues
+
+    }
 
     /**
      * 获得播放队列对应的歌曲
@@ -65,127 +73,154 @@ class DatabaseRepository() {
     fun getPlayQueueSongs(): Single<List<SongLists>> {
         val idsInQueue = ArrayList<Long>()
 
-      return Single.fromCallable {
-       db.playQueueDao().selectAll().map {
-         it.audio_id
-       }
-      }
-        .doOnSuccess{
-          idsInQueue.addAll(it)
+        return Single.fromCallable {
+            db.playQueueDao().selectAll().map {
+                Timber.tag(Tag.queueDatabase).v("获取本地数据库数据 fromCallable %s %s", it, lll())
+                it.audioId
+            }
         }
-        .flatMap {
-          getSongsWithSort( it)
-        }
-        .doOnSuccess { songs ->
-          //删除不存在的歌曲
-          if (songs.size < idsInQueue.size) {
-            Timber.v("删除播放队列中不存在的歌曲")
-            val deleteIds = ArrayList<Long>()
-            val existIds = songs.map { it.id }
+            .doOnSuccess {
+                Timber.tag(Tag.queueDatabase).v("获取本地数据库数据 doOnSuccess %s %s", it, lll())
+                idsInQueue.addAll(it)
+            }
+            .flatMap {
+                Timber.tag(Tag.queueDatabase).v("获取本地数据库数据 flatMap %s %s", it, lll())
+                getSongsWithSort(it)
+            }
+            .doOnSuccess {
+                Timber.tag(Tag.queueDatabase).v("获取本地数据库数据 flatMap %s %s", it, lll())
+                /*   //删除不存在的歌曲
+                   if (songs.size < idsInQueue.size) {
+                       Timber.v("删除播放队列中不存在的歌曲 %s", songs.size)
+                       val deleteIds = ArrayList<Long>()
+                       val existIds = songs.map { it.id }
 
-            for (audioId in idsInQueue) {
-              if (!existIds.contains(audioId)) {
-                deleteIds.add(audioId)
-              }
+                       for (audioId in idsInQueue) {
+                           if (!existIds.contains(audioId)) {
+                               deleteIds.add(audioId)
+                           }
+                       }
+   */
+                 /*   if (deleteIds.isNotEmpty()) {
+                        //deleteFromPlayQueueInternal(deleteIds)
+                    }*/
+
+                }
             }
 
-            if (deleteIds.isNotEmpty()) {
-              //deleteFromPlayQueueInternal(deleteIds)
+
+    /**
+     * 从播放队列移除
+     */
+    fun deleteFromPlayQueue(audioIds: List<Long>): Single<Int> {
+        return Single
+            .fromCallable {
+                deleteFromPlayQueueInternal(audioIds)
+            }
+    }
+
+    /**
+     * 从播放列队删除
+     * @param audioIds List<Long>
+     * @return Int
+     */
+    private fun deleteFromPlayQueueInternal(audioIds: List<Long>): Int {
+        if (audioIds.isEmpty()) {
+            return 0
+        }
+        return db.runInTransaction(Callable {
+            var count = 0
+            val length = audioIds.size / MAX_ARGUMENT_COUNT + 1
+            for (i in 0 until length) {
+                val lastIndex = if ((i + 1) * MAX_ARGUMENT_COUNT < audioIds.size) (i + 1) * MAX_ARGUMENT_COUNT else 1
+                try {
+                    count += db.playQueueDao().deleteSongs(audioIds.subList(i * MAX_ARGUMENT_COUNT, lastIndex))
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    CrashReport.postCatchedException(e)
+                }
+            }
+            Timber.v("deleteFromPlayQueueInternal, count: $count")
+            return@Callable count
+        })
+    }
+
+    /**
+     * 清空播放队列
+     */
+    fun clearPlayQueue(): Single<Int> {
+        return Single
+            .fromCallable {
+                db.playQueueDao().clear()
+            }
+    }
+
+    /**
+     * 获取通过排序的歌曲
+     * @param sort String
+     * @param ids List<Long>
+     * @return Single<List<SongLists>>
+     */
+    private fun getSongsWithSort(ids: List<Long>): Single<List<SongLists>> {
+        val list=ArrayList<SongLists>()
+        return Single
+            .fromCallable {
+                if (ids.isEmpty()) {
+                    return@fromCallable Collections.emptyList<SongLists>()
+                }
+
+                val tempArray = Array(ids.size) { SongLists.SONG_LIST }
+
+                tempArray
+                    .filter { it.id != SongLists.SONG_LIST.id }
+                for(i in ids){
+                    list.add(
+                        SongLists(
+                            id = i,
+                            SongName= "listFilename[1]",
+                            SingerName="listFilename[0]",
+                            FileHash="hash!!",
+                            mixSongID="album_audio_id.toString()",
+                            lyrics = "",
+                            album = "",
+                            pic = "picUrl!!",
+                            platform = 0
+                        )
+                    )
+                }
+                list
+            }
+    }
+
+    /**
+     * 字符生成器
+     * @param audioIds List<Long>
+     * @return String
+     */
+    private fun makeInStr(audioIds: List<Long>): String {
+        val inStrBuilder = StringBuilder(127)
+
+        for (i in audioIds.indices) {
+            inStrBuilder.append(audioIds[i]).append(if (i != audioIds.size - 1) "," else " ")
+        }
+
+        return inStrBuilder.toString()
+    }
+
+    companion object {
+        private const val CUSTOMSORT = "CUSTOMSORT"
+
+        @Volatile
+        private var INSTANCE: DatabaseRepository? = null
+
+        @JvmStatic
+        fun getInstance(): DatabaseRepository =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: DatabaseRepository()
             }
 
-          }
-        }
+        private const val MAX_ARGUMENT_COUNT = 300
     }
-  /**
-   * 从播放队列移除
-   */
-  fun deleteFromPlayQueue(audioIds: List<Long>): Single<Int> {
-    return Single
-      .fromCallable {
-        deleteFromPlayQueueInternal(audioIds)
-      }
-  }
-
-  /**
-   * 从播放列队删除
-   * @param audioIds List<Long>
-   * @return Int
-   */
-  private fun deleteFromPlayQueueInternal(audioIds: List<Long>): Int {
-    if (audioIds.isEmpty()) {
-      return 0
-    }
-    return db.runInTransaction(Callable {
-      var count = 0
-      val length = audioIds.size / MAX_ARGUMENT_COUNT + 1
-      for (i in 0 until length) {
-        val lastIndex = if ((i + 1) * MAX_ARGUMENT_COUNT < audioIds.size) (i + 1) * MAX_ARGUMENT_COUNT else 1
-        try {
-          count += db.playQueueDao().deleteSongs(audioIds.subList(i * MAX_ARGUMENT_COUNT, lastIndex))
-        } catch (e: Exception) {
-          Timber.e(e)
-          CrashReport.postCatchedException(e)
-        }
-      }
-      Timber.v("deleteFromPlayQueueInternal, count: $count")
-      return@Callable count
-    })
-  }
-  /**
-   * 清空播放队列
-   */
-  fun clearPlayQueue(): Single<Int> {
-    return Single
-      .fromCallable {
-        db.playQueueDao().clear()
-      }
-  }
-  /**
-   * 获取通过排序的歌曲
-   * @param sort String
-   * @param ids List<Long>
-   * @return Single<List<SongLists>>
-   */
-    private fun getSongsWithSort( ids: List<Long>): Single<List<SongLists>> {
-      return Single
-        .fromCallable {
-          if (ids.isEmpty()) {
-            return@fromCallable Collections.emptyList<SongLists>()
-          }
-
-          val tempArray = Array(ids.size) { SongLists.SONG_LIST }
-
-          tempArray
-            .filter { it.id != SongLists.SONG_LIST.id }
-        }
-    }
-
-  /**
-   * 字符生成器
-   * @param audioIds List<Long>
-   * @return String
-   */
-  private fun makeInStr(audioIds: List<Long>): String {
-    val inStrBuilder = StringBuilder(127)
-
-    for (i in audioIds.indices) {
-      inStrBuilder.append(audioIds[i]).append(if (i != audioIds.size - 1) "," else " ")
-    }
-
-    return inStrBuilder.toString()
-  }
- companion object{
-   private const val CUSTOMSORT = "CUSTOMSORT"
-   @Volatile
-  private var INSTANCE:DatabaseRepository?=null
-   @JvmStatic
-   fun getInstance():DatabaseRepository=
-     INSTANCE?: synchronized(this){
-       INSTANCE ?: DatabaseRepository()
-     }
-
-   private const val MAX_ARGUMENT_COUNT = 300
- }
 
 
 }

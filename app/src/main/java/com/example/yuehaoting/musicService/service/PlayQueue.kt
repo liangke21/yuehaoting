@@ -1,10 +1,12 @@
 package com.example.yuehaoting.musicService.service
 
 import com.example.yuehaoting.base.db.DatabaseRepository
+import com.example.yuehaoting.base.log.LogT.lll
 import com.example.yuehaoting.base.rxJava.LogObserver
 import com.example.yuehaoting.base.rxJava.RxUtil
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.data.kugousingle.SongLists.Companion.SONG_LIST
+import com.example.yuehaoting.util.Tag.queueDatabase
 import timber.log.Timber
 
 /**
@@ -125,7 +127,10 @@ class PlayQueue {
     private fun saveQueue() {
         repository.clearPlayQueue()
             .flatMap {
-                repository.insertToPlayQueue(_originalQueue.map { it.id })
+                repository.insertToPlayQueue(_originalQueue.map {
+                    Timber.tag(queueDatabase).v("需要插入的数据  id %s %s",it.id.toString() ,lll())
+                    it.id
+                })
             }
             .compose(RxUtil.applySingleScheduler())
             .subscribe(LogObserver())

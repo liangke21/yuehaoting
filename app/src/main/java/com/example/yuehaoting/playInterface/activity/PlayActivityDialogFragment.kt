@@ -1,5 +1,6 @@
 package com.example.yuehaoting.playInterface.activity
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
@@ -16,6 +17,7 @@ import com.example.yuehaoting.base.asyncTaskLoader.WrappedAsyncTaskLoader
 import com.example.yuehaoting.base.db.DatabaseRepository
 import com.example.yuehaoting.base.db.model.PlayQueue
 import com.example.yuehaoting.base.dialogFragment.BaseDialogFragment
+import com.example.yuehaoting.base.log.LogT
 import com.example.yuehaoting.base.recyclerView.baseAdapter.OnItemClickListener
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.databinding.PlayDialogFragmentBinding
@@ -25,8 +27,8 @@ import com.example.yuehaoting.util.IntentUtil
 import com.example.yuehaoting.util.MusicConstant.EXTRA_POSITION
 import com.example.yuehaoting.util.MusicConstant.PLAY_SELECTED_SONG
 import com.example.yuehaoting.util.SetPixelUtil.dip2px
+import com.example.yuehaoting.util.Tag
 import timber.log.Timber
-import java.util.stream.DoubleStream.builder
 
 /**
  * 作者: LiangKe
@@ -85,7 +87,9 @@ class PlayActivityDialogFragment: BaseDialogFragment(), LoaderManager.LoaderCall
 
     }
 
+
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<SongLists>> {
+
         return AsyncPlayQueueSongLoader(requireContext())
     }
 
@@ -93,6 +97,7 @@ class PlayActivityDialogFragment: BaseDialogFragment(), LoaderManager.LoaderCall
         if (data == null) {
             return
         }
+     //   Timber.tag(Tag.queueDatabase).v("获取本地数据库数据 audioId %s %s", data[0].id, LogT.lll())
         binding.tvPlayDialogFragment.text = getString(R.string.play_queue, data.size)
         adapter.setDataList(data)
         val currentId = MusicServiceRemote.getCurrentSong().id
@@ -129,13 +134,13 @@ class PlayActivityDialogFragment: BaseDialogFragment(), LoaderManager.LoaderCall
         _binding = null
     }
 
-    class AsyncPlayQueueSongLoader constructor(context: Context) : WrappedAsyncTaskLoader<List<SongLists>>(context) {
+    class AsyncPlayQueueSongLoader(context: Context) : WrappedAsyncTaskLoader<List<SongLists>>(context) {
 
         override fun loadInBackground(): List<SongLists>? {
             return DatabaseRepository.getInstance()
                 .getPlayQueueSongs()
                 .onErrorReturn { throwable ->
-                    Timber.v(throwable)
+                    Timber.tag(Tag.queueDatabase).v("获取本地数据库数据 throwable %s %s", throwable)
                     emptyList()
                 }
                 .blockingGet()
@@ -145,8 +150,7 @@ class PlayActivityDialogFragment: BaseDialogFragment(), LoaderManager.LoaderCall
     companion object {
         @JvmStatic
         fun newInstance(): PlayActivityDialogFragment {
-            val playQueueDialog = PlayActivityDialogFragment()
-            return playQueueDialog
+            return PlayActivityDialogFragment()
         }
 
         private var LOADER_ID = 0

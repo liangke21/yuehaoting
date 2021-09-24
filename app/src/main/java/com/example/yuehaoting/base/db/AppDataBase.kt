@@ -10,6 +10,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.yuehaoting.base.db.AppDataBase.Companion.VERSION
 import com.example.yuehaoting.base.db.dao.PlayQueueDao
 import com.example.yuehaoting.base.db.model.PlayQueue
+import com.example.yuehaoting.util.Tag
+import timber.log.Timber
 
 /**
  * 作者: LiangKe
@@ -49,12 +51,12 @@ abstract class AppDataBase : RoomDatabase() {
             }
 
             val database = Room.databaseBuilder(context.applicationContext, AppDataBase::class.java, "yuehaoting.db")
-               // .addMigrations(migration1to3)
+                //.addMigrations(migration1to3)
                 .build()
 
             database.invalidationTracker.addObserver(object : InvalidationTracker.Observer(PlayQueue.TABLE_MAME) {
                 override fun onInvalidated(tables: MutableSet<String>) {
-                    TODO("Not yet implemented")
+                    Timber.tag(Tag.queueDatabase).v("onInvalidated %s",tables.toString())
                 }
             })
 

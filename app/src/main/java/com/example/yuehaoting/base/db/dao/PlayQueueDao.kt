@@ -13,8 +13,11 @@ import com.example.yuehaoting.base.db.model.PlayQueue
  */
 @Dao
 interface PlayQueueDao {
-    @Insert(onConflict = OnConflictStrategy.FAIL)
+
+
+   @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPlayQueue(playQueue: List<PlayQueue>):LongArray
+
     /**
      * 查询这个库
      * @return List<PlayQueue>
@@ -22,18 +25,18 @@ interface PlayQueueDao {
     @Query("SELECT * FROM PlayQueue")
     fun selectAll():List<PlayQueue>
 
-    /**
+   /**
      * 清空
      * @return Int
      */
     @Query("DELETE FROM PlayQueue")
     fun clear(): Int
 
-    /**
+   /**
      *  删除歌曲
      * @param audioIds List<Long>
      * @return Int
      */
-    @Query(" DELETE FROM PlayQueue WHERE audio_id IN (:audioIds)")
+    @Query(" DELETE FROM PlayQueue WHERE audioId IN (:audioIds)")
     fun deleteSongs(audioIds: List<Long>): Int
 }

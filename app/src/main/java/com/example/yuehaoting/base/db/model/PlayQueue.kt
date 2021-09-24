@@ -9,11 +9,11 @@ import androidx.room.PrimaryKey
  * 时间: 2021/9/23 8:43
  * 描述:
  */
-@Entity(indices = [Index(value = ["audio_id"], unique = true)])
+@Entity(indices = [Index(value = ["audioId"], unique = true)])
 class PlayQueue(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
-    val audio_id: Long
+    val audioId: Long
 ){
     companion object{
         const val TABLE_MAME="PlayQueue"

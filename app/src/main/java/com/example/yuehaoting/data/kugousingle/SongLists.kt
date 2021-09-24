@@ -37,4 +37,8 @@ data class SongLists(
         val SONG_LIST = SongLists(0,"", "", "","","", "","",0)
     }
 
+    override fun toString(): String {
+        return "SongLists(id=$id, SongName='$SongName', SingerName='$SingerName', FileHash='$FileHash', mixSongID='$mixSongID', lyrics='$lyrics', album='$album', pic='$pic', platform=$platform)"
+    }
+
 }
