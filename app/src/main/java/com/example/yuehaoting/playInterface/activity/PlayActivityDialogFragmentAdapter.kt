@@ -26,55 +26,56 @@ import com.example.yuehaoting.playInterface.activity.PlayActivityDialogFragmentA
  * 正在播放列表的适配器
  */
 class PlayActivityDialogFragmentAdapter(layoutId: Int) : BaseAdapter<SongLists, PlayQueueHolder>(layoutId) {
-  private val accentColor: Int = ThemeStore.accentColor
-  private val textColor: Int = textColorPrimary
+    private val accentColor: Int = ThemeStore.accentColor
+    private val textColor: Int = textColorPrimary
 
-  @SuppressLint("SetTextI18n")
-  override fun convert(holder: PlayQueueHolder, data: SongLists?, position: Int) {
-    if (data == null) {
-      return
-    }
-    if (data == SongLists.SONG_LIST) {
-      //歌曲已经失效
-      holder.binding.tvPlayDialogFragmentRecyclerViewA.text= R.string.song_lose_effect.toString()
-      holder.binding.tvPlayDialogFragmentRecyclerViewB.visibility = View.GONE
-      return
-    }
-    //设置歌曲与艺术家
-    holder.binding.tvPlayDialogFragmentRecyclerViewA.text = data.SongName
-    holder.binding.tvPlayDialogFragmentRecyclerViewB.text = " - ${data.SingerName}"
-    //高亮
-    if (getCurrentSong().id == data.id) {
-     // holder.binding.tvPlayDialogFragmentRecyclerViewB.setTextColor(accentColor)
-      holder.binding.tvPlayDialogFragmentRecyclerViewA.setTextColor(textColor)
-      holder.binding.lottie.visibility=View.VISIBLE
-     // holder.binding.lottie.loop(true)
-      holder.binding.lottie.repeatCount = getDuration() - getProgress()
-      holder.binding.lottie.playAnimation()
-    } else {
+    @SuppressLint("SetTextI18n")
+    override fun convert(holder: PlayQueueHolder, data: SongLists?, position: Int) {
+        if (data == null) {
+            return
+        }
+        if (data == SongLists.SONG_LIST) {
+            //歌曲已经失效
+            holder.binding.tvPlayDialogFragmentRecyclerViewA.text = R.string.song_lose_effect.toString()
+            holder.binding.tvPlayDialogFragmentRecyclerViewB.visibility = View.GONE
+            return
+        }
+        //设置歌曲与艺术家
+        holder.binding.tvPlayDialogFragmentRecyclerViewA.text = data.SongName
+        holder.binding.tvPlayDialogFragmentRecyclerViewB.text = " - ${data.SingerName}"
+        //高亮
+        if (getCurrentSong().id == data.id) {
+            // holder.binding.tvPlayDialogFragmentRecyclerViewB.setTextColor(accentColor)
+            holder.binding.tvPlayDialogFragmentRecyclerViewA.setTextColor(textColor)
+            holder.binding.lottie.visibility = View.VISIBLE
+            // holder.binding.lottie.loop(true)
+            holder.binding.lottie.repeatCount = getDuration() - getProgress()
+            holder.binding.lottie.playAnimation()
+        } else {
 //                holder.mSong.setTextColor(Color.parseColor(ThemeStore.isDay() ? "#323335" : "#ffffff"));
-      holder.binding.tvPlayDialogFragmentRecyclerViewA.setTextColor(textColor)
-      holder.binding.lottie.visibility=View.GONE
-      //holder.binding.lottie.pauseAnimation()
-    }
-    //删除按钮
-    holder.binding.ivPlayDialogFragmentRecyclerView.setOnClickListener {
-      getInstance()
-          .deleteFromPlayQueue(listOf(data.id))
-          .compose(RxUtil.applySingleScheduler())
-          .subscribe { num: Int ->
-            //删除的是当前播放的歌曲
-            if (num > 0 && getCurrentSong().id == data.id) {
-              sendLocalBroadcast(makeCodIntent(NEXT))  //发送一条广播给后台播放下一首
-            }
-          }
-    }
-    holder.binding.itemRoot.setOnClickListener {
-        v: View? -> onItemClickListener?.onItemClick(v, holder.adapterPosition)
-    }
-  }
+            holder.binding.tvPlayDialogFragmentRecyclerViewA.setTextColor(textColor)
+            holder.binding.lottie.visibility = View.GONE
+            //holder.binding.lottie.pauseAnimation()
+        }
+        //删除按钮
+        holder.binding.ivPlayDialogFragmentRecyclerView.setOnClickListener {
+            getInstance()
+                .deleteFromPlayQueue(listOf(data.id))
+                .compose(RxUtil.applySingleScheduler())
+                .subscribe { num: Int ->
+                    //删除的是当前播放的歌曲
+                    if (num > 0 && getCurrentSong().id == data.id) {
+                        sendLocalBroadcast(makeCodIntent(NEXT))  //发送一条广播给后台播放下一首
+                    }
+                }
 
-  class PlayQueueHolder(view: View) : BaseViewHolder(view) {
-    val binding: PlayDialogFragmentItemBinding = PlayDialogFragmentItemBinding.bind(view)
-  }
+        }
+        holder.binding.itemRoot.setOnClickListener { v: View? ->
+            onItemClickListener?.onItemClick(v, holder.adapterPosition)
+        }
+    }
+
+    class PlayQueueHolder(view: View) : BaseViewHolder(view) {
+        val binding: PlayDialogFragmentItemBinding = PlayDialogFragmentItemBinding.bind(view)
+    }
 }

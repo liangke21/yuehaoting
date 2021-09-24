@@ -86,14 +86,14 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
                    val newSong=it.getOrNull()
                    Timber.v("酷狗新歌推荐列表:%s", newSong)
 
-
+                   var id= 0L
                      newSong?.data?.info?.forEach { info ->
                          val listFilename = info.filename!!.split("- ")
                          val picUrl = info.album_cover?.replace("{size}", "400")
                          info.apply {
                              songList.add(
                                  SongLists(
-                                     id = 0,
+                                     id = ++id,
                                      SongName= listFilename[1],
                                      SingerName=listFilename[0],
                                      FileHash=hash!!,

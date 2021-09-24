@@ -25,6 +25,7 @@ import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.util.BroadcastUtil.sendLocalBroadcast
 import com.example.yuehaoting.util.IntentUtil
 import com.example.yuehaoting.util.MusicConstant.EXTRA_POSITION
+import com.example.yuehaoting.util.MusicConstant.PAUSE_PLAYBACK
 import com.example.yuehaoting.util.MusicConstant.PLAY_SELECTED_SONG
 import com.example.yuehaoting.util.SetPixelUtil.dip2px
 import com.example.yuehaoting.util.Tag
@@ -59,9 +60,16 @@ class PlayActivityDialogFragment: BaseDialogFragment(), LoaderManager.LoaderCall
 
         adapter.onItemClickListener = object : OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {
-                sendLocalBroadcast(
-                    IntentUtil.makeCodIntent(PLAY_SELECTED_SONG)
-                    .putExtra(EXTRA_POSITION, position))
+                if (MusicServiceRemote.getCurrentSong().id == adapter.getDataList()[position].id) {
+                    sendLocalBroadcast(
+                        IntentUtil.makeCodIntent(PAUSE_PLAYBACK))
+
+                }else{
+                    sendLocalBroadcast(
+                        IntentUtil.makeCodIntent(PLAY_SELECTED_SONG)
+                            .putExtra(EXTRA_POSITION, position))
+                }
+
             }
 
             override fun onItemLongClick(view: View, position: Int) {}
@@ -80,7 +88,7 @@ class PlayActivityDialogFragment: BaseDialogFragment(), LoaderManager.LoaderCall
         window.setGravity(Gravity.BOTTOM)
 
         //初始化LoaderManager
-        loaderManager.initLoader(LOADER_ID++, null, this)
+        loaderManager.initLoader( LOADER_ID ++, null, this)
 
         onViewCreated(dialog.customView!!, savedInstanceState)
         return dialog
@@ -120,8 +128,9 @@ class PlayActivityDialogFragment: BaseDialogFragment(), LoaderManager.LoaderCall
 
     override fun onPlayListChanged(name: String) {
         super.onPlayListChanged(name)
+        Timber.tag(Tag.queueDatabase).v("广播通知列表发生改变 那个表%s %s", name,LOADER_ID)
         if (name == PlayQueue.TABLE_MAME) {
-            if (hasPermission) {
+            if (true) {
                 loaderManager.restartLoader(LOADER_ID, null, this)
             } else {
                 adapter.setDataList(null)

@@ -9,6 +9,7 @@ import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.bindToService
 import com.example.yuehaoting.util.BroadcastUtil
+import com.example.yuehaoting.util.MusicConstant.EXTRA_PLAYLIST
 import com.example.yuehaoting.util.MusicConstant.MEDIA_STORE_CHANGE
 import com.example.yuehaoting.util.MusicConstant.PERMISSION_CHANGE
 import com.example.yuehaoting.util.MusicConstant.PLAYLIST_CHANGE
@@ -126,7 +127,9 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
 
     //播放列表变化
     override fun onPlayListChanged(name: String) {
-        TODO("Not yet implemented")
+        for (listener in serviceEventListeners){
+            listener.onPlayListChanged(name)
+        }
     }
 
     //播放状态变化
@@ -185,6 +188,10 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
                         Timber.v("isPlay是否播放   播放回调: %s 当前活动 %s ", action,TAG)
                     }
                     PLAY_DATA_CHANGES -> activity.onMetaChanged()
+
+                    PLAYLIST_CHANGE->{
+                        msg.data.getString(EXTRA_PLAYLIST)?.let { activity.onPlayListChanged(it) }
+                    }
                 }
             }
         }

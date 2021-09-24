@@ -25,27 +25,25 @@
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
     <loaded-nodes>
-      <connection connection-id="cfaf245f-4a0b-4271-b1d6-d87a6cbe29a0">
+      <connection connection-id="1c1f844d-299b-46c8-9d38-17813d7bfb5a">
         <schema name="main" object-types="table, view, constraint, index, column, dataset trigger" />
       </connection>
     </loaded-nodes>
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
-    <connection id="cfaf245f-4a0b-4271-b1d6-d87a6cbe29a0">
+    <connection id="1c1f844d-299b-46c8-9d38-17813d7bfb5a">
       <console name="Connection" type="STANDARD" schema="main" session="Main" />
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files>
-      <object connection-id="cfaf245f-4a0b-4271-b1d6-d87a6cbe29a0" object-ref="schemas/main/tables/PlayQueue" />
-    </open-files>
+    <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
-    <connection id="cfaf245f-4a0b-4271-b1d6-d87a6cbe29a0" />
+    <connection id="1c1f844d-299b-46c8-9d38-17813d7bfb5a" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
-    <filter-actions connection-id="cfaf245f-4a0b-4271-b1d6-d87a6cbe29a0" dataset="main.PlayQueue" active-filter-id="">
-      <filter id="44c48c1b-53b8-4467-90ba-835aaa0f974e" name="Filter 1" temporary="false" custom-name="false" type="basic" join-type="AND">
+    <filter-actions connection-id="1c1f844d-299b-46c8-9d38-17813d7bfb5a" dataset="main.PlayQueue" active-filter-id="">
+      <filter id="6792565a-644e-4b8d-8b97-7c20d2216d2a" name="Filter 1" temporary="false" custom-name="false" type="basic" join-type="AND">
         <condition column="id" operator="=" value="" active="true" />
       </filter>
     </filter-actions>
@@ -76,7 +74,7 @@
   </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
-      <connection id="cfaf245f-4a0b-4271-b1d6-d87a6cbe29a0" active="true">
+      <connection id="1c1f844d-299b-46c8-9d38-17813d7bfb5a" active="true">
         <database>
           <name value="Connection" />
           <description value="" />
