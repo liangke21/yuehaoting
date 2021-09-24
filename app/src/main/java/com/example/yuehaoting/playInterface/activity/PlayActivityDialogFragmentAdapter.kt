@@ -18,6 +18,8 @@ import com.example.yuehaoting.util.BroadcastUtil.sendLocalBroadcast
 import com.example.yuehaoting.util.IntentUtil.makeCodIntent
 import com.example.yuehaoting.util.MusicConstant.NEXT
 import com.example.yuehaoting.playInterface.activity.PlayActivityDialogFragmentAdapter.PlayQueueHolder
+import com.example.yuehaoting.util.Tag
+import timber.log.Timber
 
 /**
  * Created by Remix on 2015/12/2.
@@ -43,6 +45,8 @@ class PlayActivityDialogFragmentAdapter(layoutId: Int) : BaseAdapter<SongLists, 
         //设置歌曲与艺术家
         holder.binding.tvPlayDialogFragmentRecyclerViewA.text = data.SongName
         holder.binding.tvPlayDialogFragmentRecyclerViewB.text = " - ${data.SingerName}"
+
+        Timber.tag(Tag.queueDatabase).v("当前歌曲id %s 本地数据库id %s",getCurrentSong().id, data.id)
         //高亮
         if (getCurrentSong().id == data.id) {
             // holder.binding.tvPlayDialogFragmentRecyclerViewB.setTextColor(accentColor)

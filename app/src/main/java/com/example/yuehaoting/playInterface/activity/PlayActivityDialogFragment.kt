@@ -123,6 +123,7 @@ class PlayActivityDialogFragment: BaseDialogFragment(), LoaderManager.LoaderCall
 
     override fun onMetaChanged() {
         super.onMetaChanged()
+        Timber.tag("列表发生变化").v("广播通知列表发生改变 那个表%s %s")
         adapter.notifyDataSetChanged()
     }
 

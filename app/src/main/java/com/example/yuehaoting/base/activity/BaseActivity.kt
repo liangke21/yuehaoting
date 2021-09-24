@@ -141,7 +141,7 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
    //播放数据改变
     override fun onMetaChanged() {
     for (listener in serviceEventListeners){
-        listener.onPlayStateChange()
+        listener.onMetaChanged()
     }
     }
 
