@@ -1,5 +1,6 @@
 package com.example.yuehaoting.base.db
 
+import android.util.Log
 import com.example.yuehaoting.App
 import com.example.yuehaoting.base.db.model.PlayQueue
 import com.example.yuehaoting.base.log.LogT.lll
@@ -18,26 +19,39 @@ import kotlin.collections.ArrayList
  * 时间: 2021/9/23 9:01
  * 描述:
  */
-class DatabaseRepository() {
+ class DatabaseRepository {
     private val db = AppDataBase.getInstance(App.context.applicationContext)
 
     /**
      * 获取播放队列
      */
-    private fun getPlayQueue(): Single<List<Long>> {
+    private fun getPlayQueue(): Single<List<SongLists>> {
+
         return Single
             .fromCallable {
-                db.playQueueDao().selectAll()
+        db.playQueueDao().selectAll()
                     .map {
-                        it.audioId
+                        SongLists(
+                            it.audioId,
+                            it.SongName,
+                            it.SingerName,
+                            it.FileHash,
+                            it.mixSongID,
+                            it.lyrics,
+                            it.album,
+                            it.pic,
+                            it.platform
+                        )
+
                     }
+
             }
     }
 
     /**
      * 插入多首歌曲到播放队列
      */
-    fun insertToPlayQueue(audioIds: List<Long>): Single<Int> {
+    fun insertToPlayQueue(audioIds: List<SongLists>): Single<Int> {
 
         val actual = audioIds.toMutableList()
         return getPlayQueue()
@@ -45,6 +59,7 @@ class DatabaseRepository() {
                 //不重复添加
                 actual.removeAll(it)
                 Timber.tag(Tag.queueDatabase).v("插入的数据  id %s %s", actual.toString(), lll())
+
                 db.playQueueDao().insertPlayQueue(convertAudioIdsToPlayQueues(actual))
 
                 actual.size
@@ -56,11 +71,11 @@ class DatabaseRepository() {
      * @param audioIds List<Long>
      * @return List<PlayQueue>
      */
-    private fun convertAudioIdsToPlayQueues(audioIds: List<Long>): List<PlayQueue> {
+    private fun convertAudioIdsToPlayQueues(songLists: List<SongLists>): List<PlayQueue> {
 
         val playQueues = ArrayList<PlayQueue>()
-        for (audioId in audioIds) {
-            playQueues.add(PlayQueue(0, audioId))
+        for (it in songLists) {
+            playQueues.add(PlayQueue(0, it.id,it.SongName,it.SingerName,it.FileHash,it.mixSongID,it.lyrics,it.album,it.pic,it.platform))
         }
         return playQueues
 
@@ -71,12 +86,23 @@ class DatabaseRepository() {
      */
 
     fun getPlayQueueSongs(): Single<List<SongLists>> {
-        val idsInQueue = ArrayList<Long>()
+        val idsInQueue = ArrayList<PlayQueue>()
 
         return Single.fromCallable {
+            Timber.tag(Tag.queueDatabase).v("获取本地数据库数据 fromCallable %s ", lll())
             db.playQueueDao().selectAll().map {
-                Timber.tag(Tag.queueDatabase).v("获取本地数据库数据 fromCallable %s %s", it, lll())
-                it.audioId
+              /*  SongLists(
+                    it.audioId,
+                    it.SongName,
+                    it.SingerName,
+                    it.FileHash,
+                    it.mixSongID,
+                    it.lyrics,
+                    it.album,
+                    it.pic,
+                    it.platform
+                )*/
+                it
             }
         }
             .doOnSuccess {
@@ -89,21 +115,6 @@ class DatabaseRepository() {
             }
             .doOnSuccess {
                 Timber.tag(Tag.queueDatabase).v("获取本地数据库数据 flatMap %s %s", it, lll())
-                /*   //删除不存在的歌曲
-                   if (songs.size < idsInQueue.size) {
-                       Timber.v("删除播放队列中不存在的歌曲 %s", songs.size)
-                       val deleteIds = ArrayList<Long>()
-                       val existIds = songs.map { it.id }
-
-                       for (audioId in idsInQueue) {
-                           if (!existIds.contains(audioId)) {
-                               deleteIds.add(audioId)
-                           }
-                       }
-   */
-                 /*   if (deleteIds.isNotEmpty()) {
-                        //deleteFromPlayQueueInternal(deleteIds)
-                    }*/
 
                 }
             }
@@ -161,54 +172,29 @@ class DatabaseRepository() {
      * @param ids List<Long>
      * @return Single<List<SongLists>>
      */
-    private fun getSongsWithSort(ids: List<Long>): Single<List<SongLists>> {
-        val list=ArrayList<SongLists>()
+    private fun getSongsWithSort(ids: List<PlayQueue>): Single<List<SongLists>> {
+        val list = ArrayList<SongLists>()
         return Single
             .fromCallable {
-                if (ids.isEmpty()) {
-                    return@fromCallable Collections.emptyList<SongLists>()
-                }
 
-                val tempArray = Array(ids.size) { SongLists.SONG_LIST }
-
-                tempArray
-                    .filter { it.id != SongLists.SONG_LIST.id }
-                for(i in ids){
-                    list.add(
-                        SongLists(
-                            id = i,
-                            SongName= "listFilename[1]",
-                            SingerName="listFilename[0]",
-                            FileHash="hash!!",
-                            mixSongID="album_audio_id.toString()",
-                            lyrics = "",
-                            album = "",
-                            pic = "picUrl!!",
-                            platform = 0
-                        )
+                ids.map {
+                    SongLists(
+                        it.audioId,
+                        it.SongName,
+                        it.SingerName,
+                        it.FileHash,
+                        it.mixSongID,
+                        it.lyrics,
+                        it.album,
+                        it.pic,
+                        it.platform
                     )
                 }
-                list
             }
     }
 
-    /**
-     * 字符生成器
-     * @param audioIds List<Long>
-     * @return String
-     */
-    private fun makeInStr(audioIds: List<Long>): String {
-        val inStrBuilder = StringBuilder(127)
-
-        for (i in audioIds.indices) {
-            inStrBuilder.append(audioIds[i]).append(if (i != audioIds.size - 1) "," else " ")
-        }
-
-        return inStrBuilder.toString()
-    }
 
     companion object {
-        private const val CUSTOMSORT = "CUSTOMSORT"
 
         @Volatile
         private var INSTANCE: DatabaseRepository? = null

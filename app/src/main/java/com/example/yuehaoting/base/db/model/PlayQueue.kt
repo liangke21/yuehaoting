@@ -13,7 +13,15 @@ import androidx.room.PrimaryKey
 class PlayQueue(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
-    val audioId: Long
+    val audioId: Long,
+    var SongName:String,
+    var SingerName:String,
+    var FileHash:String,
+    var mixSongID: String,
+    var lyrics:String,
+    val album:String,
+    val pic:String,
+    var platform:Int
 ){
     companion object{
         const val TABLE_MAME="PlayQueue"

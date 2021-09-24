@@ -28,7 +28,7 @@ abstract class AppDataBase : RoomDatabase() {
     abstract fun playQueueDao(): PlayQueueDao
 
     companion object {
-        const val VERSION = 1
+        const val VERSION = 2
 
         @Volatile
         private var INSTANCE: AppDataBase? = null
@@ -44,14 +44,14 @@ abstract class AppDataBase : RoomDatabase() {
 
 
         private fun buildDatabase(context: Context): AppDataBase {
-            val migration1to3 = object : Migration(1, 1) { //版本迁移
+            val migration1to3 = object : Migration(1, 2) { //版本迁移
                 override fun migrate(database: SupportSQLiteDatabase) {
 
                 }
             }
 
             val database = Room.databaseBuilder(context.applicationContext, AppDataBase::class.java, "yuehaoting.db")
-                //.addMigrations(migration1to3)
+               // .addMigrations(migration1to3)
                 .build()
 
             database.invalidationTracker.addObserver(object : InvalidationTracker.Observer(PlayQueue.TABLE_MAME) {

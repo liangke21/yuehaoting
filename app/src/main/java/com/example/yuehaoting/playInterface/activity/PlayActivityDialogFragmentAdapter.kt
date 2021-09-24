@@ -1,5 +1,6 @@
 package com.example.yuehaoting.playInterface.activity
 
+import android.annotation.SuppressLint
 import android.view.View
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.db.DatabaseRepository.Companion.getInstance
@@ -26,6 +27,7 @@ class PlayActivityDialogFragmentAdapter(layoutId: Int) : BaseAdapter<SongLists, 
   private val accentColor: Int = ThemeStore.accentColor
   private val textColor: Int = textColorPrimary
 
+  @SuppressLint("SetTextI18n")
   override fun convert(holder: PlayQueueHolder, data: SongLists?, position: Int) {
     if (data == null) {
       return
@@ -38,13 +40,13 @@ class PlayActivityDialogFragmentAdapter(layoutId: Int) : BaseAdapter<SongLists, 
     }
     //设置歌曲与艺术家
     holder.binding.tvPlayDialogFragmentRecyclerViewA.text = data.SongName
-    holder.binding.tvPlayDialogFragmentRecyclerViewB.text = data.SingerName
+    holder.binding.tvPlayDialogFragmentRecyclerViewB.text = " - ${data.SingerName}"
     //高亮
     if (getCurrentSong().id == data.id) {
-      holder.binding.tvPlayDialogFragmentRecyclerViewA.setTextColor(accentColor)
+      holder.binding.tvPlayDialogFragmentRecyclerViewA.setTextColor(textColor)
     } else {
 //                holder.mSong.setTextColor(Color.parseColor(ThemeStore.isDay() ? "#323335" : "#ffffff"));
-      holder.binding.tvPlayDialogFragmentRecyclerViewA.setTextColor(textColor)
+      holder.binding.tvPlayDialogFragmentRecyclerViewA.setTextColor(accentColor)
     }
     //删除按钮
     holder.binding.ivPlayDialogFragmentRecyclerView.setOnClickListener { v: View? ->

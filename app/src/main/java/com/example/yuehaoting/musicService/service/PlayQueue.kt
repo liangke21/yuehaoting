@@ -1,5 +1,6 @@
 package com.example.yuehaoting.musicService.service
 
+import android.util.Log
 import com.example.yuehaoting.base.db.DatabaseRepository
 import com.example.yuehaoting.base.log.LogT.lll
 import com.example.yuehaoting.base.rxJava.LogObserver
@@ -127,10 +128,7 @@ class PlayQueue {
     private fun saveQueue() {
         repository.clearPlayQueue()
             .flatMap {
-                repository.insertToPlayQueue(_originalQueue.map {
-                    Timber.tag(queueDatabase).v("需要插入的数据  id %s %s",it.id.toString() ,lll())
-                    it.id
-                })
+                repository.insertToPlayQueue(_originalQueue)
             }
             .compose(RxUtil.applySingleScheduler())
             .subscribe(LogObserver())
