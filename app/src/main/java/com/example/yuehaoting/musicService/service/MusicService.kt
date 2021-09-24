@@ -1,5 +1,6 @@
 package com.example.yuehaoting.musicService.service
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -13,9 +14,12 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.media.AudioAttributesCompat
 import com.example.yuehaoting.R
+import com.example.yuehaoting.base.db.DatabaseRepository
 import com.example.yuehaoting.base.log.LogT
 import com.example.yuehaoting.base.log.LogT.lll
+import com.example.yuehaoting.base.rxJava.RxUtil.applySingleScheduler
 import com.example.yuehaoting.base.sevice.SmService
+import com.example.yuehaoting.callback.MusicEvenCallback
 import com.example.yuehaoting.util.Constants.MODE_LOOP
 import com.example.yuehaoting.util.Constants.MODE_SHUFFLE
 import com.example.yuehaoting.data.kugousingle.SongLists
@@ -29,14 +33,17 @@ import com.example.yuehaoting.util.MusicConstant.NEXT
 import com.example.yuehaoting.util.MusicConstant.PAUSE_PLAYBACK
 import com.example.yuehaoting.util.MusicConstant.PREV
 import com.example.yuehaoting.util.BroadcastUtil
+import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.MusicConstant.ACTION_CMD
 import com.example.yuehaoting.util.MusicConstant.EXTRA_CONTROL
+import com.example.yuehaoting.util.MusicConstant.EXTRA_PLAYLIST
 import com.example.yuehaoting.util.MusicConstant.EXTRA_POSITION
 import com.example.yuehaoting.util.MusicConstant.EXTRA_SHUFFLE
 import com.example.yuehaoting.util.MusicConstant.HIF_INI
 import com.example.yuehaoting.util.Tag.play
 import com.example.yuehaoting.util.MusicConstant.KU_GOU
 import com.example.yuehaoting.util.MusicConstant.NEW_SONG_KU_GOU
+import com.example.yuehaoting.util.MusicConstant.PLAYLIST_CHANGE
 import com.example.yuehaoting.util.MusicConstant.PLAY_SELECTED_SONG
 import com.example.yuehaoting.util.MusicConstant.UPDATE_META_DATA
 import com.example.yuehaoting.util.MusicConstant.UPDATE_PLAY_STATE
@@ -50,7 +57,7 @@ import java.lang.Exception
  * 时间: 2021/6/7 13:04
  * 描述:
  */
-class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
+class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by MainScope() {
 
     /**
      * 播放列队
@@ -110,6 +117,10 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
      */
     private val controlReceiver: ControlReceiver by lazy {
         ControlReceiver()
+    }
+
+    private val musicEventReceiver:MusicEventReceiver by lazy{
+        MusicEventReceiver()
     }
     /**
      * 当前是否在播放
@@ -191,6 +202,12 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
     }
 //_______________________________________||______________________________________________________________________________________________________
     private fun setUp() {
+
+    //初始化Receiver
+    val eventFilter = IntentFilter()
+    eventFilter.addAction(PLAYLIST_CHANGE)
+    BroadcastUtil.registerLocalReceiver(musicEventReceiver, eventFilter)
+
     BroadcastUtil.registerLocalReceiver(controlReceiver, IntentFilter(ACTION_CMD))
         setUpPlayer()
     }
@@ -421,6 +438,90 @@ class MusicService : SmService(), Playback, CoroutineScope by MainScope() {
         }
 
 
+    }
+
+    /**
+     * 音乐事件
+     */
+    inner class MusicEventReceiver :BroadcastReceiver(){
+    override fun onReceive(context: Context?, intent: Intent?) {
+        handleMusicEvent(intent)
+    }
+}
+
+    private fun handleMusicEvent(intent: Intent?){
+        if (intent==null){
+            return
+        }
+        when(intent.action){
+           PLAYLIST_CHANGE ->{
+               intent.getStringExtra(EXTRA_PLAYLIST)?.let { onPlayListChanged(it) }
+           }
+        }
+    }
+
+    override fun onMediaStoreChanged() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onPermissionChanged(has: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     * 数据库
+     */
+ val repository= DatabaseRepository.getInstance()
+
+    /**
+     * 列表发生改变
+     * @param name String
+     */
+    @SuppressLint("CheckResult")
+    override fun onPlayListChanged(name: String) {
+         repository.getPlayQueueSongs()
+             .compose(applySingleScheduler())
+             .subscribe { songs ->
+                 if (songs.isEmpty() || songs == playQueue.originalQueue){
+                     Timber.tag("忽略onPlayListChanged")
+                     return@subscribe
+                 }
+                 Timber.v("新的播放队列: ${songs.size}")
+
+                 playQueue.setPlayQueue(songs)
+
+                 //todo 随机播放
+                 /**
+                  * 如果下一首歌曲不在队列里面 重新设置下一首歌曲
+                  * 此处逻辑 目前 是用于 播放列队 删除歌曲 与后台列队同步.在同步的同时,下一首歌已经在内存中,
+                  * 所以要调用一次 更新下一首 来跳过这个首被删除的歌,
+                  * 主要逻辑是,列队删除的是下一首歌
+                  */
+                 if (!playQueue.playingQueue.contains(playQueue.nextSong)) {
+                     Timber.v("播放队列改变后重新设置下一首歌曲")
+                     playQueue.updateNextSong()
+                 }
+             }
+    }
+
+    override fun onServiceConnected(service: MusicService) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMetaChanged() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onPlayStateChange() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onServiceDisConnected() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onTagChanged(oldSong: SongLists, newSongLists: SongLists) {
+        TODO("Not yet implemented")
     }
 
     /**

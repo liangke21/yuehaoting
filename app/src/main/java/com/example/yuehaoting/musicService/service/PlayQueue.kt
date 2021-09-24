@@ -7,6 +7,7 @@ import com.example.yuehaoting.base.rxJava.LogObserver
 import com.example.yuehaoting.base.rxJava.RxUtil
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.data.kugousingle.SongLists.Companion.SONG_LIST
+import com.example.yuehaoting.data.musicQQ.QQSongList
 import com.example.yuehaoting.util.Tag.queueDatabase
 import timber.log.Timber
 
@@ -38,7 +39,10 @@ class PlayQueue {
      * 下一首播放位置
      */
     private var nextPosition = 0
-
+    // 当前播放队列
+    private val _playingQueue = ArrayList<SongLists>()
+    val playingQueue: List<SongLists>
+        get() = _playingQueue
 
     private val _originalQueue = ArrayList<SongLists>()
 
@@ -51,10 +55,17 @@ class PlayQueue {
     fun setPlayQueue(song: List<SongLists>) {
         _originalQueue.clear()
         _originalQueue.addAll(song)
-
+     //   makeNormalList()
         saveQueue()
     }
-
+    private fun makeNormalList() {
+        if (_originalQueue.isEmpty()) {
+            return
+        }
+        _playingQueue.clear()
+        _playingQueue.addAll(_originalQueue)
+        Timber.v("makeNormalList, queue: ${_playingQueue.size}")
+    }
     /**
      * 播放位置
      */
@@ -79,8 +90,6 @@ class PlayQueue {
         position = nextPosition
         song = nextSong.copy()
         updateNextSong()
-
-
     }
 
     /**
