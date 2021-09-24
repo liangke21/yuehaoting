@@ -10,6 +10,8 @@ import com.example.yuehaoting.base.rxJava.RxUtil
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.databinding.PlayDialogFragmentItemBinding
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.getCurrentSong
+import com.example.yuehaoting.musicService.service.MusicServiceRemote.getDuration
+import com.example.yuehaoting.musicService.service.MusicServiceRemote.getProgress
 import com.example.yuehaoting.theme.ThemeStore
 import com.example.yuehaoting.theme.ThemeStore.textColorPrimary
 import com.example.yuehaoting.util.BroadcastUtil.sendLocalBroadcast
@@ -43,13 +45,20 @@ class PlayActivityDialogFragmentAdapter(layoutId: Int) : BaseAdapter<SongLists, 
     holder.binding.tvPlayDialogFragmentRecyclerViewB.text = " - ${data.SingerName}"
     //高亮
     if (getCurrentSong().id == data.id) {
+     // holder.binding.tvPlayDialogFragmentRecyclerViewB.setTextColor(accentColor)
       holder.binding.tvPlayDialogFragmentRecyclerViewA.setTextColor(textColor)
+      holder.binding.lottie.visibility=View.VISIBLE
+     // holder.binding.lottie.loop(true)
+      holder.binding.lottie.repeatCount = getDuration() - getProgress()
+      holder.binding.lottie.playAnimation()
     } else {
 //                holder.mSong.setTextColor(Color.parseColor(ThemeStore.isDay() ? "#323335" : "#ffffff"));
-      holder.binding.tvPlayDialogFragmentRecyclerViewA.setTextColor(accentColor)
+      holder.binding.tvPlayDialogFragmentRecyclerViewA.setTextColor(textColor)
+      holder.binding.lottie.visibility=View.GONE
+      //holder.binding.lottie.pauseAnimation()
     }
     //删除按钮
-    holder.binding.ivPlayDialogFragmentRecyclerView.setOnClickListener { v: View? ->
+    holder.binding.ivPlayDialogFragmentRecyclerView.setOnClickListener {
       getInstance()
           .deleteFromPlayQueue(listOf(data.id))
           .compose(RxUtil.applySingleScheduler())

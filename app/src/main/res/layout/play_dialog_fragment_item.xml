@@ -3,7 +3,8 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_marginTop="10dp"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_marginTop="20dp"
   android:layout_marginStart="25dp"
   android:layout_marginEnd="25dp"
   android:layout_height="wrap_content"
@@ -33,12 +34,21 @@
 
 
 </LinearLayout>
+
   <ImageView
     android:id="@+id/iv_play_dialog_fragment_recyclerView"
     android:layout_width="20dp"
     android:layout_height="20dp"
-    android:layout_marginStart="170dp"
     android:src="@drawable/play_dialog_fragment"
-    android:layout_alignParentRight="true"
+    android:layout_alignParentEnd="true"
     tools:ignore="MissingConstraints"/>
+
+  <com.airbnb.lottie.LottieAnimationView
+    android:id="@+id/lottie"
+    android:layout_width="20dp"
+    android:layout_height="20dp"
+    android:layout_marginEnd="14dp"
+    android:layout_toStartOf="@+id/iv_play_dialog_fragment_recyclerView"
+    app:lottie_fileName="music-play.json"
+    android:visibility="gone"/>
 </RelativeLayout>
