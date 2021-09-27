@@ -8,7 +8,9 @@ import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.data.kugousingle.SongLists.Companion.SONG_LIST
 import com.example.yuehaoting.util.Constants.MODE_SHUFFLE
 import com.example.yuehaoting.util.MusicConstant
+import com.example.yuehaoting.util.MusicConstant.LIST_LOOP
 import com.example.yuehaoting.util.MusicConstant.RANDOM_PATTERN
+import com.example.yuehaoting.util.MusicConstant.SINGLE_CYCLE
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -69,14 +71,31 @@ class PlayQueue(service: MusicService) {
         val service = service.get() ?: return
 
         synchronized(this) {
-          if (service.playModel == RANDOM_PATTERN){
-              makeShuffleList()
-          }else{
-              makeNormalList()
-          }
+            when(service.playModel){
+                RANDOM_PATTERN->makeShuffleList()
+                LIST_LOOP-> makeNormalList()
+                SINGLE_CYCLE-> repeatPlayList()
+
+            }
         }
     }
 
+    /**
+     * 重复播放
+     */
+   private fun repeatPlayList(){
+       if (_originalOriginalQueue.isEmpty()){
+           return
+       }
+
+       _playingQueue.clear()
+       _playingQueue.addAll(_originalOriginalQueue)
+
+        var newPosition = _originalOriginalQueue.indexOf(song)
+        if (newPosition>=0){
+            position =newPosition-1
+        }
+   }
     /**
      * 随机模式
      */

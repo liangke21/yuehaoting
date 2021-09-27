@@ -397,23 +397,26 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
         val intent = Intent(ACTION_CMD)
         when (v.id) {
             binding.layoutPlayLayout.ibPlayPlayMode.id -> {
-            var currentModel = getPlayModel()
+                var currentModel = getPlayModel()
 
-            Timber.v("播放模式 %s",currentModel)
+                Timber.v("播放模式 %s", currentModel)
 
 
-                currentModel = if (currentModel== SINGLE_CYCLE) LIST_LOOP else ++currentModel
+                currentModel = if (currentModel == SINGLE_CYCLE) LIST_LOOP else ++currentModel
                 setPlayModel(currentModel)
-                binding.layoutPlayLayout.ibPlayPlayMode.setImageDrawable(Theme.tintDrawable(when(currentModel){
-                    LIST_LOOP -> R.drawable.play_btn_loop
-                    RANDOM_PATTERN  -> R.drawable.play_btn_shuffle
-                    else -> R.drawable.play_btn_loop_one
-                },ThemeStore.playerBtnColor))
+                binding.layoutPlayLayout.ibPlayPlayMode.setImageDrawable(
+                    Theme.tintDrawable(
+                        when (currentModel) {
+                            LIST_LOOP -> R.drawable.play_btn_loop
+                            RANDOM_PATTERN -> R.drawable.play_btn_shuffle
+                            else -> R.drawable.play_btn_loop_one
+                        }, ThemeStore.playerBtnColor
+                    )
+                )
 
-               val msg =if (currentModel == LIST_LOOP) getString(R.string.model_normal) else if(currentModel ==   RANDOM_PATTERN ) getString(R.string.model_random) else getString(R.string.model_random)
+                val msg = if (currentModel == LIST_LOOP) getString(R.string.model_normal) else if (currentModel == RANDOM_PATTERN) getString(R.string.model_random) else getString(R.string.model_repeat)
 
-               msg.showToast(this)
-
+                msg.showToast(this)
             }
             binding.layoutPlayLayout.ibPlayPreviousSong.id -> {
                 intent.putExtra(EXTRA_CONTROL, PREV)

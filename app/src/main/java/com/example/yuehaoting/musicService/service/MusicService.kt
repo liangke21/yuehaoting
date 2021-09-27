@@ -510,8 +510,14 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
 
             mediaPlayer.seekTo(0)
             play(false)
-        }
 
+        }
+        //播放完成
+     mediaPlayer.setOnCompletionListener{
+        val intent= Intent((ACTION_CMD))
+         intent.putExtra(EXTRA_CONTROL, NEXT)
+         BroadcastUtil.sendLocalBroadcast(intent)
+     }
 
         //错误监听
         mediaPlayer.setOnErrorListener { _, what, extra ->
