@@ -132,6 +132,7 @@ dependencies {
     implementation 'com.tencent.bugly:crashreport:3.3.3'
     //materialDialog
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
-
+    //json 动画
     implementation 'com.airbnb.android:lottie:4.1.0'
+
 }

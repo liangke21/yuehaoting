@@ -29,4 +29,7 @@
   <string name="model_random">Shuffle</string>
   <string name="model_repeat">Repeat</string>
   <string name="model_normal">Loop</string>
+
+  <string name="no_lrc">No lyric</string>
+  <string name="searching">Searching</string>
 </resources>

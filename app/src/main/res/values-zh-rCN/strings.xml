@@ -20,4 +20,6 @@
   <string name="model_repeat">单曲播放</string>
   <string name="model_normal">顺序播放</string>
 
+  <string name="no_lrc">暂无歌词</string>
+  <string name="searching">正在搜索</string>
 </resources>

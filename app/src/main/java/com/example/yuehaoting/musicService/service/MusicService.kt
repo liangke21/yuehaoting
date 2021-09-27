@@ -47,6 +47,7 @@ import com.example.yuehaoting.util.MusicConstant.NEW_SONG_KU_GOU
 import com.example.yuehaoting.util.MusicConstant.PLAYLIST_CHANGE
 import com.example.yuehaoting.util.MusicConstant.PLAY_SELECTED_SONG
 import com.example.yuehaoting.util.MusicConstant.RANDOM_PATTERN
+import com.example.yuehaoting.util.MusicConstant.SINGLE_CYCLE
 import com.example.yuehaoting.util.MusicConstant.UPDATE_META_DATA
 import com.example.yuehaoting.util.MusicConstant.UPDATE_PLAY_STATE
 import com.example.yuehaoting.util.Tag
@@ -513,11 +514,16 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
 
         }
         //播放完成
-     mediaPlayer.setOnCompletionListener{
-        val intent= Intent((ACTION_CMD))
-         intent.putExtra(EXTRA_CONTROL, NEXT)
-         BroadcastUtil.sendLocalBroadcast(intent)
-     }
+        mediaPlayer.setOnCompletionListener {
+
+            if (playModel==SINGLE_CYCLE){
+                mediaPlayer.start()
+                mediaPlayer.isLooping = true
+            }
+            val intent= Intent((ACTION_CMD))
+            intent.putExtra(EXTRA_CONTROL, NEXT)
+            BroadcastUtil.sendLocalBroadcast(intent)
+        }
 
         //错误监听
         mediaPlayer.setOnErrorListener { _, what, extra ->
