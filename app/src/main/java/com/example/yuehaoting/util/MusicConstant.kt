@@ -60,10 +60,10 @@ object MusicConstant {
      * 如 播放选定歌曲 上一首 下一首
      */
     const val EXTRA_CONTROL = "Control"
-    //播放模式
+    //额外播放模式
     const val PLAY_MODEL = "play_model"
 
-    //随机播放
+    //额外随机播放
     const val EXTRA_SHUFFLE = "shuffle"
 
     /**

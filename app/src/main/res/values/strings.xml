@@ -25,4 +25,8 @@
   <string name="title_my" >my</string>
 
   <string name="play_queue">Playing queue(%d)</string>
+<!--播放模式-->
+  <string name="model_random">Shuffle</string>
+  <string name="model_repeat">Repeat</string>
+  <string name="model_normal">Loop</string>
 </resources>

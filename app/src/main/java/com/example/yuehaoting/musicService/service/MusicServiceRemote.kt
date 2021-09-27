@@ -5,6 +5,7 @@ import android.content.*
 import android.os.IBinder
 import com.example.yuehaoting.base.log.LogT
 import com.example.yuehaoting.data.kugousingle.SongLists
+import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.Tag
 import timber.log.Timber
 import java.util.*
@@ -126,6 +127,18 @@ object MusicServiceRemote {
     @JvmStatic
     fun setProgress(progress: Int) {
          service?.setProgressL(progress)
+    }
+    /**
+     * 设置播放模式
+     */
+    fun setPlayModel(model: Int){
+        service?.playModel=model
+    }
+    /**
+     * 获取播放模式
+     */
+    fun  getPlayModel():Int{
+        return service?.playModel?: MusicConstant.LIST_LOOP
     }
 }
 

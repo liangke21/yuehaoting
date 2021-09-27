@@ -56,6 +56,7 @@ class PlayActivityColor(private val binding: PlayActivityBinding,private val act
         val playMode = getSp(activity, MusicConstant.NAME) {
             getInt(MusicConstant.PLAY_MODEL, MusicConstant.LIST_LOOP)
         }
+        Timber.v("播放模式Color %s",playMode)
         Theme.tintDrawable(
             binding.layoutPlayLayout.ibPlayPlayMode,
             if (playMode == MusicConstant.LIST_LOOP) R.drawable.play_btn_loop else if (playMode == MusicConstant.RANDOM_PATTERN) R.drawable.play_btn_shuffle else R.drawable.play_btn_loop_one,
@@ -106,15 +107,6 @@ class PlayActivityColor(private val binding: PlayActivityBinding,private val act
         }
 
         updateSeeKBarColor(ColorUtil.adjustAlpha(swatch.rgb, 0.5f))
-        //播放模式
-        val playMode = getSp(activity, MusicConstant.NAME) {
-            getInt(MusicConstant.PLAY_MODEL, MusicConstant.LIST_LOOP)
-        }
-        Theme.tintDrawable(
-            binding.layoutPlayLayout.ibPlayPlayMode,
-            if (playMode == MusicConstant.LIST_LOOP) R.drawable.play_btn_loop else if (playMode == MusicConstant.RANDOM_PATTERN) R.drawable.play_btn_shuffle else R.drawable.play_btn_loop_one,
-            -1
-        )
 
         //播放列队
         Theme.tintDrawable(binding.layoutPlayLayout.ibMusicList, R.drawable.play_btn_normal_list, -1)

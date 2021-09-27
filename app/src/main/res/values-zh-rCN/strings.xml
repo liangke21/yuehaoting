@@ -15,4 +15,9 @@
   <string name="title_list" >榜单</string>
   <string name="title_my" >我的</string>
   <string name="play_queue">播放列队(%d)</string>
+  <!--播放模式-->
+  <string name="model_random">随机播放</string>
+  <string name="model_repeat">单曲播放</string>
+  <string name="model_normal">顺序播放</string>
+
 </resources>

@@ -30,8 +30,10 @@ import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.getCurrentSong
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.getDuration
+import com.example.yuehaoting.musicService.service.MusicServiceRemote.getPlayModel
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.getProgress
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.isPlaying
+import com.example.yuehaoting.musicService.service.MusicServiceRemote.setPlayModel
 import com.example.yuehaoting.playInterface.activity.PlayActivityDialogFragment.Companion.newInstance
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.handlerRemoveCallbacks
 import com.example.yuehaoting.playInterface.activity.SingerPhoto.photoCycle
@@ -39,21 +41,24 @@ import com.example.yuehaoting.playInterface.activity.SingerPhoto.singerPhotoUrl
 import com.example.yuehaoting.playInterface.framelayou.PlayPauseView
 import com.example.yuehaoting.playInterface.viewmodel.PlayViewModel
 import com.example.yuehaoting.theme.*
-import com.example.yuehaoting.util.BroadcastUtil
+import com.example.yuehaoting.util.*
+import com.example.yuehaoting.util.Constants.MODE_REPEAT
+import com.example.yuehaoting.util.Constants.MODE_SHUFFLE
 import com.example.yuehaoting.util.MusicConstant.ACTION_CMD
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_ADAPTIVE_COLOR
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_CUSTOM_IMAGE
 import com.example.yuehaoting.util.MusicConstant.CURRENT_SONG
 import com.example.yuehaoting.util.MusicConstant.EXTRA_CONTROL
+import com.example.yuehaoting.util.MusicConstant.LIST_LOOP
 import com.example.yuehaoting.util.MusicConstant.NAME
 import com.example.yuehaoting.util.MusicConstant.NEXT
 import com.example.yuehaoting.util.MusicConstant.PAUSE_PLAYBACK
 import com.example.yuehaoting.util.MusicConstant.PLAYER_BACKGROUND
 import com.example.yuehaoting.util.MusicConstant.PREV
+import com.example.yuehaoting.util.MusicConstant.RANDOM_PATTERN
+import com.example.yuehaoting.util.MusicConstant.SINGLE_CYCLE
 import com.example.yuehaoting.util.MusicConstant.UPDATE_TIME_ALL
 import com.example.yuehaoting.util.MusicConstant.UPDATE_TIME_ONLY
-import com.example.yuehaoting.util.MyUtil
-import com.example.yuehaoting.util.Tag
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -297,8 +302,6 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
 
         ppvPlayPause = findViewById(R.id.ppv_play_pause)
 
-        binding.layoutPlayLayout.ibPlayPlayMode.setOnClickListener(this)
-        //
         arrayOf(
             binding.layoutPlayLayout.ibPlayPlayMode,
             binding.layoutPlayLayout.ibPlayPreviousSong,
@@ -310,7 +313,6 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
         }
 
         binding.llPlayIndicator.setOnClickListener(this)
-
 
     }
 
@@ -395,6 +397,22 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
         val intent = Intent(ACTION_CMD)
         when (v.id) {
             binding.layoutPlayLayout.ibPlayPlayMode.id -> {
+            var currentModel = getPlayModel()
+
+            Timber.v("播放模式 %s",currentModel)
+
+
+                currentModel = if (currentModel== SINGLE_CYCLE) LIST_LOOP else ++currentModel
+                setPlayModel(currentModel)
+                binding.layoutPlayLayout.ibPlayPlayMode.setImageDrawable(Theme.tintDrawable(when(currentModel){
+                    LIST_LOOP -> R.drawable.play_btn_loop
+                    RANDOM_PATTERN  -> R.drawable.play_btn_shuffle
+                    else -> R.drawable.play_btn_loop_one
+                },ThemeStore.playerBtnColor))
+
+               val msg =if (currentModel == LIST_LOOP) getString(R.string.model_normal) else if(currentModel ==   RANDOM_PATTERN ) getString(R.string.model_random) else getString(R.string.model_random)
+
+               msg.showToast(this)
 
             }
             binding.layoutPlayLayout.ibPlayPreviousSong.id -> {
@@ -542,9 +560,6 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
                     receiveIntent(currentSong)
 
                 }
-            }
-            binding.layoutPlayLayout.ibPlayPlayMode.id -> {
-
             }
         }
     }

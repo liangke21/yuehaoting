@@ -64,6 +64,9 @@
       android:enabled="true"
       android:exported="true"
       android:name=".musicService.service.MusicService">
+    <intent-filter>
+      <action android:name="android.intent.action.MEDIA_BUTTON" />
+    </intent-filter>
     </service>
   </application>
   <uses-permission android:name="android.permission.INTERNET"/>
