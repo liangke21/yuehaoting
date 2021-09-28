@@ -174,9 +174,11 @@ public class LyricsReader {
         if (saveLrcFile != null)
             mLrcFilePath = saveLrcFile.getPath();
         LyricsFileReader lyricsFileReader = LyricsIOUtils.getLyricsFileReader(fileName);
-        Log.v("歌词保存路径%s",fileName);
+
+        Log.v("歌词保存路径 %s",fileName);
         LyricsInfo lyricsInfo = lyricsFileReader.readLrcText(dynamicContent, lrcContent, extraLrcContent, saveLrcFile.getPath());
         parser(lyricsInfo);
+
     }
 
 
