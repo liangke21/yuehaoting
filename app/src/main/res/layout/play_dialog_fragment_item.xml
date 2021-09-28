@@ -50,5 +50,6 @@
     android:layout_marginEnd="14dp"
     android:layout_toStartOf="@+id/iv_play_dialog_fragment_recyclerView"
     app:lottie_fileName="music-play.json"
-    android:visibility="gone"/>
+    android:visibility="gone"
+    tools:visibility="visible"/>
 </RelativeLayout>

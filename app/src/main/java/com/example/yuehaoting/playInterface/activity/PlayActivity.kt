@@ -17,6 +17,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.*
 import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.App
+import com.example.yuehaoting.App.Companion.context
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.PlayBaseActivity
 import com.example.yuehaoting.base.diskLruCache.myCache.CacheString
@@ -26,6 +27,7 @@ import com.example.yuehaoting.base.retrofit.SongNetwork
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.databinding.PlayActivityBinding
 import com.example.yuehaoting.kotlin.*
+import com.example.yuehaoting.lyrics.LyricsReader
 import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.getCurrentSong
@@ -42,8 +44,6 @@ import com.example.yuehaoting.playInterface.framelayou.PlayPauseView
 import com.example.yuehaoting.playInterface.viewmodel.PlayViewModel
 import com.example.yuehaoting.theme.*
 import com.example.yuehaoting.util.*
-import com.example.yuehaoting.util.Constants.MODE_REPEAT
-import com.example.yuehaoting.util.Constants.MODE_SHUFFLE
 import com.example.yuehaoting.util.MusicConstant.ACTION_CMD
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_ADAPTIVE_COLOR
 import com.example.yuehaoting.util.MusicConstant.BACKGROUND_CUSTOM_IMAGE
@@ -63,6 +63,7 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
+import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.properties.Delegates
@@ -165,6 +166,21 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
         updateTopStatus(currentSong)
 
         seekBarRenew()
+
+        initLyrics()
+    }
+
+    /**
+     * 歌词解析器
+     */
+    private fun initLyrics() {
+       val mLyricsReader= LyricsReader()
+        val lyrics="[00:17.87]F:共你相识三千天 我没名无姓\n[00:21.26]庆幸也与你逛过 那一段旅程\n[00:25.09]曾是日夜期待你 施舍一点同情\n[00:29.06]我对你是固执 做梦或太热情\n[00:32.94]S:在世上 是你始终不肯退后遗忘我\n[00:37.42]感激你心意 但情人比\n[00:41.13]知己分开更易 怕我爱上你坏了事\n[00:45.92]F:完了吧 如无意外\n[00:49.43]从今开始该好好恋爱\n[00:53.09]放下从前一段感情\n[00:55.69]才能追求将来 你就似没存在\n[01:00.20]S:完了吧 然而你不在\n[01:03.75]情况未像幻想般变改\n[01:07.28]告別从前总是不易\n[01:09.98]原来假如只得我在\n[01:13.11]我竟未能觅寻下一位挚爱\n[01:23.81]F:旧信息应该删走 再没留凭证\n[01:27.38]我共你去到最远 也只是友情\n[01:31.08]如现实是场玩笑 一早清楚内情\n[01:34.93]过去是勇敢 或是未肯适应\n[01:38.97]S:是我笨\n[01:40.12]大概必须先经错误才能会分清我心意\n[01:45.69]共行成长 数不清的故事\n[01:49.59]S:我已爱上你坏了事(F:我爱你你扮作不知)\n[01:52.24]F:完了吧 如无意外(S:早该放开 重有感慨)\n[01:55.85]F:从今开始该好好恋爱(S:难道我寂寞不来)\n[01:59.46]F:放下从前一段感情\n[02:02.09]F:才能追求将来 你就似没存在(S当做我没存在)\n[02:06.60]S:完了吧(F:应该放开)\n[02:08.20]S:仍能撑起来(F:纵有感慨)\n[02:10.19]S:前进便让自尊心放开(F:期望你能寻觅爱)\n[02:13.75]S:告別从前总是不易\n[02:16.46]S:然而假如不止你在(F:只得我在)\n[02:19.60]你可愿仍逗（A：再不愿盲目）合：留在这爱海\n[02:25.82]F:我与你 大概始终不能相爱\n[02:29.44]S:可否不离开 讲出你的感慨\n[02:34.73]S:你用心恋爱(F:我用心恋爱)\n[02:36.16]合:下段道路定更精彩\n[02:40.93]F:完了吧 如无意外\n[02:44.21]曾失恋的 都必須恋爱\n[02:47.80]S:悔恨从前隐瞒感情 常常猜疑将来\n[02:52.31]S:我就似没存在(F:你就似没存在)\n[02:54.96]合:完了吧 仍能撑起来\n[02:58.66]前进便让自尊心放开\n[03:02.23]F:告別从前总是不易\n[03:04.81]F:然而假如只得我在(S:然而假如不止你在)\n[03:07.97]F:我怎样来觅寻下一位挚爱 （S:你可愿停下来望清这挚爱）"
+        val file = File(context.externalCacheDir.toString() +File.separator+ "lyrics"+File.separator+"aa.lrcwy")
+        mLyricsReader.readLrcText(lyrics,file)
+       binding.ManyLyricsView.initLrcData()
+       binding.ManyLyricsView.lyricsReader = mLyricsReader
+
     }
 
     /**

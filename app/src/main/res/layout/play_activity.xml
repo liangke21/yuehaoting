@@ -47,6 +47,10 @@
             android:src="@drawable/play_activity_album"
             tools:ignore="ContentDescription"/>
 
+          <com.example.yuehaoting.lyrics.widget.ManyLyricsView
+            android:id="@+id/_ManyLyricsView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         </LinearLayout>
         <com.example.yuehaoting.playInterface.viewpager.AudioViewPager

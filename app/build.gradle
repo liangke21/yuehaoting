@@ -135,4 +135,6 @@ dependencies {
     //json 动画
     implementation 'com.airbnb.android:lottie:4.1.0'
 
+   // implementation 'com.github.zhangliangming:HPLyrics:v1.72'
+
 }
