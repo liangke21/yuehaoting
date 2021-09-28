@@ -64,6 +64,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.io.File
+import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.properties.Delegates
@@ -127,7 +128,10 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
                 Glide.with(this).asBitmap()
                     .load(R.drawable.youjing)
                     .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        override fun onResourceReady(
+                            resource: Bitmap,
+                            transition: Transition<in Bitmap>?
+                        ) {
                             binding.playerContainer.background = BitmapDrawable(resources, resource)
                         }
 
@@ -170,18 +174,6 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
         initLyrics()
     }
 
-    /**
-     * 歌词解析器
-     */
-    private fun initLyrics() {
-       val mLyricsReader= LyricsReader()
-        val lyrics="[00:17.87]F:共你相识三千天 我没名无姓\n[00:21.26]庆幸也与你逛过 那一段旅程\n[00:25.09]曾是日夜期待你 施舍一点同情\n[00:29.06]我对你是固执 做梦或太热情\n[00:32.94]S:在世上 是你始终不肯退后遗忘我\n[00:37.42]感激你心意 但情人比\n[00:41.13]知己分开更易 怕我爱上你坏了事\n[00:45.92]F:完了吧 如无意外\n[00:49.43]从今开始该好好恋爱\n[00:53.09]放下从前一段感情\n[00:55.69]才能追求将来 你就似没存在\n[01:00.20]S:完了吧 然而你不在\n[01:03.75]情况未像幻想般变改\n[01:07.28]告別从前总是不易\n[01:09.98]原来假如只得我在\n[01:13.11]我竟未能觅寻下一位挚爱\n[01:23.81]F:旧信息应该删走 再没留凭证\n[01:27.38]我共你去到最远 也只是友情\n[01:31.08]如现实是场玩笑 一早清楚内情\n[01:34.93]过去是勇敢 或是未肯适应\n[01:38.97]S:是我笨\n[01:40.12]大概必须先经错误才能会分清我心意\n[01:45.69]共行成长 数不清的故事\n[01:49.59]S:我已爱上你坏了事(F:我爱你你扮作不知)\n[01:52.24]F:完了吧 如无意外(S:早该放开 重有感慨)\n[01:55.85]F:从今开始该好好恋爱(S:难道我寂寞不来)\n[01:59.46]F:放下从前一段感情\n[02:02.09]F:才能追求将来 你就似没存在(S当做我没存在)\n[02:06.60]S:完了吧(F:应该放开)\n[02:08.20]S:仍能撑起来(F:纵有感慨)\n[02:10.19]S:前进便让自尊心放开(F:期望你能寻觅爱)\n[02:13.75]S:告別从前总是不易\n[02:16.46]S:然而假如不止你在(F:只得我在)\n[02:19.60]你可愿仍逗（A：再不愿盲目）合：留在这爱海\n[02:25.82]F:我与你 大概始终不能相爱\n[02:29.44]S:可否不离开 讲出你的感慨\n[02:34.73]S:你用心恋爱(F:我用心恋爱)\n[02:36.16]合:下段道路定更精彩\n[02:40.93]F:完了吧 如无意外\n[02:44.21]曾失恋的 都必須恋爱\n[02:47.80]S:悔恨从前隐瞒感情 常常猜疑将来\n[02:52.31]S:我就似没存在(F:你就似没存在)\n[02:54.96]合:完了吧 仍能撑起来\n[02:58.66]前进便让自尊心放开\n[03:02.23]F:告別从前总是不易\n[03:04.81]F:然而假如只得我在(S:然而假如不止你在)\n[03:07.97]F:我怎样来觅寻下一位挚爱 （S:你可愿停下来望清这挚爱）"
-        val file = File(context.externalCacheDir.toString() +File.separator+ "lyrics"+File.separator+"aa.lrcwy")
-        mLyricsReader.readLrcText(lyrics,file)
-       binding.ManyLyricsView.initLrcData()
-       binding.ManyLyricsView.lyricsReader = mLyricsReader
-
-    }
 
     /**
      * 当前歌曲时长
@@ -289,6 +281,8 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
      */
     private fun updateSeekBarByHandler() {
         binding.seekbar.progress = currentTime
+
+        binding.ManyLyricsView.play(currentTime)
     }
 
     /**
@@ -330,11 +324,37 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
 
         binding.llPlayIndicator.setOnClickListener(this)
 
+        binding.ManyLyricsView.setOnClickListener(this)
+
     }
 
     override fun onResume() {
         super.onResume()
         ProgressThread().start()
+    }
+
+    /**
+     * 歌词解析器
+     */
+    private fun initLyrics() {
+        val mLyricsReader = LyricsReader()
+        val lyrics ="[00:14]如愿 - 王菲\n[00:22]词：唐恬\n[00:31]曲：钱雷\n[00:34]你是 遥遥的路\n[00:39]山野大雾里的灯\n[00:45]我是孩童啊 走在你的眼眸\n[00:48]你是 明月清风\n[00:54]我是你照拂的梦\n[00:59]见与不见都一生 与你相拥\n[01:03]而我将 爱你所爱的人间\n[01:07]愿你所愿的笑颜\n[01:10]你的手我蹒跚在牵\n[01:14]请带我去明天\n[01:18]如果说 你曾苦过我的甜\n[01:21]我愿活成你的愿\n[01:25]愿不枉啊 愿勇往啊\n[01:59]这盛世每一天\n[02:03]你是 岁月长河\n[02:08]星火燃起的天空\n[02:14]我是仰望者 就把你唱成歌\n[02:17]你是 我之所来\n[02:22]也是我心之所归\n[02:28]世间所有路都将 与你相逢\n[02:32]而我将 爱你所爱的人间\n[02:35]愿你所愿的笑颜\n[02:39]你的手我蹒跚在牵\n[02:42]请带我去明天\n[02:46]如果说 你曾苦过我的甜\n[02:50]我愿活成你的愿\n[02:53]愿不枉啊 愿勇往啊\n[02:58]这盛世每一天\n[03:02]山河无恙 烟火寻常\n[03:06]可是你如愿的眺望\n[03:09]孩子们啊 安睡梦乡\n[03:18]像你深爱的那样\n[03:22]而我将 梦你所梦的团圆\n[03:26]愿你所愿的永远\n[03:30]走你所走的长路\n[03:33]这样的爱你啊\n[03:37]我也将 见你未见的世界\n[03:40]写你未写的诗篇\n[03:44]天边的月 心中的念\n[03:49]你永在我身边\n[03:54]与你相约 一生清澈\n如你年轻的脸"
+         val lyrics2="[00:17.87]F:共你相识三千天 我没名无姓\n[00:21.26]庆幸也与你逛过 那一段旅程\n[00:25.09]曾是日夜期待你 施舍一点同情\n[00:29.06]我对你是固执 做梦或太热情\n[00:32.94]S:在世上 是你始终不肯退后遗忘我\n[00:37.42]感激你心意 但情人比\n[00:41.13]知己分开更易 怕我爱上你坏了事\n[00:45.92]F:完了吧 如无意外\n[00:49.43]从今开始该好好恋爱\n[00:53.09]放下从前一段感情\n[00:55.69]才能追求将来 你就似没存在\n[01:00.20]S:完了吧 然而你不在\n[01:03.75]情况未像幻想般变改\n[01:07.28]告別从前总是不易\n[01:09.98]原来假如只得我在\n[01:13.11]我竟未能觅寻下一位挚爱\n[01:23.81]F:旧信息应该删走 再没留凭证\n[01:27.38]我共你去到最远 也只是友情\n[01:31.08]如现实是场玩笑 一早清楚内情\n[01:34.93]过去是勇敢 或是未肯适应\n[01:38.97]S:是我笨\n[01:40.12]大概必须先经错误才能会分清我心意\n[01:45.69]共行成长 数不清的故事\n[01:49.59]S:我已爱上你坏了事(F:我爱你你扮作不知)\n[01:52.24]F:完了吧 如无意外(S:早该放开 重有感慨)\n[01:55.85]F:从今开始该好好恋爱(S:难道我寂寞不来)\n[01:59.46]F:放下从前一段感情\n[02:02.09]F:才能追求将来 你就似没存在(S当做我没存在)\n[02:06.60]S:完了吧(F:应该放开)\n[02:08.20]S:仍能撑起来(F:纵有感慨)\n[02:10.19]S:前进便让自尊心放开(F:期望你能寻觅爱)\n[02:13.75]S:告別从前总是不易\n[02:16.46]S:然而假如不止你在(F:只得我在)\n[02:19.60]你可愿仍逗（A：再不愿盲目）合：留在这爱海\n[02:25.82]F:我与你 大概始终不能相爱\n[02:29.44]S:可否不离开 讲出你的感慨\n[02:34.73]S:你用心恋爱(F:我用心恋爱)\n[02:36.16]合:下段道路定更精彩\n[02:40.93]F:完了吧 如无意外\n[02:44.21]曾失恋的 都必須恋爱\n[02:47.80]S:悔恨从前隐瞒感情 常常猜疑将来\n[02:52.31]S:我就似没存在(F:你就似没存在)\n[02:54.96]合:完了吧 仍能撑起来\n[02:58.66]前进便让自尊心放开\n[03:02.23]F:告別从前总是不易\n[03:04.81]F:然而假如只得我在(S:然而假如不止你在)\n[03:07.97]F:我怎样来觅寻下一位挚爱 （S:你可愿停下来望清这挚爱）"
+        val lyrics3="[id:$00000000]\r\n[ar:王菲]\r\n[ti:如愿]\r\n[by:zhangke_karakal]\r\n[00:00.00]如愿 (（电影《我和我的父辈》主题推广曲）) - 王菲\r\n[00:00.47]词：唐恬\r\n[00:00.85]曲：钱雷\r\n[00:01.20]编曲：钱雷\r\n[00:01.67]制作人：钱雷\r\n[00:02.26]配唱制作：窦颖/林灵\r\n[00:03.39]和音：窦颖/林灵\r\n[00:04.32]吉他：高飞\r\n[00:04.90]吉他录音：时俊峰@福达录音棚\r\n[00:06.57]Bass：李卓\r\n[00:06.94]小号：李博\r\n[00:07.41]弦乐编写/监制：胡静成\r\n[00:08.70]小提琴：张浩/侯宇虹\r\n[00:09.82]中提琴：毕芳\r\n[00:10.42]大提琴：郎莹\r\n[00:11.04]弦乐：国际首席爱乐乐团\r\n[00:12.32]弦乐录音：王小四@金田录音棚\r\n[00:13.46]人声录音师：钱雷/杨惠琳@Studio 21A\r\n[00:13.89]人声录音棚A：RMB Studio爆棚@奔跑怪物\r\n[00:14.41]人声录音棚B：Studio 21A Beijing\r\n[00:14.73]Vocal edite：汝文博@SBMS Beijing\r\n[00:14.96]混音/母带：赵靖BIG.J@SBMS Beijing\r\n[00:16.53]曲版权管理方：索尼音乐版权代理（北京）有限公司\r\n[00:31.52]你是 遥遥的路\r\n[00:35.09]山野大雾里的灯\r\n[00:39.59]我是孩童啊 走在你的眼眸\r\n[00:46.11]你是 明月清风\r\n[00:49.62]我是你照拂的梦\r\n[00:54.48]见与不见都一生 与你相拥\r\n[01:00.46]而我将 爱你所爱的人间\r\n[01:04.38]愿你所愿的笑颜\r\n[01:07.80]你的手我蹒跚在牵\r\n[01:11.20]请带我去明天\r\n[01:14.32]如果说 你曾苦过我的甜\r\n[01:18.68]我愿活成你的愿\r\n[01:22.27]愿不枉啊 愿勇往啊\r\n[01:25.63]这盛世每一天\r\n[02:00.38]你是 岁月长河\r\n[02:03.50]星火燃起的天空\r\n[02:07.15]我是仰望者 就把你唱成歌\r\n[02:14.84]你是 我之所来\r\n[02:17.81]也是我心之所归\r\n[02:22.87]世间所有路都将 与你相逢\r\n[02:28.71]而我将 爱你所爱的人间\r\n[02:32.49]愿你所愿的笑颜\r\n[02:36.22]你的手我蹒跚在牵\r\n[02:39.68]请带我去明天\r\n[02:42.92]如果说 你曾苦过我的甜\r\n[02:46.96]我愿活成你的愿\r\n[02:50.59]愿不枉啊 愿勇往啊\r\n[02:54.02]这盛世每一天\r\n[02:59.03]山河无恙 烟火寻常\r\n[03:02.94]可是你如愿的眺望\r\n[03:06.32]孩子们啊 安睡梦乡\r\n[03:10.05]像你深爱的那样\r\n[03:19.13]而我将 梦你所梦的团圆\r\n[03:23.18]愿你所愿的永远\r\n[03:26.66]走你所走的长路\r\n[03:30.04]这样的爱你啊\r\n[03:33.43]我也将 见你未见的世界\r\n[03:37.66]写你未写的诗篇\r\n[03:41.14]天边的月 心中的念\r\n[03:44.63]你永在我身边\r\n[03:50.16]与你相约 一生清澈\r\n[03:54.34]如你年轻的脸\r\n"
+        val file =
+            File(context.externalCacheDir.toString() + File.separator + "lyrics" + File.separator + "aa.lrcwy")
+        mLyricsReader.readLrcText(lyrics3, file)
+        binding.ManyLyricsView.apply {
+            initLrcData()
+            lyricsReader = mLyricsReader
+            setPaintColor(intArrayOf(-1,-2))
+            setPaintHLColor(intArrayOf(Color.BLUE,Color.MAGENTA),true)
+            setSize(55,35)
+
+
+        }
+
+
     }
 
     /**
@@ -367,7 +387,10 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
                 Glide.with(App.context).asBitmap()
                     .load(R.drawable.youjing)
                     .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        override fun onResourceReady(
+                            resource: Bitmap,
+                            transition: Transition<in Bitmap>?
+                        ) {
                             binding.playerContainer.background = BitmapDrawable(resources, resource)
                         }
 
@@ -381,7 +404,10 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
             Glide.with(App.context).asBitmap()
                 .load(R.drawable.youjing)
                 .into(object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap>?
+                    ) {
                         binding.playerContainer.background = BitmapDrawable(resources, resource)
                     }
 
@@ -430,7 +456,10 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
                     )
                 )
 
-                val msg = if (currentModel == LIST_LOOP) getString(R.string.model_normal) else if (currentModel == RANDOM_PATTERN) getString(R.string.model_random) else getString(R.string.model_repeat)
+                val msg =
+                    if (currentModel == LIST_LOOP) getString(R.string.model_normal) else if (currentModel == RANDOM_PATTERN) getString(
+                        R.string.model_random
+                    ) else getString(R.string.model_repeat)
 
                 msg.showToast(this)
             }
@@ -439,7 +468,10 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
                 Timber.v("播放上一首1: %s", PREV)
             }
 
-            binding.layoutPlayLayout.flPlayContainer.id -> intent.putExtra(EXTRA_CONTROL, PAUSE_PLAYBACK)
+            binding.layoutPlayLayout.flPlayContainer.id -> intent.putExtra(
+                EXTRA_CONTROL,
+                PAUSE_PLAYBACK
+            )
 
             binding.layoutPlayLayout.ibPlayNextTrack.id -> {
                 intent.putExtra(EXTRA_CONTROL, NEXT)
@@ -470,6 +502,8 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
         currentTime = if (temp in 1 until duration) temp else 0
         duration = getDuration()
         binding.seekbar.max = duration
+
+
 
         //播放界面写真和封面更改
         observableCurrentSong.nameCurrentSong = currentSong.mixSongID
@@ -514,7 +548,10 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
         ppvPlayPause.updateStRte(isPlayful, true)
 
         // revisePlaying()
-        Timber.tag(Tag.isPlay).v("======================================================================:%s", currentSong.SongName)
+        Timber.tag(Tag.isPlay).v(
+            "======================================================================:%s",
+            currentSong.SongName
+        )
     }
 
     override fun onPause() {
@@ -580,6 +617,10 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
 
                 }
             }
+            //歌词布局
+            binding.ManyLyricsView.id -> {
+
+            }
         }
     }
 
@@ -606,7 +647,10 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
                     .apply(requestOptions)
                     .load(img)
                     .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        override fun onResourceReady(
+                            resource: Bitmap,
+                            transition: Transition<in Bitmap>?
+                        ) {
                             binding.ivPlayGuide01.visibility = View.VISIBLE
                             binding.ivPlayGuide01.setImageBitmap(resource)
                             updateUi(resource, true)
@@ -626,7 +670,10 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
                     .placeholder(R.drawable.play_activity_album)
                     .load(pic)
                     .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        override fun onResourceReady(
+                            resource: Bitmap,
+                            transition: Transition<in Bitmap>?
+                        ) {
                             binding.ivPlayGuide01.setImageBitmap(resource)
                             //结束写真幻影灯片
                             handlerRemoveCallbacks()
