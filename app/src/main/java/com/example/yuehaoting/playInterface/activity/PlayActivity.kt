@@ -8,6 +8,7 @@ import android.graphics.drawable.*
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.lifecycle.ViewModelProvider
 import androidx.palette.graphics.Palette
@@ -17,7 +18,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.*
 import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.App
-import com.example.yuehaoting.App.Companion.context
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.PlayBaseActivity
 import com.example.yuehaoting.base.diskLruCache.myCache.CacheString
@@ -27,7 +27,7 @@ import com.example.yuehaoting.base.retrofit.SongNetwork
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.databinding.PlayActivityBinding
 import com.example.yuehaoting.kotlin.*
-import com.example.yuehaoting.lyrics.LyricsReader
+import com.example.yuehaoting.lyrics.widget.ManyLyricsView
 import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.getCurrentSong
@@ -63,8 +63,6 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
-import java.io.File
-import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.properties.Delegates
@@ -324,7 +322,34 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
 
         binding.llPlayIndicator.setOnClickListener(this)
 
-        binding.ManyLyricsView.setOnClickListener(this)
+        var isLyricsExpansion = true
+
+        binding.ManyLyricsView.setOnClickListenerL {
+
+            if (isLyricsExpansion) {
+                binding.ivPlayGuide01.visibility = View.GONE
+                val layout = binding.ManyLyricsView.layoutParams
+                layout.height = ViewGroup.LayoutParams.MATCH_PARENT
+                binding.ManyLyricsView.layoutParams = layout
+                isLyricsExpansion = false
+                Timber.v("展开歌词")
+
+            } else {
+               if (!backgroundMode){
+                   binding.ivPlayGuide01.visibility = View.VISIBLE
+               }
+
+
+
+                val layout = binding.ManyLyricsView.layoutParams
+                layout.height = 320
+                binding.ManyLyricsView.layoutParams = layout
+                isLyricsExpansion = true
+            }
+
+
+        }
+
         initLyrics()
     }
 
@@ -338,28 +363,24 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
      */
     private fun initLyrics() {
 
-  launchMy {
-      try {
-          val  mLyricsReader= PlatformLyrics.lyrics(currentSong)
-          binding.ManyLyricsView.apply {
-              initLrcData()
-              lyricsReader = mLyricsReader
-              setPaintColor(intArrayOf(-1,-2))
-              setPaintHLColor(intArrayOf(Color.BLUE,Color.MAGENTA),true)
-              setSize(55,35)
-              setOnLrcClickListener{
-                  MusicServiceRemote.setProgress(it)
-              }
+        launchMy {
+            try {
+                val mLyricsReader = PlatformLyrics.lyrics(currentSong)
+                binding.ManyLyricsView.apply {
+                    initLrcData()
+                    lyricsReader = mLyricsReader
+                    setPaintColor(intArrayOf(-1, -2))
+                    setPaintHLColor(intArrayOf(Color.GREEN, Color.YELLOW), true)
+                    setSize(55, 35)
+                    setOnLrcClickListener {
+                        MusicServiceRemote.setProgress(it)
+                    }
 
-          }
-      }catch (e: Exception){
-          e.printStackTrace()
-      }
-  }
-
-
-
-
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     /**
@@ -622,10 +643,7 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
 
                 }
             }
-            //歌词布局
-            binding.ManyLyricsView.id -> {
 
-            }
         }
     }
 

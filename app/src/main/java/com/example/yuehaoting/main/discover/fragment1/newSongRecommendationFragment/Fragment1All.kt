@@ -17,6 +17,7 @@ import com.example.yuehaoting.databinding.MainNavigationDiscoverFragment1QuanbuB
 import com.example.yuehaoting.kotlin.getSp
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.kotlin.setSp
+import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.main.discover.fragment1.viewModel.FragmentAKuGouViewModel
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.playInterface.activity.PlayActivity
@@ -81,8 +82,10 @@ class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
     override fun haveInternetShowNewSongList() {
         mAdapter=NullAdapter(R.layout.main_navigation_discover_fragment1_item_b, 5)
         binding.recyclerview.adapter=mAdapter
+        tryNull {
 
-        viewModel.observedLiveData.observe(this) {
+
+        viewModel.observedLiveData.observe(this) { it ->
             val newSong = it.getOrNull()
             Timber.v("酷狗新歌推荐%s", newSong.toString())
 
@@ -113,25 +116,37 @@ class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
                 putString("Info", gson)
             }
             viewModel.listLiveData.clear()
-            viewModel.listLiveData.addAll(newSong?.data?.info!!)
+            newSong?.data?.info?.let { info->
+                viewModel.listLiveData.addAll(info)
+            }
+
 
             binding.recyclerview.adapter = null
             mAdapter.notifyDataSetChanged()
 
-            mAdapter = object : CustomLengthRecyclerAdapter<NewSong.Data.Info>(newSong.data.info, R.layout.main_navigation_discover_fragment1_item_b, 5) {
+            mAdapter = object : CustomLengthRecyclerAdapter<NewSong.Data.Info>(viewModel.listLiveData, R.layout.main_navigation_discover_fragment1_item_b, 5) {
 
                 override fun onBindViewHolder(holder: SmartViewHolder?, model: NewSong.Data.Info?, position: Int) {
                     val img = model?.album_cover
-                    holderImage(img!!, "100", 20, holder!!, R.id.iv_main_fragment1_fragment_a_ku_gou_item)
-                    val listFilename = model.filename?.split("- ")
+                    holder?.let { it1 ->
+                        img?.let { it2 ->
+                            holderImage(
+                                it2, "100", 20,
+                                it1, R.id.iv_main_fragment1_fragment_a_ku_gou_item)
+                        }
 
-                    holder.text(R.id.tv_main_fragment1_fragment_a_ku_gou_item_song, listFilename?.get(1))
-                    holder.text(R.id.tv_main_fragment1_fragment_a_ku_gou_item_song_album, listFilename?.get(0))
+                        val listFilename = model?.filename?.split("- ")
+
+                        it1.text(R.id.tv_main_fragment1_fragment_a_ku_gou_item_song, listFilename?.get(1))
+                        it1.text(R.id.tv_main_fragment1_fragment_a_ku_gou_item_song_album, listFilename?.get(0))
+                    }
+
                     songPlay(holder, position)
                 }
             }
 
             binding.recyclerview.adapter = mAdapter
+        }
         }
     }
 
