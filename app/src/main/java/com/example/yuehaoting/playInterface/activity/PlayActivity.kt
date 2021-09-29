@@ -372,6 +372,7 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
                     setPaintColor(intArrayOf(-1, -2))
                     setPaintHLColor(intArrayOf(Color.GREEN, Color.YELLOW), true)
                     setSize(55, 35)
+                    setIndicatorFontSize(55)  //圆半径
                     setOnLrcClickListener {
                         MusicServiceRemote.setProgress(it)
                     }
