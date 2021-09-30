@@ -3,6 +3,7 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   xmlns:tools="http://schemas.android.com/tools"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:fitsSystemWindows="true"
   android:id="@+id/activity_chooser_view_content"
   android:background="@drawable/search_sar_background"
@@ -137,12 +138,16 @@
 
   </LinearLayout>
 
-  <androidx.recyclerview.widget.RecyclerView
+  <com.example.yuehaoting.base.lib_search_history.jd.JDFoldLayout
+    android:id="@+id/flow_list"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/rl_search_History"
-    tools:listitem="@layout/activity_search_item"
-    />
+    android:layout_marginTop="10dp"
+    app:flow_equally="false"
+    app:flow_fold="true"
+    app:flow_foldLines="2"
+    app:flow_horizontalSpacing="10dp"
+    app:flow_verticalSpacing="10dp" />
 
 </LinearLayout>
 

@@ -24,23 +24,19 @@ import com.example.yuehaoting.App
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
 import com.example.yuehaoting.base.asyncTaskLoader.WrappedAsyncTaskLoader
-import com.example.yuehaoting.base.db.HistoryRepository
 import com.example.yuehaoting.base.db.HistoryRepository.Companion.getInstanceHistory
 import com.example.yuehaoting.base.fragmet.LazyBaseFragment
-import com.example.yuehaoting.data.kugou.RecordData
-import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
+import com.example.yuehaoting.base.lib_search_history.adapter.SearchHistoryAdapter
+import com.example.yuehaoting.base.lib_search_history.jd.JDFoldLayout
 import com.example.yuehaoting.base.magicIndicator.ext.MyCommonNavigator
 import com.example.yuehaoting.base.magicIndicator.ext.ScaleTransitionPagerTitleView
-import com.example.yuehaoting.kotlin.lazyMy
-import com.example.yuehaoting.kotlin.setSp
-import com.example.yuehaoting.playInterface.activity.PlayActivityDialogFragment
-import com.example.yuehaoting.searchFor.adapter.FlexboxLayoutManagerAdapter
+import com.example.yuehaoting.data.kugou.RecordData
+import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
 import com.example.yuehaoting.searchFor.adapter.data.History
 import com.example.yuehaoting.searchFor.fragment.ui.*
 import com.example.yuehaoting.searchFor.pagerview.MyPagerAdapter
 import com.example.yuehaoting.searchFor.viewmodel.PlaceViewModel
 import com.example.yuehaoting.util.MusicConstant
-import com.google.android.flexbox.*
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.UIUtil
@@ -50,10 +46,12 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTit
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView
 import timber.log.Timber
+import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 
-class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.LoaderCallbacks<List<History>>{
+class SearchActivity : BaseActivity(), View.OnClickListener,
+    LoaderManager.LoaderCallbacks<List<History>> {
     private lateinit var recyclerView: RecyclerView
     private lateinit var ivTitleBarSearchBack: ImageView
     private lateinit var etTitleBarSearch: EditText
@@ -61,7 +59,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     private lateinit var llRecyclerView: LinearLayout
     private lateinit var llContentFragment: LinearLayout
 
-     private lateinit var recyclerViewHistory:RecyclerView
+    private lateinit var llActionBarLayout:LinearLayout
     private lateinit var viewPager: ViewPager
 
 
@@ -93,10 +91,9 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         initView()
         //标题栏
         initMagicIndicator()
-       // ScreenProperties.phoneAttributes(this)
+        // ScreenProperties.phoneAttributes(this)
 
     }
-
 
 
     /**
@@ -119,9 +116,8 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
 
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
-
-         recyclerViewHistory=findViewById(R.id.rl_search_History)
-
+        //历史布局
+        llActionBarLayout=findViewById(R.id.ll_search_History_and_hot_words)
         //适配器监听事假
         adapterOnClickListener()
 
@@ -136,39 +132,28 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         window.decorView.getWindowVisibleDisplayFrame(rect)
 
         val statusBarHeight: Int = rect.top //状态栏高度
-        Timber.v("状态栏高度%s",statusBarHeight)
+        Timber.v("状态栏高度%s", statusBarHeight)
 
 
         history()
 
     }
-//_______________________________________|历史记录|______________________________________________________________________________________________________
-    private val hAdapter:FlexboxLayoutManagerAdapter by  lazyMy {
-        FlexboxLayoutManagerAdapter(R.layout.activity_search_item)
-    }
-    private var LOADER_ID = 0
+
+    //_______________________________________|历史记录|______________________________________________________________________________________________________
+    private lateinit var hAdapter: SearchHistoryAdapter
+    private var loaderId = 0
+
     /**
      * 历史记录
      */
-    private fun history(){
+    private fun history() {
 
-        //设置LayoutManager
-        val  flexboxLayoutManager =  FlexboxLayoutManager(this)
-        //主轴为水平方向，起点在左端
-        flexboxLayoutManager.flexDirection = FlexDirection.ROW
-        //按正常方向换行
-        flexboxLayoutManager.flexWrap = FlexWrap.WRAP
-        //定义项目在副轴轴上如何对齐
-        flexboxLayoutManager.alignItems = AlignItems.CENTER
-        //多个轴对齐方式
-        flexboxLayoutManager.justifyContent = JustifyContent.FLEX_START
+        val flowListView = findViewById<JDFoldLayout>(R.id.flow_list)
+        hAdapter = SearchHistoryAdapter()
 
+        flowListView.setAdapter(hAdapter)
 
-        recyclerViewHistory.layoutManager=flexboxLayoutManager
-
-       recyclerViewHistory.adapter=hAdapter
-
-        LoaderManager.getInstance(this).initLoader(LOADER_ID++, null,this)
+        LoaderManager.getInstance(this).initLoader(loaderId++, null, this)
 
     }
 
@@ -177,15 +162,19 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     }
 
     override fun onLoadFinished(loader: Loader<List<History>>, data: List<History>?) {
-        Timber.v("获取历史数据%s",data?.size)
-        hAdapter.setDataList(data)
+        Timber.v("获取历史数据%s", data?.size)
+        val list = ArrayList<History>()
+        data?.let { list.addAll(it) }
+        list.reverse()// 倒序排列
+        hAdapter.setNewData(list.map { it.name })
+
     }
 
     override fun onLoaderReset(loader: Loader<List<History>>) {
-        hAdapter.setDataList(null)
+        hAdapter.setNewData(null)
     }
 
-    class HistoryLoader(context:Context):WrappedAsyncTaskLoader<List<History>>(context){
+    class HistoryLoader(context: Context) : WrappedAsyncTaskLoader<List<History>>(context) {
 
         override fun loadInBackground(): List<History>? {
             return getInstanceHistory().getHistory().onErrorReturn {
@@ -194,7 +183,8 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
                 .blockingGet()
         }
     }
-//________________________________________________________________
+
+    //________________________________________________________________
     private fun adapterOnClickListener() {
         adapter = PlaceAdapter(viewModel.placeList, object : PlaceAdapter.SearchHintInfo {
             override fun hinInfo(i: String) {
@@ -240,6 +230,8 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             if (content.isNotEmpty()) {
                 viewModel.searchPlaces(content)
             } else {
+                llActionBarLayout.visibility=View.VISIBLE
+
                 recyclerView.visibility = View.GONE
                 viewModel.placeList.clear()
                 adapter.notifyDataSetChanged()
@@ -252,27 +244,28 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
      */
     private fun placeLiveDataObserve() {
 
-            viewModel.placeLiveData.observe(this)  {
-                try {
-                val places =it.getOrNull() as ArrayList<RecordData>
+        viewModel.placeLiveData.observe(this) {
+            try {
+                val places = it.getOrNull() as ArrayList<RecordData>
                 Log.e("请求的曲目数据已经观察到", places[0].HintInfo)
                 if (places.isNotEmpty()) {
                     recyclerView.visibility = View.VISIBLE
                     viewModel.placeList.clear()
                     viewModel.placeList.addAll(places)
                     adapter.notifyDataSetChanged()
+                    llActionBarLayout.visibility=View.GONE
 
                 } else {
                     Toast.makeText(this, "未能查询到歌曲", Toast.LENGTH_SHORT).show()
                     it.exceptionOrNull()?.printStackTrace()
                 }
-                } catch (e: NullPointerException) {
-                    e.printStackTrace()
-                    Timber.e("空指针异常 : %s",e)
-                }catch (e:IndexOutOfBoundsException){
-                    Timber.e("索引越界异常: %s",e)
-                }
+            } catch (e: NullPointerException) {
+                e.printStackTrace()
+                Timber.e("空指针异常 : %s", e)
+            } catch (e: IndexOutOfBoundsException) {
+                Timber.e("索引越界异常: %s", e)
             }
+        }
 
     }
 
@@ -345,11 +338,11 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             R.id.iv_title_bar_search_back -> {
             }
             R.id.tv_title_search -> {
-                val intent=Intent(MusicConstant.PLAY_DATA_CHANGES)
-             //   sendBroadcast(intent)
+                val intent = Intent(MusicConstant.PLAY_DATA_CHANGES)
+                //   sendBroadcast(intent)
                 LocalBroadcastManager.getInstance(App.context).sendBroadcast(intent)
 
-               val i= etTitleBarSearch.text.toString()
+                val i = etTitleBarSearch.text.toString()
 
                 thread {
                     getInstanceHistory().integerData(i)
@@ -387,8 +380,6 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
 
         }
     }
-
-
 
 
 }

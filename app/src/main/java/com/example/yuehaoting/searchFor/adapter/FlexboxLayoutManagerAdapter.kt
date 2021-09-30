@@ -25,9 +25,9 @@ class FlexboxLayoutManagerAdapter(layoutId:Int):BaseAdapter<History,FlexboxLayou
 
 
 
-  holder.binding.ivSearchHistoryDelete.setOnClickListener {
+/*  holder.binding.ivSearchHistoryDelete.setOnClickListener {
       onItemClickListener?.onItemClick(it,holder.adapterPosition)
-  }
+  }*/
     }
 
     class FlexboxLayoutManagerHolder(view:View):BaseViewHolder(view){

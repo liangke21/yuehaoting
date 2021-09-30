@@ -25,12 +25,12 @@
       android:textSize="14sp"/>
 
   </RelativeLayout>
-  <ImageView
+<!--  <ImageView
     android:layout_width="15dp"
     android:layout_height="15dp"
 android:id="@+id/iv_search_History_delete"
     android:src="@drawable/search_history_delete"
     tools:ignore="MissingConstraints"
    android:layout_alignEnd="@id/rl_search_History"
-    />
+    />-->
 </RelativeLayout >
