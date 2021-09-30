@@ -9,7 +9,9 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.yuehaoting.base.db.AppDataBase.Companion.VERSION
+import com.example.yuehaoting.base.db.dao.HistoryDao
 import com.example.yuehaoting.base.db.dao.PlayQueueDao
+import com.example.yuehaoting.base.db.model.HistoryQueue
 import com.example.yuehaoting.base.db.model.PlayQueue
 import com.example.yuehaoting.util.BroadcastUtil
 import com.example.yuehaoting.util.BroadcastUtil.sendLocalBroadcast
@@ -28,15 +30,18 @@ import timber.log.Timber
  */
 @Database(
     entities = [
-        PlayQueue::class
+        PlayQueue::class,
+    HistoryQueue::class
     ], version = VERSION, exportSchema = false
 )
 abstract class AppDataBase : RoomDatabase() {
 
     abstract fun playQueueDao(): PlayQueueDao
 
+    abstract fun historyDao(): HistoryDao
+
     companion object {
-        const val VERSION = 3
+        const val VERSION =5
 
         @Volatile
         private var INSTANCE: AppDataBase? = null
@@ -52,26 +57,40 @@ abstract class AppDataBase : RoomDatabase() {
 
 
         private fun buildDatabase(context: Context): AppDataBase {
-            val migration = object : Migration(2, 3) { //版本迁移
+            val migration = object : Migration(4,5) { //版本迁移
                 override fun migrate(database: SupportSQLiteDatabase) {
 
                 }
             }
 
             val database = Room.databaseBuilder(context.applicationContext, AppDataBase::class.java, "yuehaoting.db")
-               .addMigrations(migration)
+              .addMigrations(migration)
                 .build()
              //观察那个表的数据发生变化
-            database.invalidationTracker.addObserver(object : InvalidationTracker.Observer(PlayQueue.TABLE_MAME) {
+            database.invalidationTracker.addObserver(object : InvalidationTracker.Observer(PlayQueue.TABLE_MAME,HistoryQueue.HISTORY_QUEUE) {
                 override fun onInvalidated(tables: MutableSet<String>) {
-                    Timber.tag(Tag.queueDatabase).v("表中的数据发生变化 onInvalidated %s",tables.toString())
-                    sendLocalBroadcast(Intent(PLAYLIST_CHANGE)
-                        .putExtra(EXTRA_PLAYLIST,PlayQueue.TABLE_MAME)
-                    )
+
+                    whenSurface(tables)
+
                 }
             })
 
             return database
         }
+
+    private    fun whenSurface(tables: MutableSet<String>){
+               if (tables.contains(PlayQueue.TABLE_MAME)){
+                   Timber.tag(Tag.queueDatabase).v("表中的数据发生变化 onInvalidated %s",tables.toString())
+                   sendLocalBroadcast(Intent(PLAYLIST_CHANGE)
+                       .putExtra(EXTRA_PLAYLIST,PlayQueue.TABLE_MAME)
+                   )
+            }else if (tables.contains(HistoryQueue.HISTORY_QUEUE)){
+                Timber.v("历史记录表")
+
+               }
+
+        }
+
+
     }
 }

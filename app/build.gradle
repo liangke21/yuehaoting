@@ -134,7 +134,7 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     //json 动画
     implementation 'com.airbnb.android:lottie:4.1.0'
-
-   // implementation 'com.github.zhangliangming:HPLyrics:v1.72'
+     //自适应宽度布局管理器
+    implementation 'com.google.android:flexbox:2.0.1'
 
 }

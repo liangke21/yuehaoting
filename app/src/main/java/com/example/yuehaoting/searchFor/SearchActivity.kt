@@ -14,6 +14,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
+import androidx.loader.app.LoaderManager
+import androidx.loader.content.Loader
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,15 +23,24 @@ import androidx.viewpager.widget.ViewPager
 import com.example.yuehaoting.App
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
+import com.example.yuehaoting.base.asyncTaskLoader.WrappedAsyncTaskLoader
+import com.example.yuehaoting.base.db.HistoryRepository
+import com.example.yuehaoting.base.db.HistoryRepository.Companion.getInstanceHistory
 import com.example.yuehaoting.base.fragmet.LazyBaseFragment
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
 import com.example.yuehaoting.base.magicIndicator.ext.MyCommonNavigator
 import com.example.yuehaoting.base.magicIndicator.ext.ScaleTransitionPagerTitleView
+import com.example.yuehaoting.kotlin.lazyMy
+import com.example.yuehaoting.kotlin.setSp
+import com.example.yuehaoting.playInterface.activity.PlayActivityDialogFragment
+import com.example.yuehaoting.searchFor.adapter.FlexboxLayoutManagerAdapter
+import com.example.yuehaoting.searchFor.adapter.data.History
 import com.example.yuehaoting.searchFor.fragment.ui.*
 import com.example.yuehaoting.searchFor.pagerview.MyPagerAdapter
 import com.example.yuehaoting.searchFor.viewmodel.PlaceViewModel
 import com.example.yuehaoting.util.MusicConstant
+import com.google.android.flexbox.*
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.UIUtil
@@ -39,9 +50,10 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTit
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView
 import timber.log.Timber
+import kotlin.concurrent.thread
 
 
-class SearchActivity : BaseActivity(), View.OnClickListener {
+class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.LoaderCallbacks<List<History>>{
     private lateinit var recyclerView: RecyclerView
     private lateinit var ivTitleBarSearchBack: ImageView
     private lateinit var etTitleBarSearch: EditText
@@ -49,7 +61,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
     private lateinit var llRecyclerView: LinearLayout
     private lateinit var llContentFragment: LinearLayout
 
-
+     private lateinit var recyclerViewHistory:RecyclerView
     private lateinit var viewPager: ViewPager
 
 
@@ -107,6 +119,9 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
 
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
+
+         recyclerViewHistory=findViewById(R.id.rl_search_History)
+
         //适配器监听事假
         adapterOnClickListener()
 
@@ -122,8 +137,64 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
 
         val statusBarHeight: Int = rect.top //状态栏高度
         Timber.v("状态栏高度%s",statusBarHeight)
+
+
+        history()
+
+    }
+//_______________________________________|历史记录|______________________________________________________________________________________________________
+    private val hAdapter:FlexboxLayoutManagerAdapter by  lazyMy {
+        FlexboxLayoutManagerAdapter(R.layout.activity_search_item)
+    }
+    private var LOADER_ID = 0
+    /**
+     * 历史记录
+     */
+    private fun history(){
+
+        //设置LayoutManager
+        val  flexboxLayoutManager =  FlexboxLayoutManager(this)
+        //主轴为水平方向，起点在左端
+        flexboxLayoutManager.flexDirection = FlexDirection.ROW
+        //按正常方向换行
+        flexboxLayoutManager.flexWrap = FlexWrap.WRAP
+        //定义项目在副轴轴上如何对齐
+        flexboxLayoutManager.alignItems = AlignItems.CENTER
+        //多个轴对齐方式
+        flexboxLayoutManager.justifyContent = JustifyContent.FLEX_START
+
+
+        recyclerViewHistory.layoutManager=flexboxLayoutManager
+
+       recyclerViewHistory.adapter=hAdapter
+
+        LoaderManager.getInstance(this).initLoader(LOADER_ID++, null,this)
+
     }
 
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<History>> {
+        return HistoryLoader(this)
+    }
+
+    override fun onLoadFinished(loader: Loader<List<History>>, data: List<History>?) {
+        Timber.v("获取历史数据%s",data?.size)
+        hAdapter.setDataList(data)
+    }
+
+    override fun onLoaderReset(loader: Loader<List<History>>) {
+        hAdapter.setDataList(null)
+    }
+
+    class HistoryLoader(context:Context):WrappedAsyncTaskLoader<List<History>>(context){
+
+        override fun loadInBackground(): List<History>? {
+            return getInstanceHistory().getHistory().onErrorReturn {
+                emptyList()
+            }
+                .blockingGet()
+        }
+    }
+//________________________________________________________________
     private fun adapterOnClickListener() {
         adapter = PlaceAdapter(viewModel.placeList, object : PlaceAdapter.SearchHintInfo {
             override fun hinInfo(i: String) {
@@ -154,6 +225,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
             }
         })
         recyclerView.adapter = adapter
+
     }
 
 
@@ -279,6 +351,10 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
 
                val i= etTitleBarSearch.text.toString()
 
+                thread {
+                    getInstanceHistory().integerData(i)
+                }
+
                 mAdapter?.clear(fragmentList)
                 viewPager.adapter = mAdapter
                 viewPager.adapter?.notifyDataSetChanged()
@@ -311,6 +387,8 @@ class SearchActivity : BaseActivity(), View.OnClickListener {
 
         }
     }
+
+
 
 
 }
