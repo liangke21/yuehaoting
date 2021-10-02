@@ -13,6 +13,7 @@ import com.example.yuehaoting.searchFor.livedata.Repository
  * 描述:
  */
 class SingleFragment1ViewModel : ViewModel() {
+
     private val singleLiveData = MutableLiveData<Map<*, *>>()
 
     val singleObservedLiveData : LiveData<Result<KuGouSingle.Data>> = Transformations.switchMap(singleLiveData) { p ->

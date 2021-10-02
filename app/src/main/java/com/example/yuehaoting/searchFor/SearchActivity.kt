@@ -30,7 +30,13 @@ import com.example.yuehaoting.base.lib_search_history.adapter.SearchHistoryAdapt
 import com.example.yuehaoting.base.lib_search_history.jd.JDFoldLayout
 import com.example.yuehaoting.base.magicIndicator.ext.MyCommonNavigator
 import com.example.yuehaoting.base.magicIndicator.ext.ScaleTransitionPagerTitleView
+import com.example.yuehaoting.base.recyclerView.adapter.BaseRecyclerAdapter
+import com.example.yuehaoting.base.recyclerView.typeAdapter.CommonAdapter
+import com.example.yuehaoting.base.recyclerView.typeAdapter.CommonTypeAdapter
+import com.example.yuehaoting.base.recyclerView.typeAdapter.CommonViewHolder
 import com.example.yuehaoting.data.kugou.RecordData
+import com.example.yuehaoting.data.kugousingle.KuGouSingle
+import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
 import com.example.yuehaoting.searchFor.adapter.data.History
 import com.example.yuehaoting.searchFor.fragment.ui.*
@@ -59,12 +65,13 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
     private lateinit var llRecyclerView: LinearLayout
     private lateinit var llContentFragment: LinearLayout
 
-    private lateinit var llActionBarLayout:LinearLayout
+    private lateinit var llActionBarLayout: LinearLayout
     private lateinit var viewPager: ViewPager
 
 
     private var mDataList = ArrayList<String>()
 
+    private lateinit var hotSearchRecyclerView: RecyclerView
 
     private lateinit var mSharedPreferences: SharedPreferences
 
@@ -89,10 +96,19 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
         placeLiveDataObserve()
         //初始化控件
         initView()
+
+        initData()
         //标题栏
         initMagicIndicator()
         // ScreenProperties.phoneAttributes(this)
+        //历史记录
+        history()
 
+        hotSearchKeywords()
+    }
+
+    private fun initData() {
+        viewModel.requestParameter(1, 21, "热榜")
     }
 
 
@@ -117,7 +133,11 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
         //历史布局
-        llActionBarLayout=findViewById(R.id.ll_search_History_and_hot_words)
+        llActionBarLayout = findViewById(R.id.ll_search_History_and_hot_words)
+
+        //热搜适配器
+        hotSearchRecyclerView = findViewById(R.id.rv_search)
+
         //适配器监听事假
         adapterOnClickListener()
 
@@ -135,25 +155,25 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
         Timber.v("状态栏高度%s", statusBarHeight)
 
 
-        history()
-
     }
 
     //_______________________________________|历史记录|______________________________________________________________________________________________________
-    private lateinit var hAdapter: SearchHistoryAdapter
+    private var hAdapter: SearchHistoryAdapter? = null
     private var loaderId = 0
+    private var flowListView: JDFoldLayout? = null
 
     /**
      * 历史记录
      */
     private fun history() {
 
-        val flowListView = findViewById<JDFoldLayout>(R.id.flow_list)
+
+        flowListView = findViewById(R.id.flow_list)
         hAdapter = SearchHistoryAdapter()
 
-        flowListView.setAdapter(hAdapter)
+        flowListView?.setAdapter(hAdapter)
 
-        LoaderManager.getInstance(this).initLoader(loaderId++, null, this)
+        LoaderManager.getInstance(this).initLoader(loaderId, null, this)
 
     }
 
@@ -162,16 +182,19 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
     }
 
     override fun onLoadFinished(loader: Loader<List<History>>, data: List<History>?) {
+
+
         Timber.v("获取历史数据%s", data?.size)
         val list = ArrayList<History>()
         data?.let { list.addAll(it) }
         list.reverse()// 倒序排列
-        hAdapter.setNewData(list.map { it.name })
+        hAdapter?.setNewData(list.map { it.name })
+
 
     }
 
     override fun onLoaderReset(loader: Loader<List<History>>) {
-        hAdapter.setNewData(null)
+        hAdapter?.setNewData(null)
     }
 
     class HistoryLoader(context: Context) : WrappedAsyncTaskLoader<List<History>>(context) {
@@ -184,7 +207,80 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
         }
     }
 
-    //________________________________________________________________
+//_______________________________________|热搜榜|______________________________________________________________________________________________________
+    /**
+     * 热搜关键字 外部RecyclerView
+     */
+    private fun hotSearchKeywords() {
+        val layoutManager = LinearLayoutManager(this)
+        layoutManager.orientation = LinearLayoutManager.HORIZONTAL
+        hotSearchRecyclerView.layoutManager = layoutManager
+
+
+        hotSearchRecyclerView.adapter =  object :CommonAdapter(5){
+
+            override fun mOnBindViewHolder(holder: CommonViewHolder, position: Int) {
+                //内部
+                val internalHotSearchRecyclerView=holder.setRecyclerView(R.id.rv_search_item_3)
+                val internalLayoutManager = LinearLayoutManager(applicationContext)
+                internalHotSearchRecyclerView.layoutManager=internalLayoutManager
+                internalHotSearchKeywords(internalHotSearchRecyclerView)
+
+            }
+
+            override fun getLayoutId(viewType: Int): Int {
+              return R.layout.activity_search_item_3
+            }
+        }
+
+    }
+
+    /**
+     * 热搜关键字 内部外部RecyclerView
+     */
+    private fun internalHotSearchKeywords(recyclerView: RecyclerView){
+
+        viewModel.singleObservedLiveData.observe(this) {
+            tryNull {
+                val musicData = it.getOrNull() as KuGouSingle.Data
+                viewModel.songList.addAll(musicData.lists)
+                recyclerView.adapter= object :CommonTypeAdapter<KuGouSingle.Data.Lists>(musicData.lists){
+                    override fun mOnBindViewHolder(
+                        model: KuGouSingle.Data.Lists,
+                        holder: CommonViewHolder,
+                        position: Int,
+                        type: Int
+                    ) {
+                        if (type==0){
+                            holder.setText(R.id.tv_activity_search_item_3_item2,"热搜榜")
+                        }else{
+                            holder.setText(R.id.tv_1_activity_search_item_3_item,position.toString())
+                            holder.setText(R.id.tv_2_activity_search_item_3_item,model.SongName)
+                        }
+
+                    }
+
+                    override fun getLayoutId(viewType: Int): Int {
+                       if (viewType==0){
+                           return R.layout.activity_search_item_3_item2
+                       }
+                        return R.layout.activity_search_item_3_item
+                    }
+
+                    override fun mGetItemViewType(position: Int): Int {
+                        if (position==0){
+                            return 0
+                        }
+                        return position
+                    }
+                }
+            }
+
+
+        }
+
+    }
+
     private fun adapterOnClickListener() {
         adapter = PlaceAdapter(viewModel.placeList, object : PlaceAdapter.SearchHintInfo {
             override fun hinInfo(i: String) {
@@ -192,6 +288,11 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
                 /*  var edit = mSharedPreferences.edit()
                   edit.putString("Single", i)
                   edit.apply()*/
+                //历史记录
+                thread {
+                    getInstanceHistory().integerData(i)
+                }
+
                 mAdapter?.clear(fragmentList)
                 viewPager.adapter = mAdapter
                 viewPager.adapter?.notifyDataSetChanged()
@@ -230,7 +331,13 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
             if (content.isNotEmpty()) {
                 viewModel.searchPlaces(content)
             } else {
-                llActionBarLayout.visibility=View.VISIBLE
+                //历史记录刷新
+
+                // flowListView?.mFoldState=null
+                LoaderManager.getInstance(this).initLoader(++loaderId, null, this)
+                llActionBarLayout.visibility = View.VISIBLE
+
+
 
                 recyclerView.visibility = View.GONE
                 viewModel.placeList.clear()
@@ -253,7 +360,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
                     viewModel.placeList.clear()
                     viewModel.placeList.addAll(places)
                     adapter.notifyDataSetChanged()
-                    llActionBarLayout.visibility=View.GONE
+                    llActionBarLayout.visibility = View.GONE
 
                 } else {
                     Toast.makeText(this, "未能查询到歌曲", Toast.LENGTH_SHORT).show()

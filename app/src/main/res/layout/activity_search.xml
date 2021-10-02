@@ -143,11 +143,20 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="10dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
     app:flow_equally="false"
     app:flow_fold="true"
     app:flow_foldLines="2"
     app:flow_horizontalSpacing="10dp"
     app:flow_verticalSpacing="10dp" />
+
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:listitem="@layout/activity_search_item_3"
+    android:id="@+id/rv_search"/>
 
 </LinearLayout>
 

@@ -6,6 +6,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import com.example.yuehaoting.R;
+import com.example.yuehaoting.base.lib_search_history.jd.JDFoldLayout;
+import com.example.yuehaoting.base.lib_search_history.utils.OnFoldChangedListener;
+import timber.log.Timber;
 
 
 /**
@@ -13,7 +16,7 @@ import com.example.yuehaoting.R;
  * @describe 流布局
  * @date on 2020/12/31
  */
-public class FlowLayout extends ViewGroup {
+public class FlowLayout extends ViewGroup implements OnFoldChangedListener {
     /**
      * 默认折叠状态
      */
@@ -31,6 +34,8 @@ public class FlowLayout extends ViewGroup {
      */
     private static final int DEFAULT_GRAVITY_RIGHT = 1;
 
+
+
     /**
      * 是否折叠，默认false不折叠
      */
@@ -46,7 +51,7 @@ public class FlowLayout extends ViewGroup {
     /**
      * 折叠状态
      */
-    private Boolean mFoldState;
+   public   Boolean mFoldState;
     /**
      * 是否平均
      */
@@ -65,7 +70,7 @@ public class FlowLayout extends ViewGroup {
     private int mVerticalSpacing;
 
 
-    private OnFoldChangedListener mOnFoldChangedListener;
+    public OnFoldChangedListener mOnFoldChangedListener;
 
     public FlowLayout(Context context) {
         this(context, null);
@@ -86,8 +91,15 @@ public class FlowLayout extends ViewGroup {
         mHorizontalSpacing = a.getDimensionPixelOffset(R.styleable.FlowLayout_flow_horizontalSpacing, dp2px(4));
         mVerticalSpacing = a.getDimensionPixelOffset(R.styleable.FlowLayout_flow_verticalSpacing, dp2px(4));
         a.recycle();
+
+      mOnFoldChangedListener=this;
+
     }
 
+    @Override
+    public void onFoldChange(boolean canFold, boolean fold, int index, int surplusWidth) {
+
+    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -221,12 +233,15 @@ public class FlowLayout extends ViewGroup {
         setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width,
                 heightMode == MeasureSpec.EXACTLY ? heightSize : height);
         //折叠状态
+
+        Timber.v("刷新布局 第 %s 次  为 %s      是否折叠  %s", ++a ,newFoldState,mFoldState);
         changeFold(line > mFoldLines, newFoldState, foldIndex, surplusWidth);
     }
-
+    int a = 0;
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+
         final int layoutWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
         if (layoutWidth <= 0) {
             return;
@@ -352,6 +367,7 @@ public class FlowLayout extends ViewGroup {
      * @param newFoldState
      */
     private void changeFold(boolean canFold, boolean newFoldState, int index, int surplusWidth) {
+
         if (mFoldState == null || mFoldState != newFoldState) {
             if (canFold) {
                 mFoldState = newFoldState;
@@ -360,6 +376,7 @@ public class FlowLayout extends ViewGroup {
                 mOnFoldChangedListener.onFoldChange(canFold, newFoldState, index, surplusWidth);
             }
         }
+
     }
 
     /**
@@ -396,26 +413,27 @@ public class FlowLayout extends ViewGroup {
     }
 
 
-    /**
-     * 设置折叠状态回调
-     *
-     * @param listener
-     */
-    public void setOnFoldChangedListener(OnFoldChangedListener listener) {
-        mOnFoldChangedListener = listener;
-    }
-
-    public interface OnFoldChangedListener {
-
-
-        /**
-         * 折叠状态时时回调
-         *
-         * @param canFold      是否可以折叠，true为可以折叠，false为不可以折叠
-         * @param fold         当前折叠状态，true为折叠，false为未折叠
-         * @param index        当前显示的view索引数量
-         * @param surplusWidth 折叠状态下 剩余空间
-         */
-        void onFoldChange(boolean canFold, boolean fold, int index, int surplusWidth);
-    }
+///**
+//     * 设置折叠状态回调
+//     *
+//     * @param listener
+//     */
+//    public void setOnFoldChangedListener(OnFoldChangedListener listener) {
+//        mOnFoldChangedListener = listener;
+//    }
+//
+//
+//    public interface OnFoldChangedListener {
+//
+//
+//        /**
+//         * 折叠状态时时回调
+//         *
+//         * @param canFold      是否可以折叠，true为可以折叠，false为不可以折叠
+//         * @param fold         当前折叠状态，true为折叠，false为未折叠
+//         * @param index        当前显示的view索引数量
+//         * @param surplusWidth 折叠状态下 剩余空间
+//         */
+//        void onFoldChange(boolean canFold, boolean fold, int index, int surplusWidth);
+//    }
 }

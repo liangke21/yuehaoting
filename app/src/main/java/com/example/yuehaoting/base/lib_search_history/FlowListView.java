@@ -3,6 +3,9 @@ package com.example.yuehaoting.base.lib_search_history;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
+import com.example.yuehaoting.base.lib_search_history.jd.JDFoldLayout;
+import timber.log.Timber;
 
 /**
  * @author zwl
@@ -34,12 +37,14 @@ public class FlowListView extends FlowLayout implements FlowAdapter.OnDataChange
 
     @Override
     public void onChanged() {
+        Timber.v("刷新数据");
         updateView();
+
     }
 
 
     private void updateView() {
-        removeAllViews();
+       removeAllViews();
         if (null == flowAdapter) {
             throw new RuntimeException("adapter cannot be empty");
         }
@@ -50,6 +55,8 @@ public class FlowListView extends FlowLayout implements FlowAdapter.OnDataChange
             tagView.setTag(flowAdapter.getItem(i));
             flowAdapter.initView(tagView, flowAdapter.getItem(i), i);
             addView(tagView);
+
+
         }
     }
 
