@@ -2,16 +2,15 @@ package com.example.yuehaoting.searchFor
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
-import android.content.res.ColorStateList
-import android.content.res.TypedArray
-import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
@@ -20,17 +19,9 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
-import com.example.yuehaoting.App
-import com.example.yuehaoting.App.Companion.context
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
 import com.example.yuehaoting.base.asyncTaskLoader.WrappedAsyncTaskLoader
@@ -45,14 +36,11 @@ import com.example.yuehaoting.base.recyclerView.typeAdapter.CommonViewHolder
 import com.example.yuehaoting.base.recyclerView.typeAdapter.WithParametersCommonAdapter
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
-import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
 import com.example.yuehaoting.searchFor.adapter.data.History
 import com.example.yuehaoting.searchFor.fragment.ui.*
-import com.example.yuehaoting.searchFor.livedata.Repository
 import com.example.yuehaoting.searchFor.pagerview.MyPagerAdapter
 import com.example.yuehaoting.searchFor.viewmodel.PlaceViewModel
-import com.example.yuehaoting.util.MusicConstant
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.UIUtil
@@ -178,7 +166,42 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
 
 
         flowListView = findViewById(R.id.flow_list)
-        hAdapter = SearchHistoryAdapter()
+        hAdapter = object : SearchHistoryAdapter(){
+            override fun getView(parent: ViewGroup?, item: String?, position: Int): View {
+                return super.getView(parent, item, position)
+            }
+
+            override fun initView(view: View?, item: String?, position: Int) {
+                val textView = view!!.findViewById<TextView>(R.id.item_tv)
+                textView.text = item
+                textView.setOnClickListener {
+
+
+                    etTitleBarSearch.setText(item)
+
+                    mAdapter?.clear(fragmentList)
+                    viewPager.adapter = mAdapter
+                    viewPager.adapter?.notifyDataSetChanged()
+                    initMagicIndicator()
+                    //适配fragment
+                    intent.putExtra("Single", item)
+
+                    initFragment()
+                    llRecyclerView.visibility = View.GONE
+                    llContentFragment.visibility = View.VISIBLE
+                    llActionBarLayout.visibility = View.GONE
+                    //隐藏键盘
+                    val imm: InputMethodManager =
+                        getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.showSoftInput(etTitleBarSearch, InputMethodManager.SHOW_FORCED)
+                    imm.hideSoftInputFromWindow(etTitleBarSearch.windowToken, 0)
+                    //控制光标位置
+                    val etLength = etTitleBarSearch.text.length
+                    etTitleBarSearch.setSelection(etLength)
+
+                }
+            }
+        }
 
         flowListView?.setAdapter(hAdapter)
 
@@ -625,9 +648,10 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
             R.id.iv_title_bar_search_back -> {
             }
             R.id.tv_title_search -> {
-                val intent = Intent(MusicConstant.PLAY_DATA_CHANGES)
+            // todo   播放数据发生变化 不知道干嘛用的暂时注销  用于播放界面不兼容
+/*                val intent = Intent(MusicConstant.PLAY_DATA_CHANGES)
                 //   sendBroadcast(intent)
-                LocalBroadcastManager.getInstance(App.context).sendBroadcast(intent)
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent)*/
 
                 val i = etTitleBarSearch.text.toString()
 
