@@ -38,6 +38,13 @@ private var tAG=PlaceViewModel::class.java.simpleName
         val numbersMap = mapOf("key1" to p, "key2" to n, "key3" to w)
         singleLiveData.value = numbersMap
     }
+    val songList=ArrayList<List<KuGouSingle.Data.Lists>>()
 
-    val songList = ArrayList<KuGouSingle.Data.Lists>()
+    val songList1 = ArrayList<KuGouSingle.Data.Lists>()
+    val songList2 = ArrayList<KuGouSingle.Data.Lists>()
+    val songList3 = ArrayList<KuGouSingle.Data.Lists>()
+    val songList4 = ArrayList<KuGouSingle.Data.Lists>()
+    val songList5 = ArrayList<KuGouSingle.Data.Lists>()
+
+
 }

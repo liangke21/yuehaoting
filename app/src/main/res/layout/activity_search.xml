@@ -155,6 +155,7 @@
   <androidx.recyclerview.widget.RecyclerView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="20dp"
     tools:listitem="@layout/activity_search_item_3"
     android:id="@+id/rv_search"/>
 

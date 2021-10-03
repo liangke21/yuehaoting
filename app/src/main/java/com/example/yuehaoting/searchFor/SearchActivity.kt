@@ -3,8 +3,12 @@ package com.example.yuehaoting.searchFor
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.TypedArray
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -21,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.example.yuehaoting.App
+import com.example.yuehaoting.App.Companion.context
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
 import com.example.yuehaoting.base.asyncTaskLoader.WrappedAsyncTaskLoader
@@ -30,10 +35,9 @@ import com.example.yuehaoting.base.lib_search_history.adapter.SearchHistoryAdapt
 import com.example.yuehaoting.base.lib_search_history.jd.JDFoldLayout
 import com.example.yuehaoting.base.magicIndicator.ext.MyCommonNavigator
 import com.example.yuehaoting.base.magicIndicator.ext.ScaleTransitionPagerTitleView
-import com.example.yuehaoting.base.recyclerView.adapter.BaseRecyclerAdapter
-import com.example.yuehaoting.base.recyclerView.typeAdapter.CommonAdapter
 import com.example.yuehaoting.base.recyclerView.typeAdapter.CommonTypeAdapter
 import com.example.yuehaoting.base.recyclerView.typeAdapter.CommonViewHolder
+import com.example.yuehaoting.base.recyclerView.typeAdapter.WithParametersCommonAdapter
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.kotlin.tryNull
@@ -52,7 +56,6 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTit
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView
 import timber.log.Timber
-import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 
@@ -108,7 +111,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
     }
 
     private fun initData() {
-        viewModel.requestParameter(1, 21, "热榜")
+
     }
 
 
@@ -212,19 +215,50 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
      * 热搜关键字 外部RecyclerView
      */
     private fun hotSearchKeywords() {
+        val list=ArrayList<String>()
+        list.add("热搜")
+        list.add("国风")
+        list.add("国风")
         val layoutManager = LinearLayoutManager(this)
         layoutManager.orientation = LinearLayoutManager.HORIZONTAL
+
         hotSearchRecyclerView.layoutManager = layoutManager
+        val mBounds = Rect()
+        var mDivider: Drawable? = null
 
 
-        hotSearchRecyclerView.adapter =  object :CommonAdapter(5){
 
-            override fun mOnBindViewHolder(holder: CommonViewHolder, position: Int) {
+
+
+        hotSearchRecyclerView.adapter =  object : WithParametersCommonAdapter<String>(list) {
+
+            override fun mOnBindViewHolder(model:String,holder: CommonViewHolder, position: Int) {
+
+
+
+                viewModel.requestParameter(1, 21, model)
                 //内部
                 val internalHotSearchRecyclerView=holder.setRecyclerView(R.id.rv_search_item_3)
                 val internalLayoutManager = LinearLayoutManager(applicationContext)
                 internalHotSearchRecyclerView.layoutManager=internalLayoutManager
-                internalHotSearchKeywords(internalHotSearchRecyclerView)
+
+                internalHotSearchRecyclerView.addItemDecoration(object :RecyclerView.ItemDecoration(){
+                    override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+
+                        val path = Paint()
+                        path.style = Paint.Style.STROKE
+                        path.strokeWidth = 1f
+                            val  mx= parent.width
+                            val my=parent.height+20
+
+                            c.drawRoundRect(1f,0f,mx.toFloat(),my.toFloat(),15f,15f,path)
+
+
+
+                    }
+                })
+
+                internalHotSearchKeywords(internalHotSearchRecyclerView,position)
 
             }
 
@@ -238,20 +272,41 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
     /**
      * 热搜关键字 内部外部RecyclerView
      */
-    private fun internalHotSearchKeywords(recyclerView: RecyclerView){
+    private fun internalHotSearchKeywords(recyclerView: RecyclerView,position: Int){
 
         viewModel.singleObservedLiveData.observe(this) {
             tryNull {
                 val musicData = it.getOrNull() as KuGouSingle.Data
-                viewModel.songList.addAll(musicData.lists)
-                recyclerView.adapter= object :CommonTypeAdapter<KuGouSingle.Data.Lists>(musicData.lists){
+              when(position) {
+                  0 -> {
+                      viewModel.songList1.addAll(musicData.lists)
+                      viewModel.songList1.add(0, musicData.lists[0]) //在0索引上在插入数据
+                      viewModel.songList.add(viewModel.songList1)
+                  }
+                  1 -> {
+                      viewModel.songList2.addAll(musicData.lists)
+                      viewModel.songList2.add(0, musicData.lists[0]) //在0索引上在插入数据
+                      viewModel.songList.add(viewModel.songList2)
+                  }
+                  2 -> {
+
+                      viewModel.songList3.addAll(musicData.lists)
+                      viewModel.songList3.add(0, musicData.lists[0]) //在0索引上在插入数据
+                      viewModel.songList.add(viewModel.songList3)
+
+                  }
+              }
+
+
+                recyclerView.adapter= object :CommonTypeAdapter<KuGouSingle.Data.Lists>( viewModel.songList[position]){
                     override fun mOnBindViewHolder(
                         model: KuGouSingle.Data.Lists,
                         holder: CommonViewHolder,
                         position: Int,
                         type: Int
                     ) {
-                        if (type==0){
+                        Timber.v("热词索引%s",model.SongName)
+                        if (type==1){
                             holder.setText(R.id.tv_activity_search_item_3_item2,"热搜榜")
                         }else{
                             holder.setText(R.id.tv_1_activity_search_item_3_item,position.toString())
@@ -261,7 +316,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
                     }
 
                     override fun getLayoutId(viewType: Int): Int {
-                       if (viewType==0){
+                       if (viewType==1){
                            return R.layout.activity_search_item_3_item2
                        }
                         return R.layout.activity_search_item_3_item
@@ -269,9 +324,9 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
 
                     override fun mGetItemViewType(position: Int): Int {
                         if (position==0){
-                            return 0
+                            return 1
                         }
-                        return position
+                        return 2
                     }
                 }
             }

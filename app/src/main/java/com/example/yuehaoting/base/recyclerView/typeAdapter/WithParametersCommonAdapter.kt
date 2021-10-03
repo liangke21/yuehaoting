@@ -5,26 +5,26 @@ import androidx.recyclerview.widget.RecyclerView
 
 /**
  * 作者: LiangKe
- * 时间: 2021/10/2 18:27
- * 描述: 万能适配器RecyclerView 不带参数
+ * 时间: 2021/10/2 22:56
+ * 描述:
  */
-abstract class CommonAdapter (private val page:Int=0): RecyclerView.Adapter<CommonViewHolder>() {
+abstract class WithParametersCommonAdapter<T>(private val list: List<T>) : RecyclerView.Adapter<CommonViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonViewHolder {
-     val layoutId=getLayoutId(viewType)
+        val layoutId=getLayoutId(viewType)
 
         return CommonViewHolder.getViewHolder(parent, layoutId)
     }
 
     override fun onBindViewHolder(holder: CommonViewHolder, position: Int) {
-        mOnBindViewHolder(holder,position)
+        mOnBindViewHolder(list[position],holder,position)
     }
 
     override fun getItemCount(): Int {
-        return page
+        return list.size
     }
 
-    abstract fun mOnBindViewHolder(holder: CommonViewHolder, position: Int)
+    abstract fun mOnBindViewHolder(model:T,holder: CommonViewHolder, position: Int)
 
     abstract fun getLayoutId( viewType: Int):Int
 
