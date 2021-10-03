@@ -48,6 +48,10 @@ class CommonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         (getView(viewId) as TextView).text = text
     }
 
+    fun setText(viewId: Int):TextView{
+       return (getView(viewId) as TextView)
+    }
+
     fun setRecyclerView(viewId: Int):RecyclerView{
        return (getView(viewId) as RecyclerView)
     }

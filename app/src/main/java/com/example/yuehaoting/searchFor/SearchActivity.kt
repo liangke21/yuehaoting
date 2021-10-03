@@ -3,6 +3,7 @@ package com.example.yuehaoting.searchFor
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.graphics.Color
@@ -215,7 +216,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
      * 热搜关键字 外部RecyclerView
      */
     private fun hotSearchKeywords() {
-        val list=ArrayList<String>()
+        val list = ArrayList<String>()
         list.add("热搜")
         list.add("国风")
         list.add("国风")
@@ -223,47 +224,43 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
         layoutManager.orientation = LinearLayoutManager.HORIZONTAL
 
         hotSearchRecyclerView.layoutManager = layoutManager
-        val mBounds = Rect()
-        var mDivider: Drawable? = null
 
+        hotSearchRecyclerView.adapter = object : WithParametersCommonAdapter<String>(list) {
 
-
-
-
-        hotSearchRecyclerView.adapter =  object : WithParametersCommonAdapter<String>(list) {
-
-            override fun mOnBindViewHolder(model:String,holder: CommonViewHolder, position: Int) {
-
-
+            override fun mOnBindViewHolder(model: String, holder: CommonViewHolder, position: Int) {
 
                 viewModel.requestParameter(1, 21, model)
                 //内部
-                val internalHotSearchRecyclerView=holder.setRecyclerView(R.id.rv_search_item_3)
+                val internalHotSearchRecyclerView = holder.setRecyclerView(R.id.rv_search_item_3)
                 val internalLayoutManager = LinearLayoutManager(applicationContext)
-                internalHotSearchRecyclerView.layoutManager=internalLayoutManager
+                internalHotSearchRecyclerView.layoutManager = internalLayoutManager
 
-                internalHotSearchRecyclerView.addItemDecoration(object :RecyclerView.ItemDecoration(){
-                    override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+                internalHotSearchRecyclerView.addItemDecoration(object :
+                    RecyclerView.ItemDecoration() {
+                    override fun onDraw(
+                        c: Canvas,
+                        parent: RecyclerView,
+                        state: RecyclerView.State
+                    ) {
 
                         val path = Paint()
                         path.style = Paint.Style.STROKE
                         path.strokeWidth = 1f
-                            val  mx= parent.width
-                            val my=parent.height+20
+                        val mx = parent.width
+                        val my = parent.height + 20
 
-                            c.drawRoundRect(1f,0f,mx.toFloat(),my.toFloat(),15f,15f,path)
-
+                        c.drawRoundRect(1f, 0f, mx.toFloat(), my.toFloat(), 15f, 15f, path)
 
 
                     }
                 })
 
-                internalHotSearchKeywords(internalHotSearchRecyclerView,position)
+                internalHotSearchKeywords(internalHotSearchRecyclerView, position)
 
             }
 
             override fun getLayoutId(viewType: Int): Int {
-              return R.layout.activity_search_item_3
+                return R.layout.activity_search_item_3
             }
         }
 
@@ -272,58 +269,65 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
     /**
      * 热搜关键字 内部外部RecyclerView
      */
-    private fun internalHotSearchKeywords(recyclerView: RecyclerView,position: Int){
+    private fun internalHotSearchKeywords(recyclerView: RecyclerView, position: Int) {
 
         viewModel.singleObservedLiveData.observe(this) {
             tryNull {
                 val musicData = it.getOrNull() as KuGouSingle.Data
-              when(position) {
-                  0 -> {
-                      viewModel.songList1.addAll(musicData.lists)
-                      viewModel.songList1.add(0, musicData.lists[0]) //在0索引上在插入数据
-                      viewModel.songList.add(viewModel.songList1)
-                  }
-                  1 -> {
-                      viewModel.songList2.addAll(musicData.lists)
-                      viewModel.songList2.add(0, musicData.lists[0]) //在0索引上在插入数据
-                      viewModel.songList.add(viewModel.songList2)
-                  }
-                  2 -> {
+                when (position) {
+                    0 -> {
+                        viewModel.songList1.addAll(musicData.lists)
+                        viewModel.songList1.add(0, musicData.lists[0]) //在0索引上在插入数据
+                        viewModel.songList.add(viewModel.songList1)
+                    }
+                    1 -> {
+                        viewModel.songList2.addAll(musicData.lists)
+                        viewModel.songList2.add(0, musicData.lists[0]) //在0索引上在插入数据
+                        viewModel.songList.add(viewModel.songList2)
+                    }
+                    2 -> {
 
-                      viewModel.songList3.addAll(musicData.lists)
-                      viewModel.songList3.add(0, musicData.lists[0]) //在0索引上在插入数据
-                      viewModel.songList.add(viewModel.songList3)
+                        viewModel.songList3.addAll(musicData.lists)
+                        viewModel.songList3.add(0, musicData.lists[0]) //在0索引上在插入数据
+                        viewModel.songList.add(viewModel.songList3)
 
-                  }
-              }
+                    }
+                }
 
 
-                recyclerView.adapter= object :CommonTypeAdapter<KuGouSingle.Data.Lists>( viewModel.songList[position]){
+                recyclerView.adapter = object :
+                    CommonTypeAdapter<KuGouSingle.Data.Lists>(viewModel.songList[position]) {
                     override fun mOnBindViewHolder(
                         model: KuGouSingle.Data.Lists,
                         holder: CommonViewHolder,
                         position: Int,
                         type: Int
                     ) {
-                        Timber.v("热词索引%s",model.SongName)
-                        if (type==1){
-                            holder.setText(R.id.tv_activity_search_item_3_item2,"热搜榜")
-                        }else{
-                            holder.setText(R.id.tv_1_activity_search_item_3_item,position.toString())
-                            holder.setText(R.id.tv_2_activity_search_item_3_item,model.SongName)
+                        Timber.v("热词索引%s", model.SongName)
+                        if (type == 1) {
+                            holder.setText(R.id.tv_activity_search_item_3_item2, "热搜榜")
+                        } else {
+                          val text = holder.setText(R.id.tv_1_activity_search_item_3_item)
+                            if (position<=3){
+                                text.text = position.toString()
+                                text.setTextColor(Color.RED)
+                            }
+
+
+                            holder.setText(R.id.tv_2_activity_search_item_3_item, model.SongName)
                         }
 
                     }
 
                     override fun getLayoutId(viewType: Int): Int {
-                       if (viewType==1){
-                           return R.layout.activity_search_item_3_item2
-                       }
+                        if (viewType == 1) {
+                            return R.layout.activity_search_item_3_item2
+                        }
                         return R.layout.activity_search_item_3_item
                     }
 
                     override fun mGetItemViewType(position: Int): Int {
-                        if (position==0){
+                        if (position == 0) {
                             return 1
                         }
                         return 2
