@@ -63,6 +63,7 @@
       android:layout_height="match_parent"
       android:visibility="gone"/>
   </LinearLayout>
+
 <LinearLayout
   android:id="@+id/ll_content_fragment"
   android:visibility="gone"
@@ -82,84 +83,94 @@
     android:layout_height="match_parent"/>
 
 </LinearLayout>
-<LinearLayout
+
+<!--历史记录-->
+
+<androidx.core.widget.NestedScrollView
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:id="@+id/ll_search_History_and_hot_words"
-  android:layout_below="@+id/actionBarLayout"
-  android:orientation="vertical">
+  android:layout_height="wrap_content"
+  android:layout_below="@+id/actionBarLayout">
+
   <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="40dp"
-    android:orientation="horizontal">
-    <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="40dp"
-      android:layout_marginLeft="10dp"
-      android:text="历史记录"
-      android:textSize="20sp"
-      android:gravity="center"/>
+    android:layout_height="match_parent"
+    android:id="@+id/ll_search_History_and_hot_words"
 
-    <RelativeLayout
+    android:orientation="vertical">
+    <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
+      android:layout_height="40dp"
+      android:orientation="horizontal">
       <TextView
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="全部删除"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
+        android:text="历史记录"
         android:textSize="20sp"
-        android:layout_toStartOf="@+id/tv_search_History_Finish"
-        android:layout_marginEnd="20dp"
-        android:gravity="center"
-        android:visibility="gone"
-        android:id="@+id/tv_search_History_delete_all"/>
+        android:gravity="center"/>
 
-    <TextView
-      android:id="@+id/tv_search_History_Finish"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:text="完成"
-      android:gravity="center"
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:text="全部删除"
+          android:textSize="20sp"
+          android:layout_toStartOf="@+id/tv_search_History_Finish"
+          android:layout_marginEnd="20dp"
+          android:gravity="center"
+          android:visibility="gone"
+          android:id="@+id/tv_search_History_delete_all"/>
+
+        <TextView
+          android:id="@+id/tv_search_History_Finish"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:text="完成"
+          android:gravity="center"
+          android:layout_marginEnd="10dp"
+          android:layout_alignParentEnd="true"
+          android:textSize="20sp"
+          android:visibility="gone"/>
+
+        <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:gravity="center"
+          android:layout_marginEnd="10dp"
+          android:layout_alignParentEnd="true"
+          android:src="@drawable/play_dialog_fragment"
+          android:id="@+id/iv_search_History_delete"/>
+
+      </RelativeLayout>
+
+    </LinearLayout>
+
+    <com.example.yuehaoting.base.lib_search_history.jd.JDFoldLayout
+      android:id="@+id/flow_list"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="10dp"
+      android:layout_marginStart="10dp"
       android:layout_marginEnd="10dp"
-      android:layout_alignParentEnd="true"
-      android:textSize="20sp"
-      android:visibility="gone"/>
+      app:flow_equally="false"
+      app:flow_fold="true"
+      app:flow_foldLines="2"
+      app:flow_horizontalSpacing="10dp"
+      app:flow_verticalSpacing="10dp" />
 
-      <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:layout_marginEnd="10dp"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/play_dialog_fragment"
-        android:id="@+id/iv_search_History_delete"/>
 
-    </RelativeLayout>
+    <androidx.recyclerview.widget.RecyclerView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="20dp"
+      tools:listitem="@layout/activity_search_item_3"
+      android:id="@+id/rv_search"/>
 
   </LinearLayout>
+</androidx.core.widget.NestedScrollView>
 
-  <com.example.yuehaoting.base.lib_search_history.jd.JDFoldLayout
-    android:id="@+id/flow_list"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="10dp"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp"
-    app:flow_equally="false"
-    app:flow_fold="true"
-    app:flow_foldLines="2"
-    app:flow_horizontalSpacing="10dp"
-    app:flow_verticalSpacing="10dp" />
-
-
-  <androidx.recyclerview.widget.RecyclerView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="20dp"
-    tools:listitem="@layout/activity_search_item_3"
-    android:id="@+id/rv_search"/>
-
-</LinearLayout>
 
 
 </RelativeLayout>

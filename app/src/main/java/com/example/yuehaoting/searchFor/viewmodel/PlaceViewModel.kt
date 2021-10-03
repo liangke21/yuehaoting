@@ -23,21 +23,47 @@ private var tAG=PlaceViewModel::class.java.simpleName
     }
 
     ////////////////////////////////热搜关键字 /////////////////////////////
-    private val singleLiveData = MutableLiveData<Map<*, *>>()
+    //_______________________________________|1|______________________________________________________________________________________________________
+    private val singleLiveData1 = MutableLiveData<Map<*, *>>()
 
-    val singleObservedLiveData : LiveData<Result<KuGouSingle.Data>> = Transformations.switchMap(singleLiveData) { p ->
+    val singleObservedLiveData1 : LiveData<Result<KuGouSingle.Data>> = Transformations.switchMap(singleLiveData1) { p ->
         Repository.singlePlaces(p["key1"] as Int, p["key2"] as Int, p["key3"] as String)
     }
-
-
     /**
      * 酷狗音乐请求参数
      */
-    fun requestParameter(p:Int,n:Int,w:String) {
+    fun requestParameter1(p:Int,n:Int,w:String) {
 
         val numbersMap = mapOf("key1" to p, "key2" to n, "key3" to w)
-        singleLiveData.value = numbersMap
+        singleLiveData1.value = numbersMap
     }
+
+//_______________________________________|2|______________________________________________________________________________________________________
+
+    private val singleLiveData2 = MutableLiveData<Map<*, *>>()
+
+    val singleObservedLiveData2 : LiveData<Result<KuGouSingle.Data>> = Transformations.switchMap(singleLiveData2) { p ->
+        Repository.singlePlaces(p["key1"] as Int, p["key2"] as Int, p["key3"] as String)
+    }
+    /**
+     * 酷狗音乐请求参数
+     */
+    fun requestParameter2(p:Int,n:Int,w:String) {
+
+        val numbersMap = mapOf("key1" to p, "key2" to n, "key3" to w)
+        singleLiveData2.value = numbersMap
+    }
+
+
+
+
+
+
+
+
+
+
+
     val songList=ArrayList<List<KuGouSingle.Data.Lists>>()
 
     val songList1 = ArrayList<KuGouSingle.Data.Lists>()

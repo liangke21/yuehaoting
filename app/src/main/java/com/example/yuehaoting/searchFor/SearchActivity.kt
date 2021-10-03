@@ -45,6 +45,7 @@ import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
 import com.example.yuehaoting.searchFor.adapter.data.History
 import com.example.yuehaoting.searchFor.fragment.ui.*
+import com.example.yuehaoting.searchFor.livedata.Repository
 import com.example.yuehaoting.searchFor.pagerview.MyPagerAdapter
 import com.example.yuehaoting.searchFor.viewmodel.PlaceViewModel
 import com.example.yuehaoting.util.MusicConstant
@@ -212,24 +213,40 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
     }
 
 //_______________________________________|热搜榜|______________________________________________________________________________________________________
+
+    data class TitleList(val list: String, val title: String)
+
     /**
      * 热搜关键字 外部RecyclerView
      */
     private fun hotSearchKeywords() {
-        val list = ArrayList<String>()
-        list.add("热搜")
-        list.add("国风")
-        list.add("国风")
+        val list = ArrayList<TitleList>()
+        list.add(TitleList("热搜", "热搜榜"))
+        list.add(TitleList("国风", "国风榜"))
+        //list.add("古风")
         val layoutManager = LinearLayoutManager(this)
         layoutManager.orientation = LinearLayoutManager.HORIZONTAL
 
         hotSearchRecyclerView.layoutManager = layoutManager
 
-        hotSearchRecyclerView.adapter = object : WithParametersCommonAdapter<String>(list) {
+        hotSearchRecyclerView.adapter = object : WithParametersCommonAdapter<TitleList>(list) {
 
-            override fun mOnBindViewHolder(model: String, holder: CommonViewHolder, position: Int) {
+            override fun mOnBindViewHolder(
+                model: TitleList,
+                holder: CommonViewHolder,
+                position: Int
+            ) {
 
-                viewModel.requestParameter(1, 21, model)
+                when (position) {
+                    0 -> {
+                        viewModel.requestParameter1(1, 20, model.list)
+                    }
+                    1 -> {
+                        viewModel.requestParameter2(1, 20, model.list)
+                    }
+                }
+
+
                 //内部
                 val internalHotSearchRecyclerView = holder.setRecyclerView(R.id.rv_search_item_3)
                 val internalLayoutManager = LinearLayoutManager(applicationContext)
@@ -245,7 +262,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
 
                         val path = Paint()
                         path.style = Paint.Style.STROKE
-                        path.strokeWidth = 1f
+                        path.strokeWidth = 0.2f
                         val mx = parent.width
                         val my = parent.height + 20
 
@@ -255,7 +272,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
                     }
                 })
 
-                internalHotSearchKeywords(internalHotSearchRecyclerView, position)
+                internalHotSearchKeywords(internalHotSearchRecyclerView, position, model.title)
 
             }
 
@@ -269,77 +286,129 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
     /**
      * 热搜关键字 内部外部RecyclerView
      */
-    private fun internalHotSearchKeywords(recyclerView: RecyclerView, position: Int) {
+    private fun internalHotSearchKeywords(
+        recyclerView: RecyclerView,
+        position: Int,
+        title: String
+    ) {
 
-        viewModel.singleObservedLiveData.observe(this) {
-            tryNull {
-                val musicData = it.getOrNull() as KuGouSingle.Data
-                when (position) {
-                    0 -> {
-                        viewModel.songList1.addAll(musicData.lists)
-                        viewModel.songList1.add(0, musicData.lists[0]) //在0索引上在插入数据
-                        viewModel.songList.add(viewModel.songList1)
-                    }
-                    1 -> {
-                        viewModel.songList2.addAll(musicData.lists)
-                        viewModel.songList2.add(0, musicData.lists[0]) //在0索引上在插入数据
-                        viewModel.songList.add(viewModel.songList2)
-                    }
-                    2 -> {
 
-                        viewModel.songList3.addAll(musicData.lists)
-                        viewModel.songList3.add(0, musicData.lists[0]) //在0索引上在插入数据
-                        viewModel.songList.add(viewModel.songList3)
+        // val musicData = it.getOrNull() as KuGouSingle.Data
+        when (position) {
+            0 -> {
 
-                    }
+                viewModel.singleObservedLiveData1.observe(this) {
+                    val musicData = it.getOrNull() as KuGouSingle.Data
+                    viewModel.songList1.addAll(musicData.lists)
+                    viewModel.songList1.add(0, musicData.lists[0]) //在0索引上在插入数据
+                    recyclerView(viewModel.songList1, recyclerView, title)
                 }
 
-
-                recyclerView.adapter = object :
-                    CommonTypeAdapter<KuGouSingle.Data.Lists>(viewModel.songList[position]) {
-                    override fun mOnBindViewHolder(
-                        model: KuGouSingle.Data.Lists,
-                        holder: CommonViewHolder,
-                        position: Int,
-                        type: Int
-                    ) {
-                        Timber.v("热词索引%s", model.SongName)
-                        if (type == 1) {
-                            holder.setText(R.id.tv_activity_search_item_3_item2, "热搜榜")
-                        } else {
-                          val text = holder.setText(R.id.tv_1_activity_search_item_3_item)
-                            if (position<=3){
-                                text.text = position.toString()
-                                text.setTextColor(Color.RED)
-                            }
-
-
-                            holder.setText(R.id.tv_2_activity_search_item_3_item, model.SongName)
-                        }
-
-                    }
-
-                    override fun getLayoutId(viewType: Int): Int {
-                        if (viewType == 1) {
-                            return R.layout.activity_search_item_3_item2
-                        }
-                        return R.layout.activity_search_item_3_item
-                    }
-
-                    override fun mGetItemViewType(position: Int): Int {
-                        if (position == 0) {
-                            return 1
-                        }
-                        return 2
-                    }
+            }
+            1 -> {
+                viewModel.singleObservedLiveData2.observe(this) {
+                    val musicData = it.getOrNull() as KuGouSingle.Data
+                    viewModel.songList2.addAll(musicData.lists)
+                    viewModel.songList2.add(0, musicData.lists[0])
+                    recyclerView(viewModel.songList2, recyclerView, title)
                 }
             }
+            /*     2 -> {
+
+                     viewModel.songList3.addAll(musicData.lists)
+                     viewModel.songList3.add(0, musicData.lists[0]) //在0索引上在插入数据
+                     viewModel.songList.add(viewModel.songList3)
+
+                 }*/
+        }
+    }
+
+    /**
+     * 内部 recyclerView
+     * @param list List<Lists>
+     * @param recyclerView RecyclerView
+     */
+    fun recyclerView(
+        list: List<KuGouSingle.Data.Lists>,
+        recyclerView: RecyclerView,
+        title: String
+    ) {
+
+        recyclerView.adapter = object :
+            CommonTypeAdapter<KuGouSingle.Data.Lists>(list) {
+            override fun mOnBindViewHolder(
+                model: KuGouSingle.Data.Lists,
+                holder: CommonViewHolder,
+                position: Int,
+                type: Int
+            ) {
+                if (type == 1) {
+                    holder.setText(R.id.tv_activity_search_item_3_item2, title)
+                } else {
+                    val text = holder.setText(R.id.tv_1_activity_search_item_3_item)
+                    if (position <= 3) {
+                        text.text = position.toString()
+                        text.setTextColor(Color.RED)
+                    } else {
+                        text.text = position.toString()
+                    }
 
 
+                    holder.setText(R.id.tv_2_activity_search_item_3_item, model.SongName)
+                }
+                holder.itemView.setOnClickListener {
+                    etTitleBarSearch.setText(model.SongName)
+
+
+                    thread {
+                        getInstanceHistory().integerData(model.SongName)
+                    }
+
+                    mAdapter?.clear(fragmentList)
+                    viewPager.adapter = mAdapter
+                    viewPager.adapter?.notifyDataSetChanged()
+                    initMagicIndicator()
+                    //适配fragment
+
+                    intent.putExtra("Single", model.SongName)
+                    Timber.v("Activity传输数据2 : %s",model.SongName)
+                    initFragment()
+                    llRecyclerView.visibility = View.GONE
+                    llContentFragment.visibility = View.VISIBLE
+                    llActionBarLayout.visibility = View.GONE
+                    //隐藏键盘
+                    val imm: InputMethodManager =
+                        getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.showSoftInput(etTitleBarSearch, InputMethodManager.SHOW_FORCED)
+                    imm.hideSoftInputFromWindow(etTitleBarSearch.windowToken, 0)
+                    //控制光标位置
+                    val etLength = etTitleBarSearch.text.length
+                    etTitleBarSearch.setSelection(etLength)
+
+                }
+
+            }
+
+            override fun getLayoutId(viewType: Int): Int {
+                if (viewType == 1) {
+                    return R.layout.activity_search_item_3_item2
+                }
+                return R.layout.activity_search_item_3_item
+            }
+
+            override fun mGetItemViewType(position: Int): Int {
+                if (position == 0) {
+                    return 1
+                }
+                return 2
+            }
         }
 
     }
 
+    /**
+     * 关键字联想监听
+     */
     private fun adapterOnClickListener() {
         adapter = PlaceAdapter(viewModel.placeList, object : PlaceAdapter.SearchHintInfo {
             override fun hinInfo(i: String) {
@@ -390,6 +459,8 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
             if (content.isNotEmpty()) {
                 viewModel.searchPlaces(content)
             } else {
+                llContentFragment.visibility = View.GONE
+
                 //历史记录刷新
 
                 // flowListView?.mFoldState=null

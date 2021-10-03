@@ -5,7 +5,7 @@
   android:layout_marginStart="10dp"
   android:layout_marginTop="15dp"
   android:orientation="horizontal"
-
+  android:background="?android:attr/selectableItemBackground"
   >
 
   <TextView
@@ -20,6 +20,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="5dp"
+    android:singleLine="true"
+    android:ellipsize = "end"
     android:id="@+id/tv_2_activity_search_item_3_item"
     android:text="热搜关键字"
     android:textSize="16sp"/>
