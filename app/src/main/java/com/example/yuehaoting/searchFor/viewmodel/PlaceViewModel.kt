@@ -54,11 +54,51 @@ private var tAG=PlaceViewModel::class.java.simpleName
         singleLiveData2.value = numbersMap
     }
 
+//_______________________________________|3|______________________________________________________________________________________________________
 
+    private val singleLiveData3 = MutableLiveData<Map<*, *>>()
 
+    val singleObservedLiveData3 : LiveData<Result<KuGouSingle.Data>> = Transformations.switchMap(singleLiveData3) { p ->
+        Repository.singlePlaces(p["key1"] as Int, p["key2"] as Int, p["key3"] as String)
+    }
+    /**
+     * 酷狗音乐请求参数
+     */
+    fun requestParameter3(p:Int,n:Int,w:String) {
 
+        val numbersMap = mapOf("key1" to p, "key2" to n, "key3" to w)
+        singleLiveData3.value = numbersMap
+    }
 
+//_______________________________________|4|______________________________________________________________________________________________________
 
+    private val singleLiveData4 = MutableLiveData<Map<*, *>>()
+
+    val singleObservedLiveData4 : LiveData<Result<KuGouSingle.Data>> = Transformations.switchMap(singleLiveData4) { p ->
+        Repository.singlePlaces(p["key1"] as Int, p["key2"] as Int, p["key3"] as String)
+    }
+    /**
+     * 酷狗音乐请求参数
+     */
+    fun requestParameter4(p:Int,n:Int,w:String) {
+
+        val numbersMap = mapOf("key1" to p, "key2" to n, "key3" to w)
+        singleLiveData4.value = numbersMap
+    }
+//_______________________________________|4|______________________________________________________________________________________________________
+private val singleLiveData5 = MutableLiveData<Map<*, *>>()
+
+    val singleObservedLiveData5 : LiveData<Result<KuGouSingle.Data>> = Transformations.switchMap(singleLiveData5) { p ->
+        Repository.singlePlaces(p["key1"] as Int, p["key2"] as Int, p["key3"] as String)
+    }
+    /**
+     * 酷狗音乐请求参数
+     */
+    fun requestParameter5(p:Int,n:Int,w:String) {
+
+        val numbersMap = mapOf("key1" to p, "key2" to n, "key3" to w)
+        singleLiveData5.value = numbersMap
+    }
 
 
 

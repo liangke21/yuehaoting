@@ -1,14 +1,13 @@
 package com.example.yuehaoting.searchFor
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.content.res.TypedArray
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Rect
+import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -25,6 +24,11 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.App
 import com.example.yuehaoting.App.Companion.context
 import com.example.yuehaoting.R
@@ -223,6 +227,9 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
         val list = ArrayList<TitleList>()
         list.add(TitleList("热搜", "热搜榜"))
         list.add(TitleList("国风", "国风榜"))
+        list.add(TitleList("抖音", "抖音榜"))
+        list.add(TitleList("纯音乐", "纯音乐热榜"))
+        list.add(TitleList("影视", "影视热榜"))
         //list.add("古风")
         val layoutManager = LinearLayoutManager(this)
         layoutManager.orientation = LinearLayoutManager.HORIZONTAL
@@ -238,12 +245,15 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
             ) {
 
                 when (position) {
-                    0 -> {
-                        viewModel.requestParameter1(1, 20, model.list)
-                    }
-                    1 -> {
-                        viewModel.requestParameter2(1, 20, model.list)
-                    }
+                    0 -> viewModel.requestParameter1(1, 20, model.list)
+
+                    1 -> viewModel.requestParameter2(1, 20, model.list)
+
+                    2 -> viewModel.requestParameter3(1, 20, model.list)
+
+                    3 -> viewModel.requestParameter4(1, 20, model.list)
+
+                    4 -> viewModel.requestParameter5(1, 20, model.list)
                 }
 
 
@@ -266,7 +276,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
                         val mx = parent.width
                         val my = parent.height + 20
 
-                        c.drawRoundRect(1f, 0f, mx.toFloat(), my.toFloat(), 15f, 15f, path)
+                        c.drawRoundRect(0.1f, 0.2f, mx.toFloat(), my.toFloat(), 15f, 15f, path)
 
 
                     }
@@ -292,8 +302,6 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
         title: String
     ) {
 
-
-        // val musicData = it.getOrNull() as KuGouSingle.Data
         when (position) {
             0 -> {
 
@@ -313,13 +321,30 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
                     recyclerView(viewModel.songList2, recyclerView, title)
                 }
             }
-            /*     2 -> {
-
-                     viewModel.songList3.addAll(musicData.lists)
-                     viewModel.songList3.add(0, musicData.lists[0]) //在0索引上在插入数据
-                     viewModel.songList.add(viewModel.songList3)
-
-                 }*/
+            2 -> {
+                viewModel.singleObservedLiveData3.observe(this) {
+                    val musicData = it.getOrNull() as KuGouSingle.Data
+                    viewModel.songList3.addAll(musicData.lists)
+                    viewModel.songList3.add(0, musicData.lists[0])
+                    recyclerView(viewModel.songList3, recyclerView, title)
+                }
+            }
+            3 -> {
+                viewModel.singleObservedLiveData4.observe(this) {
+                    val musicData = it.getOrNull() as KuGouSingle.Data
+                    viewModel.songList4.addAll(musicData.lists)
+                    viewModel.songList4.add(0, musicData.lists[0])
+                    recyclerView(viewModel.songList4, recyclerView, title)
+                }
+            }
+            4->{
+                viewModel.singleObservedLiveData5.observe(this) {
+                    val musicData = it.getOrNull() as KuGouSingle.Data
+                    viewModel.songList5.addAll(musicData.lists)
+                    viewModel.songList5.add(0, musicData.lists[0])
+                    recyclerView(viewModel.songList5, recyclerView, title)
+                }
+            }
         }
     }
 
@@ -336,6 +361,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
 
         recyclerView.adapter = object :
             CommonTypeAdapter<KuGouSingle.Data.Lists>(list) {
+            @SuppressLint("CheckResult")
             override fun mOnBindViewHolder(
                 model: KuGouSingle.Data.Lists,
                 holder: CommonViewHolder,
@@ -343,6 +369,30 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
                 type: Int
             ) {
                 if (type == 1) {
+
+                    /*       val mLinearLayout=  holder.setLinearLayout(R.id.ll_activity_search_item_3_item2)
+                            //图片圆角
+                            val requestOptions = RequestOptions()
+                            // requestOptions.placeholder(R.drawable.ic_launcher_background)
+                            RequestOptions.circleCropTransform()
+                            requestOptions.transform(RoundedCorners(30))
+
+                            Glide.with(context).asBitmap()
+                                .apply(requestOptions)
+                                .load(R.drawable.search_title)
+                                .into(object : CustomTarget<Bitmap>() {
+                                    override fun onResourceReady(
+                                        resource: Bitmap,
+                                        transition: Transition<in Bitmap>?
+                                    ) {
+                                       mLinearLayout.background= BitmapDrawable(resources, resource)
+                                    }
+
+                                    override fun onLoadCleared(placeholder: Drawable?) {
+
+                                    }
+                                })
+        */
                     holder.setText(R.id.tv_activity_search_item_3_item2, title)
                 } else {
                     val text = holder.setText(R.id.tv_1_activity_search_item_3_item)
@@ -371,7 +421,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
                     //适配fragment
 
                     intent.putExtra("Single", model.SongName)
-                    Timber.v("Activity传输数据2 : %s",model.SongName)
+                    Timber.v("Activity传输数据2 : %s", model.SongName)
                     initFragment()
                     llRecyclerView.visibility = View.GONE
                     llContentFragment.visibility = View.VISIBLE

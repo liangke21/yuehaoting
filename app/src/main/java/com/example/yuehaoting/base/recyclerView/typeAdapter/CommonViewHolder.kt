@@ -4,6 +4,8 @@ import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.view.menu.MenuView
 import androidx.recyclerview.widget.RecyclerView
@@ -52,8 +54,18 @@ class CommonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
        return (getView(viewId) as TextView)
     }
 
+    /**
+     * 设置 内部 RecyclerView
+     * @param viewId Int
+     * @return RecyclerView
+     */
     fun setRecyclerView(viewId: Int):RecyclerView{
        return (getView(viewId) as RecyclerView)
     }
+
+    fun setLinearLayout(viewId: Int): FrameLayout {
+        return (getView(viewId) as FrameLayout)
+    }
+
 
 }
