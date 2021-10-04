@@ -34,6 +34,7 @@ import com.example.yuehaoting.base.magicIndicator.ext.ScaleTransitionPagerTitleV
 import com.example.yuehaoting.base.recyclerView.typeAdapter.CommonTypeAdapter
 import com.example.yuehaoting.base.recyclerView.typeAdapter.CommonViewHolder
 import com.example.yuehaoting.base.recyclerView.typeAdapter.WithParametersCommonAdapter
+import com.example.yuehaoting.base.rxJava.RxUtil
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
@@ -100,7 +101,8 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
         // ScreenProperties.phoneAttributes(this)
         //历史记录
         history()
-
+        //删除历史记录
+        deleteHistory()
         hotSearchKeywords()
     }
 
@@ -159,20 +161,26 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
     private var loaderId = 0
     private var flowListView: JDFoldLayout? = null
 
+    //是否隐藏删除按钮
+    private var isHideDeleteButton = View.GONE
+
     /**
-     * 历史记录
+     * 加载历史记录历史记录
      */
     private fun history() {
 
 
         flowListView = findViewById(R.id.flow_list)
-        hAdapter = object : SearchHistoryAdapter(){
+        hAdapter = object : SearchHistoryAdapter() {
             override fun getView(parent: ViewGroup?, item: String?, position: Int): View {
                 return super.getView(parent, item, position)
             }
 
-            override fun initView(view: View?, item: String?, position: Int) {
-                val textView = view!!.findViewById<TextView>(R.id.item_tv)
+            override fun initView(view: View, item: String?, position: Int) {
+                Timber.v("initView")
+                val imageView = view.findViewById<ImageView>(R.id.appCompatImageView)
+                imageView.visibility = isHideDeleteButton
+                val textView = view.findViewById<TextView>(R.id.item_tv)
                 textView.text = item
                 textView.setOnClickListener {
 
@@ -200,6 +208,19 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
                     etTitleBarSearch.setSelection(etLength)
 
                 }
+
+                imageView.setOnClickListener {
+                    item?.let { it1 ->
+                        getInstanceHistory()
+                            .removeData(it1)
+                            .compose(RxUtil.applySingleScheduler())
+                            .subscribe { _ ->
+
+                            }
+                    }
+                    deleteData(position)
+                }
+
             }
         }
 
@@ -214,7 +235,6 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
     }
 
     override fun onLoadFinished(loader: Loader<List<History>>, data: List<History>?) {
-
 
         Timber.v("获取历史数据%s", data?.size)
         val list = ArrayList<History>()
@@ -236,6 +256,28 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
                 emptyList()
             }
                 .blockingGet()
+        }
+    }
+
+    /**
+     * 删除历史记录
+     */
+    private fun deleteHistory() {
+        //删除全部
+        val deleteAll = findViewById<TextView>(R.id.tv_search_History_delete_all)
+        //完成
+        val finish = findViewById<TextView>(R.id.tv_search_History_Finish)
+        //删除按钮
+        val delete = findViewById<ImageView>(R.id.iv_search_History_delete)
+        delete.setOnClickListener {
+            deleteAll.visibility = View.VISIBLE
+            finish.visibility = View.VISIBLE
+            delete.visibility = View.GONE
+            flowListView?.setFold(false)
+            isHideDeleteButton = View.VISIBLE
+            flowListView?.setAdapter(hAdapter)
+
+
         }
     }
 
@@ -360,7 +402,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
                     recyclerView(viewModel.songList4, recyclerView, title)
                 }
             }
-            4->{
+            4 -> {
                 viewModel.singleObservedLiveData5.observe(this) {
                     val musicData = it.getOrNull() as KuGouSingle.Data
                     viewModel.songList5.addAll(musicData.lists)
@@ -648,7 +690,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
             R.id.iv_title_bar_search_back -> {
             }
             R.id.tv_title_search -> {
-            // todo   播放数据发生变化 不知道干嘛用的暂时注销  用于播放界面不兼容
+                // todo   播放数据发生变化 不知道干嘛用的暂时注销  用于播放界面不兼容
 /*                val intent = Intent(MusicConstant.PLAY_DATA_CHANGES)
                 //   sendBroadcast(intent)
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent)*/

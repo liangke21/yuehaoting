@@ -66,7 +66,7 @@ class PlayActivityDialogFragmentAdapter(layoutId: Int) : BaseAdapter<SongLists, 
             getInstance()
                 .deleteFromPlayQueue(listOf(data.id))
                 .compose(RxUtil.applySingleScheduler())
-                .subscribe { num: Int ->
+               .subscribe { num: Int ->
                     //删除的是当前播放的歌曲
                     if (num > 0 && getCurrentSong().id == data.id) {
                         sendLocalBroadcast(makeCodIntent(NEXT))  //发送一条广播给后台播放下一首

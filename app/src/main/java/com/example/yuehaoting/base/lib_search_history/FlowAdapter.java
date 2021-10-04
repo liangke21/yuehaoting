@@ -78,6 +78,14 @@ public abstract class FlowAdapter<T> {
     }
 
     /**
+     * 删除数据
+     */
+
+    public void deleteData(int index){
+       data.remove(index);
+        notifyDataChanged();
+    }
+    /**
      * 添加数据
      *
      * @param data

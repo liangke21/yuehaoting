@@ -126,6 +126,7 @@ import kotlin.collections.ArrayList
     fun deleteFromPlayQueue(audioIds: List<Long>): Single<Int> {
         return Single
             .fromCallable {
+                Timber.v(" deleteFromPlayQueue")
                 deleteFromPlayQueueInternal(audioIds)
             }
     }

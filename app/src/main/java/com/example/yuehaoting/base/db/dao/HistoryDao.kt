@@ -30,11 +30,7 @@ interface HistoryDao {
     @Query("DELETE FROM HistoryQueue")
     fun clear(): Int
 
-    /**
-     *  删除
-     * @param audioIds List<Long>
-     * @return Int
-     */
-    @Query(" DELETE FROM HistoryQueue WHERE name IN (:audioIds)")
-    fun deleteSongs(audioIds: List<Long>): Int
+
+    @Query(" delete from HistoryQueue where name =:name")
+    fun delete(name:String):Int
 }

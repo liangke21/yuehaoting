@@ -4,6 +4,7 @@ import com.example.yuehaoting.App
 import com.example.yuehaoting.base.db.model.HistoryQueue
 import com.example.yuehaoting.searchFor.adapter.data.History
 import io.reactivex.Single
+import timber.log.Timber
 
 /**
  * 作者: LiangKe
@@ -55,6 +56,27 @@ class HistoryRepository {
         }
     }
 
+    /**
+     * 移除数据
+     * @param name String
+     * @return Single<Int>
+     */
+    fun removeData(name:String):Single<Int>{
+        Timber.v("删除数据库中的HistoryQueue表中的1 name字段 %s",name)
+      return Single.fromCallable {
+          Timber.v("删除数据库中的HistoryQueue表中的2 name字段 %s",name)
+          deleteData(name)
+      }
+    }
+
+    /**
+     * 删除数据
+     */
+    private fun deleteData(name:String):Int{
+        Timber.v("删除数据库中的HistoryQueue表中的 name字段 %s",name)
+        return dp.historyDao().delete(name)
+
+    }
     companion object{
 
         @Volatile

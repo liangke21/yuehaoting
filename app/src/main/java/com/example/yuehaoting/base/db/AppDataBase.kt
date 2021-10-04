@@ -41,7 +41,7 @@ abstract class AppDataBase : RoomDatabase() {
     abstract fun historyDao(): HistoryDao
 
     companion object {
-        const val VERSION =5
+        const val VERSION =6
 
         @Volatile
         private var INSTANCE: AppDataBase? = null
@@ -57,14 +57,14 @@ abstract class AppDataBase : RoomDatabase() {
 
 
         private fun buildDatabase(context: Context): AppDataBase {
-            val migration = object : Migration(4,5) { //版本迁移
+            val migration = object : Migration(5,6) { //版本迁移
                 override fun migrate(database: SupportSQLiteDatabase) {
 
                 }
             }
 
             val database = Room.databaseBuilder(context.applicationContext, AppDataBase::class.java, "yuehaoting.db")
-              .addMigrations(migration)
+                .addMigrations(migration)
                 .build()
              //观察那个表的数据发生变化
             database.invalidationTracker.addObserver(object : InvalidationTracker.Observer(PlayQueue.TABLE_MAME,HistoryQueue.HISTORY_QUEUE) {
