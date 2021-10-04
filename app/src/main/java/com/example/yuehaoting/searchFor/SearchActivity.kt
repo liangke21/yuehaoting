@@ -34,6 +34,7 @@ import com.example.yuehaoting.base.magicIndicator.ext.ScaleTransitionPagerTitleV
 import com.example.yuehaoting.base.recyclerView.typeAdapter.CommonTypeAdapter
 import com.example.yuehaoting.base.recyclerView.typeAdapter.CommonViewHolder
 import com.example.yuehaoting.base.recyclerView.typeAdapter.WithParametersCommonAdapter
+import com.example.yuehaoting.base.rxJava.LogObserver
 import com.example.yuehaoting.base.rxJava.RxUtil
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
@@ -214,9 +215,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
                         getInstanceHistory()
                             .removeData(it1)
                             .compose(RxUtil.applySingleScheduler())
-                            .subscribe { _ ->
-
-                            }
+                            .subscribe(LogObserver())
                     }
                     deleteData(position)
                 }
@@ -279,6 +278,30 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
 
 
         }
+        finish.setOnClickListener {
+            deleteAll.visibility = View.GONE
+            finish.visibility = View.GONE
+            delete.visibility = View.VISIBLE
+            flowListView?.setFold(true)
+            isHideDeleteButton = View.GONE
+            flowListView?.setAdapter(hAdapter)
+        }
+
+        deleteAll.setOnClickListener {
+            getInstanceHistory()
+                .clearHistoryQueue()
+                .compose(RxUtil.applySingleScheduler())
+                .subscribe(LogObserver())
+            hAdapter?.clear()
+            flowListView?.setAdapter(hAdapter)
+
+            deleteAll.visibility = View.GONE
+            finish.visibility = View.GONE
+            delete.visibility = View.VISIBLE
+            flowListView?.setFold(true)
+            isHideDeleteButton = View.GONE
+        }
+
     }
 
 //_______________________________________|热搜榜|______________________________________________________________________________________________________

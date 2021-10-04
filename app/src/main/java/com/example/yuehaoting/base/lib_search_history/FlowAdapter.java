@@ -85,6 +85,14 @@ public abstract class FlowAdapter<T> {
        data.remove(index);
         notifyDataChanged();
     }
+
+    /**
+     * 清空
+     */
+    public void clear() {
+        data.clear();
+    }
+
     /**
      * 添加数据
      *

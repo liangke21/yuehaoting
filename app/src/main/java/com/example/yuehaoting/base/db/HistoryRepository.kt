@@ -77,6 +77,16 @@ class HistoryRepository {
         return dp.historyDao().delete(name)
 
     }
+
+    /**
+     * 清空
+     */
+    fun clearHistoryQueue(): Single<Int> {
+        return Single
+            .fromCallable {
+                dp.historyDao().clear()
+            }
+    }
     companion object{
 
         @Volatile
