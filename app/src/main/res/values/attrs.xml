@@ -22,6 +22,17 @@
     <!--圆背景-->
     <attr name="backgroundL" format="color"/>
   </declare-styleable>
+  <!--圆弧进度条-->
+
+
+
+  <declare-styleable name="BottomNavigationView">
+  <!--园半径-->
+  <attr name="circleRadius" format="dimension"/>
+  <!--线条粗细-->
+  <attr name="strokeWidthK" format="dimension"/>
+  </declare-styleable>
+
 
 
   <!-- 流布局-->
