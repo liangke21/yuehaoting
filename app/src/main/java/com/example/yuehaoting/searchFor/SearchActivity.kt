@@ -240,8 +240,6 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
         data?.let { list.addAll(it) }
         list.reverse()// 倒序排列
         hAdapter?.setNewData(list.map { it.name })
-
-
     }
 
     override fun onLoaderReset(loader: Loader<List<History>>) {

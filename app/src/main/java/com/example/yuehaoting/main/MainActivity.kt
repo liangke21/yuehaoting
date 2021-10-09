@@ -45,6 +45,9 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         //去除BottomNavigationView标题栏
         this.supportActionBar?.hide()
         initView()
+
+
+
     }
 
     private fun initView() {

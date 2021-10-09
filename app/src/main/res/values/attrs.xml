@@ -16,6 +16,8 @@
     <attr name="circleColor" format="color"/>
     <attr name="ringColor" format="color"/>
     <attr name="ringBgColor" format="color"/>
+
+    <attr name="bulgeRadius" format="dimension"/>
   </declare-styleable>
 
 
