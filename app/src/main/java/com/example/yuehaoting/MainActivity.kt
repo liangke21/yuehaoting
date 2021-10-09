@@ -2,6 +2,7 @@ package com.example.yuehaoting
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.yuehaoting.callback.MusicEvenCallback
 import com.example.yuehaoting.databinding.ActivityMainBinding
 
 
@@ -9,7 +10,7 @@ import com.example.yuehaoting.databinding.ActivityMainBinding
  * 页面播放
  * 2021.5.8
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity()  {
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

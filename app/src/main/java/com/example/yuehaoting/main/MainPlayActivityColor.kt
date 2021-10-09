@@ -1,4 +1,4 @@
-package com.example.yuehaoting.playInterface.activity
+package com.example.yuehaoting.main
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
@@ -26,21 +26,28 @@ import timber.log.Timber
  * 时间: 2021/7/8 16:55
  * 描述:
  */
-class PlayActivityColor(private val binding: PlayActivityBinding,private val activity:Activity) {
+/*
+class MainPlayActivityColor(private val bindingM: ActivityMainBinding, private val activity: Activity) {
 
     var valueAnimator: ValueAnimator? = null
 
-    /**
+    private val binding = bindingM.layoutBehavior2
+
+    */
+/**
      * 根据主题修改颜色
-     */
+     *//*
+
     fun setThemeColor() {
         val accentColor = ThemeStore.accentColor
         val tintColor = ThemeStore.playerBtnColor
 
         //修改控制按钮颜色
-        Theme.tintDrawable(binding.layoutPlayLayout.ibPlayNextTrack, R.drawable.play_btn_next, accentColor)
+*/
+/*        Theme.tintDrawable(binding.layoutPlayLayout.ibPlayNextTrack, R.drawable.play_btn_next, accentColor)
         Theme.tintDrawable(binding.layoutPlayLayout.ibPlayPreviousSong, R.drawable.play_btn_pre, accentColor)
-        binding.layoutPlayLayout.ppvPlayPause.setBackgroundColor(65656)
+        binding.layoutPlayLayout.ppvPlayPause.setBackgroundColor(65656)*//*
+
         //进度条颜色
         updateSeeKBarColor(accentColor)
 
@@ -57,12 +64,14 @@ class PlayActivityColor(private val binding: PlayActivityBinding,private val act
         val playMode = getSp(activity, MusicConstant.NAME) {
             getInt(MusicConstant.PLAY_MODEL, MusicConstant.LIST_LOOP)
         }
-        Timber.v("播放模式Color %s",playMode)
-        Theme.tintDrawable(
+        Timber.v("播放模式Color %s", playMode)
+*/
+/*        Theme.tintDrawable(
             binding.layoutPlayLayout.ibPlayPlayMode,
             if (playMode == MusicConstant.LIST_LOOP) R.drawable.play_btn_loop else if (playMode == MusicConstant.RANDOM_PATTERN) R.drawable.play_btn_shuffle else R.drawable.play_btn_loop_one,
             tintColor
-        )
+        )*//*
+
 
         //播放列队
         Theme.tintDrawable(binding.layoutPlayLayout.ibMusicList, R.drawable.play_btn_normal_list, tintColor)
@@ -94,16 +103,18 @@ class PlayActivityColor(private val binding: PlayActivityBinding,private val act
     }
 
 
-    /**
+    */
+/**
      * 图标跟随背图片颜色变化
-     */
-     fun updateViewsColor(swatch: Palette.Swatch,boolean: Boolean){
-        Timber.tag(playColor).v("歌手写真图片颜色:%s",swatch.rgb.toString() +"||"+ Color.parseColor("#FFFFFFFF").toString())
+     *//*
+
+    fun updateViewsColor(swatch: Palette.Swatch, boolean: Boolean) {
+        Timber.tag(playColor).v("歌手写真图片颜色:%s", swatch.rgb.toString() + "||" + Color.parseColor("#FFFFFFFF").toString())
         //播放控件
         binding.layoutPlayLayout.apply {
             //  ibPlayPreviousSong.setColorFilter(swatch.rgb,PorterDuff.Mode.SRC)
             Theme.tintDrawable(ibPlayNextTrack, R.drawable.play_btn_next, -1)
-            Theme.tintDrawable(ibPlayPreviousSong,R.drawable.play_btn_pre, -1)
+            Theme.tintDrawable(ibPlayPreviousSong, R.drawable.play_btn_pre, -1)
             ppvPlayPause.setBackgroundColor(swatch.rgb)
         }
 
@@ -112,16 +123,18 @@ class PlayActivityColor(private val binding: PlayActivityBinding,private val act
         //播放列队
         Theme.tintDrawable(binding.layoutPlayLayout.ibMusicList, R.drawable.play_btn_normal_list, -1)
         //是否开启背景图片为颜色
-          if (boolean){
-              Timber.tag(playColor).v("是否开启背景图片为颜色歌手写真图片颜色:%s",boolean)
-              startBGColorAnimation(swatch)
-          }
+        if (boolean) {
+            Timber.tag(playColor).v("是否开启背景图片为颜色歌手写真图片颜色:%s", boolean)
+            startBGColorAnimation(swatch)
+        }
 
     }
 
-    /**
+    */
+/**
      * 背景根据图片变化
-     */
+     *//*
+
     @SuppressLint("Recycle")
     private fun startBGColorAnimation(swatch: Palette.Swatch) {
 
@@ -130,9 +143,13 @@ class PlayActivityColor(private val binding: PlayActivityBinding,private val act
         valueAnimator = ValueAnimator.ofObject(ArgbEvaluator(), Theme.resolveColor(activity, R.attr.colorSurface), swatch.rgb)
 
         valueAnimator?.addUpdateListener { animation ->
-            val drawable = DrawableGradient(GradientDrawable.Orientation.TOP_BOTTOM,
-                intArrayOf(animation.animatedValue as Int,
-                    Theme.resolveColor(activity, R.attr.colorSurface)), 0)
+            val drawable = DrawableGradient(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                intArrayOf(
+                    animation.animatedValue as Int,
+                    Theme.resolveColor(activity, R.attr.colorSurface)
+                ), 0
+            )
             binding.playerContainer.background = drawable
             Timber.tag(playColor).v("显示颜色背景:%s")
         }
@@ -141,8 +158,4 @@ class PlayActivityColor(private val binding: PlayActivityBinding,private val act
     }
 
 
-
-
-
-
-}
+}*/

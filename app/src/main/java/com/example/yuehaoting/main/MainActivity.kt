@@ -22,6 +22,7 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
     private lateinit var musicButton: MusicButtonLayout
     private var isDrawer: Boolean = true
 
+    private lateinit var bb:BottomSheetBehaviorAndBottomNavigationViewMainActivity
     /**
      * 当前是否播放
      */
@@ -34,7 +35,7 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         this.supportActionBar?.hide()
         initView()
 
-        BottomSheetBehaviorAndBottomNavigationViewMainActivity(this,binding)
+   bb=  BottomSheetBehaviorAndBottomNavigationViewMainActivity(this,binding)
 
 
 
@@ -255,6 +256,12 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         mVelocityTracker!!.computeCurrentVelocity(1000)
         val velocity = mVelocityTracker!!.yVelocity.toInt()
         return abs(velocity)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        bb.onDestroy()
     }
 }
 

@@ -14,6 +14,7 @@
     android:layout_height="match_parent"
     android:clipChildren="false"
     android:id="@+id/rl_main">
+
     <!--  &lt;!&ndash;    android:background="?android:attr/windowBackground"&ndash;&gt;
       <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"

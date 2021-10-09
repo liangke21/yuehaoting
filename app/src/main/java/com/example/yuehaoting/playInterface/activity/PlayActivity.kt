@@ -109,7 +109,7 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
     private var isPhotoBackground = true
 
     private val handler: PlayActivityHandler by lazyMy {
-        PlayActivityHandler(binding, this)
+        PlayActivityHandler( this)
     }
 
     override fun setSatuBarColor() {
