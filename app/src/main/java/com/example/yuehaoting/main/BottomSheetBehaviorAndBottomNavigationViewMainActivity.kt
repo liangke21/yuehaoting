@@ -114,4 +114,13 @@ class BottomSheetBehaviorAndBottomNavigationViewMainActivity(private val activit
     fun onDestroy() {
         baseActivity.removeMusicServiceEventListener(this)
     }
+
+
+
+
+
+
+
+
+
 }

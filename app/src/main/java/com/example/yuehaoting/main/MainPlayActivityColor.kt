@@ -31,7 +31,7 @@ class MainPlayActivityColor(private val bindingM: ActivityMainBinding, private v
 
     var valueAnimator: ValueAnimator? = null
 
-    private val binding = bindingM.layoutBehavior2
+    private val binding = bindingM.layoutBehaviorA
 
     */
 /**
@@ -150,7 +150,7 @@ class MainPlayActivityColor(private val bindingM: ActivityMainBinding, private v
                     Theme.resolveColor(activity, R.attr.colorSurface)
                 ), 0
             )
-            binding.playerContainer.background = drawable
+            binding.bottomSheetBehavior2.background = drawable
             Timber.tag(playColor).v("显示颜色背景:%s")
         }
         //这里重点注意,如果设置为1000毫秒,动画会在后台执行,无法代替直到结束
