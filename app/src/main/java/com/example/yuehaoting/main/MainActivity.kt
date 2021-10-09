@@ -12,10 +12,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.yuehaoting.base.view.MusicButtonLayout
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
 import com.example.yuehaoting.base.log.LogT
+import com.example.yuehaoting.base.view.view.MusicButtonLayout
 import com.example.yuehaoting.databinding.ActivityMainBinding
 import com.example.yuehaoting.main.ui.discover.DiscoverFragment
 import com.example.yuehaoting.musicService.service.MusicService
@@ -46,7 +46,7 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         this.supportActionBar?.hide()
         initView()
 
-
+        BottomSheetBehaviorAndBottomNavigationViewMainActivity(this,binding)
 
     }
 
@@ -76,8 +76,9 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
             }
         })
 
+/*
         //底部导航栏
-        val navView: BottomNavigationView = binding.navView
+        val navView: BottomNavigationView = binding.layoutNavView.navView
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         val appBarConfiguration = AppBarConfiguration(
             setOf(
@@ -89,6 +90,7 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
 
         //播放按钮
         musicButton = findViewById(R.id.musicButton)
+*/
 
 
     }
@@ -116,6 +118,7 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
     //播放状态已更改
     override fun onPlayStateChange() {
         super.onPlayStateChange()
+/*
         //更新按钮状态
         val isPlayful = MusicServiceRemote.isPlaying()
         if (isPlayful){
@@ -124,6 +127,7 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         }else{
             musicButton.playMusic(3)
         }
+*/
 
     }
     /**

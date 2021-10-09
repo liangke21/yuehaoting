@@ -17,7 +17,10 @@
     <attr name="ringColor" format="color"/>
     <attr name="ringBgColor" format="color"/>
 
+    <!--背景里面的圆压缩-->
     <attr name="bulgeRadius" format="dimension"/>
+    <!--圆背景-->
+    <attr name="backgroundL" format="color"/>
   </declare-styleable>
 
 

@@ -1,4 +1,4 @@
-package com.example.yuehaoting.base.view
+package com.example.yuehaoting.base.view.view
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import com.example.yuehaoting.R
+
 
 /**
  * 作者: LiangKe
@@ -25,6 +26,7 @@ class MusicButtonViewInnerCircle : View {
 
     // 圆形颜色
     private var mCircleColor = 0
+
     // 圆心y坐标
     private var mYCenter = 0
 
@@ -33,6 +35,7 @@ class MusicButtonViewInnerCircle : View {
     //是否设置图片
     private var isBitmap = false
 
+    private var bulgeRadius = 0f
     constructor(context: Context?) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         val typeArray = context.theme.obtainStyledAttributes(
@@ -40,9 +43,9 @@ class MusicButtonViewInnerCircle : View {
             R.styleable.TasksCompletedView, 0, 0
         )
 
-            mStrokeWidth = typeArray.getDimension(R.styleable.TasksCompletedView_strokeWidthL, 10f)
-            mCircleColor = typeArray.getColor(R.styleable.TasksCompletedView_circleColor, -0x1)
-
+        mStrokeWidth = typeArray.getDimension(R.styleable.TasksCompletedView_strokeWidthL, 10f)
+        mCircleColor = typeArray.getColor(R.styleable.TasksCompletedView_circleColor, -0x1)
+        bulgeRadius = typeArray.getDimension(R.styleable.TasksCompletedView_bulgeRadius, 0f)
         initVariable()
     }
 
@@ -60,6 +63,7 @@ class MusicButtonViewInnerCircle : View {
         mCirclePaint.color = mCircleColor
         mCirclePaint.style = Paint.Style.FILL
     }
+
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
         mXCenter = width / 2
@@ -93,5 +97,12 @@ class MusicButtonViewInnerCircle : View {
         isBitmap = true
         this.bitmap = bitmap
         postInvalidate() //重绘
+    }
+
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val  measuredWidth=widthMeasureSpec -bulgeRadius.toInt()
+        val measuredHeight=heightMeasureSpec -bulgeRadius.toInt()
+        setMeasuredDimension( measuredWidth, measuredHeight)
     }
 }
