@@ -1,29 +1,17 @@
 package com.example.yuehaoting.main
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.Gravity
-import android.view.MotionEvent
-import android.view.VelocityTracker
-import android.view.View
+import android.view.*
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
-import com.example.yuehaoting.base.log.LogT
 import com.example.yuehaoting.base.view.view.MusicButtonLayout
 import com.example.yuehaoting.databinding.ActivityMainBinding
 import com.example.yuehaoting.main.ui.discover.DiscoverFragment
 import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
-import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.MyUtil.getSecond
-import com.example.yuehaoting.util.Tag
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import timber.log.Timber
 import java.lang.StrictMath.abs
 
@@ -47,6 +35,9 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         initView()
 
         BottomSheetBehaviorAndBottomNavigationViewMainActivity(this,binding)
+
+
+
 
     }
 

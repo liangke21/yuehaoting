@@ -44,6 +44,7 @@
   <style name="Theme.yuehaoting.Black" parent="Theme.yuehaoting.Base.Black"/>
   <!--暗黑色主题-->
   <style name="Theme.yuehaoting.Diablo" parent="Theme.yuehaoting.Base.Diablo"/>
+
   <style name="DialogAnimBottom" parent="@android:style/Animation">
     <item name="android:windowEnterAnimation">@anim/slide_bottom_in</item>
     <item name="android:windowExitAnimation">@anim/slide_bottom_out</item>
@@ -52,10 +53,15 @@
 
   <!--主页界面-->
 
-  <style name="MainTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-    <item name="colorPrimary">@color/white</item>
+  <style name="MainTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="colorPrimary">@color/whiteA</item>
+    <item name="android:windowTranslucentStatus">true</item>
+
+
 
   </style>
+
+
 
   <style name="footButton" parent="Theme.AppCompat.Light">
     <item name="colorPrimary">@color/purple_200</item>

@@ -9,98 +9,96 @@
   android:layout_height="match_parent">
 
 
-<RelativeLayout
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:clipChildren="false"
-  android:id="@+id/rl_main">
-
-<!--  &lt;!&ndash;    android:background="?android:attr/windowBackground"&ndash;&gt;
-  <com.google.android.material.bottomnavigation.BottomNavigationView
-    android:id="@+id/nav_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
-    app:itemIconTint="#DE24F3"
-    app:itemTextColor="#DE24F3"
-    app:labelVisibilityMode="labeled"
-    android:background="@color/white"
-    app:menu="@menu/bottom_nav_menu"/>
-
-
-&lt;!&ndash;elevation可以凸出显示&ndash;&gt;
-    <com.example.yuehaoting.base.view.view.MusicButtonLayout
-      android:id="@+id/musicButton"
-      android:layout_width="70dp"
-      android:layout_height="70dp"
-      android:elevation="8dp"
-      android:layout_marginBottom="10dp"
-      android:layout_alignParentBottom="true"
-      android:layout_centerHorizontal="true"
-      app:circleColor="@color/colorAccent"
-      app:ringBgColor="#F6F1F1"
-      app:ringColor="#0885E8"
-      app:strokeWidthBackground="3dp"
-      app:strokeWidthL="3dp"
-      app:textSizeL="16sp"/>-->
-  <fragment
-    android:id="@+id/nav_host_fragment_activity_main"
+  <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:name="androidx.navigation.fragment.NavHostFragment"
-    app:defaultNavHost="true"
-    app:layout_constraintBottom_toTopOf="@id/cl"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:navGraph="@navigation/mobile_navigation"
-    />
-
-  <androidx.coordinatorlayout.widget.CoordinatorLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/cl"
     android:clipChildren="false"
-    android:layout_alignParentBottom="true"
-    >
-    <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      app:behavior_peekHeight="0dp"
-      app:behavior_hideable="true"
-      android:clipChildren="false"
-      android:id="@+id/bottom_sheet_behavior1"
-      app:layout_behavior="@string/bottom_sheet_behavior"
-      >
-      <include
+    android:id="@+id/rl_main">
+    <!--  &lt;!&ndash;    android:background="?android:attr/windowBackground"&ndash;&gt;
+      <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/activity_main_layout__bottom_navigation_view"
-
-        android:id="@+id/layout_nav_view"/>
-    </LinearLayout>
-
-  </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-
-  <androidx.coordinatorlayout.widget.CoordinatorLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-  <include layout="@layout/activity_main_layout_bottom_sheet_behavior"/>
-
-  </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        android:layout_alignParentBottom="true"
+        app:itemIconTint="#DE24F3"
+        app:itemTextColor="#DE24F3"
+        app:labelVisibilityMode="labeled"
+        android:background="@color/white"
+        app:menu="@menu/bottom_nav_menu"/>
 
 
+    &lt;!&ndash;elevation可以凸出显示&ndash;&gt;
+        <com.example.yuehaoting.base.view.view.MusicButtonLayout
+          android:id="@+id/musicButton"
+          android:layout_width="70dp"
+          android:layout_height="70dp"
+          android:elevation="8dp"
+          android:layout_marginBottom="10dp"
+          android:layout_alignParentBottom="true"
+          android:layout_centerHorizontal="true"
+          app:circleColor="@color/colorAccent"
+          app:ringBgColor="#F6F1F1"
+          app:ringColor="#0885E8"
+          app:strokeWidthBackground="3dp"
+          app:strokeWidthL="3dp"
+          app:textSizeL="16sp"/>-->
+    <fragment
+      android:id="@+id/nav_host_fragment_activity_main"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:name="androidx.navigation.fragment.NavHostFragment"
+      app:defaultNavHost="true"
+      app:layout_constraintBottom_toTopOf="@id/cl"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:navGraph="@navigation/mobile_navigation"
+      />
 
-</RelativeLayout>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:id="@+id/cl"
+      android:clipChildren="false"
+      android:layout_alignParentBottom="true"
+      >
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:behavior_peekHeight="0dp"
+        app:behavior_hideable="true"
+        android:clipChildren="false"
+        android:id="@+id/bottom_sheet_behavior1"
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        >
+        <include
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          layout="@layout/activity_main_layout__bottom_navigation_view"
+
+          android:id="@+id/layout_nav_view"/>
+      </LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical">
+      <include layout="@layout/activity_main_layout_bottom_sheet_behavior"/>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+  </RelativeLayout>
 
   <com.google.android.material.navigation.NavigationView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:layout_gravity="start"
+    android:fitsSystemWindows="true"
     android:id="@+id/ll_main_left">
 
     <TextView
@@ -111,11 +109,11 @@
   </com.google.android.material.navigation.NavigationView>
 
 
-
   <!--左侧侧导航栏-->
   <com.google.android.material.navigation.NavigationView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_gravity="right"
     android:id="@+id/ll_main_end">
 

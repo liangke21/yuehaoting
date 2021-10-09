@@ -44,7 +44,8 @@ class BottomSheetBehaviorAndBottomNavigationViewMainActivity(private val activit
                 R.id.navigation_discover, R.id.navigation_featured, R.id.navigation_list, R.id.navigation_my
             )
         )
-        activity.setupActionBarWithNavController(navController, appBarConfiguration)
+        /**去掉标题栏**/
+    //    activity.setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
         //播放按钮
