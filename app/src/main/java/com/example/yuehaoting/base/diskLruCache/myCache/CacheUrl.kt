@@ -65,6 +65,7 @@ class CacheUrl {
      */
     fun getFromDisk(key: String): ArrayList<String>? {
 
+          try {
         Timber.v("getFromDisk:%s", key)
         val list = ArrayList<String>()
 
@@ -96,6 +97,10 @@ class CacheUrl {
 
 
         return list
+          }catch (e:IllegalArgumentException){
+              Timber.v("歌手写真id异常,可能能是空字符,")
+          }
+        return null
     }
 
 

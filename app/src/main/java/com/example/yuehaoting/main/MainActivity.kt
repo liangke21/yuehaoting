@@ -1,10 +1,12 @@
 package com.example.yuehaoting.main
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
+import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
 import com.example.yuehaoting.base.view.view.MusicButtonLayout
 import com.example.yuehaoting.databinding.ActivityMainBinding
@@ -12,6 +14,7 @@ import com.example.yuehaoting.main.ui.discover.DiscoverFragment
 import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.util.MyUtil.getSecond
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import timber.log.Timber
 import java.lang.StrictMath.abs
 
@@ -22,7 +25,7 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
     private lateinit var musicButton: MusicButtonLayout
     private var isDrawer: Boolean = true
 
-    private lateinit var bb:BottomSheetBehaviorAndBottomNavigationViewMainActivity
+    private lateinit var bb:BottomSheetBehaviorMainActivity
     /**
      * 当前是否播放
      */
@@ -35,13 +38,20 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         this.supportActionBar?.hide()
         initView()
 
-   bb=  BottomSheetBehaviorAndBottomNavigationViewMainActivity(this,binding)
-
-
-
+   bb=  BottomSheetBehaviorMainActivity(this,binding)
+   bb.onCreate()
 
     }
 
+    override fun onPause() {
+        super.onPause()
+        bb.onPause()
+    }
+
+
+    fun getForeground():Boolean{
+        return isForeground
+    }
     private fun initView() {
 
         //两侧导航栏
@@ -68,22 +78,11 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
             }
         })
 
-/*
         //底部导航栏
         val navView: BottomNavigationView = binding.layoutNavView.navView
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_discover, R.id.navigation_featured, R.id.navigation_list, R.id.navigation_my
-            )
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
+
         navView.setupWithNavController(navController)
-
-        //播放按钮
-        musicButton = findViewById(R.id.musicButton)
-*/
-
 
     }
 
@@ -104,7 +103,7 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         val temp = MusicServiceRemote.getProgress()
         currentTime = if (temp in 1 until duration) temp else 0
         duration = MusicServiceRemote.getDuration()
-        musicButton.setTotalProgress(duration)
+      //  musicButton.setTotalProgress(duration)
     }
 
     //播放状态已更改
@@ -131,11 +130,11 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
                 try {
                     val progress = MusicServiceRemote.getProgress()
                     if (progress in 1 until duration) {
-                        musicButton.setProgress(progress)
+                   //     musicButton.setProgress(progress)
                        // Log.e(getSecond(progress).toString(),getSecond(duration).toString())  //打印进度时间和当前时长
                         if (getSecond(progress)==getSecond(duration)){
                             runOnUiThread {
-                                musicButton.playMusic(4)
+                            //    musicButton.playMusic(4)
                             }
 
                         }
@@ -151,6 +150,7 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
     override fun onResume() {
         super.onResume()
         ProgressThread().start()
+        bb.onResume()
     }
     /**
      * 监听fragment传过来的监听事件

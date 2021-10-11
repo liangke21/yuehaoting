@@ -183,16 +183,16 @@ class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
         holder?.itemView?.setOnClickListener {
             Timber.v("酷狗列表角标:%s 歌曲名称:%s", position, songList[position].SingerName)
             if(songList[position]== MusicServiceRemote.getCurrentSong()){
-                val intent= Intent(activity, PlayActivity::class.java)
-                intent.putExtra(MusicConstant.CURRENT_SONG,songList[position])  //向下一个Activity传入当前播放的歌曲
-                activity?.startActivity(intent)
+              //  val intent= Intent(activity, PlayActivity::class.java)
+                activity?.intent?.putExtra(MusicConstant.CURRENT_SONG,songList[position])  //向下一个Activity传入当前播放的歌曲
+              //  activity?.startActivity(intent)
             }else{
                 MusicServiceRemote.setPlayQueue(songList, IntentUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(MusicConstant.EXTRA_POSITION, position))
 
-                val intent= Intent(activity, PlayActivity::class.java)
-                intent.putExtra(MusicConstant.CURRENT_SONG,songList[position])
+           //     val intent= Intent(activity, PlayActivity::class.java)
+                activity?.intent?.putExtra(MusicConstant.CURRENT_SONG,songList[position])
                 // intent.putExtra("isPlay",false)  作废  2021.9.12 |14.32
-                activity?.startActivity(intent)
+             //   activity?.startActivity(intent)
             }
         }
     }

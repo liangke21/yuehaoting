@@ -3,8 +3,6 @@ package com.example.yuehaoting.playInterface.activity
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import com.example.yuehaoting.databinding.PlayActivityBinding
-import com.example.yuehaoting.main.BottomSheetBehaviorAndBottomNavigationViewMainActivity
 import com.example.yuehaoting.util.MusicConstant.UPDATE_TIME_ALL
 
 import com.example.yuehaoting.util.MusicConstant.UPDATE_TIME_ONLY

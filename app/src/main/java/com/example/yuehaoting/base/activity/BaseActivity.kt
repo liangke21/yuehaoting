@@ -34,6 +34,7 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
      * 用于是否更新歌曲时间进度条
      */
     protected var isForeground = false
+
     private var serviceToken: MusicServiceRemote.ServiceToken? = null
 
     //待绑定的服务
