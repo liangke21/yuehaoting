@@ -125,7 +125,7 @@ class MusicButtonView : View {
     override fun onDraw(canvas: Canvas) {
         mXCenter = width / 2
         mYCenter = height / 2
-        Log.e("MusicButtonView", "$width,  $height  $mStrokeWidth")
+  //      Log.e("MusicButtonView", "$width,  $height  $mStrokeWidth")
 
         //外圆弧背景
         val oval1 = RectF()

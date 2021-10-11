@@ -2,9 +2,11 @@ package com.example.yuehaoting.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
@@ -31,6 +33,7 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
      * 当前是否播放
      */
     private var isPlaying = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -39,8 +42,9 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         this.supportActionBar?.hide()
         initView()
 
-     bb=BottomSheetBehaviorMainActivity(this,binding.playerContainer,binding.layoutNavView.musicButton)
+        bb=BottomSheetBehaviorMainActivity(this,binding.playerContainer,binding.layoutNavView.musicButton)
         musicButton=binding.layoutNavView.musicButton
+        musicButton.isDisplayText(false)//关闭显示字体
 
     }
 
@@ -79,7 +83,23 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         val navView: BottomNavigationView = binding.layoutNavView.navView
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
 
-        navView.setupWithNavController(navController)
+      //  navView.setupWithNavController(navController)
+        navView.setOnNavigationItemSelectedListener {
+            if (it.isChecked){
+                return@setOnNavigationItemSelectedListener true
+            }
+            // 避免B返回到A重复创建
+            val popBackStack = navController.popBackStack(it.itemId, false)
+            Log.e("DiscoverFragment",popBackStack.toString())
+            if (popBackStack) {
+                // 已创建
+                return@setOnNavigationItemSelectedListener popBackStack
+            } else {
+                // 未创建
+                return@setOnNavigationItemSelectedListener NavigationUI.onNavDestinationSelected(
+                    it, navController)
+            }
+        }
 
     }
 
@@ -128,7 +148,7 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
                     val progress = MusicServiceRemote.getProgress()
                     if (progress in 1 until duration) {
                       musicButton.setProgress(progress)
-                       // Log.e(getSecond(progress).toString(),getSecond(duration).toString())  //打印进度时间和当前时长
+                        Log.e(getSecond(progress).toString(),getSecond(duration).toString())  //打印进度时间和当前时长
                         if (getSecond(progress)==getSecond(duration)){
                             runOnUiThread {
                           musicButton.playMusic(4)

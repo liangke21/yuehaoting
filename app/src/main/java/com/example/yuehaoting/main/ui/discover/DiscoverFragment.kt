@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.yuehaoting.App
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.fragmet.BaseFragment
+import com.example.yuehaoting.base.fragmet.MyFragment
 import com.example.yuehaoting.base.magicIndicator.MySimplePagerTitleView
 import com.example.yuehaoting.base.magicIndicator.ext.MyCommonNavigator
 import com.example.yuehaoting.base.pageView.ViewPageHelperDiscover
@@ -32,7 +34,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerInd
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 
-class DiscoverFragment : Fragment(), View.OnClickListener {
+class DiscoverFragment : MyFragment(), View.OnClickListener {
 
     private lateinit var homeViewModel: DiscoverViewModel
     private var _binding: MainNavigationDiscoverBinding? = null
@@ -48,8 +50,8 @@ class DiscoverFragment : Fragment(), View.OnClickListener {
     private lateinit var mCallbackActivity: CallbackActivity
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        Log.e("DiscoverFragment","nCreateView")
         homeViewModel = ViewModelProvider(this).get(DiscoverViewModel::class.java)
-
         _binding = MainNavigationDiscoverBinding.inflate(inflater)
         initViewColors()
         initData()

@@ -12,6 +12,8 @@ import androidx.loader.content.Loader
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.asyncTaskLoader.WrappedAsyncTaskLoader
 import com.example.yuehaoting.base.db.DatabaseRepository
@@ -36,12 +38,12 @@ import timber.log.Timber
  * 时间: 2021/9/22 14:29
  * 描述:
  */
-class PlayActivityDialogFragment: BaseDialogFragment(), LoaderManager.LoaderCallbacks<List<SongLists>>{
+class PlayActivityDialogFragment : BaseDialogFragment(), LoaderManager.LoaderCallbacks<List<SongLists>> {
 
     private var _binding: PlayDialogFragmentBinding? = null
 
     private val binding
-    get() = _binding!!
+        get() = _binding!!
 
 
     val adapter: PlayActivityDialogFragmentAdapter by lazy {
@@ -50,9 +52,9 @@ class PlayActivityDialogFragment: BaseDialogFragment(), LoaderManager.LoaderCall
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
- val dialog = MaterialDialog.Builder(activity!!).customView(R.layout.play_dialog_fragment,false).build()
+        val dialog = MaterialDialog(activity!!).customView(R.layout.play_dialog_fragment,scrollable = true )
 
-        _binding = PlayDialogFragmentBinding.bind(dialog.customView!!)
+        _binding = PlayDialogFragmentBinding.bind(dialog.getCustomView())
 
         binding.recyclerview.adapter = adapter
         binding.recyclerview.layoutManager = LinearLayoutManager(context)
@@ -62,12 +64,14 @@ class PlayActivityDialogFragment: BaseDialogFragment(), LoaderManager.LoaderCall
             override fun onItemClick(view: View, position: Int) {
                 if (MusicServiceRemote.getCurrentSong().id == adapter.getDataList()[position].id) {
                     sendLocalBroadcast(
-                        IntentUtil.makeCodIntent(PAUSE_PLAYBACK))
+                        IntentUtil.makeCodIntent(PAUSE_PLAYBACK)
+                    )
 
-                }else{
+                } else {
                     sendLocalBroadcast(
                         IntentUtil.makeCodIntent(PLAY_SELECTED_SONG)
-                            .putExtra(EXTRA_POSITION, position))
+                            .putExtra(EXTRA_POSITION, position)
+                    )
                 }
 
             }
@@ -88,9 +92,9 @@ class PlayActivityDialogFragment: BaseDialogFragment(), LoaderManager.LoaderCall
         window.setGravity(Gravity.BOTTOM)
 
         //初始化LoaderManager
-        loaderManager.initLoader( LOADER_ID ++, null, this)
+        loaderManager.initLoader(LOADER_ID++, null, this)
 
-        onViewCreated(dialog.customView!!, savedInstanceState)
+        onViewCreated(dialog.getCustomView(), savedInstanceState)
         return dialog
 
     }
@@ -105,7 +109,7 @@ class PlayActivityDialogFragment: BaseDialogFragment(), LoaderManager.LoaderCall
         if (data == null) {
             return
         }
-     //   Timber.tag(Tag.queueDatabase).v("获取本地数据库数据 audioId %s %s", data[0].id, LogT.lll())
+        //   Timber.tag(Tag.queueDatabase).v("获取本地数据库数据 audioId %s %s", data[0].id, LogT.lll())
         binding.tvPlayDialogFragment.text = getString(R.string.play_queue, data.size)
         adapter.setDataList(data)
         val currentId = MusicServiceRemote.getCurrentSong().id
@@ -113,7 +117,7 @@ class PlayActivityDialogFragment: BaseDialogFragment(), LoaderManager.LoaderCall
             return
         }
 
-       // binding.recyclerview.smoothScrollToCurrentSong(data)
+        // binding.recyclerview.smoothScrollToCurrentSong(data)
     }
 
     override fun onLoaderReset(loader: Loader<List<SongLists>>) {
@@ -129,7 +133,7 @@ class PlayActivityDialogFragment: BaseDialogFragment(), LoaderManager.LoaderCall
 
     override fun onPlayListChanged(name: String) {
         super.onPlayListChanged(name)
-        Timber.tag(Tag.queueDatabase).v("广播通知列表发生改变 那个表%s %s", name,LOADER_ID)
+        Timber.tag(Tag.queueDatabase).v("广播通知列表发生改变 那个表%s %s", name, LOADER_ID)
         if (name == PlayQueue.TABLE_MAME) {
             if (true) {
                 loaderManager.restartLoader(LOADER_ID, null, this)
