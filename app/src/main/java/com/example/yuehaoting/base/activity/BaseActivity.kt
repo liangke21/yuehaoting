@@ -239,6 +239,8 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
     }
 
 
-
+    fun getForeground():Boolean{
+        return isForeground
+    }
 
 }

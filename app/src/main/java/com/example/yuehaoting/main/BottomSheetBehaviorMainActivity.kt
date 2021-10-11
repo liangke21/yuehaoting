@@ -1,20 +1,17 @@
 package com.example.yuehaoting.main
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListView
 import android.widget.SeekBar
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
-import androidx.navigation.ui.setupWithNavController
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -32,6 +29,7 @@ import com.example.yuehaoting.base.view.view.MusicButtonLayout
 import com.example.yuehaoting.callback.MusicEvenCallback
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.databinding.ActivityMainBinding
+import com.example.yuehaoting.databinding.ActivityMainLayoutBottomSheetBehaviorBinding
 import com.example.yuehaoting.databinding.PlayActivityBinding
 import com.example.yuehaoting.kotlin.*
 import com.example.yuehaoting.musicService.service.MusicService
@@ -67,18 +65,24 @@ import kotlin.properties.Delegates
  * BottomNavigationView 控件的属性
  * BottomSheetBehavior 控件的属性
  */
-class BottomSheetBehaviorMainActivity(private val activity: MainActivity, private val bindingM: ActivityMainBinding) : MusicEvenCallback
-,ActivityHandlerCallback,View.OnClickListener{
-    private  var musicButton=bindingM.layoutNavView.musicButton
+class BottomSheetBehaviorMainActivity
+    (private val activity: BaseActivity,
+     private val binding: ActivityMainLayoutBottomSheetBehaviorBinding,
+     private  var musicButton:MusicButtonLayout
+) : MusicEvenCallback,ActivityHandlerCallback,View.OnClickListener{
+
 
     private var baseActivity: BaseActivity = activity
 
-    private val binding=bindingM.playerContainer
-
     init {
+
         initView()
+
     }
 
+    /**
+     * BottomSheetBehavior初始化
+     */
     private fun initView() {
         baseActivity.addMusicServiceEventListener(this)
 
@@ -125,18 +129,6 @@ class BottomSheetBehaviorMainActivity(private val activity: MainActivity, privat
     override fun onPlayListChanged(name: String) {
 
     }
-
-/*    override fun onServiceConnected(service: MusicService) {
-        Timber.v("BottomSheetBehaviorAndBottomNavigationViewMainActivity绑定")
-    }
-
-    override fun onMetaChanged() {
-
-    }
-
-    override fun onPlayStateChange() {
-
-    }*/
 
     override fun onServiceDisConnected() {
 
@@ -232,7 +224,7 @@ class BottomSheetBehaviorMainActivity(private val activity: MainActivity, privat
         //字符集合
         mCacheString.init(activity, "Cover")
         //初始化ActivityColor
-        playActivityColor = MainPlayActivityColor(bindingM, activity)
+        playActivityColor = MainPlayActivityColor(binding, activity)
 
         receiveIntent(currentSong)
         isUpdateReceiveIntent = false
@@ -561,9 +553,13 @@ class BottomSheetBehaviorMainActivity(private val activity: MainActivity, privat
                 )
 
                 val msg =
-                    if (currentModel == MusicConstant.LIST_LOOP) activity.getString(R.string.model_normal) else if (currentModel == MusicConstant.RANDOM_PATTERN) activity.getString(
-                        R.string.model_random
-                    ) else activity.getString(R.string.model_repeat)
+                    when (currentModel) {
+                        MusicConstant.LIST_LOOP -> activity.getString(R.string.model_normal)
+                        MusicConstant.RANDOM_PATTERN -> activity.getString(
+                            R.string.model_random
+                        )
+                        else -> activity.getString(R.string.model_repeat)
+                    }
 
                 msg.showToast(activity)
             }

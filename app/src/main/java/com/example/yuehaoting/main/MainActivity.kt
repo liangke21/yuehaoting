@@ -22,7 +22,8 @@ import java.lang.StrictMath.abs
 class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var musicButton: MusicButtonLayout
+    private lateinit var musicButton :MusicButtonLayout
+
     private var isDrawer: Boolean = true
 
     private lateinit var bb:BottomSheetBehaviorMainActivity
@@ -38,7 +39,7 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         this.supportActionBar?.hide()
         initView()
 
-   bb=  BottomSheetBehaviorMainActivity(this,binding)
+   bb=  BottomSheetBehaviorMainActivity(this,binding.playerContainer,binding.layoutNavView.musicButton)
    bb.onCreate()
 
     }
@@ -48,10 +49,6 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         bb.onPause()
     }
 
-
-    fun getForeground():Boolean{
-        return isForeground
-    }
     private fun initView() {
 
         //两侧导航栏

@@ -13,6 +13,7 @@ import android.widget.SeekBar
 import androidx.palette.graphics.Palette
 import com.example.yuehaoting.R
 import com.example.yuehaoting.databinding.ActivityMainBinding
+import com.example.yuehaoting.databinding.ActivityMainLayoutBottomSheetBehaviorBinding
 import com.example.yuehaoting.databinding.PlayActivityBinding
 import com.example.yuehaoting.kotlin.getSp
 import com.example.yuehaoting.theme.*
@@ -26,11 +27,11 @@ import timber.log.Timber
  * 时间: 2021/7/8 16:55
  * 描述:
  */
-class MainPlayActivityColor(private val bindingM: ActivityMainBinding,private val activity:Activity) {
+class MainPlayActivityColor(private val binding: ActivityMainLayoutBottomSheetBehaviorBinding, private val activity:Activity) {
 
     var valueAnimator: ValueAnimator? = null
 
-    private val binding=bindingM.playerContainer
+   // private val binding=bindingM.playerContainer
     /**
      * 根据主题修改颜色
      */
