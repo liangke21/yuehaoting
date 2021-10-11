@@ -21,6 +21,7 @@ import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.main.discover.fragment1.viewModel.FragmentAKuGouViewModel
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.playInterface.activity.PlayActivity
+import com.example.yuehaoting.util.BroadcastUtil
 import com.example.yuehaoting.util.IntentUtil
 import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.NetworkUtils
@@ -180,20 +181,33 @@ class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
     }
 
     override fun songPlay(holder: SmartViewHolder?, position: Int) {
+        val intent = Intent(MusicConstant.ACTION_CMD)
         holder?.itemView?.setOnClickListener {
-            Timber.v("酷狗列表角标:%s 歌曲名称:%s", position, songList[position].SingerName)
-            if(songList[position]== MusicServiceRemote.getCurrentSong()){
+            Timber.v("酷狗列表角标:%s 歌曲名称:%s 当前歌曲是不是后台播放歌曲:%s" , position, songList[position].SingerName,songList[position]== MusicServiceRemote.getCurrentSong())
+           if(songList[position]== MusicServiceRemote.getCurrentSong()){
               //  val intent= Intent(activity, PlayActivity::class.java)
-                activity?.intent?.putExtra(MusicConstant.CURRENT_SONG,songList[position])  //向下一个Activity传入当前播放的歌曲
+              //  activity?.intent?.putExtra(MusicConstant.CURRENT_SONG,songList[position])  //向下一个Activity传入当前播放的歌曲
               //  activity?.startActivity(intent)
+
+             intent.putExtra(
+                   MusicConstant.EXTRA_CONTROL,
+                   MusicConstant.PAUSE_PLAYBACK
+               )
+               BroadcastUtil.sendLocalBroadcast(intent)
+
             }else{
-                MusicServiceRemote.setPlayQueue(songList, IntentUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(MusicConstant.EXTRA_POSITION, position))
+               MusicServiceRemote.setPlayQueue(songList, IntentUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(MusicConstant.EXTRA_POSITION, position))
+              //  MusicServiceRemote.setPlayQueue(songList, IntentUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(MusicConstant.EXTRA_POSITION, position))
 
            //     val intent= Intent(activity, PlayActivity::class.java)
-                activity?.intent?.putExtra(MusicConstant.CURRENT_SONG,songList[position])
+           //     activity?.intent?.putExtra(MusicConstant.CURRENT_SONG,songList[position])
                 // intent.putExtra("isPlay",false)  作废  2021.9.12 |14.32
              //   activity?.startActivity(intent)
             }
+
+
+
+
         }
     }
 }

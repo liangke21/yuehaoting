@@ -39,8 +39,8 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         this.supportActionBar?.hide()
         initView()
 
-   bb=  BottomSheetBehaviorMainActivity(this,binding.playerContainer,binding.layoutNavView.musicButton)
-   bb.onCreate()
+     bb=BottomSheetBehaviorMainActivity(this,binding.playerContainer,binding.layoutNavView.musicButton)
+        musicButton=binding.layoutNavView.musicButton
 
     }
 
@@ -100,13 +100,13 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         val temp = MusicServiceRemote.getProgress()
         currentTime = if (temp in 1 until duration) temp else 0
         duration = MusicServiceRemote.getDuration()
-      //  musicButton.setTotalProgress(duration)
+        musicButton.setTotalProgress(duration)
     }
 
     //播放状态已更改
     override fun onPlayStateChange() {
         super.onPlayStateChange()
-/*
+
         //更新按钮状态
         val isPlayful = MusicServiceRemote.isPlaying()
         if (isPlayful){
@@ -115,7 +115,7 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         }else{
             musicButton.playMusic(3)
         }
-*/
+
 
     }
     /**
@@ -127,11 +127,11 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
                 try {
                     val progress = MusicServiceRemote.getProgress()
                     if (progress in 1 until duration) {
-                   //     musicButton.setProgress(progress)
+                      musicButton.setProgress(progress)
                        // Log.e(getSecond(progress).toString(),getSecond(duration).toString())  //打印进度时间和当前时长
                         if (getSecond(progress)==getSecond(duration)){
                             runOnUiThread {
-                            //    musicButton.playMusic(4)
+                          musicButton.playMusic(4)
                             }
 
                         }

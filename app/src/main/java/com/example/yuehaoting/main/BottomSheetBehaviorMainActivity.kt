@@ -1,7 +1,6 @@
 package com.example.yuehaoting.main
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -28,9 +27,7 @@ import com.example.yuehaoting.base.retrofit.SongNetwork
 import com.example.yuehaoting.base.view.view.MusicButtonLayout
 import com.example.yuehaoting.callback.MusicEvenCallback
 import com.example.yuehaoting.data.kugousingle.SongLists
-import com.example.yuehaoting.databinding.ActivityMainBinding
 import com.example.yuehaoting.databinding.ActivityMainLayoutBottomSheetBehaviorBinding
-import com.example.yuehaoting.databinding.PlayActivityBinding
 import com.example.yuehaoting.kotlin.*
 import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
@@ -84,7 +81,7 @@ class BottomSheetBehaviorMainActivity
      * BottomSheetBehavior初始化
      */
     private fun initView() {
-        baseActivity.addMusicServiceEventListener(this)
+
 
         val behavior1 = BottomSheetBehavior.from(activity.findViewById(R.id.bottom_sheet_behavior1))
         val behavior2 = BottomSheetBehavior.from(activity.findViewById(R.id.playerContainer))
@@ -98,6 +95,7 @@ class BottomSheetBehaviorMainActivity
 
                 when (newState) {
                     BottomSheetBehavior.STATE_COLLAPSED -> {
+                        baseActivity.removeMusicServiceEventListener(this@BottomSheetBehaviorMainActivity)
                         behavior1.state = BottomSheetBehavior.STATE_EXPANDED
                     }
                 }
@@ -109,7 +107,8 @@ class BottomSheetBehaviorMainActivity
         })
 
         musicButton.setOnClickListener {
-
+            baseActivity.addMusicServiceEventListener(this)
+            onCreate()
             behavior2.state = BottomSheetBehavior.STATE_EXPANDED
 
             behavior1.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -211,7 +210,7 @@ class BottomSheetBehaviorMainActivity
         }
     }
 
-  fun onCreate() {
+ private fun onCreate() {
 
         currentSong = MusicServiceRemote.getCurrentSong()
 
@@ -434,6 +433,7 @@ class BottomSheetBehaviorMainActivity
 
         launchMy {
             try {
+                Log.e("initLyrics()",currentSong.toString())
                 val mLyricsReader = PlatformLyrics.lyrics(currentSong)
                 binding.ManyLyricsView.apply {
                     initLrcData()
