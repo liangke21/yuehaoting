@@ -53,6 +53,7 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         bb.onPause()
     }
 
+    @SuppressLint("WrongConstant")
     private fun initView() {
 
         //两侧导航栏
