@@ -54,7 +54,9 @@ import timber.log.Timber
  * 描述:
  */
 class MainFragment1 : BaseFragment() {
-    private lateinit var binding: MainNavigationDiscoverFragment1Binding
+    private  var _binding: MainNavigationDiscoverFragment1Binding?=null
+
+    private  val   binding get() = _binding!!
 
     private var viewModel by lazyMy { ViewModelProvider(activity!!).get(MainFragmentViewModel::class.java) }
 
@@ -65,7 +67,7 @@ class MainFragment1 : BaseFragment() {
     private val fragmentList:ArrayList<BaseFragmentNewSongRecommendation> = ArrayList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = MainNavigationDiscoverFragment1Binding.inflate(inflater)
+        _binding = MainNavigationDiscoverFragment1Binding.inflate(inflater)
       //  viewModel.kuGouSpecialRecommendViewModel(pots())
 
         initData()
@@ -317,5 +319,13 @@ class MainFragment1 : BaseFragment() {
 
        return gson.fromJson(json, typeOf)
    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.vpMainFragment1.adapter=null
+        _binding=null
+        fragmentList.clear()
+        mDataList.clear()
+    }
 
 }

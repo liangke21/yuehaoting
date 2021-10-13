@@ -36,19 +36,20 @@ import timber.log.Timber
  * 描述: 新歌推荐 酷狗
  */
 class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
-    private lateinit var binding: MainNavigationDiscoverFragment1KugouBinding
+    private  var _binding: MainNavigationDiscoverFragment1KugouBinding?=null
+
     private val viewModel by lazyMy { ViewModelProvider(this).get(FragmentAKuGouViewModel::class.java) }
 
-    private lateinit var mAdapter:CustomLengthRecyclerAdapter<NewSong.Data.Info>
+    private var mAdapter:CustomLengthRecyclerAdapter<NewSong.Data.Info>? =null
 
     private var isLoadDataForTheFirstTime=true //第一次加载数据
 
     private var songList:ArrayList<SongLists> = ArrayList()
 
-
+    private  val   binding get() = _binding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = MainNavigationDiscoverFragment1KugouBinding.inflate(layoutInflater)
+        _binding = MainNavigationDiscoverFragment1KugouBinding.inflate(layoutInflater)
 
         viewModel.kuGouSpecialRecommendViewModel(1,25)
         return binding.root
@@ -77,7 +78,7 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
         noInternetShowNewSongList()
     }
     private var page = 1
-    @SuppressLint("WrongConstant")
+    @SuppressLint("WrongConstant", "NotifyDataSetChanged")
     override fun haveInternetShowNewSongList() {
         mAdapter=NullAdapter(R.layout.main_navigation_discover_fragment1_item_b,20)
         binding.recyclerView2.adapter=mAdapter
@@ -129,7 +130,7 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
 
                        binding.recyclerView2.adapter=null
 
-                       mAdapter.notifyDataSetChanged()
+                       mAdapter?.notifyDataSetChanged()
                        mAdapter =object :CustomLengthRecyclerAdapter<NewSong.Data.Info> (viewModel.listLiveData,R.layout.main_navigation_discover_fragment1_item_b,20){
                            override fun onBindViewHolder(holder: SmartViewHolder?, model: NewSong.Data.Info?, position: Int) {
                                val img = model?.album_cover
@@ -148,7 +149,7 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
                    }
 
                    if (page >= 2) {
-                       mAdapter.loadMore(newSong?.data?.info!!)
+                       mAdapter?.loadMore(newSong?.data?.info!!)
                        binding.refreshLayout.finishLoadMore()//完成加载更多
                    }
 
@@ -226,5 +227,13 @@ class Fragment1KuGou : BaseFragmentNewSongRecommendation(), ShowNewSongList {
                 activity?.startActivity(intent)
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.recyclerView2.adapter=null
+        songList.clear()
+        mAdapter=null
+        _binding=null
     }
 }

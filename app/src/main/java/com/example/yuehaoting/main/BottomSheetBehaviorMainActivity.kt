@@ -10,6 +10,9 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModelProvider
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
@@ -63,10 +66,10 @@ import kotlin.properties.Delegates
  * BottomSheetBehavior 控件的属性
  */
 class BottomSheetBehaviorMainActivity
-    (private val activity: BaseActivity,
+    (private val activity:MainActivity,
      private val binding: ActivityMainLayoutBottomSheetBehaviorBinding,
      private  var musicButton:MusicButtonLayout
-) : MusicEvenCallback,ActivityHandlerCallback,View.OnClickListener{
+) : LifecycleObserver, MusicEvenCallback,ActivityHandlerCallback,View.OnClickListener{
 
 
     private var baseActivity: BaseActivity = activity
@@ -136,7 +139,7 @@ class BottomSheetBehaviorMainActivity
     override fun onTagChanged(oldSong: SongLists, newSongLists: SongLists) {
 
     }
-
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         baseActivity.removeMusicServiceEventListener(this)
     }
@@ -359,6 +362,10 @@ class BottomSheetBehaviorMainActivity
     private inner class ProgressThread : Thread() {
         override fun run() {
             while (activity.getForeground()) {
+                Log.e("创建线程", name)
+                if (activity.getIsThread()){
+                    break
+                }
                 try {
                     val progress = MusicServiceRemote.getProgress()
                     if (progress in 1 until duration) {
@@ -408,24 +415,19 @@ class BottomSheetBehaviorMainActivity
                 if (!backgroundMode){
                     binding.ivPlayGuide01.visibility = View.VISIBLE
                 }
-
-
-
                 val layout = binding.ManyLyricsView.layoutParams
                 layout.height = 320
                 binding.ManyLyricsView.layoutParams = layout
                 isLyricsExpansion = true
             }
-
-
         }
 
         initLyrics()
     }
-
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
-
-        ProgressThread().start()
+        Timber.v("感知生命周期","onResume")
+    //    ProgressThread().start()
     }
 
     /**

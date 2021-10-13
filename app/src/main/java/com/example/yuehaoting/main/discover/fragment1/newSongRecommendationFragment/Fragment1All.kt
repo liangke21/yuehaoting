@@ -1,5 +1,6 @@
 package com.example.yuehaoting.main.discover.fragment1.newSongRecommendationFragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -35,17 +36,21 @@ import timber.log.Timber
  * 描述:
  */
 class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
-    private lateinit var binding: MainNavigationDiscoverFragment1QuanbuBinding
+
+
+    private  var _binding: MainNavigationDiscoverFragment1QuanbuBinding?=null
+
+    private  val   binding get() = _binding!!
 
     private var viewModel by lazyMy { ViewModelProvider(activity!!).get(FragmentAKuGouViewModel::class.java) }
 
-    private lateinit var mAdapter: CustomLengthRecyclerAdapter<NewSong.Data.Info>
+    private  var mAdapter: CustomLengthRecyclerAdapter<NewSong.Data.Info>?=null
 
     private var songList:ArrayList<SongLists> = ArrayList()
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = MainNavigationDiscoverFragment1QuanbuBinding.inflate(layoutInflater)
+        _binding = MainNavigationDiscoverFragment1QuanbuBinding.inflate(layoutInflater)
 
      //   viewModel.kuGouSpecialRecommendViewModel(1,5)
 
@@ -80,6 +85,7 @@ class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
         noInternetShowNewSongList()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun haveInternetShowNewSongList() {
         mAdapter=NullAdapter(R.layout.main_navigation_discover_fragment1_item_b, 5)
         binding.recyclerview.adapter=mAdapter
@@ -123,7 +129,7 @@ class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
 
 
             binding.recyclerview.adapter = null
-            mAdapter.notifyDataSetChanged()
+            mAdapter?.notifyDataSetChanged()
 
             mAdapter = object : CustomLengthRecyclerAdapter<NewSong.Data.Info>(viewModel.listLiveData, R.layout.main_navigation_discover_fragment1_item_b, 5) {
 
@@ -210,4 +216,13 @@ class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
 
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.recyclerview.adapter = null
+        mAdapter=null
+        _binding=null
+        songList.clear()
+    }
+
 }

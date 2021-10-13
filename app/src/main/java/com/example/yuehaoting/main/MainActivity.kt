@@ -65,6 +65,8 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
 
 
         bb = BottomSheetBehaviorMainActivity(this, binding.playerContainer, binding.layoutNavView.musicButton)
+        lifecycle.addObserver(bb)
+
         musicButton = binding.layoutNavView.musicButton
         musicButton.isDisplayText(false)//关闭显示字体
 
@@ -156,6 +158,7 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
         currentTime = if (temp in 1 until duration) temp else 0
         duration = MusicServiceRemote.getDuration()
         musicButton.setTotalProgress(duration)
+        isThread(false)
     }
 
     //播放状态已更改
@@ -167,11 +170,12 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
         if (isPlayful) {
             musicButton.playMusic(2)
             musicButton.playMusic(1)
+            isThread(false)
         } else {
             musicButton.playMusic(3)
+            isThread(true)
+
         }
-
-
     }
 
     private var isThreadStarted = false
@@ -180,7 +184,7 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
         override fun run() {
             while (isForeground) {
                 try {
-                    Log.e("创建线程", isThreadStarted.toString())
+                    Log.e("创建线程1", name)
                     if (isThreadStarted) {
                         break
                     }
@@ -189,13 +193,11 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
                         runOnUiThread {
                             musicButton.setProgress(progress)
                         }
-
                         Log.e(getSecond(progress).toString(), getSecond(duration).toString())  //打印进度时间和当前时长
                         if (getSecond(progress) == getSecond(duration)) {
                             runOnUiThread {
                                 musicButton.playMusic(4)
                             }
-
                         }
                         sleep(500)
                     }
@@ -206,6 +208,9 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
         }
     }
 
+     fun getIsThread():Boolean {
+      return this.isThreadStarted
+    }
 
     private fun isThread(isThread: Boolean) {
         this.isThreadStarted = isThread
@@ -215,7 +220,6 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
         super.onResume()
         isThread(false)
         ProgressThread().start()
-        bb.onResume()
     }
 
     /**
@@ -326,7 +330,7 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
 
     override fun onDestroy() {
         super.onDestroy()
-
+        isThread(true)
         bb.onDestroy()
     }
 
