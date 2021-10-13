@@ -56,7 +56,7 @@ import timber.log.Timber
 class MainFragment1 : BaseFragment() {
     private lateinit var binding: MainNavigationDiscoverFragment1Binding
 
-    private var viewModel by lazyMy { ViewModelProvider(this).get(MainFragmentViewModel::class.java) }
+    private var viewModel by lazyMy { ViewModelProvider(activity!!).get(MainFragmentViewModel::class.java) }
 
     private lateinit var mAdapter: CustomLengthRecyclerAdapter<SpecialRecommend.Data.Special>
 
@@ -66,11 +66,11 @@ class MainFragment1 : BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = MainNavigationDiscoverFragment1Binding.inflate(inflater)
-        viewModel.kuGouSpecialRecommendViewModel(pots())
+      //  viewModel.kuGouSpecialRecommendViewModel(pots())
 
         initData()
         initView()
-
+        initMagicIndicator()
         //是否打开网络
         val isNetWork = NetworkUtils.isNetWorkAvailable(context!!)
         if (isNetWork) {
@@ -78,10 +78,11 @@ class MainFragment1 : BaseFragment() {
         } else {
             noInternet()
         }
-        initMagicIndicator()
+
 
         return binding.root
     }
+
 
     private fun initData() {
         mDataList.add("全部")
@@ -165,7 +166,7 @@ class MainFragment1 : BaseFragment() {
     * 有网落
     * 获取特别预览的数据
     */
-   @SuppressLint("VisibleForTests")
+   @SuppressLint("VisibleForTests", "NotifyDataSetChanged")
    private fun haveInternetSpeciallyRecommendedPlaylistData() {
        mAdapter = NullAdapter(R.layout.main_navigation_discover_fragment1_item_a, 6)
        binding.recyclerView.adapter = mAdapter
@@ -274,8 +275,6 @@ class MainFragment1 : BaseFragment() {
                return indicator
            }
        }
-
-
        magicIndicator.navigator = commonNavigator
       ViewPager2Helper.bind(magicIndicator, binding.vpMainFragment1, childFragmentManager,activity?.intent)
 

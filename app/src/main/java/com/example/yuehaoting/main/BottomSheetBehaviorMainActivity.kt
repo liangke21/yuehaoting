@@ -178,9 +178,11 @@ class BottomSheetBehaviorMainActivity
      */
     private var isPhotoBackground = true
 
+/*
     private val handler: PlayActivityHandler by lazyMy {
         PlayActivityHandler( this)
     }
+*/
 
     fun setSatuBarColor() {
         when (background) {
@@ -294,7 +296,7 @@ class BottomSheetBehaviorMainActivity
                 if (fromUser) {
                     updateProgressText(progress)
                 }
-                handler.sendEmptyMessage(MusicConstant.UPDATE_TIME_ONLY)
+              //  handler.sendEmptyMessage(MusicConstant.UPDATE_TIME_ONLY)
                 currentTime = progress
                 // lrcView?.seekTo(progress, true, fromUser)
             }
@@ -361,7 +363,7 @@ class BottomSheetBehaviorMainActivity
                     val progress = MusicServiceRemote.getProgress()
                     if (progress in 1 until duration) {
                         currentTime = progress
-                        handler.sendEmptyMessage(MusicConstant.UPDATE_TIME_ALL)
+                   //     handler.sendEmptyMessage(MusicConstant.UPDATE_TIME_ALL)
                         sleep(500)
                     }
                 } catch (e: Exception) {
@@ -657,7 +659,7 @@ class BottomSheetBehaviorMainActivity
     fun onPause() {
         //结束写真幻影灯片
         SingerPhoto.handlerRemoveCallbacks()
-        activity.finish()
+      //  activity.finish()
 
 
     }

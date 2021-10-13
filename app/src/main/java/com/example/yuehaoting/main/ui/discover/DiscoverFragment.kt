@@ -22,9 +22,11 @@ import com.example.yuehaoting.base.magicIndicator.MySimplePagerTitleView
 import com.example.yuehaoting.base.magicIndicator.ext.MyCommonNavigator
 import com.example.yuehaoting.base.pageView.ViewPageHelperDiscover
 import com.example.yuehaoting.databinding.MainNavigationDiscoverBinding
+import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.main.discover.fragment1.MainFragment1
 import com.example.yuehaoting.main.discover.fragment2.MainFragment2
 import com.example.yuehaoting.main.pageView.PageViewFragmentMainAdapter
+import com.example.yuehaoting.main.viewModel.MainFragmentViewModel
 import com.example.yuehaoting.searchFor.SearchActivity
 import com.example.yuehaoting.theme.Theme
 import net.lucode.hackware.magicindicator.ViewPagerHelper
@@ -49,13 +51,17 @@ class DiscoverFragment : MyFragment(), View.OnClickListener {
 
     private lateinit var mCallbackActivity: CallbackActivity
 
+
+/*    private val viewModelDiscoverFragment by lazyMy {
+        ViewModelProvider(activity!!).get(DiscoverViewModel::class.java)
+    }*/
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.e("DiscoverFragment","nCreateView")
         homeViewModel = ViewModelProvider(this).get(DiscoverViewModel::class.java)
         _binding = MainNavigationDiscoverBinding.inflate(inflater)
         initViewColors()
         initData()
-        initView()
+       initView()
 
         initMagicIndicator()
 
@@ -72,10 +78,10 @@ class DiscoverFragment : MyFragment(), View.OnClickListener {
         mTitleList.add("视频")
         mTitleList.add("听书")
 
-        fragmentList.add(MainFragment1())
+       fragmentList.add(MainFragment1())
         fragmentList.add(MainFragment2())
-        binding.vpMainContent.adapter = PageViewFragmentMainAdapter(childFragmentManager, fragmentList)
-        binding.vpMainContent.offscreenPageLimit = 2
+        binding.vpMainContent.adapter = PageViewFragmentMainAdapter(childFragmentManager,  fragmentList)
+        binding.vpMainContent.offscreenPageLimit =1
     }
 
     /**

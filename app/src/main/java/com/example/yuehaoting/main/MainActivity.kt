@@ -1,38 +1,58 @@
 package com.example.yuehaoting.main
 
 import android.annotation.SuppressLint
+import android.os.Binder
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
 import com.example.yuehaoting.base.view.view.MusicButtonLayout
+import com.example.yuehaoting.data.kugou.specialRecommend.SetSpecialRecommend
 import com.example.yuehaoting.databinding.ActivityMainBinding
+import com.example.yuehaoting.kotlin.lazyMy
+import com.example.yuehaoting.main.discover.fragment1.MainFragment1
+import com.example.yuehaoting.main.discover.fragment1.viewModel.FragmentAKuGouViewModel
+import com.example.yuehaoting.main.discover.fragment2.MainFragment2
 import com.example.yuehaoting.main.ui.discover.DiscoverFragment
+import com.example.yuehaoting.main.ui.discover.DiscoverViewModel
+import com.example.yuehaoting.main.viewModel.MainFragmentViewModel
 import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.util.MyUtil.getSecond
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import timber.log.Timber
 import java.lang.StrictMath.abs
+import java.lang.Thread.sleep
+import kotlin.concurrent.thread
 
 
-class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
+class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var musicButton :MusicButtonLayout
+    private lateinit var musicButton: MusicButtonLayout
 
     private var isDrawer: Boolean = true
 
-    private lateinit var bb:BottomSheetBehaviorMainActivity
+    private lateinit var bb: BottomSheetBehaviorMainActivity
+
     /**
      * 当前是否播放
      */
     private var isPlaying = false
+
+    private var viewModelMainFragment1 by lazyMy { ViewModelProvider(this).get(MainFragmentViewModel::class.java) }
+
+    private var viewModelFragment1All by lazyMy { ViewModelProvider(this).get(FragmentAKuGouViewModel::class.java) }
+
+    private val viewModelDiscoverFragment by lazyMy { ViewModelProvider(this).get(DiscoverViewModel::class.java) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,17 +60,30 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         setContentView(binding.root)
         //去除BottomNavigationView标题栏
         this.supportActionBar?.hide()
+        initFragmentData()
         initView()
 
-        bb=BottomSheetBehaviorMainActivity(this,binding.playerContainer,binding.layoutNavView.musicButton)
-        musicButton=binding.layoutNavView.musicButton
+
+        bb = BottomSheetBehaviorMainActivity(this, binding.playerContainer, binding.layoutNavView.musicButton)
+        musicButton = binding.layoutNavView.musicButton
         musicButton.isDisplayText(false)//关闭显示字体
 
+    }
+
+    /**
+     * 初始化fragment数据
+     */
+    private fun initFragmentData() {
+        viewModelMainFragment1.kuGouSpecialRecommendViewModel(pots())
+
+
+        viewModelFragment1All.kuGouSpecialRecommendViewModel(1, 5)
     }
 
     override fun onPause() {
         super.onPause()
         bb.onPause()
+        isThread(true)
     }
 
     @SuppressLint("WrongConstant")
@@ -84,21 +117,22 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         val navView: BottomNavigationView = binding.layoutNavView.navView
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
 
-      //  navView.setupWithNavController(navController)
+        navView.setupWithNavController(navController)
         navView.setOnNavigationItemSelectedListener {
-            if (it.isChecked){
+            if (it.isChecked) {
                 return@setOnNavigationItemSelectedListener true
             }
             // 避免B返回到A重复创建
             val popBackStack = navController.popBackStack(it.itemId, false)
-            Log.e("DiscoverFragment",popBackStack.toString())
+            Log.e("DiscoverFragment", popBackStack.toString())
             if (popBackStack) {
                 // 已创建
                 return@setOnNavigationItemSelectedListener popBackStack
             } else {
                 // 未创建
                 return@setOnNavigationItemSelectedListener NavigationUI.onNavDestinationSelected(
-                    it, navController)
+                    it, navController
+                )
             }
         }
 
@@ -111,9 +145,9 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
     }
 
 
-    private var currentTime=0
+    private var currentTime = 0
 
-    private var duration=0
+    private var duration = 0
 
     override fun onMetaChanged() {
         super.onMetaChanged()
@@ -130,29 +164,36 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
 
         //更新按钮状态
         val isPlayful = MusicServiceRemote.isPlaying()
-        if (isPlayful){
+        if (isPlayful) {
             musicButton.playMusic(2)
             musicButton.playMusic(1)
-        }else{
+        } else {
             musicButton.playMusic(3)
         }
 
 
     }
-    /**
-     * 更新进度条线程
-     */
+
+    private var isThreadStarted = false
+
     private inner class ProgressThread : Thread() {
         override fun run() {
             while (isForeground) {
                 try {
+                    Log.e("创建线程", isThreadStarted.toString())
+                    if (isThreadStarted) {
+                        break
+                    }
                     val progress = MusicServiceRemote.getProgress()
                     if (progress in 1 until duration) {
-                      musicButton.setProgress(progress)
-                        Log.e(getSecond(progress).toString(),getSecond(duration).toString())  //打印进度时间和当前时长
-                        if (getSecond(progress)==getSecond(duration)){
+                        runOnUiThread {
+                            musicButton.setProgress(progress)
+                        }
+
+                        Log.e(getSecond(progress).toString(), getSecond(duration).toString())  //打印进度时间和当前时长
+                        if (getSecond(progress) == getSecond(duration)) {
                             runOnUiThread {
-                          musicButton.playMusic(4)
+                                musicButton.playMusic(4)
                             }
 
                         }
@@ -165,21 +206,27 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         }
     }
 
+
+    private fun isThread(isThread: Boolean) {
+        this.isThreadStarted = isThread
+    }
+
     override fun onResume() {
         super.onResume()
+        isThread(false)
         ProgressThread().start()
         bb.onResume()
     }
+
     /**
      * 监听fragment传过来的监听事件
      */
     @SuppressLint("RtlHardcoded")
     override fun activityMonitoringFragment() {
-       Timber.v("你瞅啥","瞅你咋地")
+        Timber.v("你瞅啥", "瞅你咋地")
         Timber.v("openDrawer%s", Gravity.RIGHT)
         binding.drawer.openDrawer(Gravity.RIGHT)
     }
-
 
 
     //手指上下滑动时的最小速度
@@ -233,8 +280,8 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
                 //2.y轴滑动的距离在YDISTANCE_MIN范围内
                 //3.y轴上（即上下滑动的速度）<XSPEED_MIN，如果大于，则认为用户意图是在上下滑动而非左滑结束Activity
                 val fragment = intent.getIntExtra("fragment", 1)
-                val discover = intent.getIntExtra("discover",1)
-                if (fragment == 0 && isDrawer && discover==0) {
+                val discover = intent.getIntExtra("discover", 1)
+                if (fragment == 0 && isDrawer && discover == 0) {
                     if (distanceX > shortestDistance && distanceY < minimumDistanceToSlide && distanceY > -minimumDistanceToSlide && ySpeed < minIMumSpeed) {
                         Timber.v("openDrawer%s", distanceX)
                         binding.drawer.openDrawer(binding.llMainLeft)
@@ -266,6 +313,7 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         mVelocityTracker!!.recycle()
         mVelocityTracker = null
     }
+
     /**
      *
      * @return 滑动速度，以每秒钟移动了多少像素值为单位。
@@ -280,6 +328,44 @@ class MainActivity : BaseActivity() ,DiscoverFragment.CallbackActivity{
         super.onDestroy()
 
         bb.onDestroy()
+    }
+
+
+    /**
+     * 特别推荐歌单 请求头
+     */
+    private fun pots(): SetSpecialRecommend {
+
+        val json = "{\n" +
+                "    \"apiver\": 3,\n" +
+                "    \"appid\": 1005,\n" +
+                "    \"client_playlist\": [],\n" +
+                "    \"client_playlist_flag\": 0,\n" +
+                "    \"clienttime\": 1629988069,\n" +
+                "    \"clientver\": 10589,\n" +
+                "    \"key\": \"4a9c47b9ed3868d0cdef6794798e20d3\",\n" +
+                "    \"mid\": \"95751731536823398275799557653797333100\",\n" +
+                "    \"module_id\": 5,\n" +
+                "    \"platform\": \"android\",\n" +
+                "    \"req_multi\": 1,\n" +
+                "    \"session\": \"\",\n" +
+                "    \"special_list\": [\n" +
+                "        {\n" +
+                "            \"A\": 1,\n" +
+                "            \"F\": 1,\n" +
+                "            \"ID\": 0,\n" +
+                "            \"T\": 0\n" +
+                "        }\n" +
+                "    ],\n" +
+                "    \"theme_last_showtime\": 0,\n" +
+                "    \"userid\": \"0\"\n" +
+                "}"
+
+        val gson = Gson()
+
+        val typeOf = object : TypeToken<SetSpecialRecommend>() {}.type
+
+        return gson.fromJson(json, typeOf)
     }
 }
 

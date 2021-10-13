@@ -37,7 +37,7 @@ import timber.log.Timber
 class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
     private lateinit var binding: MainNavigationDiscoverFragment1QuanbuBinding
 
-    private var viewModel by lazyMy { ViewModelProvider(this).get(FragmentAKuGouViewModel::class.java) }
+    private var viewModel by lazyMy { ViewModelProvider(activity!!).get(FragmentAKuGouViewModel::class.java) }
 
     private lateinit var mAdapter: CustomLengthRecyclerAdapter<NewSong.Data.Info>
 
@@ -47,14 +47,14 @@ class Fragment1All : BaseFragmentNewSongRecommendation(), ShowNewSongList {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = MainNavigationDiscoverFragment1QuanbuBinding.inflate(layoutInflater)
 
-        viewModel.kuGouSpecialRecommendViewModel(1,5)
+     //   viewModel.kuGouSpecialRecommendViewModel(1,5)
 
         return binding.root
     }
 
     override fun onResume() {
         super.onResume()
-       // binding.root.requestLayout()
+        binding.root.requestLayout()
     }
     override fun lazyInit() {
         val layoutManager = LinearLayoutManager(context)

@@ -130,4 +130,5 @@ dependencies {
      //自适应宽度布局管理器
     implementation 'com.google.android:flexbox:2.0.1'
 
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }

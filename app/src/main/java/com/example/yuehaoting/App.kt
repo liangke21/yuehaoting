@@ -6,6 +6,8 @@ import com.example.yuehaoting.base.retrofit.SongNetwork
 import com.example.yuehaoting.kotlin.launchMy
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.searchFor.livedata.Repository
+import com.example.yuehaoting.util.phoneAttributes.NetworkConnectionJudgment.isNetWork
+import com.example.yuehaoting.util.phoneAttributes.NetworkConnectionJudgment.isOnline
 import com.example.yuehaoting.util.phoneAttributes.ScreenProperties
 import com.example.yuehaoting.util.phoneAttributes.ScreenUtils
 import timber.log.Timber
@@ -29,6 +31,8 @@ class App : InitApplication() {
      val display=ScreenProperties.phoneAttributes(this)
         width=display[0]
         height=display[1]
+        isNetWork(context)
+        isOnline(context)
     }
 
 
