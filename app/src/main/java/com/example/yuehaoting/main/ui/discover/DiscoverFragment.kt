@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.yuehaoting.App
 import com.example.yuehaoting.R
@@ -22,14 +21,11 @@ import com.example.yuehaoting.base.magicIndicator.MySimplePagerTitleView
 import com.example.yuehaoting.base.magicIndicator.ext.MyCommonNavigator
 import com.example.yuehaoting.base.pageView.ViewPageHelperDiscover
 import com.example.yuehaoting.databinding.MainNavigationDiscoverBinding
-import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.main.discover.fragment1.MainFragment1
 import com.example.yuehaoting.main.discover.fragment2.MainFragment2
 import com.example.yuehaoting.main.pageView.PageViewFragmentMainAdapter
-import com.example.yuehaoting.main.viewModel.MainFragmentViewModel
 import com.example.yuehaoting.searchFor.SearchActivity
 import com.example.yuehaoting.theme.Theme
-import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.UIUtil
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
@@ -52,20 +48,22 @@ class DiscoverFragment : MyFragment(), View.OnClickListener {
     private lateinit var mCallbackActivity: CallbackActivity
 
 
-/*    private val viewModelDiscoverFragment by lazyMy {
-        ViewModelProvider(activity!!).get(DiscoverViewModel::class.java)
-    }*/
+    /*    private val viewModelDiscoverFragment by lazyMy {
+            ViewModelProvider(activity!!).get(DiscoverViewModel::class.java)
+        }*/
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        Log.e("DiscoverFragment","nCreateView")
+        Log.e("DiscoverFragment", "nCreateView")
         homeViewModel = ViewModelProvider(this).get(DiscoverViewModel::class.java)
         _binding = MainNavigationDiscoverBinding.inflate(inflater)
         initViewColors()
         initData()
-       initView()
+
 
         initMagicIndicator()
-
+        initView()
         mCallbackActivity = activity as CallbackActivity
+
+
         return binding.root
     }
 
@@ -80,8 +78,8 @@ class DiscoverFragment : MyFragment(), View.OnClickListener {
 
        fragmentList.add(MainFragment1())
         fragmentList.add(MainFragment2())
-        binding.vpMainContent.adapter = PageViewFragmentMainAdapter(childFragmentManager,  fragmentList)
-        binding.vpMainContent.offscreenPageLimit =1
+        binding.vpMainContent.adapter = PageViewFragmentMainAdapter(childFragmentManager, fragmentList)
+        binding.vpMainContent.offscreenPageLimit = 2
     }
 
     /**
@@ -144,7 +142,7 @@ class DiscoverFragment : MyFragment(), View.OnClickListener {
             }
         }
         magicIndicator.navigator = commonNavigator7
-        ViewPageHelperDiscover.bind(magicIndicator, binding.vpMainContent,activity!!.intent)
+        ViewPageHelperDiscover.bind(magicIndicator, binding.vpMainContent, activity!!.intent)
     }
 
 
@@ -152,8 +150,7 @@ class DiscoverFragment : MyFragment(), View.OnClickListener {
     override fun onClick(v: View) {
         when (v.id) {
             binding.btMainSearch.id -> {
-                val intent = Intent(context, SearchActivity::class.java)
-
+                val intent = Intent(activity, SearchActivity::class.java)
                 startActivity(intent)
 
             }
@@ -170,6 +167,8 @@ class DiscoverFragment : MyFragment(), View.OnClickListener {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.vpMainContent.adapter = null
+        mTitleList.clear()
         _binding = null
     }
 }

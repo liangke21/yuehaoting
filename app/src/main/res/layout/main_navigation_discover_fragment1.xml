@@ -41,7 +41,7 @@
        tools:background="@color/white"
         android:id="@+id/appBar">
         <!--CollapsingToolbarLayout可以让标题栏更加丰富-->
-        <com.google.android.material.appbar.CollapsingToolbarLayout
+       <com.google.android.material.appbar.CollapsingToolbarLayout
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:id="@+id/collapsingToolbar"

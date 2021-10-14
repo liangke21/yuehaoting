@@ -34,7 +34,6 @@ class HistoryRepository {
      * @return Single<List<History>>
      */
     fun getHistory(): Single<List<History>>{
-       val history=ArrayList<History>()
         return Single.fromCallable {
             dp.historyDao().selectAll()
 

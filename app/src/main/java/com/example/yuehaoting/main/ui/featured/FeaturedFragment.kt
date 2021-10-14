@@ -1,5 +1,6 @@
 package com.example.yuehaoting.main.ui.featured
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.yuehaoting.databinding.MainNavigationFeaturedBinding
+import com.example.yuehaoting.searchFor.SearchActivity
 
 
 class FeaturedFragment : Fragment() {
@@ -35,6 +37,10 @@ class FeaturedFragment : Fragment() {
         dashboardViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
+
+        val intent = Intent(activity, SearchActivity::class.java)
+
+        activity?.startActivity(intent)
         return root
     }
 

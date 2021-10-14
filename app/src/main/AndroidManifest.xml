@@ -14,7 +14,14 @@
     android:supportsRtl="true"
     android:theme="@style/Theme.乐好听"
     tools:targetApi="n">
+    <activity
+      android:exported="true"
+      android:name=".searchFor.Main6Activity">
 
+    </activity>
+    <activity
+      android:exported="true"
+      android:name=".searchFor.Main5Activity"/>
     <activity
       android:name=".main.MainActivity"
       android:theme="@style/MainTheme">
@@ -45,7 +52,8 @@
       android:name=".loginRegistered.LoginActivity"
       android:theme="@style/TranslucentTheme">
     </activity>
-    <activity android:name=".MainActivity"
+    <activity
+      android:name=".MainActivity"
       android:theme="@style/MainTheme">
     </activity>
 
@@ -65,17 +73,17 @@
       android:enabled="true"
       android:exported="true"
       android:name=".musicService.service.MusicService">
-    <intent-filter>
-      <action android:name="android.intent.action.MEDIA_BUTTON" />
-    </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.MEDIA_BUTTON"/>
+      </intent-filter>
     </service>
   </application>
-  <uses-permission android:name="android.permission.INTERNET"/>
-  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
   <uses-permission
     android:name="android.permission.WRITE_EXTERNAL_STORAGE"
     tools:ignore="ScopedStorage"/>
-
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  <uses-permission android:name="android.permission.INTERNET"/>
+
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
 </manifest>

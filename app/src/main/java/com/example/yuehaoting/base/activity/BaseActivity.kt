@@ -17,6 +17,9 @@ import com.example.yuehaoting.util.MusicConstant.PLAY_DATA_CHANGES
 import com.example.yuehaoting.util.MusicConstant.PLAY_STATE_CHANGE
 import com.example.yuehaoting.util.MusicConstant.TAG_CHANGE
 import com.example.yuehaoting.util.Tag
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -26,10 +29,10 @@ import java.lang.ref.WeakReference
  * 时间: 2021/6/10 11:16
  * 描述:
  */
-open class BaseActivity : SmMainActivity(), MusicEvenCallback {
+open class BaseActivity : SmMainActivity(), MusicEvenCallback, CoroutineScope by MainScope() {
     private var TAG = this::class.java.simpleName
-   // private var util = BroadcastUtil()
-  //  private var myUtil = BroadcastUtil()
+    // private var util = BroadcastUtil()
+    //  private var myUtil = BroadcastUtil()
     /**
      * 用于是否更新歌曲时间进度条
      */
@@ -85,6 +88,7 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
             serviceEventListeners.remove(listener)
         }
     }
+
     /**
      * Activity传递消息 Service
      */
@@ -118,7 +122,7 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
 
     //媒体商店的变化
     override fun onMediaStoreChanged() {
-        TODO("Not yet implemented")
+
     }
 
     //权限变更
@@ -128,22 +132,23 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
 
     //播放列表变化
     override fun onPlayListChanged(name: String) {
-        for (listener in serviceEventListeners){
+        for (listener in serviceEventListeners) {
             listener.onPlayListChanged(name)
         }
     }
 
     //播放状态变化
     override fun onPlayStateChange() {
-       for (listener in serviceEventListeners){
-           listener.onPlayStateChange()
-       }
+        for (listener in serviceEventListeners) {
+            listener.onPlayStateChange()
+        }
     }
-   //播放数据改变
+
+    //播放数据改变
     override fun onMetaChanged() {
-    for (listener in serviceEventListeners){
-        listener.onMetaChanged()
-    }
+        for (listener in serviceEventListeners) {
+            listener.onMetaChanged()
+        }
     }
 
     /**
@@ -154,30 +159,30 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
     override fun onServiceConnected(service: MusicService) {
         Timber.tag(TAG).v("服务连接上2,${service}  $receiverRegistered  $TAG")
 
-    //    if(TAG =="PlayActivity") {
-            if (!receiverRegistered) {
-                musicStateReceiver = MusicStatReceiver(this)
-                Timber.tag(Tag.Broadcast).v("MusicStatReceiver(this): %s", musicStateReceiver.toString())
-                val filter = IntentFilter()
-                filter.addAction(PLAYLIST_CHANGE) //播放列表变化
-                filter.addAction(PERMISSION_CHANGE) //权限变更
-                filter.addAction(MEDIA_STORE_CHANGE) //媒体商店的变化
-                filter.addAction(PLAY_DATA_CHANGES) //播放时数据变化
-                filter.addAction(PLAY_STATE_CHANGE) //播放状态变化
-                filter.addAction(TAG_CHANGE)//歌曲标签发生变化
-                BroadcastUtil.registerLocalReceiver(musicStateReceiver!!, filter)
-                receiverRegistered = true
-            }
-            for (listener in serviceEventListeners){
-                listener.onServiceConnected(service)
-            }
-            musicStateHandler = MusicStatHandler(this)
-     //   }
+        //    if(TAG =="PlayActivity") {
+        if (!receiverRegistered) {
+            musicStateReceiver = MusicStatReceiver(this)
+            Timber.tag(Tag.Broadcast).v("MusicStatReceiver(this): %s", musicStateReceiver.toString())
+            val filter = IntentFilter()
+            filter.addAction(PLAYLIST_CHANGE) //播放列表变化
+            filter.addAction(PERMISSION_CHANGE) //权限变更
+            filter.addAction(MEDIA_STORE_CHANGE) //媒体商店的变化
+            filter.addAction(PLAY_DATA_CHANGES) //播放时数据变化
+            filter.addAction(PLAY_STATE_CHANGE) //播放状态变化
+            filter.addAction(TAG_CHANGE)//歌曲标签发生变化
+            BroadcastUtil.registerLocalReceiver(musicStateReceiver!!, filter)
+            receiverRegistered = true
+        }
+        for (listener in serviceEventListeners) {
+            listener.onServiceConnected(service)
+        }
+        musicStateHandler = MusicStatHandler(this)
+        //   }
 
     }
 
-   @SuppressLint("HandlerLeak")
-   private inner class MusicStatHandler(activity: BaseActivity) : Handler(Looper.getMainLooper()) {
+    @SuppressLint("HandlerLeak")
+    private inner class MusicStatHandler(activity: BaseActivity) : Handler(Looper.getMainLooper()) {
         private val ref: WeakReference<BaseActivity> = WeakReference(activity)
         override fun dispatchMessage(msg: Message) {
             val action = msg.obj.toString()
@@ -186,11 +191,11 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
                 when (action) {
                     PLAY_STATE_CHANGE -> {
                         activity.onPlayStateChange()
-                        Timber.v("isPlay是否播放   播放回调: %s 当前活动 %s ", action,TAG)
+                        Timber.v("isPlay是否播放   播放回调: %s 当前活动 %s ", action, TAG)
                     }
                     PLAY_DATA_CHANGES -> activity.onMetaChanged()
 
-                    PLAYLIST_CHANGE->{
+                    PLAYLIST_CHANGE -> {
                         msg.data.getString(EXTRA_PLAYLIST)?.let { activity.onPlayListChanged(it) }
                     }
                 }
@@ -205,7 +210,7 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
         private val ref: WeakReference<BaseActivity> = WeakReference(activity)
 
         override fun onReceive(context: Context, intent: Intent) {
-            Timber.tag(Tag.Broadcast).v("接收广播: %s 当前活动 %s", intent.action ,TAG)
+            Timber.tag(Tag.Broadcast).v("接收广播: %s 当前活动 %s", intent.action, TAG)
             ref.get()?.musicStateHandler?.let {
                 val action = intent.action
                 val msg = it.obtainMessage(action.hashCode())
@@ -228,18 +233,27 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback {
 
     override fun onPause() {
         super.onPause()
-        isForeground=false
+        isForeground = false
     }
+
     override fun onDestroy() {
         super.onDestroy()
         //重点,每次销毁Activity,注销广播
-        if(TAG =="PlayActivity") {
-         //   BroadcastUtil.unregisterLocalReceiver(musicStateReceiver!!)
+        cancel()
+        MusicServiceRemote.unbindFromService(serviceToken)
+        serviceEventListeners.clear()
+        musicStateHandler = null
+        musicStateHandler = null
+        serviceToken = null
+        if (receiverRegistered) {
+            BroadcastUtil.unregisterLocalReceiver(musicStateReceiver!!)
+            receiverRegistered = true
         }
+
     }
 
 
-    fun getForeground():Boolean{
+    fun getForeground(): Boolean {
         return isForeground
     }
 

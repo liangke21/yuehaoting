@@ -55,8 +55,8 @@ import timber.log.Timber
 import kotlin.concurrent.thread
 
 
-class SearchActivity : BaseActivity(), View.OnClickListener,
-    LoaderManager.LoaderCallbacks<List<History>> {
+class SearchActivity :BaseActivity(), View.OnClickListener
+    , LoaderManager.LoaderCallbacks<List<History>> {
     private lateinit var recyclerView: RecyclerView
     private lateinit var ivTitleBarSearchBack: ImageView
     private lateinit var etTitleBarSearch: EditText
@@ -78,32 +78,34 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
     private var mAdapter: MyPagerAdapter? = null
 
     private val viewModel by lazy { ViewModelProvider(this).get(PlaceViewModel::class.java) }
-    private lateinit var adapter: PlaceAdapter
+    private var adapter: PlaceAdapter? = null
 
 
+    @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_search)
 
         //数据读取
-        mSharedPreferences = getSharedPreferences("Song", Context.MODE_APPEND)
+        mSharedPreferences = getSharedPreferences("Song", MODE_APPEND)
         val channels: Array<String> = resources.getStringArray(R.array.searchTitleArray)
         mDataList = channels.toList() as ArrayList<String>
 
         //监听搜索框数据
-        placeLiveDataObserve()
+           placeLiveDataObserve()
         //初始化控件
-        initView()
+          initView()
 
-        initData()
+          initData()
         //标题栏
         initMagicIndicator()
-        // ScreenProperties.phoneAttributes(this)
+
         //历史记录
         history()
         //删除历史记录
-        deleteHistory()
+           deleteHistory()
+        //热搜关键字
         hotSearchKeywords()
     }
 
@@ -225,7 +227,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
 
         flowListView?.setAdapter(hAdapter)
 
-        LoaderManager.getInstance(this).initLoader(loaderId, null, this)
+      LoaderManager.getInstance(this).initLoader(loaderId, null, this)
 
     }
 
@@ -254,6 +256,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
             }
                 .blockingGet()
         }
+
     }
 
     /**
@@ -587,6 +590,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
     /**
      *  控件搜索数据数据更新
      */
+    @SuppressLint("NotifyDataSetChanged")
     private fun etTitleBarSearchUpdate() {
         //每当搜索框发生变化了,我们就获取新的类容
         etTitleBarSearch.addTextChangedListener { editable ->
@@ -600,14 +604,14 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
                 //历史记录刷新
 
                 // flowListView?.mFoldState=null
-                LoaderManager.getInstance(this).initLoader(++loaderId, null, this)
+               LoaderManager.getInstance(this).initLoader(++loaderId, null, this)
                 llActionBarLayout.visibility = View.VISIBLE
 
 
 
                 recyclerView.visibility = View.GONE
                 viewModel.placeList.clear()
-                adapter.notifyDataSetChanged()
+                adapter?.notifyDataSetChanged()
             }
         }
     }
@@ -615,6 +619,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
     /**
      * 观察数据发生变化时 会把数据添加到集合中
      */
+    @SuppressLint("NotifyDataSetChanged")
     private fun placeLiveDataObserve() {
 
         viewModel.placeLiveData.observe(this) {
@@ -625,7 +630,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
                     recyclerView.visibility = View.VISIBLE
                     viewModel.placeList.clear()
                     viewModel.placeList.addAll(places)
-                    adapter.notifyDataSetChanged()
+                    adapter?.notifyDataSetChanged()
                     llActionBarLayout.visibility = View.GONE
 
                 } else {
@@ -742,18 +747,21 @@ class SearchActivity : BaseActivity(), View.OnClickListener,
                 val etLength = etTitleBarSearch.text.length
                 etTitleBarSearch.setSelection(etLength)
 
-
             }
             //点击对话框隐藏
             R.id.et_title_bar_search -> {
                 llContentFragment.visibility = View.GONE
-
-
             }
-
-
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mAdapter = null
+        fragmentList.clear()
+        adapter = null
+        hotSearchRecyclerView.adapter=null
+        mDataList.clear()
 
+    }
 }

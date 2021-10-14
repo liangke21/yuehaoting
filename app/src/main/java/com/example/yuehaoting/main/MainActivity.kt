@@ -1,10 +1,12 @@
 package com.example.yuehaoting.main
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Binder
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -12,6 +14,7 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
+import com.example.yuehaoting.base.activity.SmMainActivity
 import com.example.yuehaoting.base.view.view.MusicButtonLayout
 import com.example.yuehaoting.data.kugou.specialRecommend.SetSpecialRecommend
 import com.example.yuehaoting.databinding.ActivityMainBinding
@@ -24,14 +27,13 @@ import com.example.yuehaoting.main.ui.discover.DiscoverViewModel
 import com.example.yuehaoting.main.viewModel.MainFragmentViewModel
 import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
+import com.example.yuehaoting.searchFor.SearchActivity
 import com.example.yuehaoting.util.MyUtil.getSecond
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import timber.log.Timber
 import java.lang.StrictMath.abs
-import java.lang.Thread.sleep
-import kotlin.concurrent.thread
+
 
 
 class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
@@ -59,17 +61,19 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         //去除BottomNavigationView标题栏
-        this.supportActionBar?.hide()
-        initFragmentData()
-        initView()
+      //  this.supportActionBar?.hide()
+       initFragmentData()
+       initView()
+      bb = BottomSheetBehaviorMainActivity(this, binding.playerContainer, binding.layoutNavView.musicButton)
+
+       lifecycle.addObserver(bb)
+
+     musicButton = binding.layoutNavView.musicButton
+      musicButton.isDisplayText(false)//关闭显示字体
 
 
-        bb = BottomSheetBehaviorMainActivity(this, binding.playerContainer, binding.layoutNavView.musicButton)
-        lifecycle.addObserver(bb)
-
-        musicButton = binding.layoutNavView.musicButton
-        musicButton.isDisplayText(false)//关闭显示字体
-
+/*        val intent = Intent(this, SearchActivity::class.java)
+        startActivity(intent)*/
     }
 
     /**
@@ -84,7 +88,6 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
 
     override fun onPause() {
         super.onPause()
-        bb.onPause()
         isThread(true)
     }
 
@@ -116,7 +119,7 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
         })
 
         //底部导航栏
-        val navView: BottomNavigationView = binding.layoutNavView.navView
+/*        val navView: BottomNavigationView = binding.layoutNavView.navView
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
 
         navView.setupWithNavController(navController)
@@ -136,12 +139,12 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
                     it, navController
                 )
             }
-        }
+        }*/
 
     }
 
 
-    override fun onServiceConnected(service: MusicService) {
+   override fun onServiceConnected(service: MusicService) {
         super.onServiceConnected(service)
         onPlayStateChange()
     }
@@ -162,7 +165,7 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
     }
 
     //播放状态已更改
-    override fun onPlayStateChange() {
+   override fun onPlayStateChange() {
         super.onPlayStateChange()
 
         //更新按钮状态
@@ -170,10 +173,10 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
         if (isPlayful) {
             musicButton.playMusic(2)
             musicButton.playMusic(1)
-            isThread(false)
+           isThread(false)
         } else {
             musicButton.playMusic(3)
-            isThread(true)
+           isThread(true)
 
         }
     }
@@ -182,7 +185,7 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
 
     private inner class ProgressThread : Thread() {
         override fun run() {
-            while (isForeground) {
+            while (false) {
                 try {
                     Log.e("创建线程1", name)
                     if (isThreadStarted) {
@@ -191,12 +194,12 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
                     val progress = MusicServiceRemote.getProgress()
                     if (progress in 1 until duration) {
                         runOnUiThread {
-                            musicButton.setProgress(progress)
+                      //      musicButton.setProgress(progress)
                         }
                         Log.e(getSecond(progress).toString(), getSecond(duration).toString())  //打印进度时间和当前时长
                         if (getSecond(progress) == getSecond(duration)) {
                             runOnUiThread {
-                                musicButton.playMusic(4)
+                         //       musicButton.playMusic(4)
                             }
                         }
                         sleep(500)
@@ -218,8 +221,8 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
 
     override fun onResume() {
         super.onResume()
-        isThread(false)
-        ProgressThread().start()
+      //  isThread(false)
+       // ProgressThread().start()
     }
 
     /**
@@ -331,7 +334,6 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
     override fun onDestroy() {
         super.onDestroy()
         isThread(true)
-        bb.onDestroy()
     }
 
 

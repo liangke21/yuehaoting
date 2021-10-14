@@ -361,7 +361,7 @@ class BottomSheetBehaviorMainActivity
      */
     private inner class ProgressThread : Thread() {
         override fun run() {
-            while (activity.getForeground()) {
+            while (false) {
                 Log.e("创建线程", name)
                 if (activity.getIsThread()){
                     break

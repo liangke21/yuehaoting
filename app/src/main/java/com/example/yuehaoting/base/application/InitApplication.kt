@@ -15,7 +15,6 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.scwang.smart.refresh.layout.api.RefreshFooter
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.DefaultRefreshFooterCreator
-import leakcanary.LeakCanary
 import timber.log.Timber
 
 

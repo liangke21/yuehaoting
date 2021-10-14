@@ -25,6 +25,12 @@ object MusicServiceRemote {
 
     private val connectionMap = WeakHashMap<Context, ServiceBinder>()
 
+    /**
+     * 绑定服务
+     * @param context Context
+     * @param callback ServiceConnection
+     * @return ServiceToken?
+     */
     @JvmStatic
     fun bindToService(context: Context, callback: ServiceConnection): ServiceToken? {
         var realActivity: Activity? = (context as Activity).parent
@@ -67,6 +73,19 @@ object MusicServiceRemote {
             service = null
         }
     }
+    @JvmStatic
+    fun unbindFromService(token: ServiceToken?){
+        if (token == null) {
+            return
+        }
+        val contextWrapper = token.wrapperContext
+        val binder= connectionMap.remove(contextWrapper)?:return
+        contextWrapper.unbindService(binder)
+        if (connectionMap.isEmpty()){
+            service=null
+        }
+    }
+
 
     /**
      * 设置播放列队
