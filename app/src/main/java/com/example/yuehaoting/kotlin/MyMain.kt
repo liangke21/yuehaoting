@@ -24,26 +24,5 @@ class MyMain() {
 fun main() {
 
 
-    MyMain().test({
-        println(it)
-        it
-    }, {
-        println("蛮吉")
-    })
-
-
-    val m = true
-    when (m) {
-        true -> println("哇咔咔")
-        false -> println("巴卡八嘎")
-    }
-
-    val k = true
-    if (k) {
-        println("哇咔咔")
-    } else {
-        println("巴卡八嘎")
-    }
-
 
 }

@@ -54,8 +54,8 @@
   <!--主页界面-->
 
   <style name="MainTheme" parent="Theme.AppCompat.Light.NoActionBar">
-    <item name="colorPrimary">@color/whiteA</item>
-    <item name="android:windowTranslucentStatus">true</item>
+<!--    <item name="colorPrimary">@color/whiteA</item>
+    <item name="android:windowTranslucentStatus">true</item>-->
     <item name="background_color_main">@color/light_background_color_main</item>
 
 

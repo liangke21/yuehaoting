@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<androidx.constraintlayout.widget.ConstraintLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".main.discover.fragment2.MainFragment2">
-
-  <TextView
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+  <com.google.android.material.appbar.CollapsingToolbarLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:text="开发中"/>
+    android:id="@+id/collapsingToolbar"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-</FrameLayout>
+  </com.google.android.material.appbar.CollapsingToolbarLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

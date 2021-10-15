@@ -5,10 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.fragmet.BaseFragment
 
-class MainFragment2 : BaseFragment() {
+class MainFragment2 : Fragment() {
 
     companion object {
         fun newInstance() = MainFragment2()

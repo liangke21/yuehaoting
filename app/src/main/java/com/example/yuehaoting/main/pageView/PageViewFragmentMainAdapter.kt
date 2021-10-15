@@ -10,7 +10,7 @@ import com.example.yuehaoting.base.fragmet.BaseFragment
  * 时间: 2021/8/28 16:05
  * 描述:
  */
-class PageViewFragmentMainAdapter(fm: FragmentManager, private var fragmentList:ArrayList<BaseFragment>): FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)  {
+class PageViewFragmentMainAdapter(fm: FragmentManager, private var fragmentList:ArrayList<Fragment>): FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
 
 

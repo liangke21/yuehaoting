@@ -12,10 +12,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.yuehaoting.App
 import com.example.yuehaoting.R
-import com.example.yuehaoting.base.fragmet.BaseFragment
 import com.example.yuehaoting.base.fragmet.MyFragment
 import com.example.yuehaoting.base.magicIndicator.MySimplePagerTitleView
 import com.example.yuehaoting.base.magicIndicator.ext.MyCommonNavigator
@@ -43,7 +43,7 @@ class DiscoverFragment : MyFragment(), View.OnClickListener {
 
     private val mTitleList: ArrayList<String> = ArrayList()
 
-    private var fragmentList = ArrayList<BaseFragment>()
+    private var fragmentList = ArrayList<Fragment>()
 
     private lateinit var mCallbackActivity: CallbackActivity
 
@@ -53,15 +53,15 @@ class DiscoverFragment : MyFragment(), View.OnClickListener {
         }*/
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.e("DiscoverFragment", "nCreateView")
-        homeViewModel = ViewModelProvider(this).get(DiscoverViewModel::class.java)
+       homeViewModel = ViewModelProvider(this).get(DiscoverViewModel::class.java)
         _binding = MainNavigationDiscoverBinding.inflate(inflater)
         initViewColors()
         initData()
 
 
-        initMagicIndicator()
-        initView()
-        mCallbackActivity = activity as CallbackActivity
+      initMagicIndicator()
+       initView()
+       mCallbackActivity = activity as CallbackActivity
 
 
         return binding.root
@@ -79,7 +79,7 @@ class DiscoverFragment : MyFragment(), View.OnClickListener {
        fragmentList.add(MainFragment1())
         fragmentList.add(MainFragment2())
         binding.vpMainContent.adapter = PageViewFragmentMainAdapter(childFragmentManager, fragmentList)
-        binding.vpMainContent.offscreenPageLimit = 2
+        binding.vpMainContent.offscreenPageLimit = 1
     }
 
     /**
@@ -142,7 +142,7 @@ class DiscoverFragment : MyFragment(), View.OnClickListener {
             }
         }
         magicIndicator.navigator = commonNavigator7
-        ViewPageHelperDiscover.bind(magicIndicator, binding.vpMainContent, activity!!.intent)
+       ViewPageHelperDiscover.bind(magicIndicator, binding.vpMainContent, activity!!.intent)
     }
 
 
@@ -169,6 +169,7 @@ class DiscoverFragment : MyFragment(), View.OnClickListener {
         super.onDestroyView()
         binding.vpMainContent.adapter = null
         mTitleList.clear()
+        fragmentList.clear()
         _binding = null
     }
 }

@@ -15,14 +15,6 @@
     android:theme="@style/Theme.乐好听"
     tools:targetApi="n">
     <activity
-      android:exported="true"
-      android:name=".searchFor.Main6Activity">
-
-    </activity>
-    <activity
-      android:exported="true"
-      android:name=".searchFor.Main5Activity"/>
-    <activity
       android:name=".main.MainActivity"
       android:theme="@style/MainTheme">
       <intent-filter>

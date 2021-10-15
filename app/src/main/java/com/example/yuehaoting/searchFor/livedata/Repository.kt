@@ -27,7 +27,6 @@ object Repository {
             val placeResponse = SongNetwork.searchPlaces(query)
             Log.d(placeResponse.status.toString(), "关键字请求-----------")
 
-
             if (placeResponse.status == 1) {
                Timber.v("酷狗搜索关键字请求成功:%s",placeResponse.status)
             } else {
@@ -139,7 +138,6 @@ object Repository {
         }
         emit(result)
     }
-
     /**
      * 咪咕音乐
      */

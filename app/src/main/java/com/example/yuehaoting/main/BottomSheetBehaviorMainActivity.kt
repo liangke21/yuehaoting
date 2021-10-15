@@ -363,7 +363,7 @@ class BottomSheetBehaviorMainActivity
         override fun run() {
             while (false) {
                 Log.e("创建线程", name)
-                if (activity.getIsThread()){
+                if (false){
                     break
                 }
                 try {
