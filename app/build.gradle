@@ -12,11 +12,12 @@ android {
 
     defaultConfig {
         applicationId "com.example.yuehaoting"
-        minSdkVersion 21
+        minSdkVersion 16
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-
+        //兼容 5.0 一下版本
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -130,6 +131,8 @@ dependencies {
     implementation 'com.airbnb.android:lottie:4.2.0'
      //自适应宽度布局管理器
     implementation 'com.google.android:flexbox:2.0.1'
-
+    //内存泄露
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+    //兼容 5.0 一下版本
+    implementation 'com.android.support:multidex:1.0.3'
 }

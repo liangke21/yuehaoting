@@ -1,5 +1,6 @@
 package com.example.yuehaoting
 
+import androidx.multidex.MultiDex
 import com.example.yuehaoting.Test.test
 import com.example.yuehaoting.base.application.InitApplication
 import com.example.yuehaoting.base.retrofit.SongNetwork
@@ -33,6 +34,10 @@ class App : InitApplication() {
         height=display[1]
         isNetWork(context)
         isOnline(context)
+
+        //兼容 5.0 一下版本
+        MultiDex.install(this);
+
     }
 
 
