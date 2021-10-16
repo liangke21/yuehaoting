@@ -49,7 +49,7 @@ private val playPauseAnimationDuration = 250L
     private var mHeight = 0
     init {
         setWillNotDraw(false)
-        mBackgroundColor=resources.getColor(R.color.white)
+        mBackgroundColor=resources.getColor(R.color.colorRed)
         mPaint.isAntiAlias=true
         mPaint.style=Paint.Style.FILL
         mPaint.color = mBackgroundColor

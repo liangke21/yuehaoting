@@ -31,6 +31,7 @@ import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.searchFor.SearchActivity
 import com.example.yuehaoting.util.MyUtil.getSecond
 import com.example.yuehaoting.util.StatusBarUtil
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.gyf.immersionbar.ImmersionBar
@@ -79,7 +80,7 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
      //   StatusBarUtil.setTransparent(this)
       //  StatusBarUtil.setColorForDrawerLayout(this, binding.drawer, Color.RED)
       //  StatusBarUtil.setColorForDrawerLayout(this, binding.drawer, Color.RED,StatusBarUtil.DEFAULT_STATUS_BAR_ALPHA);
-        ImmersionBar.with(this).init()
+        ImmersionBar.with(this).statusBarDarkFont(true) .init()
     }
 
     /**
@@ -125,7 +126,7 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
         })
 
         //底部导航栏
-/*        val navView: BottomNavigationView = binding.layoutNavView.navView
+        val navView: BottomNavigationView = binding.layoutNavView.navView
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
 
         navView.setupWithNavController(navController)
@@ -145,7 +146,7 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
                     it, navController
                 )
             }
-        }*/
+        }
 
     }
 

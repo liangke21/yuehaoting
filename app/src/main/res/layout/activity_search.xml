@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   xmlns:tools="http://schemas.android.com/tools"
@@ -9,168 +9,258 @@
   android:background="@drawable/search_sar_background"
   android:focusable="true"
   android:focusableInTouchMode="true"
+  android:clipChildren="false"
+  android:orientation="vertical"
   >
-
-  <LinearLayout
-    android:id="@+id/actionBarLayout"
+  <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:orientation="horizontal">
+    android:layout_height="0dp"
+    android:layout_weight="12"
 
-    <ImageView
-      android:id="@+id/iv_title_bar_search_back"
-      android:layout_width="wrap_content"
-      android:layout_marginStart="15dp"
-      android:layout_marginEnd="5dp"
-      android:layout_height="60dp"
-      android:src="@drawable/search_back"/>
-
-    <EditText
-      android:id="@+id/et_title_bar_search"
-      android:layout_width="280dp"
-      android:layout_height="35dp"
-      android:layout_gravity="center_vertical"
-      android:layout_marginStart="10dp"
-      android:layout_marginEnd="10dp"
-      android:paddingStart="10dp"
-      android:paddingEnd="10dp"
-      android:hint="  输入歌曲名字"
-      android:drawableStart="@drawable/search"
-      android:background="@drawable/search_et_background"/>
-
-    <TextView
-      android:id="@+id/tv_title_search"
-      android:layout_width="36dp"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center_vertical"
-      android:text="搜索"
-      android:textSize="14sp"
-      android:textColor="@color/white"/>
-  </LinearLayout>
-
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_below="@+id/actionBarLayout"
-    android:id="@+id/ll_recyclerView"
-    android:background="@color/white"
-    android:orientation="vertical">
-
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/recyclerView"
-      android:overScrollMode="never"
+    >
+    <LinearLayout
+      android:id="@+id/actionBarLayout"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:visibility="gone"/>
-  </LinearLayout>
+      android:layout_height="60dp"
+      android:orientation="horizontal">
 
-<LinearLayout
-  android:id="@+id/ll_content_fragment"
-  android:visibility="gone"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:layout_below="@+id/actionBarLayout"
-  android:orientation="vertical">
+      <ImageView
+        android:id="@+id/iv_title_bar_search_back"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="5dp"
+        android:layout_height="60dp"
+        android:src="@drawable/search_back"/>
 
-  <net.lucode.hackware.magicindicator.MagicIndicator
-    android:id="@+id/ts_search_title"
-    android:layout_width="match_parent"
-    android:layout_height="60dp"/>
-  <androidx.viewpager.widget.ViewPager
-    android:id="@+id/vp_search_content"
-    android:overScrollMode="never"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+      <EditText
+        android:id="@+id/et_title_bar_search"
+        android:layout_width="280dp"
+        android:layout_height="35dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:hint="  输入歌曲名字"
+        android:drawableStart="@drawable/search"
+        android:background="@drawable/search_et_background"/>
 
-</LinearLayout>
+      <TextView
+        android:id="@+id/tv_title_search"
+        android:layout_width="36dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="搜索"
+        android:textSize="14sp"
+        android:textColor="@color/white"/>
+    </LinearLayout>
 
-<!--历史记录-->
-
-<androidx.core.widget.NestedScrollView
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:layout_below="@+id/actionBarLayout">
-
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:id="@+id/ll_search_History_and_hot_words"
-
-    android:orientation="vertical">
     <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="40dp"
-      android:orientation="horizontal">
-      <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_marginLeft="10dp"
-        android:text="历史记录"
-        android:textSize="20sp"
-        android:gravity="center"/>
+      android:layout_height="match_parent"
+      android:layout_below="@+id/actionBarLayout"
+      android:id="@+id/ll_recyclerView"
+      android:background="@color/white"
+      android:orientation="vertical">
 
-      <RelativeLayout
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:overScrollMode="never"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:text="全部删除"
-          android:textSize="20sp"
-          android:layout_toStartOf="@+id/tv_search_History_Finish"
-          android:layout_marginEnd="20dp"
-          android:gravity="center"
-          android:visibility="gone"
-          android:id="@+id/tv_search_History_delete_all"/>
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+    </LinearLayout>
 
-        <TextView
-          android:id="@+id/tv_search_History_Finish"
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:text="完成"
-          android:gravity="center"
-          android:layout_marginEnd="10dp"
-          android:layout_alignParentEnd="true"
-          android:textSize="20sp"
-          android:visibility="gone"/>
+    <LinearLayout
+      android:id="@+id/ll_content_fragment"
+      android:visibility="gone"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_below="@+id/actionBarLayout"
+      android:orientation="vertical">
 
-        <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:gravity="center"
-          android:layout_marginEnd="10dp"
-          android:layout_alignParentEnd="true"
-          android:src="@drawable/play_dialog_fragment"
-          android:id="@+id/iv_search_History_delete"/>
-
-      </RelativeLayout>
+      <net.lucode.hackware.magicindicator.MagicIndicator
+        android:id="@+id/ts_search_title"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"/>
+      <androidx.viewpager.widget.ViewPager
+        android:id="@+id/vp_search_content"
+        android:overScrollMode="never"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     </LinearLayout>
 
-    <com.example.yuehaoting.base.lib_search_history.jd.JDFoldLayout
-      android:id="@+id/flow_list"
+    <!--历史记录-->
+
+    <androidx.core.widget.NestedScrollView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="10dp"
-      android:layout_marginEnd="10dp"
-      app:flow_equally="false"
-      app:flow_fold="true"
-      app:flow_foldLines="2"
-      app:flow_horizontalSpacing="10dp"
-      app:flow_verticalSpacing="10dp" />
+      android:id="@+id/NestedScrollView"
+      android:layout_below="@+id/actionBarLayout">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:id="@+id/ll_search_History_and_hot_words"
+
+        android:orientation="vertical">
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="40dp"
+          android:orientation="horizontal">
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:text="历史记录"
+            android:textSize="20sp"
+            android:gravity="center"/>
+
+          <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:text="全部删除"
+              android:textSize="20sp"
+              android:layout_toStartOf="@+id/tv_search_History_Finish"
+              android:layout_marginEnd="20dp"
+              android:gravity="center"
+              android:visibility="gone"
+              android:id="@+id/tv_search_History_delete_all"/>
+
+            <TextView
+              android:id="@+id/tv_search_History_Finish"
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:text="完成"
+              android:gravity="center"
+              android:layout_marginEnd="10dp"
+              android:layout_alignParentEnd="true"
+              android:textSize="20sp"
+              android:visibility="gone"/>
+
+            <ImageView
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:layout_marginEnd="10dp"
+              android:layout_alignParentEnd="true"
+              android:src="@drawable/play_dialog_fragment"
+              android:id="@+id/iv_search_History_delete"
+              />
+
+          </RelativeLayout>
+
+        </LinearLayout>
+
+        <com.example.yuehaoting.base.lib_search_history.jd.JDFoldLayout
+          android:id="@+id/flow_list"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="10dp"
+          android:layout_marginEnd="10dp"
+          app:flow_equally="false"
+          app:flow_fold="true"
+          app:flow_foldLines="2"
+          app:flow_horizontalSpacing="10dp"
+          app:flow_verticalSpacing="10dp"/>
 
 
-    <androidx.recyclerview.widget.RecyclerView
-      android:layout_width="match_parent"
+        <androidx.recyclerview.widget.RecyclerView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="20dp"
+          tools:listitem="@layout/activity_search_item_3"
+          android:id="@+id/rv_search"/>
+
+      </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+  </RelativeLayout>
+
+  <!--底部布局-->
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:orientation="horizontal"
+    >
+    <com.example.yuehaoting.base.view.view.MusicButtonLayout
+      android:id="@+id/musicButton"
+      android:layout_width="45dp"
+      android:layout_height="45dp"
+      android:layout_marginStart="5dp"
+      android:layout_marginBottom="2dp"
+      android:layout_gravity="center"
+      app:backgroundL="@color/white"
+      app:circleColor="@color/teal_700"
+      app:ringBgColor="#EAE6E6"
+      app:ringColor="#0885E8"
+      app:strokeWidthBackground="3dp"
+      app:strokeWidthL="3dp"
+      app:bulgeRadius="10dp"
+      app:textSizeL="16sp"/>
+<LinearLayout
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="horizontal">
+  <LinearLayout
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_marginStart="5dp"
+    android:layout_weight="1.5"
+    android:orientation="vertical">
+
+    <TextView
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="20dp"
-      tools:listitem="@layout/activity_search_item_3"
-      android:id="@+id/rv_search"/>
+      android:layout_marginTop="3dp"
+      android:text="歌曲标题"/>
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_marginTop="3dp"
+      android:text="歌手"/>
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1">
+
+<ImageButton
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:src="@drawable/playa_btn_pause"
+  android:background="@color/transparent"
+  android:layout_gravity="center"/>
+<ImageButton
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:src="@drawable/play_btn_next"
+  android:background="@color/transparent"
+  android:layout_marginLeft="20dp"
+  android:layout_gravity="center"/>
+<ImageButton
+  android:layout_width="20dp"
+  android:layout_height="20dp"
+  android:layout_marginLeft="20dp"
+  android:src="@drawable/play_btn_normal_list"
+  android:background="@color/transparent"
+  android:layout_gravity="center"/>
+
+
 
   </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+
+</LinearLayout>
 
 
 
-</RelativeLayout>
+  </LinearLayout>
+
+</LinearLayout>

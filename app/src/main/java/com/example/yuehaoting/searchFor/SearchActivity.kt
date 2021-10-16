@@ -55,8 +55,7 @@ import timber.log.Timber
 import kotlin.concurrent.thread
 
 
-class SearchActivity :BaseActivity(), View.OnClickListener
-    , LoaderManager.LoaderCallbacks<List<History>> {
+class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.LoaderCallbacks<List<History>> {
     private lateinit var recyclerView: RecyclerView
     private lateinit var ivTitleBarSearchBack: ImageView
     private lateinit var etTitleBarSearch: EditText
@@ -93,18 +92,18 @@ class SearchActivity :BaseActivity(), View.OnClickListener
         mDataList = channels.toList() as ArrayList<String>
 
         //监听搜索框数据
-           placeLiveDataObserve()
+        placeLiveDataObserve()
         //初始化控件
-          initView()
+        initView()
 
-          initData()
+        initData()
         //标题栏
         initMagicIndicator()
 
         //历史记录
         history()
         //删除历史记录
-           deleteHistory()
+        deleteHistory()
         //热搜关键字
         hotSearchKeywords()
     }
@@ -227,7 +226,7 @@ class SearchActivity :BaseActivity(), View.OnClickListener
 
         flowListView?.setAdapter(hAdapter)
 
-      LoaderManager.getInstance(this).initLoader(loaderId, null, this)
+        LoaderManager.getInstance(this).initLoader(loaderId, null, this)
 
     }
 
@@ -604,7 +603,7 @@ class SearchActivity :BaseActivity(), View.OnClickListener
                 //历史记录刷新
 
                 // flowListView?.mFoldState=null
-               LoaderManager.getInstance(this).initLoader(++loaderId, null, this)
+                LoaderManager.getInstance(this).initLoader(++loaderId, null, this)
                 llActionBarLayout.visibility = View.VISIBLE
 
 
@@ -760,8 +759,11 @@ class SearchActivity :BaseActivity(), View.OnClickListener
         mAdapter = null
         fragmentList.clear()
         adapter = null
-        hotSearchRecyclerView.adapter=null
+        hotSearchRecyclerView.adapter = null
         mDataList.clear()
-
+        viewPager.adapter = null
+        hAdapter?.setNewData(null)
+        hAdapter = null
+        flowListView = null
     }
 }

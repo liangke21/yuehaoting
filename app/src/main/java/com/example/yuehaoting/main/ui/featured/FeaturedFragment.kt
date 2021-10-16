@@ -38,9 +38,6 @@ class FeaturedFragment : Fragment() {
             textView.text = it
         })
 
-        val intent = Intent(activity, SearchActivity::class.java)
-
-        activity?.startActivity(intent)
         return root
     }
 
