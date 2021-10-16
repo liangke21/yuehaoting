@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.yuehaoting"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -135,4 +135,7 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
     //兼容 5.0 一下版本
     implementation 'com.android.support:multidex:1.0.3'
+    //状态栏
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
+    implementation 'com.gyf.immersionbar:immersionbar-ktx:3.0.0'
 }

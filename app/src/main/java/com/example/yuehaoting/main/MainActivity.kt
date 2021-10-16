@@ -2,6 +2,7 @@ package com.example.yuehaoting.main
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Binder
 import android.os.Bundle
 import android.util.Log
@@ -29,8 +30,10 @@ import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.searchFor.SearchActivity
 import com.example.yuehaoting.util.MyUtil.getSecond
+import com.example.yuehaoting.util.StatusBarUtil
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.gyf.immersionbar.ImmersionBar
 import timber.log.Timber
 import java.lang.StrictMath.abs
 
@@ -56,6 +59,7 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
 
     private val viewModelDiscoverFragment by lazyMy { ViewModelProvider(this).get(DiscoverViewModel::class.java) }
 
+    @SuppressLint("Range")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -71,25 +75,11 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
      musicButton = binding.layoutNavView.musicButton
       musicButton.isDisplayText(false)//关闭显示字体
 
-
-/*        val intent = Intent(this, SearchActivity::class.java)
-        startActivity(intent)*/
-
-        window.decorView.setOnSystemUiVisibilityChangeListener { visibility ->
-            // Note that system bars will only be "visible" if none of the
-            // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
-            if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
-                // TODO: The system bars are visible. Make any desired
-                // adjustments to your UI, such as showing the action bar or
-                // other navigational controls.
-            } else {
-                // TODO: The system bars are NOT visible. Make any desired
-                // adjustments to your UI, such as hiding the action bar or
-                // other navigational controls.
-            }
-        }
-
-
+       // com.example.yuehaoting.theme.StatusBarUtil.setColorNoTranslucent(this, Color.RED)
+     //   StatusBarUtil.setTransparent(this)
+      //  StatusBarUtil.setColorForDrawerLayout(this, binding.drawer, Color.RED)
+      //  StatusBarUtil.setColorForDrawerLayout(this, binding.drawer, Color.RED,StatusBarUtil.DEFAULT_STATUS_BAR_ALPHA);
+        ImmersionBar.with(this).init()
     }
 
     /**
