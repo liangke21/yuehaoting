@@ -9,6 +9,7 @@ object MusicConstant {
     //_______________________________________|Sp key|______________________________________________________________________________________________________
 //包名
     private const val PACKAGE_NAME = "com.example.yuehaoting"
+
     //_______________________________________|Setting|______________________________________________________________________________________________________
     const val NAME = "Setting"  //xml 文件
 
@@ -21,7 +22,10 @@ object MusicConstant {
     //移除歌曲
     const val BLACKLIST_SONG = "black_list_song"
 
+    //退出播放的id
     const val QUIT_SONG_ID = "QUIT_SONG_ID"
+    //自动播放
+    const val AUTO_PLAY="Autoplay"
     //_______________________________________|播放列队|______________________________________________________________________________________________________
     //播放列队更改
     const val EXTRA_PLAYLIST = "extra_playlist"
@@ -62,6 +66,7 @@ object MusicConstant {
      * 如 播放选定歌曲 上一首 下一首
      */
     const val EXTRA_CONTROL = "Control"
+
     //额外播放模式
     const val PLAY_MODEL = "play_model"
 

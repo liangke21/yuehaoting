@@ -35,6 +35,7 @@ import com.example.yuehaoting.util.MusicConstant.PREV
 import com.example.yuehaoting.util.BroadcastUtil
 import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.MusicConstant.ACTION_CMD
+import com.example.yuehaoting.util.MusicConstant.AUTO_PLAY
 import com.example.yuehaoting.util.MusicConstant.EXTRA_CONTROL
 import com.example.yuehaoting.util.MusicConstant.EXTRA_PLAYLIST
 import com.example.yuehaoting.util.MusicConstant.EXTRA_POSITION
@@ -109,8 +110,8 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
             val fromShuffleToNone = field == RANDOM_PATTERN
             field = value
 
-            setSp(this,MusicConstant.NAME){
-                putInt(MusicConstant.PLAY_MODEL,value)
+            setSp(this, MusicConstant.NAME) {
+                putInt(MusicConstant.PLAY_MODEL, value)
             }
             if (fromShuffleToNone) {
                 playQueue.rePosition()
@@ -125,15 +126,16 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
     /**
      * 加载
      */
-    fun load(){
+    fun load() {
 
-       //用户数据
+        //用户数据
         //获取当前播放模式
-        playModel= getSp(this,MusicConstant.NAME){
-            getInt(MusicConstant.PLAY_MODEL,LIST_LOOP)
+        playModel = getSp(this, MusicConstant.NAME) {
+            getInt(MusicConstant.PLAY_MODEL, LIST_LOOP)
         }
-      //获取播放列表数据
-      playQueue.restoreIfNecessary()
+        //获取播放列表数据
+        playQueue.restoreIfNecessary()
+        //这里调用实现自动播放
         readyToPlay(playQueue.song)
     }
 
@@ -163,7 +165,7 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
                 mediaSession.setQueueTitle(playQueue.song.SongName)
                 mediaSession.setQueue(queue)
             }
-        },catch={
+        }, catch = {
             it.toString().showToast(this)
             Timber.e(it)
         })
@@ -173,18 +175,18 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
     /**
      * 初始化MediaSession
      */
-    private fun setUpSession(){
-        val mediaButtonReceiverComponentName = ComponentName(applicationContext,MediaButtonReceiver::class.java)
+    private fun setUpSession() {
+        val mediaButtonReceiverComponentName = ComponentName(applicationContext, MediaButtonReceiver::class.java)
 
-        val mediaButtonIntent= Intent(Intent.ACTION_MEDIA_BUTTON)
+        val mediaButtonIntent = Intent(Intent.ACTION_MEDIA_BUTTON)
 
-        mediaButtonIntent.component=mediaButtonReceiverComponentName
+        mediaButtonIntent.component = mediaButtonReceiverComponentName
 
-        val pendingIntent =PendingIntent.getBroadcast(applicationContext,0,mediaButtonIntent,0)
+        val pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, mediaButtonIntent, 0)
 
-        mediaSession = MediaSessionCompat(applicationContext,"哇咔咔",mediaButtonReceiverComponentName,pendingIntent)
+        mediaSession = MediaSessionCompat(applicationContext, "哇咔咔", mediaButtonReceiverComponentName, pendingIntent)
 
-        mediaSession.setCallback(object :MediaSessionCompat.Callback(){
+        mediaSession.setCallback(object : MediaSessionCompat.Callback() {
 
 
         })
@@ -311,7 +313,7 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
         val action = intent?.action
         Timber.v("onStartCommand, control: $control action: $action flags: $flags startId: $startId")
         tryLaunch {
-            withContext(Dispatchers.IO){
+            withContext(Dispatchers.IO) {
                 load()
             }
             delay(200)
@@ -499,6 +501,11 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
     }
 
     /**
+     * 是否第一次准备完成
+     */
+    private var firstPrepared = true
+
+    /**
      * 初始化Mediaplayer
      */
     private fun setUpPlayer() {
@@ -515,7 +522,16 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
         //   mediaPlayer.setWakeMode(this,PowerManager.PARTIAL_WAKE_LOCK)
         //准备好监听播放
         mediaPlayer.setOnPreparedListener {
+            if (firstPrepared) {
+                firstPrepared=false
+                val autoPlay = getSp(this, NAME) {
+                    getBoolean(AUTO_PLAY, true)
+                }
+                if (autoPlay) {
+                    return@setOnPreparedListener
+                }
 
+            }
             mediaPlayer.seekTo(0)
             play(false)
 
@@ -523,11 +539,11 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
         //播放完成
         mediaPlayer.setOnCompletionListener {
 
-            if (playModel==SINGLE_CYCLE){
+            if (playModel == SINGLE_CYCLE) {
                 mediaPlayer.start()
                 mediaPlayer.isLooping = true
             }
-            val intent= Intent((ACTION_CMD))
+            val intent = Intent((ACTION_CMD))
             intent.putExtra(EXTRA_CONTROL, NEXT)
             BroadcastUtil.sendLocalBroadcast(intent)
         }
@@ -653,9 +669,9 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
         }
         //保存当前播放歌曲
         launch {
-            withContext(Dispatchers.IO){
-                setSp(this@MusicService,NAME){
-                    putLong(QUIT_SONG_ID,playQueue.song.id)
+            withContext(Dispatchers.IO) {
+                setSp(this@MusicService, NAME) {
+                    putLong(QUIT_SONG_ID, playQueue.song.id)
                 }
             }
         }
