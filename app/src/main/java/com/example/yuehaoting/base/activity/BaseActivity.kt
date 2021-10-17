@@ -137,14 +137,18 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback, CoroutineScope by
         }
     }
 
-    //播放状态变化
+    /**
+     * 播放状态发生变化
+     */
     override fun onPlayStateChange() {
         for (listener in serviceEventListeners) {
             listener.onPlayStateChange()
         }
     }
 
-    //播放数据改变
+    /**
+     * 播放数据发生变化
+     */
     override fun onMetaChanged() {
         for (listener in serviceEventListeners) {
             listener.onMetaChanged()

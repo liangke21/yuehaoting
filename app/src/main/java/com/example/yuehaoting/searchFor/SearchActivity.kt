@@ -39,6 +39,7 @@ import com.example.yuehaoting.base.rxJava.LogObserver
 import com.example.yuehaoting.base.rxJava.RxUtil
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
+import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.playInterface.activity.PlayActivityDialogFragment
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
 import com.example.yuehaoting.searchFor.adapter.data.History
@@ -188,7 +189,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
               intent.putExtra(MusicConstant.EXTRA_CONTROL, MusicConstant.PAUSE_PLAYBACK)
           }
 
-          R.id.ib_search_bottom_play_next->{   }
+          R.id.ib_search_bottom_play_next->intent.putExtra(MusicConstant.EXTRA_CONTROL, MusicConstant.NEXT)
 
           R.id.ib_search_bottom_play_normal_list->{
               PlayActivityDialogFragment.newInstance()
@@ -199,8 +200,29 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
 
         BroadcastUtil.sendLocalBroadcast(intent)
     }
+    /**当前是否播放**/
+     private var isPlaying=false
+    override fun onPlayStateChange() {
+        super.onPlayStateChange()
+        val isPlayingFul= MusicServiceRemote.isPlaying()
+        if (isPlaying != isPlayingFul){
+            updatePlayButton(isPlayingFul)
+        }
+    }
 
+    /**
+     * 更新播放状态
+     * @param isPlay Boolean
+     */
+    private fun updatePlayButton(isPlay:Boolean){
+         isPlaying=isPlay
+         if (isPlaying){
+             findViewById<ImageButton>(R.id.ib_search_bottom_play_start_pause).setImageResource(R.drawable.playa_btn_pause)
+         }else{
+             findViewById<ImageButton>(R.id.ib_search_bottom_play_start_pause).setImageResource(R.drawable.play_btn_start)
+         }
 
+    }
 
     //_______________________________________|历史记录|______________________________________________________________________________________________________
     private var hAdapter: SearchHistoryAdapter? = null
