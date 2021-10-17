@@ -17,11 +17,7 @@
     <activity
       android:name=".main.MainActivity"
       android:theme="@style/MainTheme">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
 
-        <category android:name="android.intent.category.LAUNCHER"/>
-      </intent-filter>
     </activity>
     <activity
       android:name=".playInterface.activity.PlayActivity"
@@ -35,6 +31,11 @@
     <activity
       android:name=".searchFor.SearchActivity"
       android:theme="@style/SearchTheme">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
     </activity>
     <activity
       android:name=".loginRegistered.RegisteredActivity"

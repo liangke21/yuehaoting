@@ -2,6 +2,7 @@ package com.example.yuehaoting.searchFor
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Canvas
 import android.graphics.Color
@@ -38,11 +39,14 @@ import com.example.yuehaoting.base.rxJava.LogObserver
 import com.example.yuehaoting.base.rxJava.RxUtil
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
+import com.example.yuehaoting.playInterface.activity.PlayActivityDialogFragment
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
 import com.example.yuehaoting.searchFor.adapter.data.History
 import com.example.yuehaoting.searchFor.fragment.ui.*
 import com.example.yuehaoting.searchFor.pagerview.MyPagerAdapter
 import com.example.yuehaoting.searchFor.viewmodel.PlaceViewModel
+import com.example.yuehaoting.util.BroadcastUtil
+import com.example.yuehaoting.util.MusicConstant
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.UIUtil
@@ -106,6 +110,15 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         deleteHistory()
         //热搜关键字
         hotSearchKeywords()
+        //底部播放控制
+        bottomPlaybackControl()
+    }
+
+    /**
+     * 底部播放控制
+     */
+    private fun bottomPlaybackControl() {
+
     }
 
     private fun initData() {
@@ -155,8 +168,39 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         val statusBarHeight: Int = rect.top //状态栏高度
         Timber.v("状态栏高度%s", statusBarHeight)
 
+        //底部播放按钮
+
+        arrayOf<ImageButton>(
+            findViewById(R.id.ib_search_bottom_play_start_pause),
+            findViewById(R.id.ib_search_bottom_play_next),
+            findViewById(R.id.ib_search_bottom_play_normal_list)
+
+        ).forEach {
+            it.setOnClickListener(bottomPlayOnClickListener)
+        }
 
     }
+    //_______________________________________|底部播放按钮|______________________________________________________________________________________________________
+    private val bottomPlayOnClickListener=View.OnClickListener { v ->
+        val intent = Intent(MusicConstant.ACTION_CMD)
+      when(v.id){
+          R.id.ib_search_bottom_play_start_pause->{
+              intent.putExtra(MusicConstant.EXTRA_CONTROL, MusicConstant.PAUSE_PLAYBACK)
+          }
+
+          R.id.ib_search_bottom_play_next->{   }
+
+          R.id.ib_search_bottom_play_normal_list->{
+              PlayActivityDialogFragment.newInstance()
+                  .show(supportFragmentManager, PlayActivityDialogFragment::class.java.simpleName)
+          }
+
+      }
+
+        BroadcastUtil.sendLocalBroadcast(intent)
+    }
+
+
 
     //_______________________________________|历史记录|______________________________________________________________________________________________________
     private var hAdapter: SearchHistoryAdapter? = null

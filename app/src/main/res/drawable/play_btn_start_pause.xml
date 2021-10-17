@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:state_accelerated="true"
+    android:drawable="@drawable/play_btn_start"/>
+<item android:state_accelerated="false"
+  android:drawable="@drawable/playa_btn_pause"/>
+
+</selector>

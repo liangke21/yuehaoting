@@ -178,6 +178,7 @@
           android:id="@+id/rv_search"/>
 
       </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
 
   </RelativeLayout>
@@ -187,6 +188,7 @@
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="1"
+    android:id="@+id/ll_3"
     android:orientation="horizontal"
     >
     <com.example.yuehaoting.base.view.view.MusicButtonLayout
@@ -204,61 +206,62 @@
       app:strokeWidthL="3dp"
       app:bulgeRadius="10dp"
       app:textSizeL="16sp"/>
-<LinearLayout
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:orientation="horizontal">
-  <LinearLayout
-    android:layout_width="0dp"
-    android:layout_height="match_parent"
-    android:layout_marginStart="5dp"
-    android:layout_weight="1.5"
-    android:orientation="vertical">
-
-    <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="3dp"
-      android:text="歌曲标题"/>
-    <TextView
-      android:layout_width="wrap_content"
+    <LinearLayout
+      android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_marginTop="3dp"
-      android:text="歌手"/>
-  </LinearLayout>
+      android:orientation="horizontal">
+      <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="5dp"
+        android:layout_weight="1.5"
+        android:orientation="vertical">
 
-  <LinearLayout
-    android:layout_width="0dp"
-    android:layout_height="match_parent"
-    android:layout_weight="1">
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="3dp"
+          android:text="歌曲标题"/>
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:layout_marginTop="3dp"
+          android:text="歌手"/>
+      </LinearLayout>
 
-<ImageButton
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content"
-  android:src="@drawable/playa_btn_pause"
-  android:background="@color/transparent"
-  android:layout_gravity="center"/>
-<ImageButton
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content"
-  android:src="@drawable/play_btn_next"
-  android:background="@color/transparent"
-  android:layout_marginLeft="20dp"
-  android:layout_gravity="center"/>
-<ImageButton
-  android:layout_width="20dp"
-  android:layout_height="20dp"
-  android:layout_marginLeft="20dp"
-  android:src="@drawable/play_btn_normal_list"
-  android:background="@color/transparent"
-  android:layout_gravity="center"/>
+      <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <ImageButton
+          android:id="@+id/ib_search_bottom_play_start_pause"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:src="@drawable/play_btn_start_pause"
+          android:background="@color/transparent"
+          android:layout_gravity="center"/>
+        <ImageButton
+          android:id="@+id/ib_search_bottom_play_next"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:src="@drawable/play_btn_next"
+          android:background="@color/transparent"
+          android:layout_marginStart="20dp"
+          android:layout_gravity="center"/>
+        <ImageButton
+          android:id="@+id/ib_search_bottom_play_normal_list"
+          android:layout_width="20dp"
+          android:layout_height="20dp"
+          android:layout_marginStart="20dp"
+          android:src="@drawable/play_btn_normal_list"
+          android:background="@color/transparent"
+          android:layout_gravity="center"/>
 
 
+      </LinearLayout>
 
-  </LinearLayout>
-
-</LinearLayout>
-
+    </LinearLayout>
 
 
   </LinearLayout>
