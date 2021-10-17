@@ -43,9 +43,11 @@ import com.example.yuehaoting.util.MusicConstant.HIF_INI
 import com.example.yuehaoting.util.Tag.play
 import com.example.yuehaoting.util.MusicConstant.KU_GOU
 import com.example.yuehaoting.util.MusicConstant.LIST_LOOP
+import com.example.yuehaoting.util.MusicConstant.NAME
 import com.example.yuehaoting.util.MusicConstant.NEW_SONG_KU_GOU
 import com.example.yuehaoting.util.MusicConstant.PLAYLIST_CHANGE
 import com.example.yuehaoting.util.MusicConstant.PLAY_SELECTED_SONG
+import com.example.yuehaoting.util.MusicConstant.QUIT_SONG_ID
 import com.example.yuehaoting.util.MusicConstant.RANDOM_PATTERN
 import com.example.yuehaoting.util.MusicConstant.SINGLE_CYCLE
 import com.example.yuehaoting.util.MusicConstant.UPDATE_META_DATA
@@ -126,11 +128,13 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
     fun load(){
 
        //用户数据
+        //获取当前播放模式
         playModel= getSp(this,MusicConstant.NAME){
             getInt(MusicConstant.PLAY_MODEL,LIST_LOOP)
         }
-
-
+      //获取播放列表数据
+      playQueue.restoreIfNecessary()
+        readyToPlay(playQueue.song)
     }
 
     /**
@@ -285,7 +289,6 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
     override fun onCreate() {
         super.onCreate()
         Timber.d("我再后台运行")
-        load()
         setUp()
 
     }
@@ -308,9 +311,13 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
         val action = intent?.action
         Timber.v("onStartCommand, control: $control action: $action flags: $flags startId: $startId")
         tryLaunch {
+            withContext(Dispatchers.IO){
+                load()
+            }
             delay(200)
             handleStartCommandIntent(intent, action)
         }
+
         return START_NOT_STICKY
     }
 
@@ -643,6 +650,14 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
             playPauseVolumeController.fadeIn()
         } else {
             playPauseVolumeController.directTo(1f)
+        }
+        //保存当前播放歌曲
+        launch {
+            withContext(Dispatchers.IO){
+                setSp(this@MusicService,NAME){
+                    putLong(QUIT_SONG_ID,playQueue.song.id)
+                }
+            }
         }
     }
 

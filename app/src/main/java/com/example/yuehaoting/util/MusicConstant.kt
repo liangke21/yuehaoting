@@ -19,7 +19,9 @@ object MusicConstant {
     const val SCAN_SIZE = "scan_size"
 
     //移除歌曲
-    var BLACKLIST_SONG = "black_list_song"
+    const val BLACKLIST_SONG = "black_list_song"
+
+    const val QUIT_SONG_ID = "QUIT_SONG_ID"
     //_______________________________________|播放列队|______________________________________________________________________________________________________
     //播放列队更改
     const val EXTRA_PLAYLIST = "extra_playlist"
