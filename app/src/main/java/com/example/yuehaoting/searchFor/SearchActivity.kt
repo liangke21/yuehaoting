@@ -61,8 +61,11 @@ import com.example.yuehaoting.searchFor.viewmodel.PlaceViewModel
 import com.example.yuehaoting.theme.Theme
 import com.example.yuehaoting.util.BroadcastUtil
 import com.example.yuehaoting.util.MusicConstant
+import com.example.yuehaoting.util.MusicConstant.KU_GOU
+import com.example.yuehaoting.util.MyUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
@@ -221,7 +224,8 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         //播放旋转按钮
         musicButton = findViewById(R.id.musicButton)
         musicButton.isDisplayText(false)
-
+        musicButton.setTotalProgress(0)
+        musicButton.setProgress(0)
         animation = AnimationUtils.loadAnimation(this, R.anim.anim_set_move_up)
     }
 
@@ -255,13 +259,27 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         }
     }
 
+    /**
+     * 进度条当前时间
+     */
+   private var currentTime=0
+
+    /**
+     * 进度条总时间
+     */
+    private var  duration=0
     override fun onMetaChanged() {
         super.onMetaChanged()
         Timber.v("onMetaChanged() %s 当前歌曲 %s  后台歌曲 %s", currentSong != MusicServiceRemote.getCurrentSong(), currentSong.SongName, MusicServiceRemote.getCurrentSong().SongName)
         if (currentSong != MusicServiceRemote.getCurrentSong()) {
             musicButton.playMusic(1)
             currentSong = MusicServiceRemote.getCurrentSong()
-            // updatePlayButtonImageAndText()
+             updatePlayButtonImageAndText()
+            //更新进度条
+            val temp = MusicServiceRemote.getProgress()
+            currentTime = if (temp in 1 until duration) temp else 0
+            duration = MusicServiceRemote.getDuration()
+            musicButton.setTotalProgress(duration)
         }
     }
 
@@ -280,7 +298,6 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             findViewById<ImageButton>(R.id.ib_search_bottom_play_start_pause).setImageResource(R.drawable.play_btn_start)
             updatePlayMusicButton(false)
         }
-
     }
 
     private val repository = DatabaseRepository.getInstance()
@@ -339,11 +356,17 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         requestOptions.transform(RoundedCorners(30))
 
         val uriID = SongNetwork.songUriID(currentSong.FileHash, "")
+        var pic = "uriID.data.img"
+        //不同平台的专辑图片
+        when(currentSong.platform){
+            KU_GOU -> pic = uriID.data.img
+        }
+
         val key = currentSong.FileHash.lowercase(Locale.ROOT)
         val img = mCacheString.getFromDisk(key)
         if (img != null) {
             Timber.v("加载本地封面:%s", img)
-            Glide.with(App.context).asBitmap()
+            Glide.with(applicationContext).asBitmap()
                 .apply(requestOptions)
                 .load(img)
                 .into(object : CustomTarget<Bitmap>() {
@@ -352,17 +375,13 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
                         transition: Transition<in Bitmap>?
                     ) {
 
-
                     }
 
                     override fun onLoadCleared(placeholder: Drawable?) {}
                 })
         } else {
-            val pic = uriID.data.img
             mCacheString.putToDisk(key, pic)
-
-
-            Glide.with(App.context).asBitmap()
+            Glide.with(applicationContext).asBitmap()
                 .apply(requestOptions)
                 .placeholder(R.drawable.play_activity_album)
                 .load(pic)
@@ -377,11 +396,35 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
 
                     override fun onLoadCleared(placeholder: Drawable?) {}
                 })
-
         }
 
     }
 
+    /**
+     * 播放按钮进度条
+     */
+ private suspend fun  updatePlayMusicButtonProgressBar(){
+     while (isForeground) {
+         try {
+             Timber.v("创建协程")
+             val progress = MusicServiceRemote.getProgress()
+             if (progress in 1 until duration) {
+                 runOnUiThread {
+                          musicButton.setProgress(progress)
+                 }
+                 Log.e(MyUtil.getSecond(progress).toString(), MyUtil.getSecond(duration).toString())  //打印进度时间和当前时长
+                 if (MyUtil.getSecond(progress) == MyUtil.getSecond(duration)) {
+                     runOnUiThread {
+                         musicButton.playMusic(4)
+                     }
+                 }
+                 delay(500)
+             }
+         } catch (e: Exception) {
+             e.printStackTrace()
+         }
+     }
+ }
     /**
      * 播放按钮凸起
      * @param isPlay Boolean
@@ -990,6 +1033,12 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        launch(Dispatchers.IO) {
+            updatePlayMusicButtonProgressBar()
+        }
+    }
     override fun onDestroy() {
         super.onDestroy()
         mAdapter = null
