@@ -51,6 +51,7 @@ import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.kotlin.getSp
+import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.playInterface.activity.PlayActivityDialogFragment
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
@@ -356,7 +357,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         requestOptions.transform(RoundedCorners(30))
 
         val uriID = SongNetwork.songUriID(currentSong.FileHash, "")
-        var pic = "uriID.data.img"
+        var pic = ""
         //不同平台的专辑图片
         when(currentSong.platform){
             KU_GOU -> pic = uriID.data.img
@@ -374,7 +375,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
                         resource: Bitmap,
                         transition: Transition<in Bitmap>?
                     ) {
-
+                        musicButton.setBitmap(resource)
                     }
 
                     override fun onLoadCleared(placeholder: Drawable?) {}
@@ -649,7 +650,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
                     }
                 })
 
-                internalHotSearchKeywords(internalHotSearchRecyclerView, position, model.title)
+               internalHotSearchKeywords(internalHotSearchRecyclerView, position, model.title)
 
             }
 
@@ -673,19 +674,22 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             0 -> {
 
                 viewModel.singleObservedLiveData1.observe(this) {
-                    val musicData = it.getOrNull() as KuGouSingle.Data
-                    viewModel.songList1.addAll(musicData.lists)
-                    viewModel.songList1.add(0, musicData.lists[0]) //在0索引上在插入数据
-                    recyclerView(viewModel.songList1, recyclerView, title)
-                }
 
+                        val musicData = it.getOrNull() as KuGouSingle.Data
+                        viewModel.songList1.addAll(musicData.lists)
+                        viewModel.songList1.add(0, musicData.lists[0]) //在0索引上在插入数据
+                        recyclerView(viewModel.songList1, recyclerView, title)
+
+                }
             }
             1 -> {
                 viewModel.singleObservedLiveData2.observe(this) {
-                    val musicData = it.getOrNull() as KuGouSingle.Data
-                    viewModel.songList2.addAll(musicData.lists)
-                    viewModel.songList2.add(0, musicData.lists[0])
-                    recyclerView(viewModel.songList2, recyclerView, title)
+
+                        val musicData = it.getOrNull() as KuGouSingle.Data
+                        viewModel.songList2.addAll(musicData.lists)
+                        viewModel.songList2.add(0, musicData.lists[0])
+                        recyclerView(viewModel.songList2, recyclerView, title)
+
                 }
             }
             2 -> {
@@ -1036,7 +1040,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     override fun onResume() {
         super.onResume()
         launch(Dispatchers.IO) {
-            updatePlayMusicButtonProgressBar()
+         //   updatePlayMusicButtonProgressBar()
         }
     }
     override fun onDestroy() {

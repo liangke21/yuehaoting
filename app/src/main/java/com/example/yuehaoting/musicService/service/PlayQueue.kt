@@ -318,6 +318,9 @@ class PlayQueue(service: MusicService) {
      * 保存列队
      */
     private fun saveQueue() {
+        _originalOriginalQueue.forEach {
+           Timber.v(" _originalOriginalQueue111 %s",it.SongName)
+        }
         repository.clearPlayQueue()
             .flatMap {
                 repository.insertToPlayQueue(_originalOriginalQueue)

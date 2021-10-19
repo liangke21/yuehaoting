@@ -20,6 +20,7 @@ import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.playInterface.activity.PlayActivity
 import com.example.yuehaoting.searchFor.viewmodel.SingleFragment1ViewModel
+import com.example.yuehaoting.util.BroadcastUtil
 import com.example.yuehaoting.util.IntentUtil
 import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.MusicConstant.EXTRA_POSITION
@@ -78,15 +79,15 @@ class SingleFragment1: LazyBaseFragment(){
         viewModel.singleObservedLiveData.observe(this) {
             tryNull {
                 val musicData = it.getOrNull() as KuGouSingle.Data
-                Timber.v("酷狗音乐数据观察到:%s %s", musicData.lists[0].SongName, isLoadDataForTheFirstTime)
-
+              //  Timber.v("酷狗音乐数据观察到:%s %s", musicData.lists[0].SongName, isLoadDataForTheFirstTime)
+                var id= 0L
                 val model=musicData.lists
                 model.forEach {
                     val song = songDetails(it)
                     it.apply {
                         songLists.add(
                             SongLists(
-                                id = 0,
+                                id =++id,
                                 SongName=song[0]!!,
                                 SingerName=song[1]!!,
                                 FileHash=FileHash,
@@ -112,7 +113,7 @@ class SingleFragment1: LazyBaseFragment(){
 
                             songSoundQuality(holder, model)
 
-                            songPlay(holder,position)
+                            playSong(holder, position)
 
                         }
                     }
@@ -152,10 +153,26 @@ class SingleFragment1: LazyBaseFragment(){
         }
 
     }
+    private fun playSong(holder: SmartViewHolder?,  position: Int){
+        val intent = Intent(MusicConstant.ACTION_CMD)
+        holder?.itemView?.setOnClickListener {
+            if(songLists[position]== MusicServiceRemote.getCurrentSong()){
+                intent.putExtra(
+                    MusicConstant.EXTRA_CONTROL,
+                    MusicConstant.PAUSE_PLAYBACK
+                )
+                BroadcastUtil.sendLocalBroadcast(intent)
+            }else{
+                MusicServiceRemote.setPlayQueue(songLists, IntentUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(MusicConstant.EXTRA_POSITION, position))
+            }
+        }
 
+    }
+
+    @Deprecated("不可用,会打开一个Activity来播放", ReplaceWith("playSong(holder,position)", "playSong()"), level = DeprecationLevel.WARNING)
     private fun songPlay(holder: SmartViewHolder?,  position: Int) {
         holder?.itemView?.setOnClickListener {
-            Timber.v("酷狗列表角标:%s 歌曲名称:%s", position, songLists[position].SingerName)
+            Timber.v("酷狗列表角标:%s 歌曲名称:%s ", position, songLists[position].SingerName)
             if(songLists[position]== MusicServiceRemote.getCurrentSong()){
                 val intent= Intent(activity, PlayActivity::class.java)
                 intent.putExtra(MusicConstant.CURRENT_SONG,songLists[position])  //向下一个Activity传入当前播放的歌曲

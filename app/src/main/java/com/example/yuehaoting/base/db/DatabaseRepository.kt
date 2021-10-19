@@ -61,7 +61,9 @@ import kotlin.collections.ArrayList
                 Timber.tag(Tag.queueDatabase).v("插入的数据  id %s %s", actual.toString(), lll())
 
                 db.playQueueDao().insertPlayQueue(convertAudioIdsToPlayQueues(actual))
-
+                convertAudioIdsToPlayQueues(actual).forEach { ig->
+                    Timber.v("_originalOriginalQueue222 %s",ig.SongName)
+                }
                 actual.size
             }
     }
@@ -75,6 +77,7 @@ import kotlin.collections.ArrayList
 
         val playQueues = ArrayList<PlayQueue>()
         for (it in songLists) {
+
             playQueues.add(PlayQueue(0, it.id,it.SongName,it.SingerName,it.FileHash,it.mixSongID,it.lyrics,it.album,it.pic,it.platform))
         }
         return playQueues

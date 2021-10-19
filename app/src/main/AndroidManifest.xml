@@ -48,6 +48,8 @@
     <activity
       android:name=".MainActivity"
       android:theme="@style/MainTheme">
+
+
     </activity>
 
     <meta-data
