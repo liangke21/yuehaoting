@@ -479,7 +479,8 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
             }
             Timber.tag(Tag.isPlay).v("后台播放状态:%s,传入状态:%s,播放暂停:%s", isPlaying, false, lll())
             setPlay(false)
-            handler.sendEmptyMessage(UPDATE_META_DATA)
+           // TODO() Activity 更新数据,注意这里暂停数据没有发生变化
+          //  handler.sendEmptyMessage(UPDATE_META_DATA)
             playPauseVolumeController.fadeOut()
         }
     }

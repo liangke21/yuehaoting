@@ -11,11 +11,14 @@
         <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_main_layout__bottom_navigation_view.xml" value="0.3802083333333333" />
         <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_main_layout_bottom_sheet_behavior.xml" value="0.3802083333333333" />
         <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_registered.xml" value="0.3592592592592593" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_search.xml" value="0.1978319783197832" />
+        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_search.xml" value="0.20110192837465565" />
+        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_search_item.xml" value="0.3802083333333333" />
         <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_search_item2.xml" value="0.3802083333333333" />
         <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_search_item_3.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_search_item_3_item.xml" value="0.3802083333333333" />
+        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_search_item_3_item2.xml" value="0.3802083333333333" />
         <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/blank_fragment.xml" value="0.3802083333333333" />
+        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/item_search_for.xml" value="0.3802083333333333" />
         <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/main_navigation_discover.xml" value="0.3802083333333333" />
         <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/main_navigation_discover_fragment1.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/main_navigation_discover_fragment1_item_a.xml" value="0.3802083333333333" />
@@ -26,6 +29,8 @@
         <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/play_activity.xml" value="0.3802083333333333" />
         <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/play_layout_bar.xml" value="0.3802083333333333" />
         <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/play_play_layout.xml" value="0.25" />
+        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/view_item_fold_down.xml" value="0.3802083333333333" />
+        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/view_item_fold_up.xml" value="0.3802083333333333" />
         <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/menu/bottom_nav_menu.xml" value="0.390625" />
       </map>
     </option>

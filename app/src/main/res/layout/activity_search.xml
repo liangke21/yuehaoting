@@ -97,12 +97,13 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:id="@+id/NestedScrollView"
+      android:background="@color/whiteA"
       android:layout_below="@+id/actionBarLayout">
 
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+
         android:id="@+id/ll_search_History_and_hot_words"
 
         android:orientation="vertical">
@@ -110,11 +111,16 @@
           android:layout_width="match_parent"
           android:layout_height="40dp"
           android:orientation="horizontal">
+          <ImageView
+            android:layout_width="8dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/search_1"/>
           <TextView
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
-            android:text="历史记录"
+            android:layout_marginStart="3dp"
+            android:text="搜索历史"
             android:textSize="20sp"
             android:gravity="center"/>
 
@@ -169,11 +175,30 @@
           app:flow_horizontalSpacing="10dp"
           app:flow_verticalSpacing="10dp"/>
 
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="10dp"
+          android:orientation="horizontal">
+          <ImageView
+            android:layout_width="8dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/search_2"/>
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="3dp"
+            android:text="热搜推荐"
+            android:textSize="20sp"
+            android:gravity="center"/>
+        </LinearLayout>
+
 
         <androidx.recyclerview.widget.RecyclerView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="20dp"
+          android:layout_marginTop="2dp"
           tools:listitem="@layout/activity_search_item_3"
           android:id="@+id/rv_search"/>
 
@@ -193,8 +218,8 @@
     >
     <com.example.yuehaoting.base.view.view.MusicButtonLayout
       android:id="@+id/musicButton"
-      android:layout_width="45dp"
-      android:layout_height="45dp"
+      android:layout_width="55dp"
+      android:layout_height="55dp"
       android:layout_marginStart="5dp"
       android:layout_marginBottom="2dp"
       android:layout_gravity="center"
@@ -202,8 +227,8 @@
       app:circleColor="@color/teal_700"
       app:ringBgColor="#EAE6E6"
       app:ringColor="#0885E8"
-      app:strokeWidthBackground="3dp"
-      app:strokeWidthL="3dp"
+      app:strokeWidthBackground="2dp"
+      app:strokeWidthL="2dp"
       app:bulgeRadius="10dp"
       app:textSizeL="16sp"/>
     <LinearLayout

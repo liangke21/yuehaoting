@@ -13,6 +13,8 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -37,8 +39,10 @@ import com.example.yuehaoting.base.recyclerView.typeAdapter.CommonViewHolder
 import com.example.yuehaoting.base.recyclerView.typeAdapter.WithParametersCommonAdapter
 import com.example.yuehaoting.base.rxJava.LogObserver
 import com.example.yuehaoting.base.rxJava.RxUtil
+import com.example.yuehaoting.base.view.view.MusicButtonLayout
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
+import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.playInterface.activity.PlayActivityDialogFragment
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
@@ -84,6 +88,14 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     private val viewModel by lazy { ViewModelProvider(this).get(PlaceViewModel::class.java) }
     private var adapter: PlaceAdapter? = null
 
+    /**
+     * 当前播放歌曲
+     */
+    private lateinit var currentSong: SongLists
+
+    private lateinit var musicButton: MusicButtonLayout
+
+    private lateinit var animation: Animation
 
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,13 +107,13 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         mSharedPreferences = getSharedPreferences("Song", MODE_APPEND)
         val channels: Array<String> = resources.getStringArray(R.array.searchTitleArray)
         mDataList = channels.toList() as ArrayList<String>
-
+        initData()
         //监听搜索框数据
         placeLiveDataObserve()
         //初始化控件
         initView()
 
-        initData()
+
         //标题栏
         initMagicIndicator()
 
@@ -123,7 +135,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     }
 
     private fun initData() {
-
+        currentSong = MusicServiceRemote.getCurrentSong()
     }
 
 
@@ -179,34 +191,49 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         ).forEach {
             it.setOnClickListener(bottomPlayOnClickListener)
         }
+        //播放旋转按钮
+        musicButton = findViewById(R.id.musicButton)
+        musicButton.isDisplayText(false)
 
+        animation = AnimationUtils.loadAnimation(this, R.anim.anim_set_move_up)
     }
+
     //_______________________________________|底部播放按钮|______________________________________________________________________________________________________
-    private val bottomPlayOnClickListener=View.OnClickListener { v ->
+    private val bottomPlayOnClickListener = View.OnClickListener { v ->
         val intent = Intent(MusicConstant.ACTION_CMD)
-      when(v.id){
-          R.id.ib_search_bottom_play_start_pause->{
-              intent.putExtra(MusicConstant.EXTRA_CONTROL, MusicConstant.PAUSE_PLAYBACK)
-          }
+        when (v.id) {
+            R.id.ib_search_bottom_play_start_pause -> {
+                intent.putExtra(MusicConstant.EXTRA_CONTROL, MusicConstant.PAUSE_PLAYBACK)
+            }
 
-          R.id.ib_search_bottom_play_next->intent.putExtra(MusicConstant.EXTRA_CONTROL, MusicConstant.NEXT)
+            R.id.ib_search_bottom_play_next -> intent.putExtra(MusicConstant.EXTRA_CONTROL, MusicConstant.NEXT)
 
-          R.id.ib_search_bottom_play_normal_list->{
-              PlayActivityDialogFragment.newInstance()
-                  .show(supportFragmentManager, PlayActivityDialogFragment::class.java.simpleName)
-          }
+            R.id.ib_search_bottom_play_normal_list -> {
+                PlayActivityDialogFragment.newInstance()
+                    .show(supportFragmentManager, PlayActivityDialogFragment::class.java.simpleName)
+            }
 
-      }
+        }
 
         BroadcastUtil.sendLocalBroadcast(intent)
     }
+
     /**当前是否播放**/
-     private var isPlaying=false
+    private var isPlaying = false
     override fun onPlayStateChange() {
         super.onPlayStateChange()
-        val isPlayingFul= MusicServiceRemote.isPlaying()
-        if (isPlaying != isPlayingFul){
+        val isPlayingFul = MusicServiceRemote.isPlaying()
+        if (isPlaying != isPlayingFul) {
             updatePlayButton(isPlayingFul)
+        }
+    }
+
+    override fun onMetaChanged() {
+        super.onMetaChanged()
+        Timber.v("onMetaChanged() %s 当前歌曲 %s  后台歌曲 %s", currentSong != MusicServiceRemote.getCurrentSong(), currentSong.SongName, MusicServiceRemote.getCurrentSong().SongName)
+        if (currentSong != MusicServiceRemote.getCurrentSong()) {
+            musicButton.playMusic(1)
+            currentSong = MusicServiceRemote.getCurrentSong()
         }
     }
 
@@ -214,14 +241,32 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
      * 更新播放状态
      * @param isPlay Boolean
      */
-    private fun updatePlayButton(isPlay:Boolean){
-         isPlaying=isPlay
-         if (isPlaying){
-             findViewById<ImageButton>(R.id.ib_search_bottom_play_start_pause).setImageResource(R.drawable.playa_btn_pause)
-         }else{
-             findViewById<ImageButton>(R.id.ib_search_bottom_play_start_pause).setImageResource(R.drawable.play_btn_start)
-         }
+    private fun updatePlayButton(isPlay: Boolean) {
+        isPlaying = isPlay
+        if (isPlaying) {
+            musicButton.playMusic(2)
+            findViewById<ImageButton>(R.id.ib_search_bottom_play_start_pause).setImageResource(R.drawable.playa_btn_pause)
+            updatePlayMusicButton(true)
+        } else {
+            musicButton.playMusic(3)
+            findViewById<ImageButton>(R.id.ib_search_bottom_play_start_pause).setImageResource(R.drawable.play_btn_start)
+            updatePlayMusicButton(false)
+        }
 
+    }
+
+    /**
+     * 播放按钮凸起
+     * @param isPlay Boolean
+     */
+    private fun updatePlayMusicButton(isPlay: Boolean) {
+        //Todo 下移动画没有实现
+        if (isPlay) {
+            musicButton.startAnimation(animation)
+        } else {
+            val animation = AnimationUtils.loadAnimation(this, R.anim.anim_set_move_down)
+            musicButton.startAnimation(animation)
+        }
     }
 
     //_______________________________________|历史记录|______________________________________________________________________________________________________
@@ -831,5 +876,6 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         hAdapter?.setNewData(null)
         hAdapter = null
         flowListView = null
+        musicButton.playMusic(4)
     }
 }

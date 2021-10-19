@@ -29,7 +29,9 @@ interface PlayQueueDao {
      * 清空
      * @return Int
      */
-    @Query("DELETE FROM PlayQueue")
+  // @Modifying
+  // @Query("TRUNCATE * table PlayQueue nativeQuery = true ")
+   @Query("DELETE FROM PlayQueue")
     fun clear(): Int
 
    /**
