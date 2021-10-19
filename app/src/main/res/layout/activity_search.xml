@@ -245,12 +245,14 @@
         <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:id="@+id/tv_song_title"
           android:layout_marginTop="3dp"
           android:text="歌曲标题"/>
         <TextView
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
           android:layout_marginTop="3dp"
+          android:id="@+id/tv_singer"
           android:text="歌手"/>
       </LinearLayout>
 
@@ -276,8 +278,8 @@
           android:layout_gravity="center"/>
         <ImageButton
           android:id="@+id/ib_search_bottom_play_normal_list"
-          android:layout_width="20dp"
-          android:layout_height="20dp"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
           android:layout_marginStart="20dp"
           android:src="@drawable/play_btn_normal_list"
           android:background="@color/transparent"

@@ -4,10 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Rect
+import android.graphics.*
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -25,10 +23,18 @@ import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.example.yuehaoting.App
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
 import com.example.yuehaoting.base.asyncTaskLoader.WrappedAsyncTaskLoader
+import com.example.yuehaoting.base.db.DatabaseRepository
 import com.example.yuehaoting.base.db.HistoryRepository.Companion.getInstanceHistory
+import com.example.yuehaoting.base.diskLruCache.myCache.CacheString
 import com.example.yuehaoting.base.fragmet.LazyBaseFragment
 import com.example.yuehaoting.base.lib_search_history.adapter.SearchHistoryAdapter
 import com.example.yuehaoting.base.lib_search_history.jd.JDFoldLayout
@@ -37,12 +43,14 @@ import com.example.yuehaoting.base.magicIndicator.ext.ScaleTransitionPagerTitleV
 import com.example.yuehaoting.base.recyclerView.typeAdapter.CommonTypeAdapter
 import com.example.yuehaoting.base.recyclerView.typeAdapter.CommonViewHolder
 import com.example.yuehaoting.base.recyclerView.typeAdapter.WithParametersCommonAdapter
+import com.example.yuehaoting.base.retrofit.SongNetwork
 import com.example.yuehaoting.base.rxJava.LogObserver
 import com.example.yuehaoting.base.rxJava.RxUtil
 import com.example.yuehaoting.base.view.view.MusicButtonLayout
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousingle.SongLists
+import com.example.yuehaoting.kotlin.getSp
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.playInterface.activity.PlayActivityDialogFragment
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
@@ -50,8 +58,12 @@ import com.example.yuehaoting.searchFor.adapter.data.History
 import com.example.yuehaoting.searchFor.fragment.ui.*
 import com.example.yuehaoting.searchFor.pagerview.MyPagerAdapter
 import com.example.yuehaoting.searchFor.viewmodel.PlaceViewModel
+import com.example.yuehaoting.theme.Theme
 import com.example.yuehaoting.util.BroadcastUtil
 import com.example.yuehaoting.util.MusicConstant
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.UIUtil
@@ -61,6 +73,8 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTit
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView
 import timber.log.Timber
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 
@@ -96,7 +110,6 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     private lateinit var musicButton: MusicButtonLayout
 
     private lateinit var animation: Animation
-
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,14 +136,26 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         deleteHistory()
         //热搜关键字
         hotSearchKeywords()
-        //底部播放控制
-        bottomPlaybackControl()
+        //封面连接字符集合
+        mCacheString.init(this, "Cover")
+        updatePlayButtonImageAndText()
     }
 
     /**
-     * 底部播放控制
+     * 底部播放颜色
      */
-    private fun bottomPlaybackControl() {
+    private fun bottomPlaybackControlColour(it: ImageButton) {
+        when (it.id) {
+            R.id.ib_search_bottom_play_start_pause -> {
+                //       Theme.tintDrawable(it, R.drawable.play_btn_start, Color.parseColor("#2a5caa"))
+            }
+            R.id.ib_search_bottom_play_next -> {
+                Theme.tintDrawable(it, R.drawable.play_btn_next, Color.parseColor("#1894dc"))
+            }
+            R.id.ib_search_bottom_play_normal_list -> {
+                Theme.tintDrawable(it, R.drawable.play_btn_normal_list, Color.parseColor("#1894dc"))
+            }
+        }
 
     }
 
@@ -190,6 +215,8 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
 
         ).forEach {
             it.setOnClickListener(bottomPlayOnClickListener)
+            bottomPlaybackControlColour(it)
+
         }
         //播放旋转按钮
         musicButton = findViewById(R.id.musicButton)
@@ -234,6 +261,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         if (currentSong != MusicServiceRemote.getCurrentSong()) {
             musicButton.playMusic(1)
             currentSong = MusicServiceRemote.getCurrentSong()
+            // updatePlayButtonImageAndText()
         }
     }
 
@@ -251,6 +279,105 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             musicButton.playMusic(3)
             findViewById<ImageButton>(R.id.ib_search_bottom_play_start_pause).setImageResource(R.drawable.play_btn_start)
             updatePlayMusicButton(false)
+        }
+
+    }
+
+    private val repository = DatabaseRepository.getInstance()
+
+    /**
+     * 更新底部歌曲和歌手还有专辑图片
+     */
+    private fun updatePlayButtonImageAndText() {
+        if (currentSong.id == -1L) {
+            launch(Dispatchers.IO) {
+                val quitId = getSp(applicationContext, MusicConstant.NAME) {
+                    getLong(MusicConstant.QUIT_SONG_ID, -1L)
+                }
+                val queue = repository.getPlayQueueSongs().blockingGet()
+                if (queue.isNotEmpty()) {
+                    for (i in queue.indices) {
+                        if (quitId == queue[i].id) {
+                            currentSong = queue[i]
+                        }
+                    }
+                }
+
+                showCover()
+
+                runOnUiThread {
+                    findViewById<TextView>(R.id.tv_song_title).text = currentSong.SongName
+                    findViewById<TextView>(R.id.tv_singer).text = currentSong.SingerName
+
+                    currentSong = SongLists.SONG_LIST
+                }
+            }
+
+
+        }else{
+            launch(Dispatchers.IO) {
+                showCover()
+            }
+            findViewById<TextView>(R.id.tv_song_title).text = currentSong.SongName
+            findViewById<TextView>(R.id.tv_singer).text = currentSong.SingerName
+        }
+
+
+
+    }
+
+    private val mCacheString = CacheString()
+
+    /**
+     * 显示封面
+     */
+    @SuppressLint("CheckResult")
+    private suspend fun showCover() {
+        val requestOptions = RequestOptions()
+        // requestOptions.placeholder(R.drawable.ic_launcher_background)
+        RequestOptions.circleCropTransform()
+        requestOptions.transform(RoundedCorners(30))
+
+        val uriID = SongNetwork.songUriID(currentSong.FileHash, "")
+        val key = currentSong.FileHash.lowercase(Locale.ROOT)
+        val img = mCacheString.getFromDisk(key)
+        if (img != null) {
+            Timber.v("加载本地封面:%s", img)
+            Glide.with(App.context).asBitmap()
+                .apply(requestOptions)
+                .load(img)
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap>?
+                    ) {
+
+
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {}
+                })
+        } else {
+            val pic = uriID.data.img
+            mCacheString.putToDisk(key, pic)
+
+
+            Glide.with(App.context).asBitmap()
+                .apply(requestOptions)
+                .placeholder(R.drawable.play_activity_album)
+                .load(pic)
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap>?
+                    ) {
+                        musicButton.setBitmap(resource)
+
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {}
+                })
+
         }
 
     }
@@ -359,14 +486,12 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     }
 
     class HistoryLoader(context: Context) : WrappedAsyncTaskLoader<List<History>>(context) {
-
         override fun loadInBackground(): List<History>? {
             return getInstanceHistory().getHistory().onErrorReturn {
                 emptyList()
             }
                 .blockingGet()
         }
-
     }
 
     /**
@@ -828,8 +953,8 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             R.id.tv_title_search -> {
                 // todo   播放数据发生变化 不知道干嘛用的暂时注销  用于播放界面不兼容
 /*                val intent = Intent(MusicConstant.PLAY_DATA_CHANGES)
-                //   sendBroadcast(intent)
-                LocalBroadcastManager.getInstance(context).sendBroadcast(intent)*/
+           //   sendBroadcast(intent)
+           LocalBroadcastManager.getInstance(context).sendBroadcast(intent)*/
 
                 val i = etTitleBarSearch.text.toString()
 
@@ -877,5 +1002,9 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         hAdapter = null
         flowListView = null
         musicButton.playMusic(4)
+        currentSong = SongLists.SONG_LIST
+        cancel()
+        repository.closure()
+        mCacheString.close()
     }
 }

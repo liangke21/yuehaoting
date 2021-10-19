@@ -34,7 +34,7 @@ data class SongLists(
 
 
     companion object {
-        val SONG_LIST = SongLists(0,"", "", "","","", "","",0)
+        val SONG_LIST = SongLists(id= -1L,"", "", "","","", "","",0)
     }
 
     override fun toString(): String {

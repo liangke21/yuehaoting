@@ -25,7 +25,6 @@ class CacheString {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 
     /**
@@ -94,6 +93,12 @@ class CacheString {
 
 
         return list
+    }
+    /**
+     * 关闭流
+     */
+    fun close(){
+        diskLruCache.close()
     }
 
 }

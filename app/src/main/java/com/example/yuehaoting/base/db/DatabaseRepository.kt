@@ -194,6 +194,13 @@ import kotlin.collections.ArrayList
             }
     }
 
+    /**
+     * 关闭数据库
+     */
+
+     fun closure(){
+        db.close()
+    }
 
     companion object {
 
