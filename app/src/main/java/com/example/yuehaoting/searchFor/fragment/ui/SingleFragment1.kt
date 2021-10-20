@@ -35,8 +35,9 @@ import timber.log.Timber
  * 描述:
  */
 class SingleFragment1: LazyBaseFragment(){
-    private lateinit var binding: FragmentMusicBinding
+    private  var _binding: FragmentMusicBinding?=null
 
+    private val binding get() = _binding!!
     private val songLists = ArrayList<SongLists>()
     //第一次进入刷新
     private var isFirstEnter = true
@@ -54,7 +55,7 @@ class SingleFragment1: LazyBaseFragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentMusicBinding.inflate(inflater)
+        _binding = FragmentMusicBinding.inflate(inflater)
         val data = activity!!.intent.getStringExtra("Single")
         Timber.v("Activity传输数据3 : %s", data.toString())
         viewModel.requestParameter(1, 10, data.toString())
@@ -75,12 +76,12 @@ class SingleFragment1: LazyBaseFragment(){
             isFirstEnter = false
             binding.refreshLayout.autoRefresh()
         }
-
+        var id= 0L
         viewModel.singleObservedLiveData.observe(this) {
             tryNull {
                 val musicData = it.getOrNull() as KuGouSingle.Data
               //  Timber.v("酷狗音乐数据观察到:%s %s", musicData.lists[0].SongName, isLoadDataForTheFirstTime)
-                var id= 0L
+
                 val model=musicData.lists
                 model.forEach {
                     val song = songDetails(it)
@@ -153,9 +154,16 @@ class SingleFragment1: LazyBaseFragment(){
         }
 
     }
+
+    /**
+     * 播放歌曲
+     * @param holder SmartViewHolder?
+     * @param position Int
+     */
     private fun playSong(holder: SmartViewHolder?,  position: Int){
         val intent = Intent(MusicConstant.ACTION_CMD)
         holder?.itemView?.setOnClickListener {
+            Timber.v("当前列表长度 %s",songLists.size)
             if(songLists[position]== MusicServiceRemote.getCurrentSong()){
                 intent.putExtra(
                     MusicConstant.EXTRA_CONTROL,
@@ -235,6 +243,8 @@ class SingleFragment1: LazyBaseFragment(){
     override fun onDestroyView() {
         super.onDestroyView()
         isLoadDataForTheFirstTime=true
+        _binding=null
+        songLists.clear()
     }
 }
 

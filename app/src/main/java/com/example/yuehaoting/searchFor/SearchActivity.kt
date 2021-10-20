@@ -1040,7 +1040,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     override fun onResume() {
         super.onResume()
         launch(Dispatchers.IO) {
-         //   updatePlayMusicButtonProgressBar()
+          updatePlayMusicButtonProgressBar()
         }
     }
     override fun onDestroy() {
