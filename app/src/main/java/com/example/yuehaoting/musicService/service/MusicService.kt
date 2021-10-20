@@ -51,6 +51,7 @@ import com.example.yuehaoting.util.MusicConstant.NAME
 import com.example.yuehaoting.util.MusicConstant.NEW_SONG_KU_GOU
 import com.example.yuehaoting.util.MusicConstant.PLAYLIST_CHANGE
 import com.example.yuehaoting.util.MusicConstant.PLAY_SELECTED_SONG
+import com.example.yuehaoting.util.MusicConstant.QQ
 import com.example.yuehaoting.util.MusicConstant.QUIT_SONG_ID
 import com.example.yuehaoting.util.MusicConstant.RANDOM_PATTERN
 import com.example.yuehaoting.util.MusicConstant.SINGLE_CYCLE
@@ -766,6 +767,20 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
 
                  }
              }
+
+                QQ->{
+                    if (TextUtils.isEmpty(song.FileHash)) {
+                        getString(R.string.path_empty).showToast(this)
+                        return@tryLaunch
+                    }
+                    val mp3Uri="https://myhkw.cn/api/musicUrl?songId=${song.FileHash}&type=qq&id=155782152289"
+                    val uri: Uri = Uri.parse(mp3Uri)
+                    mediaPlayer.reset()
+                    withContext(Dispatchers.IO) {
+                        mediaPlayer.setDataSource(this@MusicService, uri)
+
+                    }
+                }
             }
 
             mediaPlayer.prepareAsync()

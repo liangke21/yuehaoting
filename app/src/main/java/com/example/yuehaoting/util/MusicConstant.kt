@@ -134,6 +134,7 @@ object MusicConstant {
     const val HIF_INI = 2
     const val NEW_SONG_KU_GOU = 3
     const val MUSIC_136=4
+    const val QQ=5
 
     //_______________________________________|PlayActivityHandler|______________________________________________________________________________________________________
     //更新播放进度时间

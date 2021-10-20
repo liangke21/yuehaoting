@@ -65,6 +65,7 @@ import com.example.yuehaoting.util.MusicConstant.HIF_INI_PIC
 import com.example.yuehaoting.util.MusicConstant.KU_GOU
 import com.example.yuehaoting.util.MusicConstant.MUSIC_136
 import com.example.yuehaoting.util.MusicConstant.NAME
+import com.example.yuehaoting.util.MusicConstant.QQ
 import com.example.yuehaoting.util.MyUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -373,7 +374,10 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             MUSIC_136 -> {
                 pic = "https://myhkw.cn/api/musicPic?picId=${currentSong.pic}&type=wy&size=big"
             }
-
+           QQ->{
+               Timber.v("currentSong.pic %s",currentSong.pic)
+               pic = "https://myhkw.cn/api/musicPic?picId=${currentSong.pic}&type=qq&size=big"
+           }
         }
 
         val key = currentSong.FileHash.lowercase(Locale.ROOT)

@@ -1,5 +1,6 @@
 package com.example.yuehaoting.searchFor.fragment.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,13 +13,18 @@ import com.example.yuehaoting.R
 import com.example.yuehaoting.base.fragmet.LazyBaseFragment
 import com.example.yuehaoting.base.recyclerView.adapter.BaseRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
+import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.data.musicQQ.QQSongList
 import com.example.yuehaoting.databinding.FragmentMusicBinding
 import com.example.yuehaoting.kotlin.lazyMy
-import com.example.yuehaoting.kotlin.showToast
 import com.example.yuehaoting.kotlin.tryNull
+import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.searchFor.fragment.interfacet.ListRefreshInterface
 import com.example.yuehaoting.searchFor.viewmodel.SingleFragment4ViewModel
+import com.example.yuehaoting.util.BroadcastUtil
+import com.example.yuehaoting.util.IntentUtil
+import com.example.yuehaoting.util.MusicConstant
+import com.example.yuehaoting.util.MusicConstant.QQ
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import timber.log.Timber
@@ -30,7 +36,8 @@ import timber.log.Timber
  */
 class SingleFragment4:LazyBaseFragment() ,ListRefreshInterface{
 
-    private lateinit var binding: FragmentMusicBinding
+    private  var _binding: FragmentMusicBinding?=null
+    private val binding get() = _binding!!
 
     //第一次进入刷新
     private var isFirstEnter = true
@@ -40,7 +47,7 @@ class SingleFragment4:LazyBaseFragment() ,ListRefreshInterface{
     private var isLoadDataForTheFirstTime = true
 
     //列表适配器
-    private lateinit var mAdapter: BaseRecyclerAdapter<QQSongList.Data.Song.Lists>
+    private  var mAdapter: BaseRecyclerAdapter<QQSongList.Data.Song.Lists>? =null
     private val viewModel by lazyMy { ViewModelProvider(this).get(SingleFragment4ViewModel::class.java) }
 
     private var recyclerView: RecyclerView? = null
@@ -48,7 +55,7 @@ class SingleFragment4:LazyBaseFragment() ,ListRefreshInterface{
     //关键字
     private var keyword = ""
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentMusicBinding.inflate(inflater)
+        _binding = FragmentMusicBinding.inflate(inflater)
         val data = activity!!.intent.getStringExtra("Single")
         viewModel.requestParameter(1,10,data.toString())
         keyword = data.toString()
@@ -69,11 +76,19 @@ class SingleFragment4:LazyBaseFragment() ,ListRefreshInterface{
         }
        viewModel.observedData.observe(this) {
             tryNull( {
+
+                if (it.getOrNull()==null){
+
+                    binding.refreshLayout.finishRefreshWithNoMoreData()
+                }
                 val musicData = it.getOrNull() as QQSongList
                 Timber.v("QQ音乐数据观察到:%s %s", musicData.data?.song?.list?.get(0)?.name, isLoadDataForTheFirstTime)
+
+                addList(musicData.data?.song?.list!!)
+
                 if (isLoadDataForTheFirstTime) {
                     isLoadDataForTheFirstTime = false
-                    musicData.data?.song?.list?.let { it1 -> viewModel.songList.addAll(it1) }
+                    musicData.data.song.list.let { it1 -> viewModel.songList.addAll(it1) }
 
                     baseRecyclerAdapter()
 
@@ -81,11 +96,10 @@ class SingleFragment4:LazyBaseFragment() ,ListRefreshInterface{
                         isRefresh = false
                         binding.refreshLayout.finishRefresh()
                     }
-
                 }
 
                 if (page >= 2) {
-                    mAdapter.loadMore(musicData.data?.song?.list)
+                    mAdapter?.loadMore(musicData.data.song.list)
                     binding.refreshLayout.finishLoadMore()
                 }
 
@@ -93,15 +107,52 @@ class SingleFragment4:LazyBaseFragment() ,ListRefreshInterface{
 
             },{
                 // catch 处理
-                "数据全部加载完毕".showToast(activity!!)
-                binding.refreshLayout.finishLoadMore()
+               it.printStackTrace()
             })
 
         }
 
 
     }
-
+    var id = 0L
+val songLists=ArrayList<SongLists>()
+    private fun addList(list: List<QQSongList.Data.Song.Lists>) {
+          list.forEach {
+               songLists.add(
+                   SongLists(
+                       id = ++id,
+                       SongName = it.title!!,
+                       SingerName = songTitle(it)!!,
+                       FileHash = it.mid!!,
+                       mixSongID = "",
+                       lyrics = "",
+                       album = "",
+                       pic = it.album?.mid!!,
+                       platform =QQ
+                   )
+               )
+          }
+    }
+    /**
+     * 播放音乐
+     * @param holder SmartViewHolder?
+     * @param position Int
+     */
+    private  fun  songPlay(holder: SmartViewHolder?, position: Int){
+        val intent = Intent(MusicConstant.ACTION_CMD)
+        holder?.itemView?.setOnClickListener {
+            Timber.v("当前列表长度 %s", songLists.size)
+            if (songLists[position] == MusicServiceRemote.getCurrentSong()) {
+                intent.putExtra(
+                    MusicConstant.EXTRA_CONTROL,
+                    MusicConstant.PAUSE_PLAYBACK
+                )
+                BroadcastUtil.sendLocalBroadcast(intent)
+            } else {
+                MusicServiceRemote.setPlayQueue(songLists, IntentUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(MusicConstant.EXTRA_POSITION, position))
+            }
+        }
+    }
     override fun refresh() {
         binding.refreshLayout.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
@@ -129,14 +180,18 @@ class SingleFragment4:LazyBaseFragment() ,ListRefreshInterface{
                 holder?.text(R.id.rv_fragment_search_Single_SongName, model?.title)
 
                 holder?.text(R.id.rv_fragment_search_Single_AlbumName,songAndAlbum(model))
-                holder?.itemView?.setOnClickListener {
-
-                    Timber.v("歌曲角标:%s 歌曲名称:%s", position, model?.name)
-                }
+                songPlay(holder, position)
             }
         }
         recyclerView?.adapter = mAdapter
     }
+private fun songTitle(model: QQSongList.Data.Song.Lists?): String? {
+    return if (model?.album?.name=="") {
+        model.singer?.get(0)?.name
+    }else{
+        model?.singer?.get(0)?.name
+    }
+}
 
     private  fun songAndAlbum(model: QQSongList.Data.Song.Lists?): String? {
         return if (model?.album?.name=="") {
@@ -149,5 +204,11 @@ class SingleFragment4:LazyBaseFragment() ,ListRefreshInterface{
     override fun onDestroyView() {
         super.onDestroyView()
         isLoadDataForTheFirstTime=true
+        _binding=null
+        mAdapter=null
+        recyclerView?.adapter=null
+        recyclerView=null
+        songLists.clear()
+
     }
 }
