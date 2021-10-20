@@ -30,12 +30,12 @@ fun tryNull(block:()->Unit){
     }
 }
 
-fun tryNull(block:()->Unit,catch:()->Unit){
+fun tryNull(block:()->Unit,catch:(e:Exception)->Unit){
     try {
         block()
     } catch (e: NullPointerException) {
         e.printStackTrace()
-        catch()
+        catch(e)
         Timber.e("空指针异常 : %s",e.message)
     }catch (e:IndexOutOfBoundsException){
         Timber.e("索引越界异常: %s",e)

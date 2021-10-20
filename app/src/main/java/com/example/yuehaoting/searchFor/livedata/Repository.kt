@@ -5,6 +5,7 @@ import androidx.lifecycle.liveData
 import com.example.yuehaoting.base.retrofit.SongNetwork
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
+import com.example.yuehaoting.data.music163.Music163Search
 import com.example.yuehaoting.data.music163.MusicData
 import com.example.yuehaoting.data.musicKuWo.KuWoList
 import com.example.yuehaoting.data.musicMiGu.MiGuList
@@ -23,22 +24,22 @@ object Repository {
      * 酷狗关键字
      */
     fun searchPlaces(query: String) = liveData(Dispatchers.IO) {
-        val result :Result<List<RecordData>> = try {
+        val result: Result<List<RecordData>> = try {
             val placeResponse = SongNetwork.searchPlaces(query)
             Log.d(placeResponse.status.toString(), "关键字请求-----------")
 
             if (placeResponse.status == 1) {
-               Timber.v("酷狗搜索关键字请求成功:%s",placeResponse.status)
+                Timber.v("酷狗搜索关键字请求成功:%s", placeResponse.status)
             } else {
-                Timber.e("酷狗搜索关键字请求失败:%s",placeResponse.status)
-              //  Result.failure(RuntimeException("为响应 ${placeResponse.status}"))
+                Timber.e("酷狗搜索关键字请求失败:%s", placeResponse.status)
+                //  Result.failure(RuntimeException("为响应 ${placeResponse.status}"))
             }
 
-           run{
-               val places = placeResponse.data[0]
-               HintInfo = places.RecordDatas
-               Result.success(HintInfo)
-           }
+            run {
+                val places = placeResponse.data[0]
+                HintInfo = places.RecordDatas
+                Result.success(HintInfo)
+            }
 
         } catch (e: Exception) {
             Result.failure(e)
@@ -50,18 +51,18 @@ object Repository {
      * 酷狗搜索
      */
     fun singlePlaces(pages: Int, count: Int, name: String) = liveData(Dispatchers.IO) {
-        val result:Result<KuGouSingle.Data> = try {
+        val result: Result<KuGouSingle.Data> = try {
             val singleResponse = SongNetwork.singlePlaces(pages, count, name)
             Timber.e("酷狗音乐请求成功-------------------- :%s", singleResponse.status)
-            run{
-             if (singleResponse.status == 1) {
+            run {
+                if (singleResponse.status == 1) {
 
                     val data = singleResponse.data
                     val list = data.lists
                     Timber.e("酷狗音乐列表请求成功-------------------- :%s", list[0].SongName)
 
                 } else {
-                 Timber.e("酷狗音乐列表请求失败-------------------- :%s", singleResponse.status)
+                    Timber.e("酷狗音乐列表请求失败-------------------- :%s", singleResponse.status)
                 }
                 Result.success(singleResponse.data)
             }
@@ -75,6 +76,7 @@ object Repository {
     /**
      * 网易音乐列表
      */
+    @Deprecated("此接口已经废除,接口服务没有了", ReplaceWith("music163(count, pages, name)", "music163"), level = DeprecationLevel.WARNING)
     fun music163(input: String, filter: String, type: String, page: Int) = liveData(Dispatchers.IO) {
         val result: Result<MusicData> = try {
             val songList = SongNetwork.songList(input, filter, type, page)
@@ -90,6 +92,23 @@ object Repository {
             }
         } catch (e: Exception) {
 
+            Result.failure(e)
+        }
+        emit(result)
+    }
+
+    fun music163(count: String, pages: String, name: String) = liveData(Dispatchers.IO) {
+        val result: Result<Music163Search> = try {
+            val songList = SongNetwork.songLists163(count, pages, name)
+            run {
+                if (songList.isEmpty()) {
+                    Timber.e("网易音乐列表请求失败:%s", songList[0].name)
+                }
+                Timber.v("网易音乐列表请求成功:%s", songList[0].name)
+                Result.success(songList)
+
+            }
+        } catch (e: Exception) {
             Result.failure(e)
         }
         emit(result)
@@ -138,6 +157,7 @@ object Repository {
         }
         emit(result)
     }
+
     /**
      * 咪咕音乐
      */

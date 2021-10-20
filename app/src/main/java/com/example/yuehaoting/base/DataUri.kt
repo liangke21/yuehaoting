@@ -26,7 +26,8 @@ object DataUri {
     const val HifIni="https://hifini.com/"
     //网易音乐列表
    // const val music163="https://music.liuzhijin.cn/"
-    const val music163="https://www.769sc.com/"
+   // const val music163="https://www.769sc.com/"
+    const val music163="https://myhkw.cn/"
     //QQ音乐搜索
     const val musicQQ="https://c.y.qq.com/"
     //酷狗音乐接口

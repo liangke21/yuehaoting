@@ -7,6 +7,7 @@ import com.example.yuehaoting.data.kugou.specialRecommend.SpecialRecommend
 import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhoto
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousonguri.KuGouSongUriID
+import com.example.yuehaoting.data.music163.Music163Search
 import com.example.yuehaoting.data.music163.MusicData
 import com.example.yuehaoting.data.musicKuWo.KuWoList
 import com.example.yuehaoting.data.musicMiGu.MiGuList
@@ -41,12 +42,14 @@ interface PlaceService {
    @GET("/{thread}.htm")
    fun hifIni(@Path("thread")thread:String):Call<ResponseBody>
 
-   //网易音乐列表
+   //网易音乐列表  废弃
     @Headers("x-requested-with: XMLHttpRequest")
     @FormUrlEncoded
     @POST("/")
     fun music1631(@Field("input")input:String,@Field("filter")filter:String,@Field("type")type:String,@Field("page")page:Int):Call<MusicData>
 
+    @GET("api/web?_=1634719103613&types=search&source=netease")
+    fun music1631(@Query("count")count:String,@Query("pages")pages:String,@Query("name")name: String):Call<Music163Search>
     //qq音乐搜索接口
     @GET("soso/fcgi-bin/client_search_cp?new_json=1&aggr=1&catZhida=1&format=json")
     fun musicQQ(@Query("p")p:Int,@Query("n")n:Int,@Query("w")w:String):Call<QQSongList>

@@ -35,9 +35,12 @@ object SongNetwork {
 
     suspend fun hifIniT(thread:String)= hifIni.hifIni(thread).awaitHtml()
 
-    //网易音乐列表
+    //网易音乐列表 废弃
     private val songLists=ServiceCreator(DataUri.music163).create(PlaceService::class.java)
     suspend fun songList(input:String,filter:String, type:String, page:Int)=songLists.music1631(input, filter, type, page).await()
+
+    private val songList163=ServiceCreator(DataUri.music163).create<PlaceService>()
+    suspend fun songLists163(count:String,pages:String,name: String) = songList163.music1631(count, pages, name).await()
 
     //QQ搜索
     private val musicQQ=ServiceCreator(DataUri.musicQQ).create<PlaceService>()
