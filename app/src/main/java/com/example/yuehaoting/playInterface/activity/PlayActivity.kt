@@ -27,7 +27,6 @@ import com.example.yuehaoting.base.retrofit.SongNetwork
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.databinding.PlayActivityBinding
 import com.example.yuehaoting.kotlin.*
-import com.example.yuehaoting.lyrics.widget.ManyLyricsView
 import com.example.yuehaoting.musicService.service.MusicService
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.musicService.service.MusicServiceRemote.getCurrentSong

@@ -15,6 +15,7 @@ import android.util.Log
 import android.view.KeyEvent
 import androidx.media.AudioAttributesCompat
 import androidx.media.session.MediaButtonReceiver
+import com.example.yuehaoting.App.Companion.context
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.db.DatabaseRepository
 import com.example.yuehaoting.base.log.LogT
@@ -41,6 +42,7 @@ import com.example.yuehaoting.util.MusicConstant.EXTRA_PLAYLIST
 import com.example.yuehaoting.util.MusicConstant.EXTRA_POSITION
 import com.example.yuehaoting.util.MusicConstant.EXTRA_SHUFFLE
 import com.example.yuehaoting.util.MusicConstant.HIF_INI
+import com.example.yuehaoting.util.MusicConstant.HIF_INI_PIC
 import com.example.yuehaoting.util.Tag.play
 import com.example.yuehaoting.util.MusicConstant.KU_GOU
 import com.example.yuehaoting.util.MusicConstant.LIST_LOOP
@@ -525,8 +527,9 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
         mediaPlayer.setOnPreparedListener {
             if (firstPrepared) {
                 firstPrepared=false
-                val autoPlay = getSp(this, NAME) {
-                    getBoolean(AUTO_PLAY, true)
+                val autoPlay = getSp(applicationContext, NAME) {
+                  getBoolean(AUTO_PLAY, true)
+
                 }
                 if (autoPlay) {
                     return@setOnPreparedListener
@@ -724,7 +727,10 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
                     }
                     //获取MP3连接
                     val mp3Uri = HifIniSongMp3.songIDMp3(song.FileHash)
-                    val uri: Uri = Uri.parse(mp3Uri)
+                    val uri: Uri = Uri.parse(mp3Uri[0])
+                    setSp(applicationContext, NAME){
+                          putString(HIF_INI_PIC,mp3Uri[1])
+                    }
                     mediaPlayer.reset()
                     withContext(Dispatchers.IO) {
                         mediaPlayer.setDataSource(this@MusicService, uri)

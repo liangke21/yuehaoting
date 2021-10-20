@@ -10,12 +10,15 @@ import com.example.musiccrawler.base.ServiceHandler
 class HiginioService : Service() {
 
 
-    private val mServiceHandler= ServiceHandler()
+    private var mServiceHandler :ServiceHandler?= null
 
-    var mMessage=Messenger(mServiceHandler)
-    override fun onBind(intent: Intent): IBinder {
-        Log.e("yuehaotingHiginioService","主进程绑定")
-      return mMessage.binder
+    private var mMessage:Messenger ?= null
+    override fun onBind(intent: Intent): IBinder? {
+        mServiceHandler = ServiceHandler()
+
+        mMessage=Messenger(mServiceHandler)
+        Log.e("HiginioService","主进程绑定")
+      return mMessage?.binder
     }
 
     override fun onCreate() {
@@ -23,4 +26,10 @@ class HiginioService : Service() {
         //hiFiNiThread()
     }
 
+    override fun onDestroy() {
+        Log.e("HiginioService","主进程销毁")
+        super.onDestroy()
+        mMessage=null
+        mServiceHandler=null
+    }
 }

@@ -21,7 +21,6 @@ import com.example.yuehaoting.kotlin.setSp
 import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.main.discover.fragment1.viewModel.FragmentAKuGouViewModel
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
-import com.example.yuehaoting.playInterface.activity.PlayActivity
 import com.example.yuehaoting.util.BroadcastUtil
 import com.example.yuehaoting.util.IntentUtil
 import com.example.yuehaoting.util.MusicConstant

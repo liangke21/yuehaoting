@@ -118,7 +118,7 @@ object JsoupS {
     }
 
 
-    fun jsoupSHiFiNiThread(string: String):String {
+    fun jsoupSHiFiNiThread(string: String): Array<String?> {
 
         try {
             val document = Jsoup.parse(string)
@@ -154,11 +154,12 @@ object JsoupS {
             val mAuthor = music.author?.replace("'", "\\\'")
             val songAttributes: String = "('$mTitle','$mAuthor','${music.url}','${music.pic}','${music.type}','${music.lyric}','${music.hot}'),"
             println("音乐文件${music.url}")
-            return music.url.toString()
+            return arrayOf(music.url.toString(),music.pic)
+           // return music.url.toString()
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return ""
+        return arrayOf()
     }
 
 

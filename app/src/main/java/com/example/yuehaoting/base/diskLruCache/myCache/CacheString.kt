@@ -17,7 +17,7 @@ class CacheString {
     /**
      * 初始化
      */
-    fun init(context: Context,folder:String) {
+    fun init(context: Context, folder: String) {
 
         try {
             diskLruCache = DiskLruCache.open(File(context.externalCacheDir.toString() + "/$folder/"), 1, 1, 15 * 1024 * 1024)
@@ -34,22 +34,21 @@ class CacheString {
         var os: OutputStream? = null
         try {
             // val snapshot: DiskLruCache.Snapshot = diskLruCache.get(key)
-
+             if (str==""){
+                 return
+             }
             val editor = diskLruCache.edit(key)
 
             if (editor != null) {
                 os = editor.newOutputStream(0)
                 val out = BufferedOutputStream(os, 8 * 1024)
 
+                Timber.v("putToDiskListUrl:%s", str)
 
-                    Timber.v("putToDiskListUrl:%s", str)
-
-                    out.write(str.toByteArray())
+                out.write(str.toByteArray())
 
                 editor.commit()
                 out.close()
-
-
             }
 
             os?.close()
@@ -70,7 +69,7 @@ class CacheString {
         val `is`: InputStream?
 
         val snapshot: DiskLruCache.Snapshot? = diskLruCache.get(key)
-
+        Timber.v("getFromDisk:%s", snapshot)
         if (snapshot == null) {
             Timber.v("getFromDiskListUrlNull:%s", key)
             return null
@@ -78,12 +77,12 @@ class CacheString {
         }
 
         `is` = snapshot.getInputStream(0)
-
         val bis = BufferedInputStream(`is`)
-
         val reader = BufferedReader(InputStreamReader(bis))
-
-      list  = reader.readLine()
+/*        if (reader.readLine()==null){
+            Timber.v("reader.readLine()==null")
+        }*/
+        list = reader.readLine()
 
 
 
@@ -94,10 +93,11 @@ class CacheString {
 
         return list
     }
+
     /**
      * 关闭流
      */
-    fun close(){
+    fun close() {
         diskLruCache.close()
     }
 

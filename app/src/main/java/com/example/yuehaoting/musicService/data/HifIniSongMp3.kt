@@ -18,7 +18,7 @@ import java.nio.charset.Charset
 object HifIniSongMp3 {
 
 
-    suspend fun songIDMp3(fileHash: String): String {
+    suspend fun songIDMp3(fileHash: String): Array<String> {
         Timber.v("HifIniSongMp3:%s", fileHash)
         val response = StringBuffer()
         //异步返回的请求数据
@@ -35,9 +35,10 @@ object HifIniSongMp3 {
             }
         }
         val mp3 = JsoupS.jsoupSHiFiNiThread(response.toString())
+        mp3[0]
         Timber.v("HifIniSongMp3:%s", mp3)
-        return "https://hifini.com/$mp3"
-
+      //  return "https://hifini.com/$mp3"
+        return arrayOf("https://hifini.com/${mp3[0]}","${mp3[1]}")
     }
 
 

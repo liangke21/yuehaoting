@@ -126,7 +126,7 @@ fun setSp(context: Context, data:String="data",block: SharedPreferences.Editor.(
 
 inline fun<T> getSp(context: Context,data:String="data",block: SharedPreferences.() -> T): T {
     val sp = context.getSharedPreferences(data, Context.MODE_PRIVATE)
-   return sp.block()
+    return sp.block()
 }
 
 //-------------------------------------------SharedPreferences------------------------------------------------------------------------------------------

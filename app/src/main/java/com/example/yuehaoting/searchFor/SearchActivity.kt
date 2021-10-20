@@ -28,7 +28,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.example.yuehaoting.App
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
 import com.example.yuehaoting.base.asyncTaskLoader.WrappedAsyncTaskLoader
@@ -51,7 +50,6 @@ import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.kotlin.getSp
-import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.playInterface.activity.PlayActivityDialogFragment
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
@@ -62,7 +60,10 @@ import com.example.yuehaoting.searchFor.viewmodel.PlaceViewModel
 import com.example.yuehaoting.theme.Theme
 import com.example.yuehaoting.util.BroadcastUtil
 import com.example.yuehaoting.util.MusicConstant
+import com.example.yuehaoting.util.MusicConstant.HIF_INI
+import com.example.yuehaoting.util.MusicConstant.HIF_INI_PIC
 import com.example.yuehaoting.util.MusicConstant.KU_GOU
+import com.example.yuehaoting.util.MusicConstant.NAME
 import com.example.yuehaoting.util.MyUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -114,6 +115,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     private lateinit var musicButton: MusicButtonLayout
 
     private lateinit var animation: Animation
+
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -263,19 +265,19 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     /**
      * 进度条当前时间
      */
-   private var currentTime=0
+    private var currentTime = 0
 
     /**
      * 进度条总时间
      */
-    private var  duration=0
+    private var duration = 0
     override fun onMetaChanged() {
         super.onMetaChanged()
         Timber.v("onMetaChanged() %s 当前歌曲 %s  后台歌曲 %s", currentSong != MusicServiceRemote.getCurrentSong(), currentSong.SongName, MusicServiceRemote.getCurrentSong().SongName)
         if (currentSong != MusicServiceRemote.getCurrentSong()) {
             musicButton.playMusic(1)
             currentSong = MusicServiceRemote.getCurrentSong()
-             updatePlayButtonImageAndText()
+            updatePlayButtonImageAndText()
             //更新进度条
             val temp = MusicServiceRemote.getProgress()
             currentTime = if (temp in 1 until duration) temp else 0
@@ -332,14 +334,13 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             }
 
 
-        }else{
+        } else {
             launch(Dispatchers.IO) {
                 showCover()
             }
             findViewById<TextView>(R.id.tv_song_title).text = currentSong.SongName
             findViewById<TextView>(R.id.tv_singer).text = currentSong.SingerName
         }
-
 
 
     }
@@ -356,11 +357,18 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         RequestOptions.circleCropTransform()
         requestOptions.transform(RoundedCorners(30))
 
-        val uriID = SongNetwork.songUriID(currentSong.FileHash, "")
         var pic = ""
         //不同平台的专辑图片
-        when(currentSong.platform){
-            KU_GOU -> pic = uriID.data.img
+        when (currentSong.platform) {
+            KU_GOU -> {
+                val uriID = SongNetwork.songUriID(currentSong.FileHash, "")
+                pic = uriID.data.img
+            }
+            HIF_INI -> {
+                pic = getSp(applicationContext, NAME) {
+                    getString(HIF_INI_PIC, "")!!
+                }
+            }
         }
 
         val key = currentSong.FileHash.lowercase(Locale.ROOT)
@@ -404,28 +412,29 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     /**
      * 播放按钮进度条
      */
- private suspend fun  updatePlayMusicButtonProgressBar(){
-     while (isForeground) {
-         try {
-             Timber.v("创建协程")
-             val progress = MusicServiceRemote.getProgress()
-             if (progress in 1 until duration) {
-                 runOnUiThread {
-                          musicButton.setProgress(progress)
-                 }
-                 Log.e(MyUtil.getSecond(progress).toString(), MyUtil.getSecond(duration).toString())  //打印进度时间和当前时长
-                 if (MyUtil.getSecond(progress) == MyUtil.getSecond(duration)) {
-                     runOnUiThread {
-                         musicButton.playMusic(4)
-                     }
-                 }
-                 delay(500)
-             }
-         } catch (e: Exception) {
-             e.printStackTrace()
-         }
-     }
- }
+    private suspend fun updatePlayMusicButtonProgressBar() {
+        while (isForeground) {
+            try {
+                Timber.v("创建协程")
+                val progress = MusicServiceRemote.getProgress()
+                if (progress in 1 until duration) {
+                    runOnUiThread {
+                        musicButton.setProgress(progress)
+                    }
+                    Log.e(MyUtil.getSecond(progress).toString(), MyUtil.getSecond(duration).toString())  //打印进度时间和当前时长
+                    if (MyUtil.getSecond(progress) == MyUtil.getSecond(duration)) {
+                        runOnUiThread {
+                            musicButton.playMusic(4)
+                        }
+                    }
+                    delay(500)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     /**
      * 播放按钮凸起
      * @param isPlay Boolean
@@ -650,7 +659,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
                     }
                 })
 
-               internalHotSearchKeywords(internalHotSearchRecyclerView, position, model.title)
+                internalHotSearchKeywords(internalHotSearchRecyclerView, position, model.title)
 
             }
 
@@ -675,20 +684,20 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
 
                 viewModel.singleObservedLiveData1.observe(this) {
 
-                        val musicData = it.getOrNull() as KuGouSingle.Data
-                        viewModel.songList1.addAll(musicData.lists)
-                        viewModel.songList1.add(0, musicData.lists[0]) //在0索引上在插入数据
-                        recyclerView(viewModel.songList1, recyclerView, title)
+                    val musicData = it.getOrNull() as KuGouSingle.Data
+                    viewModel.songList1.addAll(musicData.lists)
+                    viewModel.songList1.add(0, musicData.lists[0]) //在0索引上在插入数据
+                    recyclerView(viewModel.songList1, recyclerView, title)
 
                 }
             }
             1 -> {
                 viewModel.singleObservedLiveData2.observe(this) {
 
-                        val musicData = it.getOrNull() as KuGouSingle.Data
-                        viewModel.songList2.addAll(musicData.lists)
-                        viewModel.songList2.add(0, musicData.lists[0])
-                        recyclerView(viewModel.songList2, recyclerView, title)
+                    val musicData = it.getOrNull() as KuGouSingle.Data
+                    viewModel.songList2.addAll(musicData.lists)
+                    viewModel.songList2.add(0, musicData.lists[0])
+                    recyclerView(viewModel.songList2, recyclerView, title)
 
                 }
             }
@@ -1040,9 +1049,10 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     override fun onResume() {
         super.onResume()
         launch(Dispatchers.IO) {
-          updatePlayMusicButtonProgressBar()
+            updatePlayMusicButtonProgressBar()
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
         mAdapter = null

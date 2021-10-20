@@ -12,4 +12,5 @@ interface ListRefreshInterface {
     fun refresh()
 
     fun   baseRecyclerAdapter()
+
 }

@@ -12,9 +12,7 @@ import android.graphics.drawable.LayerDrawable
 import android.widget.SeekBar
 import androidx.palette.graphics.Palette
 import com.example.yuehaoting.R
-import com.example.yuehaoting.databinding.ActivityMainBinding
 import com.example.yuehaoting.databinding.ActivityMainLayoutBottomSheetBehaviorBinding
-import com.example.yuehaoting.databinding.PlayActivityBinding
 import com.example.yuehaoting.kotlin.getSp
 import com.example.yuehaoting.theme.*
 import com.example.yuehaoting.util.MusicConstant

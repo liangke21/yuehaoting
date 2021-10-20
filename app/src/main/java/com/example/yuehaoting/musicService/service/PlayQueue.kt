@@ -7,10 +7,7 @@ import com.example.yuehaoting.base.rxJava.LogObserver
 import com.example.yuehaoting.base.rxJava.RxUtil
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.data.kugousingle.SongLists.Companion.SONG_LIST
-import com.example.yuehaoting.data.musicQQ.QQSongList
 import com.example.yuehaoting.kotlin.getSp
-import com.example.yuehaoting.util.Constants.MODE_SHUFFLE
-import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.MusicConstant.LIST_LOOP
 import com.example.yuehaoting.util.MusicConstant.NAME
 import com.example.yuehaoting.util.MusicConstant.QUIT_SONG_ID

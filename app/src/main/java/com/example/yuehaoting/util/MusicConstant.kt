@@ -26,6 +26,8 @@ object MusicConstant {
     const val QUIT_SONG_ID = "QUIT_SONG_ID"
     //自动播放
     const val AUTO_PLAY="Autoplay"
+
+    const val  HIF_INI_PIC="hifIniPic"
     //_______________________________________|播放列队|______________________________________________________________________________________________________
     //播放列队更改
     const val EXTRA_PLAYLIST = "extra_playlist"
