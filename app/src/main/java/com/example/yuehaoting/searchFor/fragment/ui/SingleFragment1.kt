@@ -34,20 +34,23 @@ import timber.log.Timber
  * 时间: 2021/6/3 17:32
  * 描述:
  */
-class SingleFragment1: LazyBaseFragment(){
-    private  var _binding: FragmentMusicBinding?=null
+class SingleFragment1 : LazyBaseFragment() {
+    private var _binding: FragmentMusicBinding? = null
 
     private val binding get() = _binding!!
     private val songLists = ArrayList<SongLists>()
+
     //第一次进入刷新
     private var isFirstEnter = true
 
     //第一次完成刷新
     private var isRefresh = true
     private var isLoadDataForTheFirstTime = true
+
     //列表适配器
-    private lateinit var mAdapter: BaseRecyclerAdapter<KuGouSingle.Data.Lists>
+    private var mAdapter: BaseRecyclerAdapter<KuGouSingle.Data.Lists>? = null
     private val viewModel by lazy { ViewModelProvider(this).get(SingleFragment1ViewModel::class.java) }
+
     //关键字
     private var keyword = ""
     override fun onCreateView(
@@ -57,7 +60,7 @@ class SingleFragment1: LazyBaseFragment(){
     ): View {
         _binding = FragmentMusicBinding.inflate(inflater)
         val data = activity!!.intent.getStringExtra("Single")
-        Timber.v("Activity传输数据3 : %s", data.toString())
+  //      Timber.v("Activity传输数据3 : %s", data.toString())
         viewModel.requestParameter(1, 10, data.toString())
         keyword = data.toString()
         return binding.root
@@ -68,7 +71,6 @@ class SingleFragment1: LazyBaseFragment(){
     override fun lazyInit() {
 
         val recyclerView = binding.recyclerView
-
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.itemAnimator = DefaultItemAnimator()
 
@@ -76,23 +78,22 @@ class SingleFragment1: LazyBaseFragment(){
             isFirstEnter = false
             binding.refreshLayout.autoRefresh()
         }
-        var id= 0L
+        var id = 0L
         viewModel.singleObservedLiveData.observe(this) {
             tryNull {
                 val musicData = it.getOrNull() as KuGouSingle.Data
-              //  Timber.v("酷狗音乐数据观察到:%s %s", musicData.lists[0].SongName, isLoadDataForTheFirstTime)
-
-                val model=musicData.lists
+                //  Timber.v("酷狗音乐数据观察到:%s %s", musicData.lists[0].SongName, isLoadDataForTheFirstTime)
+                val model = musicData.lists
                 model.forEach {
                     val song = songDetails(it)
                     it.apply {
                         songLists.add(
                             SongLists(
-                                id =++id,
-                                SongName=song[0]!!,
-                                SingerName=song[1]!!,
-                                FileHash=FileHash,
-                                mixSongID=MixSongID,
+                                id = ++id,
+                                SongName = song[0]!!,
+                                SingerName = song[1]!!,
+                                FileHash = FileHash,
+                                mixSongID = MixSongID,
                                 lyrics = "",
                                 album = AlbumName,
                                 pic = "",
@@ -107,15 +108,11 @@ class SingleFragment1: LazyBaseFragment(){
                     mAdapter = object : BaseRecyclerAdapter<KuGouSingle.Data.Lists>(viewModel.songList, R.layout.item_fragment_search_single_rv_content) {
 
                         override fun onBindViewHolder(holder: SmartViewHolder?, model: KuGouSingle.Data.Lists?, position: Int) {
-
                             val song = songDetails(model)
                             holder?.text(R.id.rv_fragment_search_Single_SongName, song[0])
                             holder?.text(R.id.rv_fragment_search_Single_AlbumName, song[1] + song[2])
-
                             songSoundQuality(holder, model)
-
                             playSong(holder, position)
-
                         }
                     }
 
@@ -127,10 +124,9 @@ class SingleFragment1: LazyBaseFragment(){
                 }
 
                 if (page >= 2) {
-                    mAdapter.loadMore(musicData.lists)
+                    mAdapter?.loadMore(musicData.lists)
                     binding.refreshLayout.finishLoadMore()
                 }
-
 
                 binding.refreshLayout.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
                     override fun onRefresh(refreshLayout: RefreshLayout) {
@@ -145,8 +141,6 @@ class SingleFragment1: LazyBaseFragment(){
                         ++page
                         Timber.v("酷狗音乐列表页数:%s", page)
                         viewModel.requestParameter(page, 10, keyword)
-
-
                     }
                 })
             }
@@ -160,37 +154,37 @@ class SingleFragment1: LazyBaseFragment(){
      * @param holder SmartViewHolder?
      * @param position Int
      */
-    private fun playSong(holder: SmartViewHolder?,  position: Int){
+    private fun playSong(holder: SmartViewHolder?, position: Int) {
         val intent = Intent(MusicConstant.ACTION_CMD)
         holder?.itemView?.setOnClickListener {
-            Timber.v("当前列表长度 %s",songLists.size)
-            if(songLists[position]== MusicServiceRemote.getCurrentSong()){
+            Timber.v("当前列表长度 %s", songLists.size)
+            if (songLists[position] == MusicServiceRemote.getCurrentSong()) {
                 intent.putExtra(
                     MusicConstant.EXTRA_CONTROL,
                     MusicConstant.PAUSE_PLAYBACK
                 )
                 BroadcastUtil.sendLocalBroadcast(intent)
-            }else{
-                MusicServiceRemote.setPlayQueue(songLists, IntentUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(MusicConstant.EXTRA_POSITION, position))
+            } else {
+                MusicServiceRemote.setPlayQueue(songLists, IntentUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(EXTRA_POSITION, position))
             }
         }
 
     }
 
     @Deprecated("不可用,会打开一个Activity来播放", ReplaceWith("playSong(holder,position)", "playSong()"), level = DeprecationLevel.WARNING)
-    private fun songPlay(holder: SmartViewHolder?,  position: Int) {
+    private fun songPlay(holder: SmartViewHolder?, position: Int) {
         holder?.itemView?.setOnClickListener {
             Timber.v("酷狗列表角标:%s 歌曲名称:%s ", position, songLists[position].SingerName)
-            if(songLists[position]== MusicServiceRemote.getCurrentSong()){
-                val intent= Intent(activity, PlayActivity::class.java)
-                intent.putExtra(MusicConstant.CURRENT_SONG,songLists[position])  //向下一个Activity传入当前播放的歌曲
+            if (songLists[position] == MusicServiceRemote.getCurrentSong()) {
+                val intent = Intent(activity, PlayActivity::class.java)
+                intent.putExtra(MusicConstant.CURRENT_SONG, songLists[position])  //向下一个Activity传入当前播放的歌曲
                 activity?.startActivity(intent)
-            }else{
+            } else {
                 MusicServiceRemote.setPlayQueue(songLists, IntentUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(EXTRA_POSITION, position))
 
-                val intent= Intent(activity, PlayActivity::class.java)
-                intent.putExtra(MusicConstant.CURRENT_SONG,songLists[position])
-               // intent.putExtra("isPlay",false)  作废  2021.9.12 |14.32
+                val intent = Intent(activity, PlayActivity::class.java)
+                intent.putExtra(MusicConstant.CURRENT_SONG, songLists[position])
+                // intent.putExtra("isPlay",false)  作废  2021.9.12 |14.32
                 activity?.startActivity(intent)
             }
         }
@@ -199,7 +193,7 @@ class SingleFragment1: LazyBaseFragment(){
     /**
      * @return songName 表示歌曲标题,singerName表示歌曲歌手,albumName 歌曲专辑
      **/
-    private fun songDetails( model: KuGouSingle.Data.Lists?): Array<String?> {
+    private fun songDetails(model: KuGouSingle.Data.Lists?): Array<String?> {
         //歌曲名字
         var songName = model?.SongName
         if (model?.SongName?.contains("<em>") == true) {
@@ -232,19 +226,20 @@ class SingleFragment1: LazyBaseFragment(){
     private fun songSoundQuality(holder: SmartViewHolder?, model: KuGouSingle.Data.Lists?) {
         val hQFileHash = model?.HQFileHash
         if (!TextUtils.isEmpty(hQFileHash)) {
-            holder?.image(R.id.iv_hq,R.drawable.search_hq)
+            holder?.image(R.id.iv_hq, R.drawable.search_hq)
         }
         val sQFileHash = model?.SQFileHash
         if (!TextUtils.isEmpty(sQFileHash)) {
-            holder?.image(R.id.iv_sq,R.drawable.search_sq)
+            holder?.image(R.id.iv_sq, R.drawable.search_sq)
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        isLoadDataForTheFirstTime=true
-        _binding=null
+        isLoadDataForTheFirstTime = true
+        _binding = null
         songLists.clear()
+        mAdapter = null
     }
 }
 
