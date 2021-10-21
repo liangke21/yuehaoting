@@ -183,10 +183,13 @@ class SingleFragment3 : LazyBaseFragment(), ListRefreshInterface {
         binding.refreshLayout.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
                 refreshLayout.layout.postDelayed({
-                    refreshLayout.finishRefresh()
-                    Timber.v("网易音乐列表刷新:%s", page)
-                    refreshLayout.resetNoMoreData()
-                }, 2000)
+                    isRefresh=true
+                    isLoadDataForTheFirstTime=true
+                    viewModel.songList.clear()
+                    mAdapter?.notifyDataSetChangedMy()
+                    viewModel.requestParameter("10", "1", keyword)
+                    songLists.clear()
+                }, 0)
             }
 
             override fun onLoadMore(refreshLayout: RefreshLayout) {

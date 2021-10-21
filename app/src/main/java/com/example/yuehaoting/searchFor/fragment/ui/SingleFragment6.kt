@@ -1,5 +1,6 @@
 package com.example.yuehaoting.searchFor.fragment.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -152,12 +153,19 @@ private val binding get() = _binding!!
 
     override fun refresh() {
         binding.refreshLayout.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
+            @SuppressLint("NotifyDataSetChanged")
             override fun onRefresh(refreshLayout: RefreshLayout) {
                 refreshLayout.layout.postDelayed({
-                    refreshLayout.finishRefresh()
+                    isRefresh=true
+                    isLoadDataForTheFirstTime=true
+                    viewModel.songListSearch.clear()
+                    mAdapter?.notifyDataSetChangedMy()
+                    viewModel.requestParameter(1, 10, keyword)
+                    songLists.clear()
+                  //  refreshLayout.finishRefresh()
                     Timber.v("咪咕音乐列表刷新:%s", page)
-                    refreshLayout.resetNoMoreData()
-                }, 2000)
+                   // refreshLayout.resetNoMoreData()
+                },0)
             }
 
             override fun onLoadMore(refreshLayout: RefreshLayout) {

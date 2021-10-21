@@ -12,7 +12,7 @@
   android:id="@+id/item_root"
   >
 <LinearLayout
-  android:layout_width="wrap_content"
+  android:layout_width="230dp"
   android:layout_height="wrap_content"
   android:orientation="horizontal"
 
@@ -20,13 +20,15 @@
   <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:singleLine="true"
     android:text="歌曲名称"
     android:textColor="@color/black"
     android:textSize="16sp"
     android:id="@+id/tv_play_dialog_fragment_recyclerView_a"/>
   <TextView
-    android:layout_width="wrap_content"
+    android:layout_width="150dp"
     android:layout_height="wrap_content"
+    android:singleLine="true"
     android:text=" - 歌手名称"
     android:textColor="@color/gray"
     android:textSize="12sp"

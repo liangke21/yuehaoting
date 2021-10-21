@@ -455,7 +455,6 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     private suspend fun updatePlayMusicButtonProgressBar() {
         while (isForeground) {
             try {
-                Timber.v("创建协程")
                 val progress = MusicServiceRemote.getProgress()
                 if (progress in 1 until duration) {
                     runOnUiThread {

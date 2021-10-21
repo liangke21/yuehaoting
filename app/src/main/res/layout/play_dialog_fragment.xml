@@ -22,10 +22,10 @@
     android:layout_below="@+id/tv_play_dialog_fragment"/>
 
   <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/recyclerview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/view"
-    android:id="@+id/recyclerview"
     tools:listitem="@layout/play_dialog_fragment_item"
     />
 

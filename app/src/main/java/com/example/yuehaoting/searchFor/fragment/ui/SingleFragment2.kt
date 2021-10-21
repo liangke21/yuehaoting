@@ -239,10 +239,19 @@ class SingleFragment2 : LazyBaseFragment(), ListRefreshInterface {
         binding.refreshLayout.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
                 refreshLayout.layout.postDelayed({
-                    refreshLayout.finishRefresh()
-                    Timber.v("Higini音乐列表刷新:%s", page)
-                    refreshLayout.resetNoMoreData()
-                }, 2000)
+                    isRefresh=true
+                    isLoadDataForTheFirstTime=true
+                    viewModel.singleList.clear()
+
+                    val msg = Message.obtain(null, 1, 0, 0)
+                    val bundle = Bundle()
+                    bundle.putString("Single", viewModel.single)
+                    msg.data = bundle
+                    msg.replyTo = replyToMessage
+                    mMessage?.send(msg)
+                    mAdapter?.notifyDataSetChangedMy()
+                    songLists.clear()
+                }, 0)
             }
 
             override fun onLoadMore(refreshLayout: RefreshLayout) {

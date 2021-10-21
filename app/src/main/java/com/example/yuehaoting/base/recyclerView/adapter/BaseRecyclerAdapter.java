@@ -208,5 +208,8 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<SmartV
         return this;
     }
     //</editor-fold>
-
+   public void notifyDataSetChangedMy(){
+       mList.clear();
+       notifyDataSetChanged();
+   }
 }
