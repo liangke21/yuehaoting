@@ -60,7 +60,6 @@ object MusicServiceRemote {
         //服务连接诶时
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as MusicService.MusicBinder
-
             MusicServiceRemote.service = binder.service
             Timber.tag(TAG).v("前台服务连接2,app isn't on foreground")
             mCallback?.onServiceConnected(name, service)

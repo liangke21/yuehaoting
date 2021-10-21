@@ -47,7 +47,7 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
 
     private var isDrawer: Boolean = true
 
-    private lateinit var bb: BottomSheetBehaviorMainActivity
+  //  private lateinit var bb: BottomSheetBehaviorMainActivity
 
     /**
      * 当前是否播放
@@ -69,9 +69,10 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
       //  this.supportActionBar?.hide()
        initFragmentData()
        initView()
-      bb = BottomSheetBehaviorMainActivity(this, binding.playerContainer, binding.layoutNavView.musicButton)
+/*      bb = BottomSheetBehaviorMainActivity(InsideMainActivity(), binding.playerContainer, binding.layoutNavView.musicButton,
+          R.id.bottom_sheet_behavior1,R.id.playerContainer)
 
-       lifecycle.addObserver(bb)
+       lifecycle.addObserver(bb)*/
 
      musicButton = binding.layoutNavView.musicButton
       musicButton.isDisplayText(false)//关闭显示字体
@@ -81,6 +82,11 @@ class MainActivity : BaseActivity(), DiscoverFragment.CallbackActivity {
       //  StatusBarUtil.setColorForDrawerLayout(this, binding.drawer, Color.RED)
       //  StatusBarUtil.setColorForDrawerLayout(this, binding.drawer, Color.RED,StatusBarUtil.DEFAULT_STATUS_BAR_ALPHA);
         ImmersionBar.with(this).statusBarDarkFont(true) .init()
+    }
+
+    class InsideMainActivity: InsideMainActivityBase {
+        override val activity: BaseActivity
+            get() = MainActivity()
     }
 
     /**

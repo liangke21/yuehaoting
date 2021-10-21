@@ -9,7 +9,9 @@ import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.SeekBar
+import androidx.annotation.IdRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -65,28 +67,25 @@ import kotlin.properties.Delegates
  * BottomSheetBehavior 控件的属性
  */
 class BottomSheetBehaviorMainActivity
-    (private val activity:MainActivity,
-     private val binding: ActivityMainLayoutBottomSheetBehaviorBinding,
-     private  var musicButton:MusicButtonLayout
-) : LifecycleObserver, MusicEvenCallback,ActivityHandlerCallback,View.OnClickListener{
+    (
+    private val _activity: InsideMainActivityBase? = null,
+    private val _binding: ActivityMainLayoutBottomSheetBehaviorBinding?=null,
+    private var musicButton: MusicButtonLayout,
+     private val behavior2: LinearLayout
+) : LifecycleObserver, MusicEvenCallback, ActivityHandlerCallback, View.OnClickListener {
 
-
-    private var baseActivity: BaseActivity = activity
-
+    private val activity get() =_activity!!.activity
+    private var baseActivity: BaseActivity = _activity!!.activity
+private val binding get() = _binding!!
     init {
-
         initView()
-
     }
-
     /**
      * BottomSheetBehavior初始化
      */
     private fun initView() {
-
-
-        val behavior1 = BottomSheetBehavior.from(activity.findViewById(R.id.bottom_sheet_behavior1))
-        val behavior2 = BottomSheetBehavior.from(activity.findViewById(R.id.playerContainer))
+        val behavior1 = BottomSheetBehavior.from(behavior2)
+        val behavior2 = BottomSheetBehavior.from(binding.playerContainer)
 
         //展开
         behavior1.state = BottomSheetBehavior.STATE_EXPANDED
@@ -110,7 +109,6 @@ class BottomSheetBehaviorMainActivity
 
         musicButton.setOnClickListener {
             baseActivity.addMusicServiceEventListener(this)
-            onCreate()
             behavior2.state = BottomSheetBehavior.STATE_EXPANDED
 
             behavior1.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -138,6 +136,7 @@ class BottomSheetBehaviorMainActivity
     override fun onTagChanged(oldSong: SongLists, newSongLists: SongLists) {
 
     }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         baseActivity.removeMusicServiceEventListener(this)
@@ -147,7 +146,7 @@ class BottomSheetBehaviorMainActivity
     private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel::class.java) }
     private val mCacheUrl = CacheUrl()
     private val mCacheString = CacheString()
-    private lateinit var playActivityColor:  MainPlayActivityColor
+    private lateinit var playActivityColor: MainPlayActivityColor
 
     private lateinit var ppvPlayPause: PlayPauseView
 
@@ -214,14 +213,14 @@ class BottomSheetBehaviorMainActivity
         }
     }
 
- private fun onCreate() {
+    private fun onCreate() {
 
         currentSong = MusicServiceRemote.getCurrentSong()
 
         if (currentSong == SongLists.SONG_LIST && activity.intent.hasExtra(MusicConstant.CURRENT_SONG)) {
             currentSong = activity.intent.getParcelableExtra(MusicConstant.CURRENT_SONG)!!
         }
-        Timber.v("currentSong:%s %s ", activity.intent.getParcelableExtra(MusicConstant.CURRENT_SONG), currentSong)
+     //   Timber.v("currentSong:%s %s ", activity.intent.getParcelableExtra(MusicConstant.CURRENT_SONG), currentSong)
         //初始化字符集合缓存
         mCacheUrl.init(activity)
         //字符集合
@@ -298,7 +297,7 @@ class BottomSheetBehaviorMainActivity
                 if (fromUser) {
                     updateProgressText(progress)
                 }
-              //  handler.sendEmptyMessage(MusicConstant.UPDATE_TIME_ONLY)
+                //  handler.sendEmptyMessage(MusicConstant.UPDATE_TIME_ONLY)
                 currentTime = progress
                 // lrcView?.seekTo(progress, true, fromUser)
             }
@@ -362,14 +361,14 @@ class BottomSheetBehaviorMainActivity
         override fun run() {
             while (false) {
                 Log.e("创建线程", name)
-                if (false){
+                if (false) {
                     break
                 }
                 try {
                     val progress = MusicServiceRemote.getProgress()
                     if (progress in 1 until duration) {
                         currentTime = progress
-                   //     handler.sendEmptyMessage(MusicConstant.UPDATE_TIME_ALL)
+                        //     handler.sendEmptyMessage(MusicConstant.UPDATE_TIME_ALL)
                         sleep(500)
                     }
                 } catch (e: Exception) {
@@ -411,7 +410,7 @@ class BottomSheetBehaviorMainActivity
                 Timber.v("展开歌词")
 
             } else {
-                if (!backgroundMode){
+                if (!backgroundMode) {
                     binding.ivPlayGuide01.visibility = View.VISIBLE
                 }
                 val layout = binding.ManyLyricsView.layoutParams
@@ -423,10 +422,11 @@ class BottomSheetBehaviorMainActivity
 
         initLyrics()
     }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
-        Timber.v("感知生命周期","onResume")
-    //    ProgressThread().start()
+        Timber.v("感知生命周期", "onResume")
+        //    ProgressThread().start()
     }
 
     /**
@@ -436,7 +436,7 @@ class BottomSheetBehaviorMainActivity
 
         launchMy {
             try {
-                Log.e("initLyrics()",currentSong.toString())
+                Log.e("initLyrics()", currentSong.toString())
                 val mLyricsReader = PlatformLyrics.lyrics(currentSong)
                 binding.ManyLyricsView.apply {
                     initLrcData()
@@ -660,7 +660,7 @@ class BottomSheetBehaviorMainActivity
     fun onPause() {
         //结束写真幻影灯片
         SingerPhoto.handlerRemoveCallbacks()
-      //  activity.finish()
+        //  activity.finish()
 
 
     }
@@ -789,15 +789,6 @@ class BottomSheetBehaviorMainActivity
 
 
     }
-
-
-
-
-
-
-
-
-
 
 
 }

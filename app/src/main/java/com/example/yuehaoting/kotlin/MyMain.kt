@@ -8,21 +8,25 @@ package com.example.yuehaoting.kotlin
 
 class MyMain() {
 
-    inline fun test(block1: (a: String) -> String, noinline block2: () -> Unit) {
-        block1("哇咔咔")
-        block2()
+    inner class Mian() {
+        val m: MyMain get() = this@MyMain
     }
 
-    private var a = 0
+    class Mian2() {
+        val m: MyMain get() = MyMain()
+    }
 
-    fun seta(a: Int) {
-        this.a = a
+    fun play() {
+        println("哇咔咔")
     }
 }
 
 
 fun main() {
 
+    val m1 = MyMain()
 
+   // val m2 = MyMain.Mian()
 
+    val m3 = MyMain.Mian2()
 }

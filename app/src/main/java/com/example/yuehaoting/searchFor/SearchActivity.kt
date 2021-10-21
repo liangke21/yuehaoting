@@ -50,7 +50,10 @@ import com.example.yuehaoting.base.view.view.MusicButtonLayout
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousingle.SongLists
+import com.example.yuehaoting.databinding.ActivitySearchBindingng
 import com.example.yuehaoting.kotlin.getSp
+import com.example.yuehaoting.main.BottomSheetBehaviorMainActivity
+import com.example.yuehaoting.main.InsideMainActivityBase
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.playInterface.activity.PlayActivityDialogFragment
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
@@ -70,6 +73,7 @@ import com.example.yuehaoting.util.MusicConstant.MUSIC_136
 import com.example.yuehaoting.util.MusicConstant.NAME
 import com.example.yuehaoting.util.MusicConstant.QQ
 import com.example.yuehaoting.util.MyUtil
+import com.gyf.immersionbar.ImmersionBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -123,12 +127,13 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     private lateinit var musicButton: MusicButtonLayout
 
     private lateinit var animation: Animation
-
+  private var _binding: ActivitySearchBinding?=null
+    private val binding get() = _binding!!
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        setContentView(R.layout.activity_search)
+        _binding=ActivitySearchBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         //数据读取
         mSharedPreferences = getSharedPreferences("Song", MODE_APPEND)
@@ -139,8 +144,8 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         placeLiveDataObserve()
         //初始化控件
         initView()
-
-
+        //状态栏沉侵
+        ImmersionBar.with(this).statusBarDarkFont(true).titleBarMarginTop(binding.activityChooserViewContent) .init()
         //标题栏
         initMagicIndicator()
 
@@ -152,7 +157,17 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         hotSearchKeywords()
         //封面连接字符集合
         mCacheString.init(this, "Cover")
+        //更新底部图片和标题
         updatePlayButtonImageAndText()
+
+       BottomSheetBehaviorMainActivity(
+           InsideSearchActivity(), binding.playerContainer, binding.musicButton,
+          binding.ll3)
+    }
+
+    class InsideSearchActivity:InsideMainActivityBase{
+        override val activity: BaseActivity
+            get() = SearchActivity()
     }
 
     /**
@@ -319,7 +334,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     private fun updatePlayButtonImageAndText() {
         if (currentSong.id == -1L) {
             launch(Dispatchers.IO) {
-                val quitId = getSp(applicationContext, MusicConstant.NAME) {
+                val quitId = getSp(applicationContext,NAME) {
                     getLong(MusicConstant.QUIT_SONG_ID, -1L)
                 }
                 val queue = repository.getPlayQueueSongs().blockingGet()
@@ -1108,5 +1123,6 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         cancel()
         repository.closure()
         mCacheString.close()
+        _binding = null
     }
 }
