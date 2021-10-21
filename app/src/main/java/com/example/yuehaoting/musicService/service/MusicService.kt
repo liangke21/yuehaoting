@@ -20,6 +20,7 @@ import com.example.yuehaoting.R
 import com.example.yuehaoting.base.db.DatabaseRepository
 import com.example.yuehaoting.base.log.LogT
 import com.example.yuehaoting.base.log.LogT.lll
+import com.example.yuehaoting.base.retrofit.SongNetwork.musicKuWoMp3
 import com.example.yuehaoting.base.rxJava.RxUtil.applySingleScheduler
 import com.example.yuehaoting.base.sevice.SmService
 import com.example.yuehaoting.callback.MusicEvenCallback
@@ -45,6 +46,7 @@ import com.example.yuehaoting.util.MusicConstant.HIF_INI
 import com.example.yuehaoting.util.MusicConstant.HIF_INI_PIC
 import com.example.yuehaoting.util.Tag.play
 import com.example.yuehaoting.util.MusicConstant.KU_GOU
+import com.example.yuehaoting.util.MusicConstant.KU_WO
 import com.example.yuehaoting.util.MusicConstant.LIST_LOOP
 import com.example.yuehaoting.util.MusicConstant.MUSIC_136
 import com.example.yuehaoting.util.MusicConstant.NAME
@@ -60,6 +62,10 @@ import com.example.yuehaoting.util.MusicConstant.UPDATE_PLAY_STATE
 import com.example.yuehaoting.util.Tag
 import com.example.yuehaoting.util.Tag.songDuration
 import kotlinx.coroutines.*
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.lang.Exception
 
 /**
@@ -483,8 +489,8 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
             }
             Timber.tag(Tag.isPlay).v("后台播放状态:%s,传入状态:%s,播放暂停:%s", isPlaying, false, lll())
             setPlay(false)
-           // TODO() Activity 更新数据,注意这里暂停数据没有发生变化
-          //  handler.sendEmptyMessage(UPDATE_META_DATA)
+            // TODO() Activity 更新数据,注意这里暂停数据没有发生变化
+            //  handler.sendEmptyMessage(UPDATE_META_DATA)
             playPauseVolumeController.fadeOut()
         }
     }
@@ -528,9 +534,9 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
         //准备好监听播放
         mediaPlayer.setOnPreparedListener {
             if (firstPrepared) {
-                firstPrepared=false
+                firstPrepared = false
                 val autoPlay = getSp(applicationContext, NAME) {
-                  getBoolean(AUTO_PLAY, true)
+                    getBoolean(AUTO_PLAY, true)
 
                 }
                 if (autoPlay) {
@@ -704,13 +710,12 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
             val ent = song.platform
             Timber.v("KEY_MUSIC_PLATFORM:%s", ent)
             prepared = false
-
+            if (TextUtils.isEmpty(song.FileHash)) {
+                getString(R.string.path_empty).showToast(this)
+                return@tryLaunch
+            }
             when (ent) {
                 KU_GOU -> {
-                    if (TextUtils.isEmpty(song.FileHash)) {
-                        getString(R.string.path_empty).showToast(this)
-                        return@tryLaunch
-                    }
                     //获取MP3连接
                     val mp3Uri = KuGouSongMp3().songIDMp3(song.FileHash)
                     val uri: Uri = Uri.parse(mp3Uri)
@@ -723,15 +728,11 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
                 }
 
                 HIF_INI -> {
-                    if (TextUtils.isEmpty(song.FileHash)) {
-                        getString(R.string.path_empty).showToast(this)
-                        return@tryLaunch
-                    }
                     //获取MP3连接
                     val mp3Uri = HifIniSongMp3.songIDMp3(song.FileHash)
                     val uri: Uri = Uri.parse(mp3Uri[0])
-                    setSp(applicationContext, NAME){
-                          putString(HIF_INI_PIC,mp3Uri[1])
+                    setSp(applicationContext, NAME) {
+                        putString(HIF_INI_PIC, mp3Uri[1])
                     }
                     mediaPlayer.reset()
                     withContext(Dispatchers.IO) {
@@ -741,10 +742,6 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
 
                 }
                 NEW_SONG_KU_GOU -> {
-                    if (TextUtils.isEmpty(song.FileHash)) {
-                        getString(R.string.path_empty).showToast(this)
-                        return@tryLaunch
-                    }
                     //获取MP3连接
                     val mp3Uri = KuGouSongMp3().songIDMp3(song.FileHash)
                     val uri: Uri = Uri.parse(mp3Uri)
@@ -754,26 +751,8 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
 
                     }
                 }
-             MUSIC_136->{
-                 if (TextUtils.isEmpty(song.FileHash)) {
-                     getString(R.string.path_empty).showToast(this)
-                     return@tryLaunch
-                 }
-                 val mp3Uri="https://myhkw.cn/api/musicUrl?songId=${song.FileHash}&type=wy&id=155782152289"
-                 val uri: Uri = Uri.parse(mp3Uri)
-                 mediaPlayer.reset()
-                 withContext(Dispatchers.IO) {
-                     mediaPlayer.setDataSource(this@MusicService, uri)
-
-                 }
-             }
-
-                QQ->{
-                    if (TextUtils.isEmpty(song.FileHash)) {
-                        getString(R.string.path_empty).showToast(this)
-                        return@tryLaunch
-                    }
-                    val mp3Uri="https://myhkw.cn/api/musicUrl?songId=${song.FileHash}&type=qq&id=155782152289"
+                MUSIC_136 -> {
+                    val mp3Uri = "https://myhkw.cn/api/musicUrl?songId=${song.FileHash}&type=wy&id=155782152289"
                     val uri: Uri = Uri.parse(mp3Uri)
                     mediaPlayer.reset()
                     withContext(Dispatchers.IO) {
@@ -781,8 +760,41 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
 
                     }
                 }
-            }
 
+                QQ -> {
+                    val mp3Uri = "https://myhkw.cn/api/musicUrl?songId=${song.FileHash}&type=qq&id=155782152289"
+                    val uri: Uri = Uri.parse(mp3Uri)
+                    mediaPlayer.reset()
+                    withContext(Dispatchers.IO) {
+                        mediaPlayer.setDataSource(this@MusicService, uri)
+
+                    }
+                }
+                KU_WO -> {
+                    withContext(Dispatchers.IO) {
+                        val mp3 = musicKuWoMp3(song.FileHash)
+                        val response = StringBuffer()
+                        val stream = mp3.source().inputStream()
+                        val bffR = BufferedReader(InputStreamReader(stream))
+                        bffR.use {
+                            bffR.forEachLine {
+                                response.append(it)
+                            }
+                        }
+
+                        val json = JSONObject(response.toString())
+                        val mp3Uri = json.getString("url")
+                        val uri: Uri = Uri.parse(mp3Uri)
+                        mediaPlayer.reset()
+                        mediaPlayer.setDataSource(this@MusicService, uri)
+
+                        bffR.close()
+                        stream.close()
+                        response.delete(0, response.length)
+                    }
+                }
+
+            }
             mediaPlayer.prepareAsync()
             prepared = true
 

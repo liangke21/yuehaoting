@@ -43,6 +43,7 @@ import com.example.yuehaoting.base.recyclerView.typeAdapter.CommonTypeAdapter
 import com.example.yuehaoting.base.recyclerView.typeAdapter.CommonViewHolder
 import com.example.yuehaoting.base.recyclerView.typeAdapter.WithParametersCommonAdapter
 import com.example.yuehaoting.base.retrofit.SongNetwork
+import com.example.yuehaoting.base.retrofit.SongNetwork.musicKuWoPic
 import com.example.yuehaoting.base.rxJava.LogObserver
 import com.example.yuehaoting.base.rxJava.RxUtil
 import com.example.yuehaoting.base.view.view.MusicButtonLayout
@@ -63,6 +64,7 @@ import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.MusicConstant.HIF_INI
 import com.example.yuehaoting.util.MusicConstant.HIF_INI_PIC
 import com.example.yuehaoting.util.MusicConstant.KU_GOU
+import com.example.yuehaoting.util.MusicConstant.KU_WO
 import com.example.yuehaoting.util.MusicConstant.MUSIC_136
 import com.example.yuehaoting.util.MusicConstant.NAME
 import com.example.yuehaoting.util.MusicConstant.QQ
@@ -79,7 +81,10 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerInd
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView
+import org.json.JSONObject
 import timber.log.Timber
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
@@ -358,7 +363,9 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         // requestOptions.placeholder(R.drawable.ic_launcher_background)
         RequestOptions.circleCropTransform()
         requestOptions.transform(RoundedCorners(30))
-
+        if (currentSong.platform == -1) {
+            return
+        }
         var pic = ""
         //不同平台的专辑图片
         when (currentSong.platform) {
@@ -374,10 +381,29 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             MUSIC_136 -> {
                 pic = "https://myhkw.cn/api/musicPic?picId=${currentSong.pic}&type=wy&size=big"
             }
-           QQ->{
-               Timber.v("currentSong.pic %s",currentSong.pic)
-               pic = "https://myhkw.cn/api/musicPic?picId=${currentSong.pic}&type=qq&size=big"
-           }
+            QQ -> {
+                Timber.v("currentSong.pic %s", currentSong.pic)
+                pic = "https://myhkw.cn/api/musicPic?picId=${currentSong.pic}&type=qq&size=big"
+            }
+
+            KU_WO -> {
+                val str = musicKuWoPic(currentSong.pic)
+                val sb = StringBuilder()
+                str.source().inputStream().use { inp ->
+                    InputStreamReader(inp).use { isp ->
+                        BufferedReader(isp).use { br ->
+                            br.use {
+                                br.forEachLine {
+                                    sb.append(it)
+                                }
+                            }
+                        }
+                    }
+                }
+                val json = JSONObject(sb.toString())
+                pic = json.getString("url")
+                sb.delete(0,sb.length)
+            }
         }
 
         val key = currentSong.FileHash.lowercase(Locale.ROOT)
@@ -961,7 +987,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             supportFragmentManager, fragmentList
         )
         viewPager.adapter = mAdapter
-        viewPager.offscreenPageLimit = 2
+        viewPager.offscreenPageLimit = 6
 
     }
 

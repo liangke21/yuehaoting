@@ -49,6 +49,15 @@ object SongNetwork {
     //酷我音乐搜索
     private val musicKuWo=ServiceCreator(DataUri.musicKuWo).create<PlaceService>()
     suspend fun kuWoList(pages:Int,count:Int,name:String)= musicKuWo.musicKuWo(pages,count,  name).await()
+
+    //酷我音乐mp3
+
+    private val musicKuWoMp3=ServiceCreator(DataUri.musicKuWo).create<PlaceService>()
+    suspend fun musicKuWoMp3(id: String)=musicKuWoMp3.musicKuWoMp3(id).await()
+    //酷我音乐pic
+    private val musicKuWoPic=ServiceCreator(DataUri.musicKuWo).create<PlaceService>()
+    suspend fun musicKuWoPic(id: String)=musicKuWoPic.musicKuWoPic(id).await()
+
     //咪咕音乐列表
     private val musicMiGu=ServiceCreator(DataUri.musicMiGu).create<PlaceService>()
     suspend fun miGuList(pages:Int,count:Int,name:String)= musicMiGu.musicMiGu(pages, count, name).await()
