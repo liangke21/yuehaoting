@@ -34,4 +34,5 @@ object DataUri {
     const val musicKuWo="http://ali.asdi998.com:880/"
     //咪咕音乐
     const val musicMiGu="https://myhkw.cn/"
+    const val musicMiGuSearch="http://iecoxe.top:5000/"
 }

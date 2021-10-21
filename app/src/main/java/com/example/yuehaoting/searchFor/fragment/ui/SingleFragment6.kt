@@ -1,5 +1,6 @@
 package com.example.yuehaoting.searchFor.fragment.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,12 +13,17 @@ import com.example.yuehaoting.R
 import com.example.yuehaoting.base.fragmet.LazyBaseFragment
 import com.example.yuehaoting.base.recyclerView.adapter.BaseRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
-import com.example.yuehaoting.data.musicMiGu.MiGuList
+import com.example.yuehaoting.data.kugousingle.SongLists
+import com.example.yuehaoting.data.musicMiGu.MiGuSearch
 import com.example.yuehaoting.databinding.FragmentMusicBinding
 import com.example.yuehaoting.kotlin.lazyMy
-import com.example.yuehaoting.kotlin.showToast
+import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.searchFor.fragment.interfacet.ListRefreshInterface
 import com.example.yuehaoting.searchFor.viewmodel.SingleFragment6ViewModel
+import com.example.yuehaoting.util.BroadcastUtil
+import com.example.yuehaoting.util.IntentUtil
+import com.example.yuehaoting.util.MusicConstant
+import com.example.yuehaoting.util.MusicConstant.MI_GU
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import timber.log.Timber
@@ -29,8 +35,9 @@ import timber.log.Timber
  */
 class SingleFragment6 : LazyBaseFragment() ,ListRefreshInterface{
 
-    private lateinit var binding: FragmentMusicBinding
+    private var _binding: FragmentMusicBinding?=null
 
+private val binding get() = _binding!!
     //第一次进入刷新
     private var isFirstEnter = true
 
@@ -39,7 +46,7 @@ class SingleFragment6 : LazyBaseFragment() ,ListRefreshInterface{
     private var isLoadDataForTheFirstTime = true
 
     //列表适配器
-    private lateinit var mAdapter: BaseRecyclerAdapter<MiGuList.MiGuListItem>
+    private  var mAdapter: BaseRecyclerAdapter<MiGuSearch.Music>?=null
     private val viewModel by lazyMy { ViewModelProvider(this).get(SingleFragment6ViewModel::class.java) }
 
     private var recyclerView: RecyclerView? = null
@@ -47,7 +54,7 @@ class SingleFragment6 : LazyBaseFragment() ,ListRefreshInterface{
     //关键字
     private var keyword = ""
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentMusicBinding.inflate(inflater)
+        _binding = FragmentMusicBinding.inflate(inflater)
         val data = activity!!.intent.getStringExtra("Single")
         viewModel.requestParameter(1, 10, data.toString())
         keyword = data.toString()
@@ -66,13 +73,19 @@ class SingleFragment6 : LazyBaseFragment() ,ListRefreshInterface{
             isFirstEnter = false
             binding.refreshLayout.autoRefresh()
         }
-        viewModel.observedData.observe(this) {
+        viewModel.observedDataSearch.observe(this) {
             try {
-                val musicData = it.getOrNull() as MiGuList
-                Timber.v("咪咕音乐数据观察到:%s %s", musicData[0].name, isLoadDataForTheFirstTime)
+
+                val musicData = it.getOrNull() as MiGuSearch
+                if (musicData.musics?.isEmpty() == true) {
+                    return@observe
+                }
+                Timber.v("咪咕音乐数据观察到:%s %s", musicData.musics?.get(0)?.songName, isLoadDataForTheFirstTime)
+
+                addData(musicData.musics!!)
                 if (isLoadDataForTheFirstTime) {
                     isLoadDataForTheFirstTime = false
-                    viewModel.songList.addAll(musicData)
+                    viewModel.songListSearch.addAll(musicData.musics)
 
                     baseRecyclerAdapter()
 
@@ -84,7 +97,7 @@ class SingleFragment6 : LazyBaseFragment() ,ListRefreshInterface{
                 }
 
                 if (page >= 2) {
-                    mAdapter.loadMore(musicData)
+                    mAdapter?.loadMore(musicData.musics)
                     binding.refreshLayout.finishLoadMore()
                 }
 
@@ -92,16 +105,16 @@ class SingleFragment6 : LazyBaseFragment() ,ListRefreshInterface{
 
             } catch (e: NullPointerException) {
                 // catch 处理
-                "数据全部加载完毕".showToast(activity!!)
-                binding.refreshLayout.finishLoadMore()
+               // "数据全部加载完毕".showToast(activity!!)
+                binding.refreshLayout.finishRefreshWithNoMoreData()
                 Timber.e("空指针异常 : %s", e.message)
             } catch (e: IndexOutOfBoundsException) {
                 if (page > 1) {
-                    "数据全部加载完毕".showToast(activity!!)
-                    binding.refreshLayout.finishLoadMore()
+                   // "数据全部加载完毕".showToast(activity!!)
+                    binding.refreshLayout.finishRefreshWithNoMoreData()
                 }else{
-                    "没有该歌曲".showToast(activity!!)
-                    binding.refreshLayout.finishLoadMore()
+                   // "没有该歌曲".showToast(activity!!)
+                    binding.refreshLayout.finishRefreshWithNoMoreData()
                 }
 
                 Timber.e("索引越界异常: %s", e)
@@ -115,6 +128,27 @@ class SingleFragment6 : LazyBaseFragment() ,ListRefreshInterface{
 
 
     }
+
+    private var id = 0L
+    private val songLists = ArrayList<SongLists>()
+    private fun addData(musics: List<MiGuSearch.Music>) {
+        musics.forEach {
+            songLists.add(
+                SongLists(
+                    id = ++id,
+                    SongName = it.songName!!,
+                    SingerName = it.artist!!,
+                    FileHash = it.id!!,
+                    mixSongID =it.mp3!!,
+                    lyrics = it.lyrics!!,
+                    album = it.albumName!!,
+                    pic = it.cover!!,
+                    platform = MI_GU
+                )
+            )
+        }
+    }
+
 
     override fun refresh() {
         binding.refreshLayout.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
@@ -131,27 +165,43 @@ class SingleFragment6 : LazyBaseFragment() ,ListRefreshInterface{
                 Timber.v("咪咕音乐列表页数:%s", page)
                 viewModel.requestParameter(page, 10, keyword)
 
-
             }
         })
     }
 
     override fun baseRecyclerAdapter() {
-        mAdapter = object : BaseRecyclerAdapter<MiGuList.MiGuListItem>(viewModel.songList, R.layout.item_fragment_search_single_rv_content) {
+        mAdapter = object : BaseRecyclerAdapter<MiGuSearch.Music>(viewModel.songListSearch, R.layout.item_fragment_search_single_rv_content) {
 
-            override fun onBindViewHolder(holder: SmartViewHolder?, model: MiGuList.MiGuListItem?, position: Int) {
-                holder?.text(R.id.rv_fragment_search_Single_SongName, model?.name)
+            override fun onBindViewHolder(holder: SmartViewHolder?, model: MiGuSearch.Music?, position: Int) {
+                holder?.text(R.id.rv_fragment_search_Single_SongName, model?.songName)
 
-                holder?.text(R.id.rv_fragment_search_Single_AlbumName, songAndAlbum(model))
-                holder?.itemView?.setOnClickListener {
-
-                    Timber.v("歌曲角标:%s 歌曲名称:%s", position, model?.name)
-                }
+                holder?.text(R.id.rv_fragment_search_Single_AlbumName, model?.artist+" - "+model?.albumName)
+                songPlay(holder, position)
             }
         }
         recyclerView?.adapter = mAdapter
     }
-
+    /**
+     * 播放音乐
+     * @param holder SmartViewHolder?
+     * @param position Int
+     */
+    private fun songPlay(holder: SmartViewHolder?, position: Int) {
+        val intent = Intent(MusicConstant.ACTION_CMD)
+        holder?.itemView?.setOnClickListener {
+            Timber.v("当前列表长度 %s", songLists.size)
+            if (songLists[position] == MusicServiceRemote.getCurrentSong()) {
+                intent.putExtra(
+                    MusicConstant.EXTRA_CONTROL,
+                    MusicConstant.PAUSE_PLAYBACK
+                )
+                BroadcastUtil.sendLocalBroadcast(intent)
+            } else {
+                MusicServiceRemote.setPlayQueue(songLists, IntentUtil.makeCodIntent(MusicConstant.PLAY_SELECTED_SONG).putExtra(MusicConstant.EXTRA_POSITION, position))
+            }
+        }
+    }
+/*
     private fun songAndAlbum(model: MiGuList.MiGuListItem?): String {
         return if (model?.album == "") {
             var ar = ""
@@ -167,9 +217,15 @@ class SingleFragment6 : LazyBaseFragment() ,ListRefreshInterface{
             ar + "《${model?.album}》"
         }
     }
+*/
 
     override fun onDestroyView() {
         super.onDestroyView()
         isLoadDataForTheFirstTime=true
+        songLists.clear()
+        _binding = null
+        recyclerView?.adapter=null
+        recyclerView=null
+        mAdapter=null
     }
 }

@@ -9,6 +9,7 @@ import com.example.yuehaoting.data.music163.Music163Search
 import com.example.yuehaoting.data.music163.MusicData
 import com.example.yuehaoting.data.musicKuWo.KuWoList
 import com.example.yuehaoting.data.musicMiGu.MiGuList
+import com.example.yuehaoting.data.musicMiGu.MiGuSearch
 import com.example.yuehaoting.data.musicQQ.QQSongList
 
 import kotlinx.coroutines.Dispatchers
@@ -178,5 +179,30 @@ object Repository {
         }
         emit(result)
     }
+
+    /**
+     * 咪咕音乐
+     */
+    fun musicMiGuSearch(pages: Int, count: Int, name: String) = liveData(Dispatchers.IO) {
+        val result: Result<MiGuSearch> = try {
+            val songList = SongNetwork.miGuListSearch(pages, count, name)
+            run {
+                if (songList.success == false) {
+                    Timber.v("酷我音乐列表请求失败")
+                } else {
+                    Timber.v("酷我音乐请求成功:%s", songList)
+                }
+                Result.success(songList)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
+        emit(result)
+    }
+
 }
+
+
+
 

@@ -48,6 +48,7 @@ import com.example.yuehaoting.util.Tag.play
 import com.example.yuehaoting.util.MusicConstant.KU_GOU
 import com.example.yuehaoting.util.MusicConstant.KU_WO
 import com.example.yuehaoting.util.MusicConstant.LIST_LOOP
+import com.example.yuehaoting.util.MusicConstant.MI_GU
 import com.example.yuehaoting.util.MusicConstant.MUSIC_136
 import com.example.yuehaoting.util.MusicConstant.NAME
 import com.example.yuehaoting.util.MusicConstant.NEW_SONG_KU_GOU
@@ -570,7 +571,7 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
                 Log.e(what.toString(), extra.toString())
                 return@setOnErrorListener true
             } catch (e: Exception) {
-
+              e.printStackTrace()
             }
             false
         }
@@ -791,6 +792,15 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
                         bffR.close()
                         stream.close()
                         response.delete(0, response.length)
+                    }
+                }
+
+                MI_GU->{
+                    val uri: Uri = Uri.parse(song.mixSongID)
+                    mediaPlayer.reset()
+                    withContext(Dispatchers.IO) {
+                        mediaPlayer.setDataSource(this@MusicService, uri)
+
                     }
                 }
 

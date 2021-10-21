@@ -65,6 +65,7 @@ import com.example.yuehaoting.util.MusicConstant.HIF_INI
 import com.example.yuehaoting.util.MusicConstant.HIF_INI_PIC
 import com.example.yuehaoting.util.MusicConstant.KU_GOU
 import com.example.yuehaoting.util.MusicConstant.KU_WO
+import com.example.yuehaoting.util.MusicConstant.MI_GU
 import com.example.yuehaoting.util.MusicConstant.MUSIC_136
 import com.example.yuehaoting.util.MusicConstant.NAME
 import com.example.yuehaoting.util.MusicConstant.QQ
@@ -402,7 +403,11 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
                 }
                 val json = JSONObject(sb.toString())
                 pic = json.getString("url")
-                sb.delete(0,sb.length)
+                sb.delete(0, sb.length)
+            }
+
+            MI_GU -> {
+                pic = currentSong.pic
             }
         }
 

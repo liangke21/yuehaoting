@@ -11,6 +11,7 @@ import com.example.yuehaoting.data.music163.Music163Search
 import com.example.yuehaoting.data.music163.MusicData
 import com.example.yuehaoting.data.musicKuWo.KuWoList
 import com.example.yuehaoting.data.musicMiGu.MiGuList
+import com.example.yuehaoting.data.musicMiGu.MiGuSearch
 import com.example.yuehaoting.data.musicQQ.QQSongList
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -71,4 +72,7 @@ interface PlaceService {
     //咪咕音乐搜索接口
     @GET("api/web?types=search&source=migu")
     fun musicMiGu(@Query("pages") pages: Int, @Query("count") count: Int, @Query("name") name: String): Call<MiGuList>
+    @GET("v1/migu/search?")
+    fun musicMiGuSearch(@Query("offset")offset:Int,@Query("limit")limit:Int,@Query("key")key:String):Call<MiGuSearch>
+
 }

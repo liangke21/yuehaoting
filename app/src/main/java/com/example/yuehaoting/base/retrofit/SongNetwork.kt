@@ -61,4 +61,7 @@ object SongNetwork {
     //咪咕音乐列表
     private val musicMiGu=ServiceCreator(DataUri.musicMiGu).create<PlaceService>()
     suspend fun miGuList(pages:Int,count:Int,name:String)= musicMiGu.musicMiGu(pages, count, name).await()
+    //咪咕音乐列表
+    private val musicMiGuSearch=ServiceCreator(DataUri.musicMiGuSearch).create<PlaceService>()
+    suspend fun miGuListSearch(pages:Int,count:Int,name:String)= musicMiGuSearch.musicMiGuSearch(pages, count, name).await()
 }
