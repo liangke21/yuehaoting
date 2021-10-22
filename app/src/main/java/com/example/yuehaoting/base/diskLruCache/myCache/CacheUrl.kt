@@ -103,5 +103,10 @@ class CacheUrl {
         return null
     }
 
-
+    /**
+     * 关闭流
+     */
+    fun close() {
+        diskLruCache.close()
+    }
 }

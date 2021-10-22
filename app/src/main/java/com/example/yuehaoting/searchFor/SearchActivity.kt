@@ -50,7 +50,7 @@ import com.example.yuehaoting.base.view.view.MusicButtonLayout
 import com.example.yuehaoting.data.kugou.RecordData
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousingle.SongLists
-import com.example.yuehaoting.databinding.ActivitySearchBindingng
+import com.example.yuehaoting.databinding.ActivitySearchBinding
 import com.example.yuehaoting.kotlin.getSp
 import com.example.yuehaoting.main.BottomSheetBehaviorMainActivity
 import com.example.yuehaoting.main.InsideMainActivityBase
@@ -160,14 +160,17 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         //更新底部图片和标题
         updatePlayButtonImageAndText()
 
-       BottomSheetBehaviorMainActivity(
-           InsideSearchActivity(), binding.playerContainer, binding.musicButton,
+    val bb=   BottomSheetBehaviorMainActivity(
+        InsideSearchActivity(), binding.playerContainer, binding.musicButton,
           binding.ll3)
+        lifecycle.addObserver(bb)
+ // bb.onCreate()
+
     }
 
-    class InsideSearchActivity:InsideMainActivityBase{
+  inner class InsideSearchActivity:InsideMainActivityBase{
         override val activity: BaseActivity
-            get() = SearchActivity()
+            get() = this@SearchActivity
     }
 
     /**

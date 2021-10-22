@@ -226,9 +226,13 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:behavior_peekHeight="0dp"
+        app:behavior_hideable="true"
+        android:clipChildren="false"
         app:layout_behavior="@string/bottom_sheet_behavior"
         android:id="@+id/ll_3"
         android:orientation="horizontal"
+        tools:behavior_peekHeight="50dp"
         >
         <com.example.yuehaoting.base.view.view.MusicButtonLayout
           android:id="@+id/musicButton"

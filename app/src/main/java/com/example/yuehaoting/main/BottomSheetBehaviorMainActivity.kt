@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.SeekBar
-import androidx.annotation.IdRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -50,6 +49,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.*
 import timber.log.Timber
 import java.util.*
 import kotlin.collections.ArrayList
@@ -68,82 +68,17 @@ import kotlin.properties.Delegates
  */
 class BottomSheetBehaviorMainActivity
     (
-    private val _activity: InsideMainActivityBase? = null,
-    private val _binding: ActivityMainLayoutBottomSheetBehaviorBinding?=null,
+    private var _activity: InsideMainActivityBase? = null,
+    private var _binding: ActivityMainLayoutBottomSheetBehaviorBinding? = null,
     private var musicButton: MusicButtonLayout,
-     private val behavior2: LinearLayout
-) : LifecycleObserver, MusicEvenCallback, ActivityHandlerCallback, View.OnClickListener {
+    private val behavior2: LinearLayout
+) : LifecycleObserver, MusicEvenCallback, ActivityHandlerCallback, View.OnClickListener ,CoroutineScope by  MainScope() {
 
-    private val activity get() =_activity!!.activity
+    private val activity get() = _activity!!.activity
     private var baseActivity: BaseActivity = _activity!!.activity
-private val binding get() = _binding!!
-    init {
-        initView()
-    }
-    /**
-     * BottomSheetBehavior初始化
-     */
-    private fun initView() {
-        val behavior1 = BottomSheetBehavior.from(behavior2)
-        val behavior2 = BottomSheetBehavior.from(binding.playerContainer)
-
-        //展开
-        behavior1.state = BottomSheetBehavior.STATE_EXPANDED
-
-        behavior2.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                Log.e("onStateChanged", newState.toString())
-
-                when (newState) {
-                    BottomSheetBehavior.STATE_COLLAPSED -> {
-                        baseActivity.removeMusicServiceEventListener(this@BottomSheetBehaviorMainActivity)
-                        behavior1.state = BottomSheetBehavior.STATE_EXPANDED
-                    }
-                }
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-
-            }
-        })
-
-        musicButton.setOnClickListener {
-            baseActivity.addMusicServiceEventListener(this)
-            behavior2.state = BottomSheetBehavior.STATE_EXPANDED
-
-            behavior1.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
-
-    }
-
-
-    override fun onMediaStoreChanged() {
-
-    }
-
-    override fun onPermissionChanged(has: Boolean) {
-
-    }
-
-    override fun onPlayListChanged(name: String) {
-
-    }
-
-    override fun onServiceDisConnected() {
-
-    }
-
-    override fun onTagChanged(oldSong: SongLists, newSongLists: SongLists) {
-
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
-        baseActivity.removeMusicServiceEventListener(this)
-    }
-
-
-    private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel::class.java) }
+    private val binding get() = _binding!!
+//_______________________________________||______________________________________________________________________________________________________
+private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel::class.java) }
     private val mCacheUrl = CacheUrl()
     private val mCacheString = CacheString()
     private lateinit var playActivityColor: MainPlayActivityColor
@@ -179,11 +114,89 @@ private val binding get() = _binding!!
      */
     private var isPhotoBackground = true
 
-/*
-    private val handler: PlayActivityHandler by lazyMy {
-        PlayActivityHandler( this)
+
+    private var handler: PlayActivityHandler by lazyMy {
+        PlayActivityHandler(this)
     }
-*/
+
+
+
+
+
+    init {
+        initView()
+    }
+
+    /**
+     * BottomSheetBehavior初始化
+     */
+    private fun initView() {
+        val behavior1 = BottomSheetBehavior.from(behavior2)
+        val behavior2 = BottomSheetBehavior.from(binding.playerContainer)
+
+        //展开
+        behavior1.state = BottomSheetBehavior.STATE_EXPANDED
+
+        behavior2.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                Log.e("onStateChanged", newState.toString())
+
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED ){
+                    behavior1.state = BottomSheetBehavior.STATE_EXPANDED
+                    dropDownDestroy()
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
+            }
+        })
+
+        musicButton.setOnClickListener {
+            baseActivity.addMusicServiceEventListener(this)
+            behavior2.state = BottomSheetBehavior.STATE_EXPANDED
+
+            behavior1.state = BottomSheetBehavior.STATE_COLLAPSED
+
+            onCreate()
+            pullUpCreate()
+        }
+
+    }
+
+    /**
+     * 上拉初始化
+     */
+    private fun pullUpCreate() {
+        isProgressThread=true
+        launch(Dispatchers.IO) {
+            progressThread()
+        }
+    }
+
+
+    override fun onMediaStoreChanged() {
+
+    }
+
+    override fun onPermissionChanged(has: Boolean) {
+
+    }
+
+    override fun onPlayListChanged(name: String) {
+
+    }
+
+    override fun onServiceDisConnected() {
+
+    }
+
+    override fun onTagChanged(oldSong: SongLists, newSongLists: SongLists) {
+
+    }
+
+
+
 
     fun setSatuBarColor() {
         when (background) {
@@ -213,14 +226,12 @@ private val binding get() = _binding!!
         }
     }
 
+
     private fun onCreate() {
 
         currentSong = MusicServiceRemote.getCurrentSong()
 
-        if (currentSong == SongLists.SONG_LIST && activity.intent.hasExtra(MusicConstant.CURRENT_SONG)) {
-            currentSong = activity.intent.getParcelableExtra(MusicConstant.CURRENT_SONG)!!
-        }
-     //   Timber.v("currentSong:%s %s ", activity.intent.getParcelableExtra(MusicConstant.CURRENT_SONG), currentSong)
+
         //初始化字符集合缓存
         mCacheUrl.init(activity)
         //字符集合
@@ -240,7 +251,7 @@ private val binding get() = _binding!!
 
         seekBarRenew()
 
-
+        onPlayStateChange()
     }
 
 
@@ -297,7 +308,7 @@ private val binding get() = _binding!!
                 if (fromUser) {
                     updateProgressText(progress)
                 }
-                //  handler.sendEmptyMessage(MusicConstant.UPDATE_TIME_ONLY)
+                  handler.sendEmptyMessage(MusicConstant.UPDATE_TIME_ONLY)
                 currentTime = progress
                 // lrcView?.seekTo(progress, true, fromUser)
             }
@@ -354,29 +365,27 @@ private val binding get() = _binding!!
         binding.ManyLyricsView.play(currentTime)
     }
 
+    //是否更新进度条
+    private var isProgressThread=false
     /**
      * 更新进度条线程
      */
-    private inner class ProgressThread : Thread() {
-        override fun run() {
-            while (false) {
-                Log.e("创建线程", name)
-                if (false) {
-                    break
+    private suspend fun progressThread(){
+
+        while (isProgressThread) {
+            try {
+                val progress = MusicServiceRemote.getProgress()
+                if (progress in 1 until duration) {
+                    currentTime = progress
+                    handler.sendEmptyMessage(MusicConstant.UPDATE_TIME_ALL)
+                    delay(500)
                 }
-                try {
-                    val progress = MusicServiceRemote.getProgress()
-                    if (progress in 1 until duration) {
-                        currentTime = progress
-                        //     handler.sendEmptyMessage(MusicConstant.UPDATE_TIME_ALL)
-                        sleep(500)
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
+
 
 
     //初始化控件
@@ -420,14 +429,9 @@ private val binding get() = _binding!!
             }
         }
 
-        initLyrics()
+      //  initLyrics()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
-        Timber.v("感知生命周期", "onResume")
-        //    ProgressThread().start()
-    }
 
     /**
      * 歌词解析器
@@ -483,7 +487,7 @@ private val binding get() = _binding!!
             } else {
                 Timber.v("歌手id: %S", singerId)
 
-                Glide.with(App.context).asBitmap()
+                Glide.with(activity.applicationContext).asBitmap()
                     .load(R.drawable.youjing)
                     .into(object : CustomTarget<Bitmap>() {
                         override fun onResourceReady(
@@ -500,7 +504,7 @@ private val binding get() = _binding!!
             }
 
         } else {
-            Glide.with(App.context).asBitmap()
+            Glide.with(activity.applicationContext).asBitmap()
                 .load(R.drawable.youjing)
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onResourceReady(
@@ -606,7 +610,7 @@ private val binding get() = _binding!!
         duration = MusicServiceRemote.getDuration()
         binding.seekbar.max = duration
 
-        initLyrics()
+    //   initLyrics()
 
         //播放界面写真和封面更改
         observableCurrentSong.nameCurrentSong = currentSong.mixSongID
@@ -622,7 +626,7 @@ private val binding get() = _binding!!
         }
         isUpdateReceiveIntent = true
 
-
+        Log.e(" isUpdateReceiveIntent", isUpdateReceiveIntent.toString())
     }
 
     override fun onServiceConnected(service: MusicService) {
@@ -657,13 +661,6 @@ private val binding get() = _binding!!
         )
     }
 
-    fun onPause() {
-        //结束写真幻影灯片
-        SingerPhoto.handlerRemoveCallbacks()
-        //  activity.finish()
-
-
-    }
 
 
     /**
@@ -790,5 +787,29 @@ private val binding get() = _binding!!
 
     }
 
+    /**
+     * 下拉关闭
+     */
+    private fun dropDownDestroy(){
+        cancel()
+        baseActivity.removeMusicServiceEventListener(this)
+        isProgressThread=false
+        mCacheUrl.close()
+        mCacheString.close()
+
+        SingerPhoto.handlerRemoveCallbacks()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    private fun onDestroy() {
+        cancel()
+        _activity=null
+        _binding=null
+        baseActivity.removeMusicServiceEventListener(this)
+        isProgressThread=false
+        mCacheUrl.close()
+        mCacheString.close()
+        SingerPhoto.handlerRemoveCallbacks()
+    }
 
 }
