@@ -108,7 +108,7 @@ private val binding get() = _binding!!
                 // catch 处理
                // "数据全部加载完毕".showToast(activity!!)
                 binding.refreshLayout.finishRefreshWithNoMoreData()
-                Timber.e("空指针异常 : %s", e.message)
+                Timber.e("空指针异常 : %s", e.printStackTrace())
             } catch (e: IndexOutOfBoundsException) {
                 if (page > 1) {
                    // "数据全部加载完毕".showToast(activity!!)
@@ -140,10 +140,10 @@ private val binding get() = _binding!!
                     SongName = it.songName!!,
                     SingerName = it.artist!!,
                     FileHash = it.id!!,
-                    mixSongID =it.mp3!!,
-                    lyrics = it.lyrics!!,
+                    mixSongID ="",
+                    lyrics = it.mp3!!,
                     album = it.albumName!!,
-                    pic = it.cover!!,
+                    pic = it.cover ?:"",
                     platform = MI_GU
                 )
             )

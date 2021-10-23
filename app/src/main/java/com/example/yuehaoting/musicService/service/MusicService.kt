@@ -796,7 +796,7 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
                 }
 
                 MI_GU->{
-                    val uri: Uri = Uri.parse(song.mixSongID)
+                    val uri: Uri = Uri.parse(song.lyrics)
                     mediaPlayer.reset()
                     withContext(Dispatchers.IO) {
                         mediaPlayer.setDataSource(this@MusicService, uri)

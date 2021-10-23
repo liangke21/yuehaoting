@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.SeekBar
+import android.widget.TextView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -24,6 +26,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.App
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.activity.BaseActivity
+import com.example.yuehaoting.base.db.DatabaseRepository
 import com.example.yuehaoting.base.diskLruCache.myCache.CacheString
 import com.example.yuehaoting.base.diskLruCache.myCache.CacheUrl
 import com.example.yuehaoting.base.log.LogT
@@ -46,6 +49,7 @@ import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.MyUtil
 import com.example.yuehaoting.util.Tag
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tencent.bugly.Bugly.applicationContext
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -72,13 +76,14 @@ class BottomSheetBehaviorMainActivity
     private var _binding: ActivityMainLayoutBottomSheetBehaviorBinding? = null,
     private var musicButton: MusicButtonLayout,
     private val behavior2: LinearLayout
-) : LifecycleObserver, MusicEvenCallback, ActivityHandlerCallback, View.OnClickListener ,CoroutineScope by  MainScope() {
+) : LifecycleObserver, MusicEvenCallback, ActivityHandlerCallback, View.OnClickListener, CoroutineScope by MainScope() {
 
     private val activity get() = _activity!!.activity
     private var baseActivity: BaseActivity = _activity!!.activity
     private val binding get() = _binding!!
-//_______________________________________||______________________________________________________________________________________________________
-private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel::class.java) }
+
+    //_______________________________________||______________________________________________________________________________________________________
+    private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel::class.java) }
     private val mCacheUrl = CacheUrl()
     private val mCacheString = CacheString()
     private lateinit var playActivityColor: MainPlayActivityColor
@@ -120,9 +125,6 @@ private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel:
     }
 
 
-
-
-
     init {
         initView()
     }
@@ -141,7 +143,7 @@ private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel:
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 Log.e("onStateChanged", newState.toString())
 
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED ){
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     behavior1.state = BottomSheetBehavior.STATE_EXPANDED
                     dropDownDestroy()
                 }
@@ -160,18 +162,29 @@ private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel:
 
             onCreate()
             pullUpCreate()
-        }
 
+        }
+        MainSingerPhoto.setPlayPhoto(true)
+        launch {
+            withContext(Dispatchers.IO){
+                MainSingerPhoto.playCycleCoroutine( binding.background, activity.resources, ::updateUi)
+            }
+        }
+     //   MainSingerPhoto.playCycleThread( binding.background, activity.resources, ::updateUi)
     }
 
     /**
      * 上拉初始化
      */
     private fun pullUpCreate() {
-        isProgressThread=true
+
+        isProgressThread = true
+        MainSingerPhoto.setPhoto(true)
         launch(Dispatchers.IO) {
             progressThread()
+
         }
+
     }
 
 
@@ -196,8 +209,6 @@ private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel:
     }
 
 
-
-
     fun setSatuBarColor() {
         when (background) {
             // 背景自适应  更是封面
@@ -216,7 +227,7 @@ private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel:
                             resource: Bitmap,
                             transition: Transition<in Bitmap>?
                         ) {
-                            binding.playerContainer.background = BitmapDrawable(activity.resources, resource)
+                            binding.background.background = BitmapDrawable(activity.resources, resource)
                         }
 
                         override fun onLoadCleared(placeholder: Drawable?) {}
@@ -229,7 +240,7 @@ private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel:
 
     private fun onCreate() {
 
-        currentSong = MusicServiceRemote.getCurrentSong()
+        getData()
 
 
         //初始化字符集合缓存
@@ -254,6 +265,27 @@ private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel:
         onPlayStateChange()
     }
 
+    private val repository = DatabaseRepository.getInstance()
+    private fun getData() {
+        currentSong = MusicServiceRemote.getCurrentSong()
+
+        if (currentSong.id == -1L) {
+            launch(Dispatchers.IO) {
+                val quitId = getSp(applicationContext, MusicConstant.NAME) {
+                    getLong(MusicConstant.QUIT_SONG_ID, -1L)
+                }
+                val queue = repository.getPlayQueueSongs().blockingGet()
+                if (queue.isNotEmpty()) {
+                    for (i in queue.indices) {
+                        if (quitId == queue[i].id) {
+                            currentSong = queue[i]
+                        }
+                    }
+                }
+
+            }
+        }
+    }
 
     /**
      * 当前歌曲时长
@@ -304,11 +336,11 @@ private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel:
             @SuppressLint("LongLogTag")
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
 
-                Log.e("setOnSeekBarChangeListeneronProgressChanged", "$seekBar $progress $fromUser")
+                //      Log.e("setOnSeekBarChangeListeneronProgressChanged", "$seekBar $progress $fromUser")
                 if (fromUser) {
                     updateProgressText(progress)
                 }
-                  handler.sendEmptyMessage(MusicConstant.UPDATE_TIME_ONLY)
+                handler.sendEmptyMessage(MusicConstant.UPDATE_TIME_ONLY)
                 currentTime = progress
                 // lrcView?.seekTo(progress, true, fromUser)
             }
@@ -366,13 +398,15 @@ private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel:
     }
 
     //是否更新进度条
-    private var isProgressThread=false
+    private var isProgressThread = false
+
     /**
      * 更新进度条线程
      */
-    private suspend fun progressThread(){
-
+    private suspend fun progressThread() {
+        Log.d("progressThread", isProgressThread.toString())
         while (isProgressThread) {
+
             try {
                 val progress = MusicServiceRemote.getProgress()
                 if (progress in 1 until duration) {
@@ -385,7 +419,6 @@ private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel:
             }
         }
     }
-
 
 
     //初始化控件
@@ -429,7 +462,7 @@ private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel:
             }
         }
 
-      //  initLyrics()
+        //  initLyrics()
     }
 
 
@@ -471,30 +504,47 @@ private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel:
             tvPlaySingerName.text = currentSong.SingerName
         }
     }
-
+    private var singerId = ""
     /**
      * 接收数据
      * 2325 表示歌曲写真id来自 HifIni
      */
     private fun receiveIntent(currentSong: SongLists) {
         // val singerId = intent.getStringExtra(SINGER_ID)
+
         val singerId = currentSong.mixSongID
-        if (singerId != "2325") {
+        if (this.singerId==singerId){
+            return
+        }
+        if (singerId != "") {
             val list = mCacheUrl.getFromDisk(singerId)
             Timber.v("歌手写真url缓存文件:%s", list?.size)
             if (list != null) {
-                MainSingerPhoto.photoCycle(list, binding.playerContainer, activity.resources, ::updateUi)
+    /*            launch {
+                    withContext(Dispatchers.IO) {
+                        MainSingerPhoto.playCycle(list, binding.background, activity.resources, ::updateUi)
+                    }
+
+                }*/
+
+
+                        MainSingerPhoto.setUrlList(list,singerId)
+
+
+
+
+
             } else {
                 Timber.v("歌手id: %S", singerId)
 
-                Glide.with(activity.applicationContext).asBitmap()
+                Glide.with(activity).asBitmap()
                     .load(R.drawable.youjing)
                     .into(object : CustomTarget<Bitmap>() {
                         override fun onResourceReady(
                             resource: Bitmap,
                             transition: Transition<in Bitmap>?
                         ) {
-                            binding.playerContainer.background = BitmapDrawable(activity.resources, resource)
+                            binding.background.background = BitmapDrawable(activity.resources, resource)
                         }
 
                         override fun onLoadCleared(placeholder: Drawable?) {}
@@ -504,14 +554,14 @@ private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel:
             }
 
         } else {
-            Glide.with(activity.applicationContext).asBitmap()
+            Glide.with(activity).asBitmap()
                 .load(R.drawable.youjing)
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onResourceReady(
                         resource: Bitmap,
                         transition: Transition<in Bitmap>?
                     ) {
-                        binding.playerContainer.background = BitmapDrawable(activity.resources, resource)
+                        binding.background.background = BitmapDrawable(activity.resources, resource)
                     }
 
                     override fun onLoadCleared(placeholder: Drawable?) {}
@@ -519,17 +569,21 @@ private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel:
         }
     }
 
+
+    /**
+     * 观察写真图片
+     */
     private fun observeSingerPhotoData() {
 
 
         tryNull {
             viewModel.singerIdObservedData.observe(activity) {
                 //获取图片连接
-                val urlList = SingerPhoto.singerPhotoUrl(it)
+                val urlList = MainSingerPhoto.singerPhotoUrl(it)
                 val singerId = currentSong.mixSongID
                 mCacheUrl.putToDisk(singerId, urlList)
                 //把图片设置为背景
-                MainSingerPhoto.photoCycle(urlList, binding.playerContainer, activity.resources, ::updateUi)
+                //////////////////////    MainSingerPhoto.playCycle(urlList, binding.background, activity.resources, ::updateUi)
             }
         }
 
@@ -610,7 +664,7 @@ private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel:
         duration = MusicServiceRemote.getDuration()
         binding.seekbar.max = duration
 
-    //   initLyrics()
+        //   initLyrics()
 
         //播放界面写真和封面更改
         observableCurrentSong.nameCurrentSong = currentSong.mixSongID
@@ -654,13 +708,13 @@ private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel:
         Timber.tag(Tag.isPlay).v("前台播放图标更新:%s,后台传入状态:%s,:%s", isPlayful, isPlaying, LogT.lll())
         ppvPlayPause.updateStRte(isPlayful, true)
 
+
         // revisePlaying()
         Timber.tag(Tag.isPlay).v(
             "======================================================================:%s",
             currentSong.SongName
         )
     }
-
 
 
     /**
@@ -790,26 +844,27 @@ private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel:
     /**
      * 下拉关闭
      */
-    private fun dropDownDestroy(){
-        cancel()
+    private fun dropDownDestroy() {
         baseActivity.removeMusicServiceEventListener(this)
-        isProgressThread=false
+        isProgressThread = false
         mCacheUrl.close()
         mCacheString.close()
+        repository.closure()
+        MainSingerPhoto.setPhoto(false)
 
-        SingerPhoto.handlerRemoveCallbacks()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     private fun onDestroy() {
         cancel()
-        _activity=null
-        _binding=null
+        _activity = null
+        _binding = null
         baseActivity.removeMusicServiceEventListener(this)
-        isProgressThread=false
+        isProgressThread = false
         mCacheUrl.close()
         mCacheString.close()
-        SingerPhoto.handlerRemoveCallbacks()
+        repository.closure()
+        MainSingerPhoto.setPlayPhoto(false)
     }
 
 }

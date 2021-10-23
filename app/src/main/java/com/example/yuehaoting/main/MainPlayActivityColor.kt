@@ -16,6 +16,7 @@ import com.example.yuehaoting.databinding.ActivityMainLayoutBottomSheetBehaviorB
 import com.example.yuehaoting.kotlin.getSp
 import com.example.yuehaoting.theme.*
 import com.example.yuehaoting.util.MusicConstant
+import com.example.yuehaoting.util.MyUtil
 import com.example.yuehaoting.util.SetPixelUtil
 import com.example.yuehaoting.util.Tag.playColor
 import timber.log.Timber
@@ -43,7 +44,8 @@ class MainPlayActivityColor(private val binding: ActivityMainLayoutBottomSheetBe
         binding.layoutPlayLayout.ppvPlayPause.setBackgroundColor(65656)
         //进度条颜色
         updateSeeKBarColor(accentColor)
-
+        binding.tvPlaySongStartingTime.setTextColor(-1)
+        binding.tvPlaySongEndTime.setTextColor(-1)
         //歌曲名颜色
         binding.layoutPlayLayoutBar.tvPlaySongName.setTextColor(-1)
         binding.layoutPlayLayoutBar.tvPlaySingerName.setTextColor(-1)
@@ -133,7 +135,7 @@ class MainPlayActivityColor(private val binding: ActivityMainLayoutBottomSheetBe
             val drawable = DrawableGradient(GradientDrawable.Orientation.TOP_BOTTOM,
                 intArrayOf(animation.animatedValue as Int,
                     Theme.resolveColor(activity, R.attr.colorSurface)), 0)
-            binding.playerContainer.background = drawable
+            binding.background.background = drawable
             Timber.tag(playColor).v("显示颜色背景:%s")
         }
         //这里重点注意,如果设置为1000毫秒,动画会在后台执行,无法代替直到结束

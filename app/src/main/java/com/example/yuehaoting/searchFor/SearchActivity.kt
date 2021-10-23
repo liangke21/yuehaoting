@@ -127,12 +127,13 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     private lateinit var musicButton: MusicButtonLayout
 
     private lateinit var animation: Animation
-  private var _binding: ActivitySearchBinding?=null
+    private var _binding: ActivitySearchBinding? = null
     private val binding get() = _binding!!
+
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding=ActivitySearchBinding.inflate(layoutInflater)
+        _binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         //数据读取
@@ -145,7 +146,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         //初始化控件
         initView()
         //状态栏沉侵
-        ImmersionBar.with(this).statusBarDarkFont(true).titleBarMarginTop(binding.activityChooserViewContent) .init()
+        ImmersionBar.with(this).statusBarDarkFont(true).titleBarMarginTop(binding.activityChooserViewContent).init()
         //标题栏
         initMagicIndicator()
 
@@ -160,15 +161,16 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         //更新底部图片和标题
         updatePlayButtonImageAndText()
 
-    val bb=   BottomSheetBehaviorMainActivity(
-        InsideSearchActivity(), binding.playerContainer, binding.musicButton,
-          binding.ll3)
+        val bb = BottomSheetBehaviorMainActivity(
+            InsideSearchActivity(), binding.playerContainer, binding.musicButton,
+            binding.ll3
+        )
         lifecycle.addObserver(bb)
- // bb.onCreate()
+        // bb.onCreate()
 
     }
 
-  inner class InsideSearchActivity:InsideMainActivityBase{
+    inner class InsideSearchActivity : InsideMainActivityBase {
         override val activity: BaseActivity
             get() = this@SearchActivity
     }
@@ -247,7 +249,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
 
         ).forEach {
             it.setOnClickListener(bottomPlayOnClickListener)
-            bottomPlaybackControlColour(it)
+            // bottomPlaybackControlColour(it)
 
         }
         //播放旋转按钮
@@ -337,7 +339,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     private fun updatePlayButtonImageAndText() {
         if (currentSong.id == -1L) {
             launch(Dispatchers.IO) {
-                val quitId = getSp(applicationContext,NAME) {
+                val quitId = getSp(applicationContext, NAME) {
                     getLong(MusicConstant.QUIT_SONG_ID, -1L)
                 }
                 val queue = repository.getPlayQueueSongs().blockingGet()
@@ -478,7 +480,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
                     runOnUiThread {
                         musicButton.setProgress(progress)
                     }
-                    Log.e(MyUtil.getSecond(progress).toString(), MyUtil.getSecond(duration).toString())  //打印进度时间和当前时长
+                    //  Log.e(MyUtil.getSecond(progress).toString(), MyUtil.getSecond(duration).toString())  //打印进度时间和当前时长
                     if (MyUtil.getSecond(progress) == MyUtil.getSecond(duration)) {
                         runOnUiThread {
                             musicButton.playMusic(4)

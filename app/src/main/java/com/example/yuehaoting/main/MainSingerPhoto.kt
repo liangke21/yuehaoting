@@ -1,11 +1,13 @@
 package com.example.yuehaoting.main
 
 
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.widget.LinearLayout
+import androidx.annotation.WorkerThread
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -14,9 +16,15 @@ import com.example.yuehaoting.App.Companion.context
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.handler.HandlerMy
 import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhoto
+import com.example.yuehaoting.kotlin.launchIo
+import com.example.yuehaoting.kotlin.launchMy
 import com.example.yuehaoting.kotlin.tryNull
+import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.Tag.singerPhoto
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import timber.log.Timber
+import kotlin.concurrent.thread
 
 
 /**
@@ -28,7 +36,7 @@ object MainSingerPhoto {
     private val url = ArrayList<String>()
     fun singerPhotoUrl(data4: Result<List<SingerPhoto.Data.Imgs.Data4>>): ArrayList<String> {
         tryNull {
-            val data :ArrayList<SingerPhoto.Data.Imgs.Data4> = data4.getOrNull() as ArrayList<SingerPhoto.Data.Imgs.Data4>
+            val data: ArrayList<SingerPhoto.Data.Imgs.Data4> = data4.getOrNull() as ArrayList<SingerPhoto.Data.Imgs.Data4>
             url.clear()
             data.forEach {
                 Timber.v("数据长度 ${it.filename}:%s", it.filename.length)
@@ -41,13 +49,16 @@ object MainSingerPhoto {
     }
 
 
-
     //定义一个handler来进行隔时间操作
-    private var handler: HandlerMy = HandlerMy("playUiPhoto")
+    //   private var handler: HandlerMy = HandlerMy("playUiPhoto")
+    @Deprecated("废弃")
+    private var isRunnable: Boolean = false
 
-    private  var isRunnable:Boolean = false
-    private lateinit var myRunnable : Runnable
-    fun photoCycle(url: ArrayList<String>, fl: LinearLayout, resources: Resources, block:(Bitmap,Boolean)->Unit) {
+    @Deprecated("废弃")
+    private lateinit var myRunnable: Runnable
+
+    @Deprecated("废弃线程播放,改成协程播放")
+    fun photoCycle(url: ArrayList<String>, fl: LinearLayout, resources: Resources, block: (Bitmap, Boolean) -> Unit) {
         var count = -1
         if (url.size == 0) {
             Timber.tag(singerPhoto).v("0张图片的适合执行 :%s", url.size)
@@ -55,48 +66,195 @@ object MainSingerPhoto {
                 .load(R.drawable.youjing)
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                        fl.background=BitmapDrawable(resources,resource)
+                        fl.background = BitmapDrawable(resources, resource)
                     }
 
                     override fun onLoadCleared(placeholder: Drawable?) {}
                 })
         } else {
-            isRunnable=true
-             myRunnable = Runnable {
+            isRunnable = true
+            myRunnable = Runnable {
 
-                 Timber.tag(singerPhoto).v("多少张图片链接 :%s", url.size)
+                Timber.tag(singerPhoto).v("多少张图片链接 :%s", url.size)
 
-                 if (count == url.size - 1) {
-                     count = -1
-                 }
-                 val gaga=++count
-                 Timber.tag(singerPhoto).v("当前播放在第几张 :%s",  gaga)
-                 Glide.with(context).asBitmap()
-                     .load(url[gaga])
-                     .override(context.width, context.height) // resizes the image to these dimensions (in pixel)
-                     .centerCrop()
-                     .into(object : CustomTarget<Bitmap>() {
-                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                             fl.background=BitmapDrawable(resources,resource)
-                             Timber.tag(singerPhoto).v("显示写真 :%s",  resource.toString())
-                             block(resource,false)
-                         }
+                if (count == url.size - 1) {
+                    count = -1
+                }
+                val gaga = ++count
+                Timber.tag(singerPhoto).v("当前播放在第几张 :%s", gaga)
+                Glide.with(context).asBitmap()
+                    .load(url[gaga])
+                    .override(context.width, context.height) // resizes the image to these dimensions (in pixel)
+                    .centerCrop()
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            fl.background = BitmapDrawable(resources, resource)
+                            Timber.tag(singerPhoto).v("显示写真 :%s", resource.toString())
+                            block(resource, false)
+                        }
 
-                         override fun onLoadCleared(placeholder: Drawable?) {}
-                     })
-                 handler.setPostDelayed(myRunnable,5000)
-             }
+                        override fun onLoadCleared(placeholder: Drawable?) {}
+                    })
+                //handler.setPostDelayed(myRunnable, 5000)
+            }
 
-            handler.post(myRunnable)
+            //   handler.post(myRunnable)
 
         }
 
     }
 
-   fun  handlerRemoveCallbacks (){
-       if (isRunnable){
-           handler.setRemoveCallbacks(myRunnable)
-       }
-   }
+    @Deprecated("废弃")
+    fun handlerRemoveCallbacks() {
+        if (isRunnable) {
+            //    handler.setRemoveCallbacks(myRunnable)
+        }
+    }
+
+    private var isPlayPhoto = true
+
+    /**
+     * 是否开启 幻影灯片
+     * @param isPlay Boolean
+     */
+    fun setPlayPhoto(isPlay: Boolean) {
+        Timber.v("是否幻影灯片 %s", isPlay)
+        isPlayPhoto = isPlay
+        if (!isPlay) {
+            isLoadPicture = false
+            urlList.clear()
+        }
+    }
+
+    /**
+     * 是否播放图片
+     * @param isPlay Boolean
+     */
+    fun setPhoto(isPlay: Boolean) {
+        isLoadPicture = isPlay
+    }
+
+
+    private var urlList = ArrayList<String>()
+
+
+    private var count = -1
+
+
+    private var isLoadPicture = false
+
+    private var singerId = ""
+
+    /**
+     * 设置图片合集
+     * @param url ArrayList<String>
+     */
+    fun setUrlList(url: ArrayList<String>, singerId: String) {
+        if (this.singerId == singerId) {
+            return
+        }
+        Timber.tag(singerPhoto).v("添加幻影灯片数据 %s", url.size)
+        if (url.size == 0) {
+
+
+            return
+        }
+        urlList.clear()
+        urlList.addAll(url)
+        count = -1
+        isLoadPicture = true
+        this.singerId = singerId
+
+
+    }
+
+    suspend fun playCycleCoroutine(fl: LinearLayout, resources: Resources, block: (Bitmap, Boolean) -> Unit) {
+
+        if (urlList.size == 0) {
+            Timber.tag(singerPhoto).v("0张图片的适合执行 :%s", urlList.size)
+            Glide.with(context).asBitmap()
+                .load(R.drawable.youjing)
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        fl.background = BitmapDrawable(resources, resource)
+                    }
+                    override fun onLoadCleared(placeholder: Drawable?) {}
+                })
+        }
+
+
+        while (isPlayPhoto) {
+            Timber.tag(singerPhoto).v("多少张图片链接 :%s", this.urlList.size)
+            if (isLoadPicture) {
+                if (count == urlList.size - 1) {
+                    count = -1
+                }
+                val gaga = ++count
+                Timber.tag(singerPhoto).v("当前播放在第几张 :%s", gaga)
+                Glide.with(context).asBitmap()
+                    .load(urlList[gaga])
+                    .override(context.width, context.height)
+                    .centerCrop()
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            fl.background = BitmapDrawable(resources, resource)
+                            Timber.tag(singerPhoto).v("显示写真成功")
+                            block(resource, false)
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {}
+                    })
+
+            }
+            delay(5000)
+        }
+    }
+
+    fun playCycleThread(fl: LinearLayout, resources: Resources, block: (Bitmap, Boolean) -> Unit) {
+
+
+        if (urlList.size == 0) {
+            Timber.tag(singerPhoto).v("0张图片的适合执行 :%s", urlList.size)
+            Glide.with(context).asBitmap()
+                .load(R.drawable.youjing)
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        fl.background = BitmapDrawable(resources, resource)
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {}
+                })
+        }
+
+        thread {
+            while (isPlayPhoto) {
+                Timber.tag(singerPhoto).v("多少张图片链接 :%s", this.urlList.size)
+                if (isLoadPicture) {
+                    if (count == urlList.size - 1) {
+                        count = -1
+                    }
+                    val gaga = ++count
+                    Timber.tag(singerPhoto).v("当前播放在第几张 :%s", gaga)
+                    Glide.with(context).asBitmap()
+                        .load(urlList[gaga])
+                        .override(context.width, context.height)
+                        .centerCrop()
+                        .into(object : CustomTarget<Bitmap>() {
+                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                fl.background = BitmapDrawable(resources, resource)
+                                Timber.tag(singerPhoto).v("显示写真成功")
+                                block(resource, false)
+                            }
+
+                            override fun onLoadCleared(placeholder: Drawable?) {}
+                        })
+
+                }
+                Thread.sleep(5000)
+            }
+        }
+
+    }
+
 
 }

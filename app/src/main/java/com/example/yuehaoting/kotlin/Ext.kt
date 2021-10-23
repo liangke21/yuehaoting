@@ -25,6 +25,15 @@ import kotlin.reflect.KProperty
  * 描述:
  */
 
+fun launchIo(
+    context: CoroutineContext = EmptyCoroutineContext,
+    block: suspend () -> Unit,
+){
+    val c= CoroutineScope(context)
+    c.launch(Dispatchers.IO) {
+        block()
+    }
+}
 
 
 /**
