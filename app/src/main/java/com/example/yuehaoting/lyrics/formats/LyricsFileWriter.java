@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import timber.log.Timber;
 
 /**
  * @Description: 歌词文件生成器
@@ -40,7 +41,7 @@ public abstract class LyricsFileWriter {
      * @throws Exception
      */
     public boolean saveLyricsFile(String lyricsContent, String lyricsFilePath) throws Exception {
-
+        Timber.tag("歌词").v("保存歌词 %s",lyricsContent);
         File lyricsFile = new File(lyricsFilePath);
         if (lyricsFile != null) {
             //

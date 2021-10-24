@@ -465,7 +465,7 @@ class BottomSheetBehaviorMainActivity
             }
         }
 
-        //  initLyrics()
+          initLyrics()
     }
 
 
@@ -476,10 +476,10 @@ class BottomSheetBehaviorMainActivity
 
         launchMy {
             try {
-                Log.e("initLyrics()", currentSong.toString())
-                val mLyricsReader = PlatformLyrics.lyrics(currentSong)
+                Timber.tag("歌词").v("平台 %s",currentSong.platform)
+                val mLyricsReader = PlatformLyrics.lyrics(currentSong) ?: return@launchMy
                 binding.ManyLyricsView.apply {
-                    initLrcData()
+                    //initLrcData()
                     lyricsReader = mLyricsReader
                     setPaintColor(intArrayOf(-1, -2))
                     setPaintHLColor(intArrayOf(Color.GREEN, Color.YELLOW), true)
@@ -659,7 +659,7 @@ class BottomSheetBehaviorMainActivity
         duration = MusicServiceRemote.getDuration()
         binding.seekbar.max = duration
 
-        //   initLyrics()
+           initLyrics()
 
         //播放界面写真和封面更改
         observableCurrentSong.nameCurrentSong = currentSong.mixSongID

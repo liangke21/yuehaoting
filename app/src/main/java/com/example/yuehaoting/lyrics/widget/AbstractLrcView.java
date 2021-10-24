@@ -1,5 +1,6 @@
 package com.example.yuehaoting.lyrics.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -390,6 +391,7 @@ public abstract class AbstractLrcView extends View {
             mUpdateTask.cancel(true);
         }
         mUpdateTask = new AsyncTask<String, Integer, String>() {
+
             @Override
             protected String doInBackground(String... strings) {
 
@@ -414,6 +416,15 @@ public abstract class AbstractLrcView extends View {
             }
         }.executeOnExecutor(Executors.newCachedThreadPool(),"");
     }
+
+
+
+
+private void executeTaskCoroutine(final long delayMs){
+
+}
+
+
 
     private WeakReference<Context> mActivityWR;
 
@@ -1226,6 +1237,8 @@ public abstract class AbstractLrcView extends View {
         }
 
     }
+
+
 
     /**
      * 搜索歌词接口

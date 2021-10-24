@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import timber.log.Timber;
 
 /**
  * 歌词读管理器
@@ -114,7 +115,7 @@ public class LyricsReader {
             mLrcFilePath = saveLrcFile.getPath();
         LyricsFileReader lyricsFileReader = LyricsIOUtils.getLyricsFileReader(fileName);
         LyricsInfo lyricsInfo = lyricsFileReader.readLrcText(base64ByteArray, saveLrcFile);
-        parser(lyricsInfo);
+       parser(lyricsInfo);
 
     }
 
@@ -175,8 +176,9 @@ public class LyricsReader {
             mLrcFilePath = saveLrcFile.getPath();
         LyricsFileReader lyricsFileReader = LyricsIOUtils.getLyricsFileReader(fileName);
 
-        Log.v("歌词保存路径 %s",fileName);
+        Timber.tag("歌词").v("歌词保存路径 %s",fileName);
         LyricsInfo lyricsInfo = lyricsFileReader.readLrcText(dynamicContent, lrcContent, extraLrcContent, saveLrcFile.getPath());
+        Timber.tag("歌词").v(lrcContent);
         parser(lyricsInfo);
 
     }
@@ -189,6 +191,7 @@ public class LyricsReader {
      */
     private void parser(LyricsInfo lyricsInfo) {
         mLyricsInfo = lyricsInfo;
+
         mLyricsType = lyricsInfo.getLyricsType();
         Map<String, Object> tags = lyricsInfo.getLyricsTags();
         if (tags.containsKey(LyricsTag.TAG_OFFSET)) {

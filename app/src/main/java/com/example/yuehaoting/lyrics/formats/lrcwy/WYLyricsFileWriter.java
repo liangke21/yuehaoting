@@ -9,10 +9,12 @@ import com.example.yuehaoting.lyrics.model.LyricsTag;
 import com.example.yuehaoting.lyrics.model.TranslateLrcLineInfo;
 import com.example.yuehaoting.lyrics.utils.TimeUtils;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import timber.log.Timber;
 
 /**
  * @Description: 网易歌词生成器
@@ -71,7 +73,7 @@ public class WYLyricsFileWriter extends LyricsFileWriter {
         StringBuilder lyricsCom = new StringBuilder();
         // 先保存所有的标签数据
         Map<String, Object> tags = lyricsIfno.getLyricsTags();
-        for (Map.Entry<String, Object> entry : tags.entrySet()) {
+/*        for (Map.Entry<String, Object> entry : tags.entrySet()) {
             Object val = entry.getValue();
             if (entry.getKey().equals(LyricsTag.TAG_TITLE)) {
                 lyricsCom.append(LEGAL_SONGNAME_PREFIX);
@@ -82,10 +84,10 @@ public class WYLyricsFileWriter extends LyricsFileWriter {
             } else if (entry.getKey().equals(LyricsTag.TAG_TOTAL)) {
                 lyricsCom.append(LEGAL_TOTAL_PREFIX);
             } else {
-                val = "[" + entry.getKey() + ":" + val;
+               val = "[" + entry.getKey() + ":" + val;
             }
             lyricsCom.append(val + "]\n");
-        }
+        }*/
         //判断歌词类型
         if (lyricsIfno.getLyricsType() == LyricsInfo.DYNAMIC) {
             //保存动感歌词
@@ -102,6 +104,7 @@ public class WYLyricsFileWriter extends LyricsFileWriter {
         if (!TextUtils.isEmpty(extraLrcContent)) {
             lyricsCom.append(extraLrcContent);
         }
+
         return lyricsCom.toString();
     }
 

@@ -2,6 +2,7 @@ package com.example.yuehaoting.lyrics.formats.lrcwy;
 
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import com.example.yuehaoting.lyrics.formats.LyricsFileReader;
 import com.example.yuehaoting.lyrics.model.LyricsInfo;
 import com.example.yuehaoting.lyrics.model.LyricsLineInfo;
@@ -24,6 +25,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import timber.log.Timber;
 
 /**
  * @Description: 网易歌词读取器
@@ -127,7 +129,6 @@ public class WYLyricsFileReader extends LyricsFileReader {
         if (lineInfo.startsWith(LEGAL_SONGNAME_PREFIX)) {
             int startIndex = LEGAL_SONGNAME_PREFIX.length();
             int endIndex = lineInfo.lastIndexOf("]");
-            //
             lyricsTags.put(LyricsTag.TAG_TITLE,
                     lineInfo.substring(startIndex, endIndex));
         } else if (lineInfo.startsWith(LEGAL_SINGERNAME_PREFIX)) {
@@ -240,6 +241,7 @@ public class WYLyricsFileReader extends LyricsFileReader {
 
         if (!TextUtils.isEmpty(lyricsFilePath)) {
             //保存歌词
+
             new WYLyricsFileWriter().writer(lyricsInfo, lyricsFilePath);
         }
         return lyricsInfo;
