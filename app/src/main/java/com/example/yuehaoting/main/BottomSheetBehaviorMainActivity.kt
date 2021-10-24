@@ -11,8 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.SeekBar
-import android.widget.TextView
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -33,6 +31,7 @@ import com.example.yuehaoting.base.log.LogT
 import com.example.yuehaoting.base.retrofit.SongNetwork
 import com.example.yuehaoting.base.view.view.MusicButtonLayout
 import com.example.yuehaoting.callback.MusicEvenCallback
+import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhotoData
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.databinding.ActivityMainLayoutBottomSheetBehaviorBinding
 import com.example.yuehaoting.kotlin.*
@@ -49,7 +48,6 @@ import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.MyUtil
 import com.example.yuehaoting.util.Tag
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tencent.bugly.Bugly.applicationContext
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -83,7 +81,7 @@ class BottomSheetBehaviorMainActivity
     private val binding get() = _binding!!
 
     //_______________________________________||______________________________________________________________________________________________________
-    private val viewModel by lazyMy { ViewModelProvider(activity).get(PlayViewModel::class.java) }
+    private val viewModel by lazy { ViewModelProvider(activity).get(PlayViewModel::class.java) }
     private val mCacheUrl = CacheUrl()
     private val mCacheString = CacheString()
     private lateinit var playActivityColor: MainPlayActivityColor
@@ -165,6 +163,7 @@ class BottomSheetBehaviorMainActivity
 
         }
         MainSingerPhoto.setPlayPhoto(true)
+
         launch {
             withContext(Dispatchers.IO){
                 MainSingerPhoto.playCycleCoroutine( binding.background, activity.resources, ::updateUi)
@@ -236,13 +235,14 @@ class BottomSheetBehaviorMainActivity
             }
         }
     }
-
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    private fun create(){
+        getData()
+        observeSingerPhotoData()
+    }
 
     private fun onCreate() {
-
         getData()
-
-
         //初始化字符集合缓存
         mCacheUrl.init(activity)
         //字符集合
@@ -253,7 +253,7 @@ class BottomSheetBehaviorMainActivity
         receiveIntent(currentSong)
         isUpdateReceiveIntent = false
 
-        observeSingerPhotoData()
+
 
         playActivityColor.setThemeColor()
 
@@ -271,7 +271,7 @@ class BottomSheetBehaviorMainActivity
 
         if (currentSong.id == -1L) {
             launch(Dispatchers.IO) {
-                val quitId = getSp(applicationContext, MusicConstant.NAME) {
+                val quitId = getSp(activity.applicationContext, MusicConstant.NAME) {
                     getLong(MusicConstant.QUIT_SONG_ID, -1L)
                 }
                 val queue = repository.getPlayQueueSongs().blockingGet()
@@ -284,6 +284,8 @@ class BottomSheetBehaviorMainActivity
                 }
 
             }
+        }else{
+            currentSong = MusicServiceRemote.getCurrentSong()
         }
     }
 
@@ -513,62 +515,48 @@ class BottomSheetBehaviorMainActivity
         // val singerId = intent.getStringExtra(SINGER_ID)
 
         val singerId = currentSong.mixSongID
+        Timber.tag(Tag.singerPhoto).v("当前id %s  歌手id %s",this.singerId,currentSong.mixSongID)
         if (this.singerId==singerId){
             return
         }
         if (singerId != "") {
+            defaultPhoto()
             val list = mCacheUrl.getFromDisk(singerId)
-            Timber.v("歌手写真url缓存文件:%s", list?.size)
             if (list != null) {
-    /*            launch {
-                    withContext(Dispatchers.IO) {
-                        MainSingerPhoto.playCycle(list, binding.background, activity.resources, ::updateUi)
-                    }
-
-                }*/
-
-
+                Timber.tag(Tag.singerPhoto).v("歌手写真url缓存文件不是空:%s", list.size)
                         MainSingerPhoto.setUrlList(list,singerId)
-
-
-
-
-
+         list.clear()
             } else {
-                Timber.v("歌手id: %S", singerId)
 
-                Glide.with(activity).asBitmap()
-                    .load(R.drawable.youjing)
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(
-                            resource: Bitmap,
-                            transition: Transition<in Bitmap>?
-                        ) {
-                            binding.background.background = BitmapDrawable(activity.resources, resource)
-                        }
+                Timber.tag(Tag.singerPhoto).v("歌手写真网络请求: %S", singerId)
 
-                        override fun onLoadCleared(placeholder: Drawable?) {}
-                    })
-
+                defaultPhoto()
                 viewModel.singerId(singerId)
             }
 
         } else {
-            Glide.with(activity).asBitmap()
-                .load(R.drawable.youjing)
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap>?
-                    ) {
-                        binding.background.background = BitmapDrawable(activity.resources, resource)
-                    }
-
-                    override fun onLoadCleared(placeholder: Drawable?) {}
-                })
+            defaultPhoto()
         }
+        this.singerId=singerId
     }
 
+    /**
+     * ,默认写真
+     */
+ private   fun defaultPhoto(){
+     Glide.with(activity).asBitmap()
+         .load(R.drawable.youjing)
+         .into(object : CustomTarget<Bitmap>() {
+             override fun onResourceReady(
+                 resource: Bitmap,
+                 transition: Transition<in Bitmap>?
+             ) {
+                 binding.background.background = BitmapDrawable(activity.resources, resource)
+             }
+
+             override fun onLoadCleared(placeholder: Drawable?) {}
+         })
+    }
 
     /**
      * 观察写真图片
@@ -576,16 +564,24 @@ class BottomSheetBehaviorMainActivity
     private fun observeSingerPhotoData() {
 
 
-        tryNull {
             viewModel.singerIdObservedData.observe(activity) {
+
+                  if (it.getOrNull()==null){
+                      return@observe
+                  }
+                val data= it.getOrNull() as SingerPhotoData
+                val  phoneSingerPhoto =  data.data[0][0].imgs.`4`
+                Timber.tag(Tag.singerPhoto).v("观察到歌手写真网络请求: %S 歌手 %s", singerId,data.data[0][0].author_name)
                 //获取图片连接
-                val urlList = MainSingerPhoto.singerPhotoUrl(it)
+                val urlList = MainSingerPhoto.singerPhotoUrl(phoneSingerPhoto)
                 val singerId = currentSong.mixSongID
                 mCacheUrl.putToDisk(singerId, urlList)
                 //把图片设置为背景
                 //////////////////////    MainSingerPhoto.playCycle(urlList, binding.background, activity.resources, ::updateUi)
+                MainSingerPhoto.setUrlList( urlList,singerId )
+                urlList.clear()
             }
-        }
+
 
     }
 
@@ -766,7 +762,7 @@ class BottomSheetBehaviorMainActivity
                     isPhotoBackground = true
                     binding.ivPlayGuide01.visibility = View.GONE
                     backgroundMode = true
-                    receiveIntent(currentSong)
+                   // receiveIntent(currentSong)
 
                 }
             }
@@ -849,9 +845,8 @@ class BottomSheetBehaviorMainActivity
         isProgressThread = false
         mCacheUrl.close()
         mCacheString.close()
-        repository.closure()
         MainSingerPhoto.setPhoto(false)
-
+       viewModel.cleared()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

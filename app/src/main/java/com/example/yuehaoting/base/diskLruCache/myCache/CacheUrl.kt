@@ -54,6 +54,7 @@ class CacheUrl {
             }
 
             os?.close()
+
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
@@ -65,41 +66,41 @@ class CacheUrl {
      */
     fun getFromDisk(key: String): ArrayList<String>? {
 
-          try {
-        Timber.v("getFromDisk:%s", key)
-        val list = ArrayList<String>()
+        try {
+            Timber.v("getFromDisk:%s", key)
+            val list = ArrayList<String>()
+            list.clear()
+            val `is`: InputStream?
 
-        val `is`: InputStream?
+            val snapshot: DiskLruCache.Snapshot? = diskLruCache.get(key)
 
-        val snapshot: DiskLruCache.Snapshot? = diskLruCache.get(key)
+            if (snapshot == null) {
+                Timber.v("getFromDiskListUrlNull:%s", key)
+                return null
 
-        if (snapshot == null) {
-            Timber.v("getFromDiskListUrlNull:%s", key)
-            return null
+            }
 
+            `is` = snapshot.getInputStream(0)
+
+            val bis = BufferedInputStream(`is`)
+
+            val reader = BufferedReader(InputStreamReader(bis))
+            var s: String?
+            while ((reader.readLine().also { s = it }) != null) {
+                Timber.v("getFromDiskListUrl:%s", s.toString())
+                list.add(s.toString())
+            }
+
+
+            reader.close()
+            bis.close()
+            `is`?.close()
+
+
+            return list
+        } catch (e: IllegalArgumentException) {
+            Timber.v("歌手写真id异常,可能能是空字符,")
         }
-
-        `is` = snapshot.getInputStream(0)
-
-        val bis = BufferedInputStream(`is`)
-
-        val reader = BufferedReader(InputStreamReader(bis))
-        var s: String?
-        while ((reader.readLine().also { s = it }) != null) {
-            Timber.v("getFromDiskListUrl:%s", s.toString())
-            list.add(s.toString())
-        }
-
-
-        reader.close()
-        bis.close()
-        `is`?.close()
-
-
-        return list
-          }catch (e:IllegalArgumentException){
-              Timber.v("歌手写真id异常,可能能是空字符,")
-          }
         return null
     }
 

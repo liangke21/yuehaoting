@@ -82,7 +82,7 @@ class SingleFragment1 : LazyBaseFragment() {
         viewModel.singleObservedLiveData.observe(this) {
             tryNull {
                 val musicData = it.getOrNull() as KuGouSingle.Data
-                //  Timber.v("酷狗音乐数据观察到:%s %s", musicData.lists[0].SongName, isLoadDataForTheFirstTime)
+                  Timber.v("酷狗音乐数据观察到:%s %s", musicData.lists[0].SongName, isLoadDataForTheFirstTime)
                 val model = musicData.lists
                 model.forEach {
                     val song = songDetails(it)

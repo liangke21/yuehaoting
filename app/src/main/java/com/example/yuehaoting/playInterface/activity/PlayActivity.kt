@@ -24,6 +24,7 @@ import com.example.yuehaoting.base.diskLruCache.myCache.CacheString
 import com.example.yuehaoting.base.diskLruCache.myCache.CacheUrl
 import com.example.yuehaoting.base.log.LogT
 import com.example.yuehaoting.base.retrofit.SongNetwork
+import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhotoData
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.databinding.PlayActivityBinding
 import com.example.yuehaoting.kotlin.*
@@ -424,7 +425,7 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
                         override fun onLoadCleared(placeholder: Drawable?) {}
                     })
 
-                viewModel.singerId(singerId)
+              //////////////////////////////////////////////////////////////  viewModel.singerId(singerId)
             }
 
         } else {
@@ -449,7 +450,12 @@ class PlayActivity : PlayBaseActivity(), View.OnClickListener, ActivityHandlerCa
         tryNull {
             viewModel.singerIdObservedData.observe(this) {
                 //获取图片连接
-                val urlList = singerPhotoUrl(it)
+                if (it.getOrNull()==null){
+                    return@observe
+                }
+                val data= it.getOrNull() as SingerPhotoData
+                val  phoneSingerPhoto =  data.data[0][0].imgs.`4`
+                val urlList = singerPhotoUrl(phoneSingerPhoto)
                 val singerId = currentSong.mixSongID
                 mCacheUrl.putToDisk(singerId, urlList)
                 //把图片设置为背景

@@ -3,7 +3,7 @@ package com.example.yuehaoting.data.kugouSingerPhoto
 /**
  * Created by 13967 on 2021-06-27
  */
-data class SingerPhoto(
+data class SingerPhotoData(
     var status: Int,
     var error_code: Int,
     var data: List<List<Data>>

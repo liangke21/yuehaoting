@@ -1,6 +1,8 @@
 package com.example.yuehaoting.kotlin;
 
 import com.example.yuehaoting.kotlin.MyMainJava.MyMain2;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 
 /**
  * 作者: LiangKe 时间: 2021/10/21 15:47 描述:
@@ -36,6 +38,8 @@ public class MyMainJava {
     MyMain2 m3 = new MyMainJava.MyMain2();
     m3.m.play();
   }
+
+
 }
 
 

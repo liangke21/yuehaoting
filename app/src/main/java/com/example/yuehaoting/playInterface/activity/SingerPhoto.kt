@@ -12,7 +12,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.yuehaoting.App.Companion.context
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.handler.HandlerMy
-import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhoto
+import com.example.yuehaoting.data.kugouSingerPhoto.SingerPhotoData
 import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.util.Tag.singerPhoto
 import timber.log.Timber
@@ -25,9 +25,9 @@ import timber.log.Timber
  */
 object SingerPhoto {
     private val url = ArrayList<String>()
-    fun singerPhotoUrl(data4: Result<List<SingerPhoto.Data.Imgs.Data4>>): ArrayList<String> {
+    fun singerPhotoUrl(data: List<SingerPhotoData.Data.Imgs.Data4>): ArrayList<String> {
         tryNull {
-            val data: ArrayList<SingerPhoto.Data.Imgs.Data4> = data4.getOrNull() as ArrayList<SingerPhoto.Data.Imgs.Data4>
+        //    val data: ArrayList<SingerPhotoData.Data.Imgs.Data4> = data4.getOrNull() as ArrayList<SingerPhotoData.Data.Imgs.Data4>
             url.clear()
             data.forEach {
                 Timber.v("数据长度 ${it.filename}:%s", it.filename.length)
