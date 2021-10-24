@@ -110,6 +110,7 @@ class BottomSheetBehaviorMainActivity
     /**
      * 第一次更新封面
      */
+    @Deprecated("废弃,第一次加载歌曲写真")
     private var isUpdateReceiveIntent by Delegates.notNull<Boolean>()
 
     /**
@@ -512,11 +513,9 @@ class BottomSheetBehaviorMainActivity
      * 2325 表示歌曲写真id来自 HifIni
      */
     private fun receiveIntent(currentSong: SongLists) {
-        // val singerId = intent.getStringExtra(SINGER_ID)
-
         val singerId = currentSong.mixSongID
-        Timber.tag(Tag.singerPhoto).v("当前id %s  歌手id %s",this.singerId,currentSong.mixSongID)
-        if (this.singerId==singerId){
+        Timber.tag(Tag.singerPhoto).v("当前id %s  歌手id %s",this.singerId,currentSong.SingerName)
+        if (this.singerId==currentSong.SingerName){
             return
         }
         if (singerId != "") {
@@ -537,7 +536,7 @@ class BottomSheetBehaviorMainActivity
         } else {
             defaultPhoto()
         }
-        this.singerId=singerId
+        this.singerId=currentSong.SingerName
     }
 
     /**
@@ -642,7 +641,7 @@ class BottomSheetBehaviorMainActivity
 
         BroadcastUtil.sendLocalBroadcast(intent)
     }
-
+     @Deprecated("废弃")
     private val observableCurrentSong = ObservableCurrentSong()
     private var recordingCurrentSong: String? = ""
 
@@ -664,7 +663,7 @@ class BottomSheetBehaviorMainActivity
 
         //播放界面写真和封面更改
         observableCurrentSong.nameCurrentSong = currentSong.mixSongID
-        if (recordingCurrentSong != currentSong.mixSongID && isUpdateReceiveIntent) {
+        if (recordingCurrentSong != currentSong.mixSongID /*&& isUpdateReceiveIntent*/) {
             //更新封面
             if (isPhotoBackground) {
                 receiveIntent(currentSong)

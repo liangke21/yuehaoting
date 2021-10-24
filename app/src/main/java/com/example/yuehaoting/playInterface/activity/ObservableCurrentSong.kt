@@ -16,7 +16,7 @@ class ObservableCurrentSong {
         Timber.v("nameCurrentSong:%s %s %s",prop, old, new)
        if (old!=new){
             //关闭封面幻影灯片
-            SingerPhoto.handlerRemoveCallbacks()
+
         }
     }
 }
