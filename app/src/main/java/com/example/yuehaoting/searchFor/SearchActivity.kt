@@ -212,6 +212,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         tvTitleBarSearch.setOnClickListener(this)
         //显示关键字内容
         llRecyclerView = findViewById(R.id.ll_recyclerView)
+        llRecyclerView.visibility = View.GONE
         //内容布局
         llContentFragment = findViewById(R.id.ll_content_fragment)
         viewPager = findViewById(R.id.vp_search_content)
@@ -953,8 +954,9 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             if (content.isNotEmpty()) {
                 viewModel.searchPlaces(content)
             } else {
+               llRecyclerView.visibility = View.GONE
                 llContentFragment.visibility = View.GONE
-
+                Timber.v("搜索框为空 %S",content)
                 //历史记录刷新
 
                 // flowListView?.mFoldState=null
@@ -963,7 +965,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
 
 
 
-                recyclerView.visibility = View.GONE
+
                 viewModel.placeList.clear()
                 adapter?.notifyDataSetChanged()
             }
@@ -981,11 +983,12 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
                 val places = it.getOrNull() as ArrayList<RecordData>
                 Log.e("请求的曲目数据已经观察到", places[0].HintInfo)
                 if (places.isNotEmpty()) {
+                    llRecyclerView.visibility = View.VISIBLE
                     recyclerView.visibility = View.VISIBLE
                     viewModel.placeList.clear()
                     viewModel.placeList.addAll(places)
                     adapter?.notifyDataSetChanged()
-                    llActionBarLayout.visibility = View.GONE
+                   // llActionBarLayout.visibility = View.GONE
 
                 } else {
                     Toast.makeText(this, "未能查询到歌曲", Toast.LENGTH_SHORT).show()
