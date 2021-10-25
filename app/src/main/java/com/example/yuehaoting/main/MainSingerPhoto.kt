@@ -123,8 +123,9 @@ object MainSingerPhoto {
      * 是否播放图片
      * @param isPlay Boolean
      */
-    fun setPhoto(isPlay: Boolean) {
+    fun setPhoto(isPlay: Boolean):MainSingerPhoto {
         isLoadPicture = isPlay
+        return this
     }
 
 
@@ -162,6 +163,11 @@ object MainSingerPhoto {
 
     }
 
+ private var timeMillis=5000L
+
+   fun  setDelay(timeMillis:Long){
+        this.timeMillis=timeMillis
+    }
     suspend fun playCycleCoroutine(fl: LinearLayout, resources: Resources, block: (Bitmap, Boolean) -> Unit) {
         if (urlList.size == 0) {
             Timber.tag(singerPhoto).v("0张图片的适合执行 :%s", urlList.size)
@@ -204,7 +210,7 @@ object MainSingerPhoto {
 
 
             }
-            delay(5000)
+            delay(timeMillis)
         }
     }
 

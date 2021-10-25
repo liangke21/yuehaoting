@@ -23,6 +23,8 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.Executors;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.Dispatchers;
 
 /**
  * @Description: 歌词抽象视图
@@ -362,7 +364,7 @@ public abstract class AbstractLrcView extends View {
     /**
      * 处理ui任务
      */
-    private Handler mUIHandler = new Handler() {
+    private final Handler mUIHandler = new Handler(Looper.myLooper()) {
         @Override
         public void handleMessage(Message msg) {
             Context context = mActivityWR.get();
@@ -415,6 +417,8 @@ public abstract class AbstractLrcView extends View {
                 return null;
             }
         }.executeOnExecutor(Executors.newCachedThreadPool(),"");
+
+    //    executeTaskCoroutine(delayMs);
     }
 
 
@@ -422,6 +426,23 @@ public abstract class AbstractLrcView extends View {
 
 private void executeTaskCoroutine(final long delayMs){
 
+    try {
+        Thread.sleep(delayMs);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+
+    Context context = mActivityWR.get();
+    if (context != null) {
+        if (mLyricsReader != null) {
+            updateView(mCurPlayingTime + mPlayerSpendTime);
+            if (mLrcPlayerStatus == LRCPLAYERSTATUS_PLAY) {
+                mUIHandler.sendEmptyMessage(0);
+            } else if (mLrcPlayerStatus == LRCPLAYERSTATUS_SEEKTO) {
+                invalidateView();
+            }
+        }
+    }
 }
 
 

@@ -22,11 +22,23 @@ class MyMain() {
 }
 
 
+enum class Color{
+    RED,BLACK,BLUE,GREEN,WHITE
+}
+
+/*enum class Color(val rgb: Int) {
+    RED(1),
+    GREEN(2),
+    BLUE(3)
+}*/
+
+
 fun main() {
 
-    val m1 = MyMain()
+//println(Color.values())
 
-   // val m2 = MyMain.Mian()
 
-    val m3 = MyMain.Mian2()
+
+
+
 }

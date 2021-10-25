@@ -742,7 +742,9 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             0 -> {
 
                 viewModel.singleObservedLiveData1.observe(this) {
-
+                         if(it.getOrNull()==null){
+                             return@observe
+                         }
                     val musicData = it.getOrNull() as KuGouSingle.Data
                     viewModel.songList1.addAll(musicData.lists)
                     viewModel.songList1.add(0, musicData.lists[0]) //在0索引上在插入数据
@@ -752,7 +754,9 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             }
             1 -> {
                 viewModel.singleObservedLiveData2.observe(this) {
-
+                    if(it.getOrNull()==null){
+                        return@observe
+                    }
                     val musicData = it.getOrNull() as KuGouSingle.Data
                     viewModel.songList2.addAll(musicData.lists)
                     viewModel.songList2.add(0, musicData.lists[0])

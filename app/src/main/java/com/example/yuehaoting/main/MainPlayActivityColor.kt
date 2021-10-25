@@ -135,7 +135,7 @@ class MainPlayActivityColor(private val binding: ActivityMainLayoutBottomSheetBe
             val drawable = DrawableGradient(GradientDrawable.Orientation.TOP_BOTTOM,
                 intArrayOf(animation.animatedValue as Int,
                     Theme.resolveColor(activity, R.attr.colorSurface)), 0)
-            binding.background.background = drawable
+            binding.background3.background = drawable
             Timber.tag(playColor).v("显示颜色背景:%s")
         }
         //这里重点注意,如果设置为1000毫秒,动画会在后台执行,无法代替直到结束

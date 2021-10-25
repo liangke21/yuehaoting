@@ -32,12 +32,25 @@ public class MyMainJava {
 
     m2.m.play();
 
+
+    int a = 5;
+    switch(a) {
+      case 1:
+      case 4:
+      case 5:
+      case 7:
+      case 9:
+      case 45:
+      default:
+    }
+
   }
 
   public void kk() {
     MyMain2 m3 = new MyMainJava.MyMain2();
     m3.m.play();
   }
+
 
 
 }

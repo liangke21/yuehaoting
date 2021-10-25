@@ -45,6 +45,13 @@ import com.example.yuehaoting.theme.Theme
 import com.example.yuehaoting.theme.ThemeStore
 import com.example.yuehaoting.util.BroadcastUtil
 import com.example.yuehaoting.util.MusicConstant
+import com.example.yuehaoting.util.MusicConstant.HIF_INI
+import com.example.yuehaoting.util.MusicConstant.KU_GOU
+import com.example.yuehaoting.util.MusicConstant.KU_WO
+import com.example.yuehaoting.util.MusicConstant.MI_GU
+import com.example.yuehaoting.util.MusicConstant.MUSIC_136
+import com.example.yuehaoting.util.MusicConstant.NEW_SONG_KU_GOU
+import com.example.yuehaoting.util.MusicConstant.QQ
 import com.example.yuehaoting.util.MyUtil
 import com.example.yuehaoting.util.Tag
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -52,7 +59,10 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.*
+import org.json.JSONObject
 import timber.log.Timber
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.properties.Delegates
@@ -166,11 +176,11 @@ class BottomSheetBehaviorMainActivity
         MainSingerPhoto.setPlayPhoto(true)
 
         launch {
-            withContext(Dispatchers.IO){
-                MainSingerPhoto.playCycleCoroutine( binding.background, activity.resources, ::updateUi)
+            withContext(Dispatchers.IO) {
+                MainSingerPhoto.playCycleCoroutine(binding.background, activity.resources, ::updateUi)
             }
         }
-     //   MainSingerPhoto.playCycleThread( binding.background, activity.resources, ::updateUi)
+        //   MainSingerPhoto.playCycleThread( binding.background, activity.resources, ::updateUi)
     }
 
     /**
@@ -179,7 +189,16 @@ class BottomSheetBehaviorMainActivity
     private fun pullUpCreate() {
 
         isProgressThread = true
-        MainSingerPhoto.setPhoto(true)
+        when (currentSong.platform) {
+
+            KU_GOU, NEW_SONG_KU_GOU -> {
+                MainSingerPhoto.setPhoto(true)
+            }
+            HIF_INI, MUSIC_136, QQ, KU_WO, MI_GU->{
+                MainSingerPhoto.setPhoto(false)
+            }
+        }
+
         launch(Dispatchers.IO) {
             progressThread()
 
@@ -236,10 +255,12 @@ class BottomSheetBehaviorMainActivity
             }
         }
     }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    private fun create(){
+    private fun create() {
         getData()
         observeSingerPhotoData()
+        binding.ivPlayGuide01.visibility = View.GONE
     }
 
     private fun onCreate() {
@@ -250,8 +271,13 @@ class BottomSheetBehaviorMainActivity
         mCacheString.init(activity, "Cover")
         //初始化ActivityColor
         playActivityColor = MainPlayActivityColor(binding, activity)
+        Timber.e("currentSong.platform onCreate() %s", currentSong.platform)
+
 
         receiveIntent(currentSong)
+
+
+
         isUpdateReceiveIntent = false
 
 
@@ -285,7 +311,7 @@ class BottomSheetBehaviorMainActivity
                 }
 
             }
-        }else{
+        } else {
             currentSong = MusicServiceRemote.getCurrentSong()
         }
     }
@@ -409,7 +435,6 @@ class BottomSheetBehaviorMainActivity
     private suspend fun progressThread() {
         Log.d("progressThread", isProgressThread.toString())
         while (isProgressThread) {
-
             try {
                 val progress = MusicServiceRemote.getProgress()
                 if (progress in 1 until duration) {
@@ -426,7 +451,7 @@ class BottomSheetBehaviorMainActivity
 
     //初始化控件
     private fun initView2() {
-        binding.ivPlayGuide01.visibility = View.GONE
+
 
         ppvPlayPause = activity.findViewById(R.id.ppv_play_pause)
 
@@ -465,7 +490,7 @@ class BottomSheetBehaviorMainActivity
             }
         }
 
-          initLyrics()
+       initLyrics()
     }
 
 
@@ -473,13 +498,22 @@ class BottomSheetBehaviorMainActivity
      * 歌词解析器
      */
     private fun initLyrics() {
+        when (currentSong.platform) {
+
+            HIF_INI, MUSIC_136, QQ, KU_WO, MI_GU->{
+                binding.ManyLyricsView.apply {
+                    binding.ManyLyricsView.visibility = View.GONE
+                    return
+                }
+            }
+        }
 
         launchMy {
             try {
-                Timber.tag("歌词").v("平台 %s",currentSong.platform)
+                Timber.tag("歌词").v("平台 %s", currentSong.platform)
                 val mLyricsReader = PlatformLyrics.lyrics(currentSong) ?: return@launchMy
                 binding.ManyLyricsView.apply {
-                    //initLrcData()
+                    initLrcData()
                     lyricsReader = mLyricsReader
                     setPaintColor(intArrayOf(-1, -2))
                     setPaintHLColor(intArrayOf(Color.GREEN, Color.YELLOW), true)
@@ -507,24 +541,32 @@ class BottomSheetBehaviorMainActivity
             tvPlaySingerName.text = currentSong.SingerName
         }
     }
+
     private var singerId = ""
+
     /**
      * 接收数据
      * 2325 表示歌曲写真id来自 HifIni
      */
     private fun receiveIntent(currentSong: SongLists) {
         val singerId = currentSong.mixSongID
-        Timber.tag(Tag.singerPhoto).v("当前id %s  歌手id %s",this.singerId,currentSong.SingerName)
-        if (this.singerId==currentSong.SingerName){
-            return
+
+        when (currentSong.platform) {
+            KU_GOU, NEW_SONG_KU_GOU -> {
+                if (this.singerId == currentSong.SingerName) {
+                    return
+                }
+            }
         }
+        Timber.tag(Tag.singerPhoto).v("当前id %s  歌手id %s", singerId, currentSong.SingerName)
+
         if (singerId != "") {
             defaultPhoto()
             val list = mCacheUrl.getFromDisk(singerId)
             if (list != null) {
                 Timber.tag(Tag.singerPhoto).v("歌手写真url缓存文件不是空:%s", list.size)
-                        MainSingerPhoto.setUrlList(list,singerId)
-         list.clear()
+                MainSingerPhoto.setUrlList(list, singerId)
+                list.clear()
             } else {
 
                 Timber.tag(Tag.singerPhoto).v("歌手写真网络请求: %S", singerId)
@@ -536,25 +578,25 @@ class BottomSheetBehaviorMainActivity
         } else {
             defaultPhoto()
         }
-        this.singerId=currentSong.SingerName
+        this.singerId = currentSong.SingerName
     }
 
     /**
      * ,默认写真
      */
- private   fun defaultPhoto(){
-     Glide.with(activity).asBitmap()
-         .load(R.drawable.youjing)
-         .into(object : CustomTarget<Bitmap>() {
-             override fun onResourceReady(
-                 resource: Bitmap,
-                 transition: Transition<in Bitmap>?
-             ) {
-                 binding.background.background = BitmapDrawable(activity.resources, resource)
-             }
+    private fun defaultPhoto() {
+        Glide.with(activity).asBitmap()
+            .load(R.drawable.youjing)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: Transition<in Bitmap>?
+                ) {
+                    binding.background.background = BitmapDrawable(activity.resources, resource)
+                }
 
-             override fun onLoadCleared(placeholder: Drawable?) {}
-         })
+                override fun onLoadCleared(placeholder: Drawable?) {}
+            })
     }
 
     /**
@@ -563,23 +605,24 @@ class BottomSheetBehaviorMainActivity
     private fun observeSingerPhotoData() {
 
 
-            viewModel.singerIdObservedData.observe(activity) {
+        viewModel.singerIdObservedData.observe(activity) {
 
-                  if (it.getOrNull()==null){
-                      return@observe
-                  }
-                val data= it.getOrNull() as SingerPhotoData
-                val  phoneSingerPhoto =  data.data[0][0].imgs.`4`
-                Timber.tag(Tag.singerPhoto).v("观察到歌手写真网络请求: %S 歌手 %s", singerId,data.data[0][0].author_name)
-                //获取图片连接
-                val urlList = MainSingerPhoto.singerPhotoUrl(phoneSingerPhoto)
-                val singerId = currentSong.mixSongID
-                mCacheUrl.putToDisk(singerId, urlList)
-                //把图片设置为背景
-                //////////////////////    MainSingerPhoto.playCycle(urlList, binding.background, activity.resources, ::updateUi)
-                MainSingerPhoto.setUrlList( urlList,singerId )
-                urlList.clear()
+            if (it.getOrNull() == null) {
+                return@observe
             }
+            val data = it.getOrNull() as SingerPhotoData
+            val phoneSingerPhoto = data.data[0][0].imgs.`4` ?:return@observe
+
+            Timber.tag(Tag.singerPhoto).v("观察到歌手写真网络请求: %S 歌手 %s", singerId, data.data[0][0].author_name)
+            //获取图片连接
+            val urlList = MainSingerPhoto.singerPhotoUrl(phoneSingerPhoto)
+            val singerId = currentSong.mixSongID
+            mCacheUrl.putToDisk(singerId, urlList)
+            //把图片设置为背景
+            //////////////////////    MainSingerPhoto.playCycle(urlList, binding.background, activity.resources, ::updateUi)
+            MainSingerPhoto.setUrlList(urlList, singerId)
+            urlList.clear()
+        }
 
 
     }
@@ -641,7 +684,8 @@ class BottomSheetBehaviorMainActivity
 
         BroadcastUtil.sendLocalBroadcast(intent)
     }
-     @Deprecated("废弃")
+
+    @Deprecated("废弃")
     private val observableCurrentSong = ObservableCurrentSong()
     private var recordingCurrentSong: String? = ""
 
@@ -659,23 +703,48 @@ class BottomSheetBehaviorMainActivity
         duration = MusicServiceRemote.getDuration()
         binding.seekbar.max = duration
 
-           initLyrics()
+        initLyrics()
 
-        //播放界面写真和封面更改
+/*        //播放界面写真和封面更改
         observableCurrentSong.nameCurrentSong = currentSong.mixSongID
-        if (recordingCurrentSong != currentSong.mixSongID /*&& isUpdateReceiveIntent*/) {
+        if (recordingCurrentSong != currentSong.mixSongID *//*&& isUpdateReceiveIntent*//*) {
             //更新封面
             if (isPhotoBackground) {
+                Log.e("加载111111本地","")
                 receiveIntent(currentSong)
             } else {
+                Log.e("加载111111封面","")
                 showCover()
             }
 
             recordingCurrentSong = currentSong.mixSongID
         }
-        isUpdateReceiveIntent = true
+        isUpdateReceiveIntent = true*/
 
         Log.e(" isUpdateReceiveIntent", isUpdateReceiveIntent.toString())
+
+        when (currentSong.platform) {
+            HIF_INI, MUSIC_136, QQ, KU_WO, MI_GU -> {
+                //更新封面
+                Timber.e("currentSong.platform %s", currentSong.platform)
+                MainSingerPhoto.setPhoto(false)
+                showCover()
+
+            }
+            KU_GOU, NEW_SONG_KU_GOU -> {
+                //更新封面
+                if (isPhotoBackground) {
+                    Log.e("加载111111本地", "")
+                    receiveIntent(currentSong)
+                } else {
+                    Log.e("加载111111封面", "")
+                    showCover()
+                }
+
+            }
+
+        }
+
     }
 
     override fun onServiceConnected(service: MusicService) {
@@ -754,14 +823,15 @@ class BottomSheetBehaviorMainActivity
                     isPhotoBackground = false
                     Timber.e("===============================================================================")
                     //结束写真幻影灯片
-                    SingerPhoto.handlerRemoveCallbacks()
+                    //   SingerPhoto.handlerRemoveCallbacks()
+                    binding.background.visibility = View.GONE
                     showCover()
                     backgroundMode = false
                 } else {
                     isPhotoBackground = true
                     binding.ivPlayGuide01.visibility = View.GONE
                     backgroundMode = true
-                   // receiveIntent(currentSong)
+                    binding.background.visibility = View.VISIBLE
 
                 }
             }
@@ -775,6 +845,13 @@ class BottomSheetBehaviorMainActivity
      */
     @SuppressLint("CheckResult")
     private fun showCover() {
+        when (currentSong.platform) {
+            KU_GOU, NEW_SONG_KU_GOU -> {
+                if (isPhotoBackground) {
+                    return
+                }
+            }
+        }
         //图片圆角
         val requestOptions = RequestOptions()
         // requestOptions.placeholder(R.drawable.ic_launcher_background)
@@ -783,9 +860,58 @@ class BottomSheetBehaviorMainActivity
 
         launchMain {
 
-            val uriID = SongNetwork.songUriID(currentSong.FileHash, "")
+            if (currentSong.platform == -1) {
+                return@launchMain
+            }
+            var pic = ""
+            //不同平台的专辑图片
+            when (currentSong.platform) {
+                KU_GOU -> {
+                    val uriID = SongNetwork.songUriID(currentSong.FileHash, "")
+                    pic = uriID.data.img
+                }
+                HIF_INI -> {
+                    pic = getSp(activity, MusicConstant.NAME) {
+                        getString(MusicConstant.HIF_INI_PIC, "")!!
+                    }
+                }
+                MUSIC_136 -> {
+                    pic = "https://myhkw.cn/api/musicPic?picId=${currentSong.pic}&type=wy&size=big"
+                }
+                QQ -> {
+                    Timber.v("currentSong.pic %s", currentSong.pic)
+                    pic = "https://myhkw.cn/api/musicPic?picId=${currentSong.pic}&type=qq&size=big"
+                }
+
+                KU_WO -> {
+                    val str = SongNetwork.musicKuWoPic(currentSong.pic)
+                    val sb = StringBuilder()
+                    str.source().inputStream().use { inp ->
+                        InputStreamReader(inp).use { isp ->
+                            BufferedReader(isp).use { br ->
+                                br.use {
+                                    br.forEachLine {
+                                        sb.append(it)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    val json = JSONObject(sb.toString())
+                    pic = json.getString("url")
+                    sb.delete(0, sb.length)
+                }
+
+                MI_GU -> {
+                    pic = currentSong.pic
+                }
+            }
+
             val key = currentSong.FileHash.lowercase(Locale.ROOT)
             val img = mCacheString.getFromDisk(key)
+
+
+
             if (img != null) {
                 Timber.v("加载本地封面:%s", img)
                 Glide.with(App.context).asBitmap()
@@ -806,7 +932,7 @@ class BottomSheetBehaviorMainActivity
                         override fun onLoadCleared(placeholder: Drawable?) {}
                     })
             } else {
-                val pic = uriID.data.img
+                //  val pic = uriID.data.img
                 mCacheString.putToDisk(key, pic)
 
                 Timber.v("加载网络封面:%s", img)
@@ -841,11 +967,11 @@ class BottomSheetBehaviorMainActivity
      */
     private fun dropDownDestroy() {
         baseActivity.removeMusicServiceEventListener(this)
-        isProgressThread = false
+        //  isProgressThread = false
         mCacheUrl.close()
         mCacheString.close()
         MainSingerPhoto.setPhoto(false)
-       viewModel.cleared()
+        viewModel.cleared()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
