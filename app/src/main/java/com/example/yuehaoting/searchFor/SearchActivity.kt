@@ -130,6 +130,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     private var _binding: ActivitySearchBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var layoutListenerEvent: LayoutListenerEvent
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -158,6 +159,8 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         hotSearchKeywords()
         //封面连接字符集合
         mCacheString.init(this, "Cover")
+
+        layoutListenerEvent=LayoutProcessingEvent(binding)
         //更新底部图片和标题
         updatePlayButtonImageAndText()
 
@@ -212,7 +215,6 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         tvTitleBarSearch.setOnClickListener(this)
         //显示关键字内容
         llRecyclerView = findViewById(R.id.ll_recyclerView)
-        llRecyclerView.visibility = View.GONE
         //内容布局
         llContentFragment = findViewById(R.id.ll_content_fragment)
         viewPager = findViewById(R.id.vp_search_content)
@@ -230,11 +232,11 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
 
 
         etTitleBarSearchUpdate()
-        //点击对话框显示布局
+/*        //点击对话框显示布局
         etTitleBarSearch.setOnClickListener {
             llContentFragment.visibility = View.GONE
             llRecyclerView.visibility = View.VISIBLE
-        }
+        }*/
         val rect = Rect()
         window.decorView.getWindowVisibleDisplayFrame(rect)
 
@@ -548,9 +550,11 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
                     intent.putExtra("Single", item)
 
                     initFragment()
-                    llRecyclerView.visibility = View.GONE
+
+                    layoutListenerEvent.eventHistory()
+                    /*llRecyclerView.visibility = View.GONE
                     llContentFragment.visibility = View.VISIBLE
-                    llActionBarLayout.visibility = View.GONE
+                    llActionBarLayout.visibility = View.GONE*/
                     //隐藏键盘
                     val imm: InputMethodManager =
                         getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -867,9 +871,10 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
                     intent.putExtra("Single", model.SongName)
                     Timber.v("Activity传输数据2 : %s", model.SongName)
                     initFragment()
-                    llRecyclerView.visibility = View.GONE
+                    layoutListenerEvent.eventHotSearch()
+/*                    llRecyclerView.visibility = View.GONE
                     llContentFragment.visibility = View.VISIBLE
-                    llActionBarLayout.visibility = View.GONE
+                    llActionBarLayout.visibility = View.GONE*/
                     //隐藏键盘
                     val imm: InputMethodManager =
                         getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -924,8 +929,12 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
                 intent.putExtra("Single", i)
                 Timber.v("Activity传输数据 : %s", i)
                 initFragment()
-                llRecyclerView.visibility = View.GONE
-                llContentFragment.visibility = View.VISIBLE
+
+                layoutListenerEvent.eventRecyclerView()
+
+/*                llRecyclerView.visibility = View.GONE
+
+                llContentFragment.visibility = View.VISIBLE*/
                 //隐藏键盘
                 val imm: InputMethodManager =
                     getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -954,20 +963,26 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             if (content.isNotEmpty()) {
                 viewModel.searchPlaces(content)
             } else {
-               llRecyclerView.visibility = View.GONE
+                layoutListenerEvent.eventEditTextNull()
+     /*           llRecyclerView.visibility = View.GONE
+                recyclerView.visibility = View.GONE
                 llContentFragment.visibility = View.GONE
+                llActionBarLayout.visibility = View.VISIBLE*/
+                viewModel.placeList.clear()
+                adapter?.notifyDataSetChanged()
+
+
                 Timber.v("搜索框为空 %S",content)
                 //历史记录刷新
 
                 // flowListView?.mFoldState=null
                 LoaderManager.getInstance(this).initLoader(++loaderId, null, this)
-                llActionBarLayout.visibility = View.VISIBLE
 
 
 
 
-                viewModel.placeList.clear()
-                adapter?.notifyDataSetChanged()
+
+
             }
         }
     }
@@ -983,8 +998,8 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
                 val places = it.getOrNull() as ArrayList<RecordData>
                 Log.e("请求的曲目数据已经观察到", places[0].HintInfo)
                 if (places.isNotEmpty()) {
-                    llRecyclerView.visibility = View.VISIBLE
-                    recyclerView.visibility = View.VISIBLE
+                    layoutListenerEvent.eventNetworkData()
+                 //   recyclerView.visibility = View.VISIBLE
                     viewModel.placeList.clear()
                     viewModel.placeList.addAll(places)
                     adapter?.notifyDataSetChanged()
@@ -1093,8 +1108,9 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
                 intent.putExtra("Single", i)
                 Timber.v("Activity传输数据2 : %s", i)
                 initFragment()
-                llRecyclerView.visibility = View.GONE
-                llContentFragment.visibility = View.VISIBLE
+                layoutListenerEvent.eventSearchBottom()
+/*                llRecyclerView.visibility = View.GONE
+                llContentFragment.visibility = View.VISIBLE*/
                 //隐藏键盘
                 val imm: InputMethodManager =
                     getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -1107,7 +1123,8 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             }
             //点击对话框隐藏
             R.id.et_title_bar_search -> {
-                llContentFragment.visibility = View.GONE
+                layoutListenerEvent.eventEditText()
+                //llContentFragment.visibility = View.GONE
             }
         }
     }
