@@ -557,6 +557,14 @@ class BottomSheetBehaviorMainActivity
                     return
                 }
             }
+            HIF_INI, MUSIC_136, QQ, KU_WO, MI_GU->{
+                defaultPhoto()
+                showCover()
+                backgroundMode=false
+                binding.background.visibility = View.GONE
+                return
+            }
+
         }
         Timber.tag(Tag.singerPhoto).v("当前id %s  歌手id %s", singerId, currentSong.SingerName)
 
