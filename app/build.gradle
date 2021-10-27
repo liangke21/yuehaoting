@@ -21,10 +21,42 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+
+
+
+    signingConfigs {
+        release {
+            keyAlias 'key0'
+            keyPassword '123456'
+            storeFile project.rootProject.file('jjj.jks')
+            storePassword '123456'
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
+
+
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+      //      signingConfig signingConfigs.release
+            //  编译release版时更改apk默认名字
+            android.applicationVariants.all { variant ->
+                variant.outputs.all { output ->
+                    def outputFile = output.outputFile
+                    def fileName
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        if (variant.buildType.name == 'release') {//如果是release包
+                            fileName = "yuehaoting_1.0V.apk"
+                        } else if (variant.buildType.name == 'debug') {//如果是debug包
+                            fileName = "aa.apk"
+                        }
+                        outputFileName = fileName
+                    }
+                }
+            }
         }
     }
 
@@ -39,7 +71,9 @@ android {
     buildFeatures {
         viewBinding true
     }
-
+/*    lintOptions {
+        checkReleaseBuilds false
+    }*/
 }
 
 dependencies {
