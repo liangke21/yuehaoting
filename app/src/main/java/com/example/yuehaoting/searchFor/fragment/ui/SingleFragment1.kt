@@ -16,6 +16,7 @@ import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.data.kugousingle.KuGouSingle
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.databinding.FragmentMusicBinding
+import com.example.yuehaoting.kotlin.launchMain
 import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.playInterface.activity.PlayActivity
@@ -27,6 +28,9 @@ import com.example.yuehaoting.util.MusicConstant.EXTRA_POSITION
 import com.example.yuehaoting.util.MusicConstant.KU_GOU
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 /**
@@ -60,7 +64,7 @@ class SingleFragment1 : LazyBaseFragment() {
     ): View {
         _binding = FragmentMusicBinding.inflate(inflater)
         val data = activity!!.intent.getStringExtra("Single")
-  //      Timber.v("Activity传输数据3 : %s", data.toString())
+        //      Timber.v("Activity传输数据3 : %s", data.toString())
         viewModel.requestParameter(1, 10, data.toString())
         keyword = data.toString()
         return binding.root
@@ -74,15 +78,24 @@ class SingleFragment1 : LazyBaseFragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.itemAnimator = DefaultItemAnimator()
 
+
         if (isFirstEnter) {
             isFirstEnter = false
-            binding.refreshLayout.autoRefresh()
+          val iss= binding.refreshLayout.autoRefresh()
+            binding.refreshLayout.autoLoadMore();//自动加载
+            Timber.v("刷新状态 %s",iss)
         }
         var id = 0L
         viewModel.singleObservedLiveData.observe(this) {
             tryNull {
+                if (it.getOrNull() == null) {
+                    networkAbnormalDisplay(false)
+                    return@tryNull
+                }
+                networkAbnormalDisplay(true)
+
                 val musicData = it.getOrNull() as KuGouSingle.Data
-                  Timber.v("酷狗音乐数据观察到:%s %s", musicData.lists[0].SongName, isLoadDataForTheFirstTime)
+                Timber.v("酷狗音乐数据观察到:%s %s", musicData.lists[0].SongName, isLoadDataForTheFirstTime)
                 val model = musicData.lists
                 model.forEach {
                     val song = songDetails(it)
@@ -131,8 +144,8 @@ class SingleFragment1 : LazyBaseFragment() {
                 binding.refreshLayout.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
                     override fun onRefresh(refreshLayout: RefreshLayout) {
                         refreshLayout.layout.postDelayed({
-                            isRefresh=true
-                            isLoadDataForTheFirstTime=true
+                            isRefresh = true
+                            isLoadDataForTheFirstTime = true
                             viewModel.songList.clear()
                             mAdapter?.notifyDataSetChangedMy()
                             viewModel.requestParameter(1, 10, keyword)
@@ -235,6 +248,30 @@ class SingleFragment1 : LazyBaseFragment() {
         if (!TextUtils.isEmpty(sQFileHash)) {
             holder?.image(R.id.iv_sq, R.drawable.search_sq)
         }
+    }
+
+    /**
+     * 网络异常展示
+     */
+    private fun networkAbnormalDisplay(isLL:Boolean ) {
+
+            if (isLL){
+                binding.isTheInternet.repeatCount = 1
+                binding.isTheInternet.visibility = View.GONE
+                binding.refreshLayout.setEnableLoadMore(true)
+                binding.refreshLayout.setEnableRefresh(true)
+            }else{
+                launchMain {
+                    delay(5000)
+                    binding.refreshLayout.finishRefresh()
+                    binding.refreshLayout.setEnableLoadMore(false)
+                    binding.refreshLayout.setEnableRefresh(false)
+                    binding.isTheInternet.visibility = View.VISIBLE
+                    binding.isTheInternet.repeatCount = 30
+                    binding.isTheInternet.playAnimation()
+                    viewModel.requestParameter(1, 10, keyword)
+                }
+            }
     }
 
     override fun onDestroyView() {

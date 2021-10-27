@@ -26,15 +26,33 @@
       android:src="@mipmap/gif_header_repast"
       app:layout_srlSpinnerStyle="Scale"
       app:layout_srlBackgroundColor="@android:color/transparent"/>
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/recyclerView"
+    <FrameLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:paddingTop="0dp"
-      android:paddingLeft="20dp"
-      android:clipToPadding="false"
-      android:overScrollMode="never"
-      tools:listitem="@layout/item_fragment_search_single_rv_content"/>
+      android:layout_height="match_parent">
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="0dp"
+        android:paddingStart="20dp"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        tools:listitem="@layout/item_fragment_search_single_rv_content"/>
+      <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.airbnb.lottie.LottieAnimationView
+          android:id="@+id/is_the_internet"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_gravity="center"
+          app:lottie_fileName="lottie/68326-wireless-loading.json"
+          android:visibility="gone"
+          tools:visibility="visible"/>
+      </androidx.core.widget.NestedScrollView>
+
+    </FrameLayout>
+
 
     <com.scwang.smart.refresh.footer.ClassicsFooter
       android:layout_width="match_parent"

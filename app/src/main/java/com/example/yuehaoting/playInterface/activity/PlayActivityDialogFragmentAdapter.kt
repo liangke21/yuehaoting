@@ -31,7 +31,7 @@ class PlayActivityDialogFragmentAdapter(layoutId: Int) : BaseAdapter<SongLists, 
     private val accentColor: Int = ThemeStore.accentColor
     private val textColor: Int = textColorPrimary
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "CheckResult")
     override fun convert(holder: PlayQueueHolder, data: SongLists?, position: Int) {
         if (data == null) {
             return
