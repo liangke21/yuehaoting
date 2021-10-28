@@ -17,6 +17,7 @@ import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.data.musicMiGu.MiGuSearch
 import com.example.yuehaoting.databinding.FragmentMusicBinding
+import com.example.yuehaoting.kotlin.launchMain
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.searchFor.fragment.interfacet.ListRefreshInterface
@@ -27,6 +28,7 @@ import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.MusicConstant.MI_GU
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
+import kotlinx.coroutines.delay
 import timber.log.Timber
 
 /**
@@ -72,15 +74,21 @@ private val binding get() = _binding!!
 
         if (isFirstEnter) {
             isFirstEnter = false
-            binding.refreshLayout.autoRefresh()
+           // binding.refreshLayout.autoRefresh()
+            networkLoading()
         }
         viewModel.observedDataSearch.observe(this) {
             try {
-
-                val musicData = it.getOrNull() as MiGuSearch
-                if (musicData.musics?.isEmpty() == true) {
+                if (it.getOrNull() == null) {
+                    networkAbnormalDisplay(false)
+                    binding.refreshLayout.finishRefreshWithNoMoreData()
                     return@observe
                 }
+                networkAbnormalDisplay(true)
+                val musicData = it.getOrNull() as MiGuSearch
+           /*     if (musicData.musics?.isEmpty() == true) {
+                    return@observe
+                }*/
                 Timber.v("咪咕音乐数据观察到:%s %s", musicData.musics?.get(0)?.songName, isLoadDataForTheFirstTime)
 
                 addData(musicData.musics!!)
@@ -141,7 +149,7 @@ private val binding get() = _binding!!
                     SingerName = it.artist!!,
                     FileHash = it.id!!,
                     mixSongID ="",
-                    lyrics = it.mp3!!,
+                    lyrics = it.mp3?:"",
                     album = it.albumName!!,
                     pic = it.cover ?:"",
                     platform = MI_GU
@@ -226,7 +234,43 @@ private val binding get() = _binding!!
         }
     }
 */
+    //<editor-fold desc="网络加载展示ui" >
+    /**
+     * 初始网络加载
+     */
+    private fun networkLoading() {
+        binding.refreshLayout.setEnableLoadMore(false)
+        binding.refreshLayout.setEnableRefresh(false)
+        binding.isTheInternet.visibility = View.VISIBLE
+        binding.isTheInternet.repeatCount = 30
+        binding.isTheInternet.playAnimation()
+    }
 
+    /**
+     * 网络异常展示
+     */
+    private fun networkAbnormalDisplay(isLL: Boolean) {
+
+        if (isLL) {
+            binding.isTheInternet.repeatCount = 1
+            binding.isTheInternet.visibility = View.GONE
+            binding.refreshLayout.setEnableLoadMore(true)
+            binding.refreshLayout.setEnableRefresh(true)
+        } else {
+            launchMain {
+                delay(5000)
+                binding.refreshLayout.finishRefresh()
+                binding.refreshLayout.setEnableLoadMore(false)
+                binding.refreshLayout.setEnableRefresh(false)
+                binding.isTheInternet.visibility = View.VISIBLE
+                binding.isTheInternet.repeatCount = 30
+                binding.isTheInternet.playAnimation()
+                viewModel.requestParameter(1, 10, keyword)
+            }
+        }
+    }
+
+    //</editor-fold>
     override fun onDestroyView() {
         super.onDestroyView()
         isLoadDataForTheFirstTime=true

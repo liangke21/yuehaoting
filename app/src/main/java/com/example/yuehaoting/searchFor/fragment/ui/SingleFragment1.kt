@@ -72,18 +72,18 @@ class SingleFragment1 : LazyBaseFragment() {
 
     private var page = 1
 
+    //<editor-fold desc=" 懒加载" >
     override fun lazyInit() {
 
         val recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.itemAnimator = DefaultItemAnimator()
 
-
         if (isFirstEnter) {
             isFirstEnter = false
-          val iss= binding.refreshLayout.autoRefresh()
-            binding.refreshLayout.autoLoadMore();//自动加载
-            Timber.v("刷新状态 %s",iss)
+            //binding.refreshLayout.autoRefresh()
+            networkLoading()
+            // Timber.v("刷新状态 %s", iss)
         }
         var id = 0L
         viewModel.singleObservedLiveData.observe(this) {
@@ -164,7 +164,7 @@ class SingleFragment1 : LazyBaseFragment() {
         }
 
     }
-
+//</editor-fold>
     /**
      * 播放歌曲
      * @param holder SmartViewHolder?
@@ -250,30 +250,43 @@ class SingleFragment1 : LazyBaseFragment() {
         }
     }
 
+    //<editor-fold desc="网络加载展示ui" >
+    /**
+     * 初始网络加载
+     */
+    private fun networkLoading() {
+        binding.refreshLayout.setEnableLoadMore(false)
+        binding.refreshLayout.setEnableRefresh(false)
+        binding.isTheInternet.visibility = View.VISIBLE
+        binding.isTheInternet.repeatCount = 30
+        binding.isTheInternet.playAnimation()
+    }
+
     /**
      * 网络异常展示
      */
-    private fun networkAbnormalDisplay(isLL:Boolean ) {
+    private fun networkAbnormalDisplay(isLL: Boolean) {
 
-            if (isLL){
-                binding.isTheInternet.repeatCount = 1
-                binding.isTheInternet.visibility = View.GONE
-                binding.refreshLayout.setEnableLoadMore(true)
-                binding.refreshLayout.setEnableRefresh(true)
-            }else{
-                launchMain {
-                    delay(5000)
-                    binding.refreshLayout.finishRefresh()
-                    binding.refreshLayout.setEnableLoadMore(false)
-                    binding.refreshLayout.setEnableRefresh(false)
-                    binding.isTheInternet.visibility = View.VISIBLE
-                    binding.isTheInternet.repeatCount = 30
-                    binding.isTheInternet.playAnimation()
-                    viewModel.requestParameter(1, 10, keyword)
-                }
+        if (isLL) {
+            binding.isTheInternet.repeatCount = 1
+            binding.isTheInternet.visibility = View.GONE
+            binding.refreshLayout.setEnableLoadMore(true)
+            binding.refreshLayout.setEnableRefresh(true)
+        } else {
+            launchMain {
+                delay(5000)
+                binding.refreshLayout.finishRefresh()
+                binding.refreshLayout.setEnableLoadMore(false)
+                binding.refreshLayout.setEnableRefresh(false)
+                binding.isTheInternet.visibility = View.VISIBLE
+                binding.isTheInternet.repeatCount = 30
+                binding.isTheInternet.playAnimation()
+                viewModel.requestParameter(1, 10, keyword)
             }
+        }
     }
 
+    //</editor-fold>
     override fun onDestroyView() {
         super.onDestroyView()
         isLoadDataForTheFirstTime = true

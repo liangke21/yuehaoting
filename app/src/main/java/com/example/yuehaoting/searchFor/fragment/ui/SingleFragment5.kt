@@ -16,6 +16,7 @@ import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.data.musicKuWo.KuWoList
 import com.example.yuehaoting.databinding.FragmentMusicBinding
+import com.example.yuehaoting.kotlin.launchMain
 import com.example.yuehaoting.kotlin.lazyMy
 import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
@@ -27,6 +28,7 @@ import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.MusicConstant.KU_WO
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
+import kotlinx.coroutines.delay
 import timber.log.Timber
 
 /**
@@ -73,17 +75,18 @@ class SingleFragment5 : LazyBaseFragment(), ListRefreshInterface {
 
         if (isFirstEnter) {
             isFirstEnter = false
-            binding.refreshLayout.autoRefresh()
+           // binding.refreshLayout.autoRefresh()
+            networkLoading()
         }
         viewModel.observedData.observe(this) {
             tryNull({
 
                 if (it.getOrNull() == null) {
-                    // catch 处理
-                    //  "数据全部加载完毕".showToast(activity!!)
+                    networkAbnormalDisplay(false)
                     binding.refreshLayout.finishRefreshWithNoMoreData()
                     return@tryNull
                 }
+                networkAbnormalDisplay(true)
                 val musicData = it.getOrNull() as KuWoList
 
                 addData(musicData)
@@ -222,7 +225,43 @@ class SingleFragment5 : LazyBaseFragment(), ListRefreshInterface {
             ar + "《${model?.album}》"
         }
     }
+    //<editor-fold desc="网络加载展示ui" >
+    /**
+     * 初始网络加载
+     */
+    private fun networkLoading() {
+        binding.refreshLayout.setEnableLoadMore(false)
+        binding.refreshLayout.setEnableRefresh(false)
+        binding.isTheInternet.visibility = View.VISIBLE
+        binding.isTheInternet.repeatCount = 30
+        binding.isTheInternet.playAnimation()
+    }
 
+    /**
+     * 网络异常展示
+     */
+    private fun networkAbnormalDisplay(isLL: Boolean) {
+
+        if (isLL) {
+            binding.isTheInternet.repeatCount = 1
+            binding.isTheInternet.visibility = View.GONE
+            binding.refreshLayout.setEnableLoadMore(true)
+            binding.refreshLayout.setEnableRefresh(true)
+        } else {
+            launchMain {
+                delay(5000)
+                binding.refreshLayout.finishRefresh()
+                binding.refreshLayout.setEnableLoadMore(false)
+                binding.refreshLayout.setEnableRefresh(false)
+                binding.isTheInternet.visibility = View.VISIBLE
+                binding.isTheInternet.repeatCount = 30
+                binding.isTheInternet.playAnimation()
+                viewModel.requestParameter(1, 10, keyword)
+            }
+        }
+    }
+
+    //</editor-fold>
     override fun onDestroyView() {
         super.onDestroyView()
         isLoadDataForTheFirstTime = true

@@ -21,6 +21,7 @@ import com.example.yuehaoting.base.recyclerView.adapter.BaseRecyclerAdapter
 import com.example.yuehaoting.base.recyclerView.adapter.SmartViewHolder
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.databinding.FragmentMusicBinding
+import com.example.yuehaoting.kotlin.launchMain
 import com.example.yuehaoting.kotlin.showToast
 import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
@@ -34,6 +35,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
+import kotlinx.coroutines.delay
 import timber.log.Timber
 
 /**
@@ -163,11 +165,11 @@ class SingleFragment2 : LazyBaseFragment(), ListRefreshInterface {
         val typeOf = object : TypeToken<DataSearch>() {}.type
 
         val appList = gson.fromJson<DataSearch>(json, typeOf)
+        Timber.e("String转json:%s", appList)
         if (appList.attributes[0].songTitle == "0") {
             "没有搜索到该歌曲".showToast(activity!!)
             return
         }
-        Timber.e("String转json:%s", appList)
         addList(appList.attributes)
 
         Timber.v("Higini音乐数据观察到:%s %s", appList.attributes, isLoadDataForTheFirstTime)
@@ -330,7 +332,48 @@ class SingleFragment2 : LazyBaseFragment(), ListRefreshInterface {
 
         }
     }
+    //<editor-fold desc="网络加载展示ui" >
+    /**
+     * 初始网络加载
+     */
+    private fun networkLoading() {
+        binding.refreshLayout.setEnableLoadMore(false)
+        binding.refreshLayout.setEnableRefresh(false)
+        binding.isTheInternet.visibility = View.VISIBLE
+        binding.isTheInternet.repeatCount = 30
+        binding.isTheInternet.playAnimation()
+    }
 
+    /**
+     * 网络异常展示
+     */
+    private fun networkAbnormalDisplay(isLL: Boolean) {
+
+        if (isLL) {
+            binding.isTheInternet.repeatCount = 1
+            binding.isTheInternet.visibility = View.GONE
+            binding.refreshLayout.setEnableLoadMore(true)
+            binding.refreshLayout.setEnableRefresh(true)
+        } else {
+            launchMain {
+                delay(5000)
+                binding.refreshLayout.finishRefresh()
+                binding.refreshLayout.setEnableLoadMore(false)
+                binding.refreshLayout.setEnableRefresh(false)
+                binding.isTheInternet.visibility = View.VISIBLE
+                binding.isTheInternet.repeatCount = 30
+                binding.isTheInternet.playAnimation()
+                val msg = Message.obtain(null, 1, 0, 0)
+                val bundle = Bundle()
+                bundle.putString("Single", viewModel.single)
+                msg.data = bundle
+                msg.replyTo = replyToMessage
+                mMessage?.send(msg)
+            }
+        }
+    }
+
+    //</editor-fold>
     override fun onDestroyView() {
         super.onDestroyView()
         activity?.unbindService(mServiceConnection)

@@ -20,10 +20,8 @@ class HttpInterceptor : Interceptor {
             val request = chain.request()
             Log.i("TEST", "MyInterceptor.intercept.request.toString -> $request");
 
-
-
             response = chain.proceed(request)
-
+        Log.i("TEST", "请求时长 通过网络传输发起请求之前的时间戳-> ${ response.sentRequestAtMillis()}");
 
 
             Log.i(TAG, "=========拦截==========")
