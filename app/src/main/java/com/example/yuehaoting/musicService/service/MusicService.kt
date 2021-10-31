@@ -11,20 +11,15 @@ import android.os.*
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.text.TextUtils
-import android.util.Log
-import android.view.KeyEvent
 import androidx.media.AudioAttributesCompat
 import androidx.media.session.MediaButtonReceiver
-import com.example.yuehaoting.App.Companion.context
 import com.example.yuehaoting.R
 import com.example.yuehaoting.base.db.DatabaseRepository
-import com.example.yuehaoting.base.log.LogT
 import com.example.yuehaoting.base.log.LogT.lll
 import com.example.yuehaoting.base.retrofit.SongNetwork.musicKuWoMp3
 import com.example.yuehaoting.base.rxJava.RxUtil.applySingleScheduler
 import com.example.yuehaoting.base.sevice.SmService
 import com.example.yuehaoting.callback.MusicEvenCallback
-import com.example.yuehaoting.util.Constants.MODE_LOOP
 import com.example.yuehaoting.util.Constants.MODE_SHUFFLE
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.kotlin.*
@@ -63,7 +58,6 @@ import com.example.yuehaoting.util.MusicConstant.UPDATE_PLAY_STATE
 import com.example.yuehaoting.util.Tag
 import com.example.yuehaoting.util.Tag.songDuration
 import kotlinx.coroutines.*
-import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -522,6 +516,7 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
 
 
 //<editor-fold desc="MediaPlayer 媒体播放器" >
+
     //<editor-fold desc="初始化" >
    var mediaPlayerBufferingUpdate=0
     /**
@@ -576,12 +571,19 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
         //错误监听
         mediaPlayer.setOnErrorListener { _, what, extra ->
             try {
+                if(what==1){
+                    playNext()
+                    "该歌曲没有版权自动切换到下一首".showToast(this)
+                Timber.e("未指定的媒体")
+                }
+
                 prepared = false
                 mediaPlayer.release()
                 setUpPlayer()
-                "播放器正在从新初始h化".showToast(this)
-                Log.e(what.toString(), extra.toString())
+            //    "播放器正在从新初始化".showToast(this)
+             Timber.e( " mediaPlayer错误 %s  %s",     what.toString(), extra.toString())
                 return@setOnErrorListener true
+
             } catch (e: Exception) {
                 e.printStackTrace()
             }
