@@ -21,6 +21,7 @@
 #-renamesourcefileattribute SourceFile
 
 #--- 不能被混淆的基类 ---
+
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Fragment
 -keep public class * extends android.app.Application

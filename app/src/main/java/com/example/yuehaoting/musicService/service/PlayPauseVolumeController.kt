@@ -4,6 +4,7 @@ import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.FloatRange
+import com.example.yuehaoting.kotlin.launchMain
 import timber.log.Timber
 
 
@@ -13,7 +14,7 @@ import timber.log.Timber
  * 描述:
  */
 class PlayPauseVolumeController(private val service: MusicService) {
-
+//<editor-fold desc=" 线程 播放暂停音量控制器" >
     private val handler: Handler = Handler(Looper.getMainLooper())
 
     companion object {
@@ -98,5 +99,78 @@ class PlayPauseVolumeController(private val service: MusicService) {
         handler.removeCallbacks(fadeInRunnable)
         handler.removeCallbacks(fadeOutRunnable)
         handler.post(fadeOutRunnable)
+    }
+    //</editor-fold>
+
+  //<editor-fold desc="协程音量控制器 " >
+
+    /**
+     * 淡入 协程
+     */
+    private fun fadeInRunnable() {
+        val mediaPlayer = service.mediaPlayer
+
+        object : CountDownTimer(DURATION_IN_MS, DURATION_IN_MS / 10) {
+            override fun onTick(millisUntilFinished: Long) {
+                val volume = 1f - millisUntilFinished * 1.0f / DURATION_IN_MS
+
+                try {
+                    mediaPlayer.setVolume(volume, volume)
+                } catch (e: IllegalAccessException) {
+                    Timber.v("非法访问异常IllegalAccessException:%s", e)
+                }
+            }
+
+            override fun onFinish() {
+
+                directTo(1f)
+            }
+        }.start()
+    }
+
+    /**
+     * 淡出协程
+     */
+    private fun fadeOutRunnable(){
+        val mediaPlayer = service.mediaPlayer
+        object : CountDownTimer(DURATION_IN_MS, DURATION_IN_MS / 10) {
+            override fun onTick(millisUntilFinished: Long) {
+                val volume = millisUntilFinished * 1.0f / DURATION_IN_MS
+                try {
+                    mediaPlayer.setVolume(volume, volume)
+                } catch (e: IllegalAccessException) {
+                    Timber.v("非法访问异常IllegalAccessException:%s", e)
+                }
+            }
+
+            override fun onFinish() {
+                directTo(0f)
+                try {
+                    mediaPlayer.pause()
+                } catch (e: IllegalAccessException) {
+                    Timber.v("非法访问异常IllegalAccessException:%s", e)
+                }
+            }
+        }.start()
+    }
+    /**
+     * 淡入
+     */
+    fun fadeInCoroutine() {
+
+            fadeInRunnable()
+
+
+    }
+
+
+    /**
+     * 淡出
+     */
+    fun fadeOutCoroutine() {
+
+            fadeOutRunnable()
+
+
     }
 }

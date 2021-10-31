@@ -354,7 +354,7 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
         Timber.tag(Tag.isPlay).v("更新播放状态:%s,传入状态:%s,:%s", this.isPlayT, isPlay, lll())
         handler.sendEmptyMessage(UPDATE_PLAY_STATE)
     }
-
+//<editor-fold desc="设置播放列队" >
     /**
      * 设置播放列队
      */
@@ -384,7 +384,8 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
 
         handleCommand(intent)
     }
-//_____________________________________________________________________________________________________________
+//</editor-fold>
+//<editor-fold desc="广播监听内部类" >
     /**
      * 广播监听 上一首 暂停 下一首
      */
@@ -392,6 +393,30 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
         override fun onReceive(context: Context?, intent: Intent?) {
             Timber.v("播放下一首2: %s", intent)
             handleCommand(intent)
+        }
+    }
+
+    /**
+     * 音乐事件
+     */
+    inner class MusicEventReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            handleMusicEvent(intent)
+        }
+    }
+
+
+    //</editor-fold>
+//<editor-fold desc="广播事件处理" >
+
+    private fun handleMusicEvent(intent: Intent?) {
+        if (intent == null) {
+            return
+        }
+        when (intent.action) {
+            PLAYLIST_CHANGE -> {
+                intent.getStringExtra(EXTRA_PLAYLIST)?.let { onPlayListChanged(it) }
+            }
         }
     }
 
@@ -424,6 +449,7 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
         }
     }
 
+    //</editor-fold>
     override fun toggle() {
         Timber.v("toggle: %s", mediaPlayer.isPlaying)
         if (mediaPlayer.isPlaying) {
@@ -477,24 +503,6 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
         readyToPlay(playQueue.song)
     }
 
-    /**
-     * 播放暂停
-     */
-    override fun pause(updateMediaSessionOnly: Boolean) {
-        Timber.v("pause()  播放暂停:%s", isPlaying)
-        if (updateMediaSessionOnly) {
-            //更新锁屏
-        } else {
-            if (!isPlayPause) {
-                return
-            }
-            Timber.tag(Tag.isPlay).v("后台播放状态:%s,传入状态:%s,播放暂停:%s", isPlaying, false, lll())
-            setPlay(false)
-            // TODO() Activity 更新数据,注意这里暂停数据没有发生变化
-            //  handler.sendEmptyMessage(UPDATE_META_DATA)
-            playPauseVolumeController.fadeOut()
-        }
-    }
 
     /**
      * 播放选中的歌曲 比如在全部歌曲或者专辑详情里面选中某一首歌曲
@@ -512,13 +520,17 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
 
     }
 
+
+//<editor-fold desc="MediaPlayer 媒体播放器" >
+    //<editor-fold desc="初始化" >
+
     /**
      * 是否第一次准备完成
      */
     private var firstPrepared = true
 
     /**
-     * 初始化Mediaplayer
+     * 初始化MediaPlayer
      */
     private fun setUpPlayer() {
         Timber.tag(play).v("初始化播放器1:%s", lll())
@@ -571,98 +583,23 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
                 Log.e(what.toString(), extra.toString())
                 return@setOnErrorListener true
             } catch (e: Exception) {
-              e.printStackTrace()
+                e.printStackTrace()
             }
             false
         }
 
 
-    }
+        mediaPlayer.setOnBufferingUpdateListener { _, percent ->
 
-    /**
-     * 音乐事件
-     */
-    inner class MusicEventReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            handleMusicEvent(intent)
+            Timber.v("媒体资源在缓存 %s", percent)
+
+
         }
+
+
     }
-
-    private fun handleMusicEvent(intent: Intent?) {
-        if (intent == null) {
-            return
-        }
-        when (intent.action) {
-            PLAYLIST_CHANGE -> {
-                intent.getStringExtra(EXTRA_PLAYLIST)?.let { onPlayListChanged(it) }
-            }
-        }
-    }
-
-    override fun onMediaStoreChanged() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onPermissionChanged(has: Boolean) {
-        TODO("Not yet implemented")
-    }
-
-    /**
-     * 数据库
-     */
-    val repository = DatabaseRepository.getInstance()
-
-    /**
-     * 列表发生改变
-     * @param name String
-     */
-    @SuppressLint("CheckResult")
-    override fun onPlayListChanged(name: String) {
-        repository.getPlayQueueSongs()
-            .compose(applySingleScheduler())
-            .subscribe { songs ->
-                if (songs.isEmpty() || songs == playQueue.originalQueue) {
-                    Timber.tag("忽略onPlayListChanged")
-                    return@subscribe
-                }
-                Timber.v("新的播放队列: ${songs.size}")
-
-                playQueue.setPlayQueue(songs)
-
-                //todo 随机播放
-                /**
-                 * 如果下一首歌曲不在队列里面 重新设置下一首歌曲
-                 * 此处逻辑 目前 是用于 播放列队 删除歌曲 与后台列队同步.在同步的同时,下一首歌已经在内存中,
-                 * 所以要调用一次 更新下一首 来跳过这个首被删除的歌,
-                 * 主要逻辑是,列队删除的是下一首歌
-                 */
-                if (!playQueue.playingQueue.contains(playQueue.nextSong)) {
-                    Timber.v("播放队列改变后重新设置下一首歌曲")
-                    playQueue.updateNextSong()
-                }
-            }
-    }
-
-    override fun onServiceConnected(service: MusicService) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onMetaChanged() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onPlayStateChange() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onServiceDisConnected() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onTagChanged(oldSong: SongLists, newSongLists: SongLists) {
-        TODO("Not yet implemented")
-    }
-
+    //</editor-fold>
+    //<editor-fold desc="播放" >
     /**
      * 播放
      */
@@ -676,7 +613,8 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
 
         //渐变
         if (fadeIn) {
-            playPauseVolumeController.fadeIn()
+            playPauseVolumeController.fadeInCoroutine()
+            //    playPauseVolumeController.fadeIn()
         } else {
             playPauseVolumeController.directTo(1f)
         }
@@ -690,14 +628,10 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
         }
     }
 
-    /**
-     * 设置MediaPlayer播放进度
-     */
-    fun setProgressL(position: Int) {
-        if (prepared) {
-            mediaPlayer.seekTo(position)
-        }
-    }
+
+    //</editor-fold>
+
+    //<editor-fold desc="准备播放" >
 
     /**
      * 准备播放
@@ -795,7 +729,7 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
                     }
                 }
 
-                MI_GU->{
+                MI_GU -> {
                     val uri: Uri = Uri.parse(song.lyrics)
                     mediaPlayer.reset()
                     withContext(Dispatchers.IO) {
@@ -819,6 +753,107 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
             }
         )
 
+    }
+
+//</editor-fold>
+//<editor-fold desc="暂停" >
+
+    /**
+     * 暂停
+     */
+    override fun pause(updateMediaSessionOnly: Boolean) {
+        Timber.v("pause()  播放暂停:%s", isPlaying)
+        if (updateMediaSessionOnly) {
+            //更新锁屏
+        } else {
+            if (!isPlayPause) {
+                return
+            }
+            Timber.tag(Tag.isPlay).v("后台播放状态:%s,传入状态:%s,播放暂停:%s", isPlaying, false, lll())
+            setPlay(false)
+            // TODO() Activity 更新数据,注意这里暂停数据没有发生变化
+            //  handler.sendEmptyMessage(UPDATE_META_DATA)
+            playPauseVolumeController.fadeOutCoroutine()
+            //  playPauseVolumeController.fadeOut()
+        }
+    }
+    //</editor-fold>
+
+    //</editor-fold>
+
+//<editor-fold desc="音乐回调" >
+    override fun onMediaStoreChanged() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onPermissionChanged(has: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     * 数据库
+     */
+    val repository = DatabaseRepository.getInstance()
+
+    /**
+     * 列表发生改变
+     * @param name String
+     */
+    @SuppressLint("CheckResult")
+    override fun onPlayListChanged(name: String) {
+        repository.getPlayQueueSongs()
+            .compose(applySingleScheduler())
+            .subscribe { songs ->
+                if (songs.isEmpty() || songs == playQueue.originalQueue) {
+                    Timber.tag("忽略onPlayListChanged")
+                    return@subscribe
+                }
+                Timber.v("新的播放队列: ${songs.size}")
+
+                playQueue.setPlayQueue(songs)
+
+                //todo 随机播放
+                /**
+                 * 如果下一首歌曲不在队列里面 重新设置下一首歌曲
+                 * 此处逻辑 目前 是用于 播放列队 删除歌曲 与后台列队同步.在同步的同时,下一首歌已经在内存中,
+                 * 所以要调用一次 更新下一首 来跳过这个首被删除的歌,
+                 * 主要逻辑是,列队删除的是下一首歌
+                 */
+                if (!playQueue.playingQueue.contains(playQueue.nextSong)) {
+                    Timber.v("播放队列改变后重新设置下一首歌曲")
+                    playQueue.updateNextSong()
+                }
+            }
+    }
+
+    override fun onServiceConnected(service: MusicService) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMetaChanged() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onPlayStateChange() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onServiceDisConnected() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onTagChanged(oldSong: SongLists, newSongLists: SongLists) {
+        TODO("Not yet implemented")
+    }
+//</editor-fold>
+
+    /**
+     * 设置MediaPlayer播放进度
+     */
+    fun setProgressL(position: Int) {
+        if (prepared) {
+            mediaPlayer.seekTo(position)
+        }
     }
 
 
