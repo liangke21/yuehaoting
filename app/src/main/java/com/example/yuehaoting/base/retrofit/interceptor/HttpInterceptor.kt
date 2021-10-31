@@ -16,7 +16,7 @@ class HttpInterceptor : Interceptor {
     private val TAG = "HTTP"
     private lateinit var response: Response
     override fun intercept(chain: Interceptor.Chain): Response {
-             try{
+        //     try{
                  // Timber.e("网络异常4%s", chain.request().)
                  //请求参数
                  val request = chain.request()
@@ -42,11 +42,11 @@ class HttpInterceptor : Interceptor {
 
 
 
-             }catch (e: SocketTimeoutException) {
+    /*         }catch (e: SocketTimeoutException) {
                  Timber.e("套接字超时异常")
                  e.printStackTrace()
 
-             }
+             }*/
 
        return response
 

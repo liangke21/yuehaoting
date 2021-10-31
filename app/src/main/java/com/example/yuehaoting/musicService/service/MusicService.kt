@@ -523,7 +523,7 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
 
 //<editor-fold desc="MediaPlayer 媒体播放器" >
     //<editor-fold desc="初始化" >
-
+   var mediaPlayerBufferingUpdate=0
     /**
      * 是否第一次准备完成
      */
@@ -590,7 +590,7 @@ class MusicService : SmService(), Playback, MusicEvenCallback, CoroutineScope by
 
 
         mediaPlayer.setOnBufferingUpdateListener { _, percent ->
-
+            mediaPlayerBufferingUpdate=percent
             Timber.v("媒体资源在缓存 %s", percent)
 
 

@@ -20,6 +20,7 @@ import com.example.yuehaoting.kotlin.launchMain
 import com.example.yuehaoting.kotlin.tryNull
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
 import com.example.yuehaoting.playInterface.activity.PlayActivity
+import com.example.yuehaoting.searchFor.fragment.interfacet.HolderItemView
 import com.example.yuehaoting.searchFor.viewmodel.SingleFragment1ViewModel
 import com.example.yuehaoting.util.BroadcastUtil
 import com.example.yuehaoting.util.IntentUtil
@@ -54,6 +55,7 @@ class SingleFragment1 : LazyBaseFragment() {
     //列表适配器
     private var mAdapter: BaseRecyclerAdapter<KuGouSingle.Data.Lists>? = null
     private val viewModel by lazy { ViewModelProvider(this).get(SingleFragment1ViewModel::class.java) }
+
 
     //关键字
     private var keyword = ""
@@ -173,6 +175,7 @@ class SingleFragment1 : LazyBaseFragment() {
     private fun playSong(holder: SmartViewHolder?, position: Int) {
         val intent = Intent(MusicConstant.ACTION_CMD)
         holder?.itemView?.setOnClickListener {
+            holderItemView.itemView()
             Timber.v("当前列表长度 %s", songLists.size)
             if (songLists[position] == MusicServiceRemote.getCurrentSong()) {
                 intent.putExtra(

@@ -158,5 +158,12 @@ object MusicServiceRemote {
     fun  getPlayModel():Int{
         return service?.playModel?: MusicConstant.LIST_LOOP
     }
-}
+
+    /**
+     * 缓存媒体智源
+     */
+    fun mediaPlayerBufferingUpdateProgress():Int{
+        return service?.mediaPlayerBufferingUpdate?:0
+    }
+  }
 

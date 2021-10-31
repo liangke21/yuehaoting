@@ -8,6 +8,7 @@ import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
@@ -55,9 +56,11 @@ import com.example.yuehaoting.kotlin.getSp
 import com.example.yuehaoting.main.BottomSheetBehaviorMainActivity
 import com.example.yuehaoting.main.InsideMainActivityBase
 import com.example.yuehaoting.musicService.service.MusicServiceRemote
+import com.example.yuehaoting.musicService.service.MusicServiceRemote.mediaPlayerBufferingUpdateProgress
 import com.example.yuehaoting.playInterface.activity.PlayActivityDialogFragment
 import com.example.yuehaoting.searchFor.adapter.PlaceAdapter
 import com.example.yuehaoting.searchFor.adapter.data.History
+import com.example.yuehaoting.searchFor.fragment.interfacet.HolderItemView
 import com.example.yuehaoting.searchFor.fragment.ui.*
 import com.example.yuehaoting.searchFor.pagerview.MyPagerAdapter
 import com.example.yuehaoting.searchFor.viewmodel.PlaceViewModel
@@ -95,7 +98,7 @@ import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 
-class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.LoaderCallbacks<List<History>> {
+class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.LoaderCallbacks<List<History>> ,HolderItemView{
     private lateinit var recyclerView: RecyclerView
     private lateinit var ivTitleBarSearchBack: ImageView
     private lateinit var etTitleBarSearch: EditText
@@ -282,7 +285,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
 
         BroadcastUtil.sendLocalBroadcast(intent)
     }
-
+//<editor-fold desc="后台回调接口">
     /**当前是否播放**/
     private var isPlaying = false
     override fun onPlayStateChange() {
@@ -291,6 +294,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         if (isPlaying != isPlayingFul) {
             updatePlayButton(isPlayingFul)
         }
+        bufferingSongUi(false)
     }
 
     /**
@@ -316,7 +320,30 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             musicButton.setTotalProgress(duration)
         }
     }
+//</editor-fold>
 
+    //<editor-fold desc="SingleFragment回调" >
+    override fun itemView() {
+        mediaPlayerBufferingUpdateProgress()
+        bufferingSongUi(true)
+        Timber.e("你愁啥,回调过来了吗")
+    }
+
+    //</editor-fold>
+    /**
+     *  加载网络mp3
+     * @param isLottie Boolean
+     */
+    private fun bufferingSongUi(isLottie:Boolean){
+        if (isLottie){
+            binding.fl2.visibility=View.VISIBLE
+            binding.lottie.repeatCount = 300
+            binding.lottie.playAnimation()
+        }else{
+            binding.fl2.visibility=View.GONE
+            binding.lottie.repeatCount = 0
+        }
+    }
     /**
      * 更新播放状态
      * @param isPlay Boolean
@@ -332,6 +359,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             findViewById<ImageButton>(R.id.ib_search_bottom_play_start_pause).setImageResource(R.drawable.play_btn_start)
             updatePlayMusicButton(false)
         }
+
     }
 
     private val repository = DatabaseRepository.getInstance()
@@ -995,6 +1023,9 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
 
         viewModel.placeLiveData.observe(this) {
             try {
+                if(it.getOrNull()==null){
+                    return@observe
+                }
                 val places = it.getOrNull() as ArrayList<RecordData>
                 Log.e("请求的曲目数据已经观察到", places[0].HintInfo)
                 if (places.isNotEmpty()) {
@@ -1082,7 +1113,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         ViewPagerHelper.bind(magicIndicator, viewPager)
     }
 
-
+//<editor-fold desc="控件监听" >
     override fun onClick(v: View) {
         when (v.id) {
             R.id.iv_title_bar_search_back -> {
@@ -1128,14 +1159,24 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             }
         }
     }
-
+//</editor-fold>
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+          if (binding.fl2.visibility==View.VISIBLE){
+              binding.fl2.visibility=View.GONE
+              return true
+          }
+        return super.onKeyUp(keyCode, event)
+    }
+//<editor-fold desc="可见">
     override fun onResume() {
         super.onResume()
         launch(Dispatchers.IO) {
             updatePlayMusicButtonProgressBar()
         }
     }
+//</editor-fold>
 
+//<editor-fold desc="销毁">
     override fun onDestroy() {
         super.onDestroy()
         mAdapter = null
@@ -1154,4 +1195,5 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         mCacheString.close()
         _binding = null
     }
+//</editor-fold>
 }

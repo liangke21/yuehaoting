@@ -326,6 +326,18 @@
       />
 
   </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
+<com.example.yuehaoting.base.viewGroup.MyFrameLayout
+  android:id="@+id/fl_2"
+  android:visibility="gone"
+  tools:visibility="visible"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+  <com.airbnb.lottie.LottieAnimationView
+    android:id="@+id/lottie"
+    android:layout_width="50dp"
+    android:layout_height="50dp"
+    android:layout_gravity="center"
+    app:lottie_fileName="lottie/8442-load-rappi.json"
+    tools:visibility="visible"/>
+</com.example.yuehaoting.base.viewGroup.MyFrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -155,6 +155,7 @@ class SingleFragment3 : LazyBaseFragment(), ListRefreshInterface {
     private  fun  songPlay(holder: SmartViewHolder?, position: Int){
         val intent = Intent(MusicConstant.ACTION_CMD)
         holder?.itemView?.setOnClickListener {
+            holderItemView.itemView()
             Timber.v("当前列表长度 %s", songLists.size)
             if (songLists[position] == MusicServiceRemote.getCurrentSong()) {
                 intent.putExtra(
