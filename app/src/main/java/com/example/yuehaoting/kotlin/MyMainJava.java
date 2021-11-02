@@ -49,6 +49,7 @@ public class MyMainJava {
   public void kk() {
     MyMain2 m3 = new MyMainJava.MyMain2();
     m3.m.play();
+
   }
 
 

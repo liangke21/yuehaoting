@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity()  {
     override fun onDestroy() {
         super.onDestroy()
         Log.e("MainActivity111", " onDestroy")
+
     }
 
 }

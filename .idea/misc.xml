@@ -1,49 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DesignSurface">
-    <option name="filePathToZoomLevelMap">
-      <map>
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/Music_crawler/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.21770833333333334" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/Music_crawler/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.21770833333333334" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/drawable/play_btn_start_pause.xml" value="0.3963541666666667" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_login.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_main.xml" value="0.33" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_main5.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_main6.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_main_layout__bottom_navigation_view.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_main_layout_bottom_sheet_behavior.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_registered.xml" value="0.3592592592592593" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_search.xml" value="0.25" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_search_item.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_search_item2.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_search_item_3.xml" value="0.33" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_search_item_3_item.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/activity_search_item_3_item2.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/blank_fragment.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/fragment1_search_single.xml" value="0.36614583333333334" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/fragment3_music_163_item.xml" value="0.36614583333333334" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/fragment_music.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/item_fragment_search_single_rv_content.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/item_search_for.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/main_navigation_discover.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/main_navigation_discover_fragment1.xml" value="0.33" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/main_navigation_discover_fragment1_item_a.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/main_navigation_discover_fragment2.xml" value="0.1" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/main_navigation_list.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/main_navigation_my.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/mian_aaa.xml" value="0.25" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/play_activity.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/play_dialog_fragment.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/play_dialog_fragment_item.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/play_layout_bar.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/play_play_layout.xml" value="0.25" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/view_item_fold_down.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/layout/view_item_fold_up.xml" value="0.3802083333333333" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/menu/bottom_nav_menu.xml" value="0.390625" />
-        <entry key="..\:/AndroidStudioProjects/APP/yuehaoting/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.21770833333333334" />
-      </map>
-    </option>
-  </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="Kotlin SDK" project-jdk-type="KotlinSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
 </project>

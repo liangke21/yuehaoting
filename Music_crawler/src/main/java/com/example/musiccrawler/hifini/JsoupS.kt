@@ -152,8 +152,8 @@ object JsoupS {
             music.lyric = lyric.toString()
             val mTitle = music.title?.replace("'", "\\\'")
             val mAuthor = music.author?.replace("'", "\\\'")
-            val songAttributes: String = "('$mTitle','$mAuthor','${music.url}','${music.pic}','${music.type}','${music.lyric}','${music.hot}'),"
-            println("音乐文件${music.url}")
+           val songAttributes: String = "('$mTitle','$mAuthor','${music.url}','${music.pic}','${music.type}','${music.lyric}','${music.hot}'),"
+            println("音乐文件${music.url}$songAttributes")
             return arrayOf(music.url.toString(),music.pic)
            // return music.url.toString()
         } catch (e: Exception) {

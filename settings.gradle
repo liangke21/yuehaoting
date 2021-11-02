@@ -1,3 +1,3 @@
-include ':Music_crawler'
 include ':app'
+include ':Music_crawler'
 rootProject.name = "乐好听"
