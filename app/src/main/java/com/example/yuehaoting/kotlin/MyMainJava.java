@@ -34,15 +34,6 @@ public class MyMainJava {
 
 
     int a = 5;
-    switch(a) {
-      case 1:
-      case 4:
-      case 5:
-      case 7:
-      case 9:
-      case 45:
-      default:
-    }
 
   }
 
@@ -51,7 +42,6 @@ public class MyMainJava {
     m3.m.play();
 
   }
-
 
 
 }

@@ -35,10 +35,7 @@ enum class Color{
 
 fun main() {
 
-//println(Color.values())
-
-
-
+println("Color.values()")
 
 
 }

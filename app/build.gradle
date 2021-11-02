@@ -35,7 +35,7 @@ android {
     signingConfigs {
         release {
             keyAlias 'key0'
-            keyPassword '123456'
+            keyPassword '1234565'
             storeFile project.rootProject.file('jjj.jks')
             storePassword '123456'
             v1SigningEnabled true
@@ -47,7 +47,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
       //      signingConfig signingConfigs.release
             //  编译release版时更改apk默认名字
@@ -57,7 +57,7 @@ android {
                     def fileName
                     if (outputFile != null && outputFile.name.endsWith('.apk')) {
                         if (variant.buildType.name == 'release') {//如果是release包
-                            fileName = "yuehaoting_1.0V.apk"
+                            fileName = "yuehaoting_1.3V.apk"
                         } else if (variant.buildType.name == 'debug') {//如果是debug包
                             fileName = "aa.apk"
                         }
@@ -131,7 +131,7 @@ dependencies {
     //导航栏依赖库
     implementation 'com.github.hackware1993:MagicIndicator:1.7.0'
 
-    //第三方 打log
+    //第三方 打log   暂时不能升级会导致assemble失败
     implementation 'com.jakewharton.timber:timber:4.7.1'
     //配合打印日志
     implementation 'org.slf4j:slf4j-api:1.7.32'
