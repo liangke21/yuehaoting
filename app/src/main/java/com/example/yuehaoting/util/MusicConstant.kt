@@ -1,11 +1,19 @@
 package com.example.yuehaoting.util
 
+import com.example.yuehaoting.data.kugousingle.SongLists
+
 /**
  * 作者: 天使
  * 时间: 2021/6/27 13:57
  * 描述: 常量
  */
 object MusicConstant {
+ //<editor-fold desc="app第一次启动" >
+    const val INITIAL_APP= "InitialApp"
+
+    const val CURRENT_SONG_App="currentSong"
+
+//</editor-fold>
     //_______________________________________|Sp key|______________________________________________________________________________________________________
 //包名
     private const val PACKAGE_NAME = "com.example.yuehaoting"

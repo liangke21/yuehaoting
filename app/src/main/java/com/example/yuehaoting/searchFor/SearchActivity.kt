@@ -65,6 +65,8 @@ import com.example.yuehaoting.searchFor.fragment.ui.*
 import com.example.yuehaoting.searchFor.pagerview.MyPagerAdapter
 import com.example.yuehaoting.searchFor.viewmodel.PlaceViewModel
 import com.example.yuehaoting.theme.Theme
+import com.example.yuehaoting.util.AppInitialization.initializeTheCurrentSong
+import com.example.yuehaoting.util.AppInitialization.startTheAppForTheFirstTime
 import com.example.yuehaoting.util.BroadcastUtil
 import com.example.yuehaoting.util.MusicConstant
 import com.example.yuehaoting.util.MusicConstant.HIF_INI
@@ -201,6 +203,10 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
 
     private fun initData() {
         currentSong = MusicServiceRemote.getCurrentSong()
+
+        startTheAppForTheFirstTime(applicationContext){
+            currentSong=initializeTheCurrentSong()[0]
+        }
     }
 
 

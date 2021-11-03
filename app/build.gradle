@@ -6,7 +6,7 @@ plugins {
 
 }
 configurations.all {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+    resolutionStrategy.eachDependency { details ->
         def requested = details.requested
         if (requested.group == 'org.jetbrains.kotlin' && requested.name == 'kotlin-reflect') {
             details.useVersion kotlin_version as String
@@ -133,7 +133,7 @@ dependencies {
 
     //第三方 打log   暂时不能升级会导致assemble失败
     implementation 'com.jakewharton.timber:timber:4.7.1'
-    //配合打印日志
+    //配合打印日志 日志输出到手机上
     implementation 'org.slf4j:slf4j-api:1.7.32'
     implementation 'com.github.tony19:logback-android:2.0.0'
     //调色版
@@ -184,4 +184,6 @@ dependencies {
     //状态栏
     implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
     implementation 'com.gyf.immersionbar:immersionbar-ktx:3.0.0'
+
+    //implementation 'cn.hutool:hutool-all:5.7.11'
 }

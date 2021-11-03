@@ -8,6 +8,7 @@ import com.example.yuehaoting.base.rxJava.RxUtil
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.data.kugousingle.SongLists.Companion.SONG_LIST
 import com.example.yuehaoting.kotlin.getSp
+import com.example.yuehaoting.util.AppInitialization.initializeTheCurrentSong
 import com.example.yuehaoting.util.MusicConstant.LIST_LOOP
 import com.example.yuehaoting.util.MusicConstant.NAME
 import com.example.yuehaoting.util.MusicConstant.QUIT_SONG_ID
@@ -78,7 +79,6 @@ class PlayQueue(service: MusicService) {
      */
     fun makeList() {
         val service = service.get() ?: return
-
         synchronized(this) {
             when (service.playModel) {
                 RANDOM_PATTERN -> makeShuffleList()
@@ -100,7 +100,7 @@ class PlayQueue(service: MusicService) {
         _playingQueue.clear()
         _playingQueue.addAll(_originalOriginalQueue)
 
-        var newPosition = _originalOriginalQueue.indexOf(song)
+        val newPosition = _originalOriginalQueue.indexOf(song)
         if (newPosition >= 0) {
             position = newPosition - 1
         }
@@ -218,22 +218,8 @@ class PlayQueue(service: MusicService) {
      * 默认列表数据
      */
     private fun defaultMusicData(): List<SongLists> {
-        val list = ArrayList<SongLists>()
-        list.add(
-            SongLists(
-                id = 0,
-                SongName = "天堂旅行团",
-                SingerName = "张靓颖",
-                FileHash = "DF51742FC6446C459B48FC0E6D3CB9D0",
-                mixSongID = "49429562",
-                lyrics = "",
-                album = "天堂旅行团",
-                pic = "",
-                platform = 1
-            )
-        )
 
-        return list
+        return initializeTheCurrentSong()
     }
 
     /**

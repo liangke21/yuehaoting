@@ -25,6 +25,7 @@ class LayoutProcessingEvent(val binding: ActivitySearchBinding) :LayoutListenerE
     override fun eventEditTextNull() {
         binding.recyclerView.visibility=View.GONE
         binding.llSearchHistoryAndHotWords.visibility= View.VISIBLE
+        binding.llContentFragment.visibility = View.GONE
     }
 
     override fun eventNetworkData() {

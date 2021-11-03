@@ -1,5 +1,7 @@
 package com.example.yuehaoting.kotlin
 
+
+
 /**
  * 作者: 天使
  * 时间: 2021/6/27 8:08
@@ -22,8 +24,8 @@ class MyMain() {
 }
 
 
-enum class Color{
-    RED,BLACK,BLUE,GREEN,WHITE
+enum class Color {
+    RED, BLACK, BLUE, GREEN, WHITE
 }
 
 /*enum class Color(val rgb: Int) {
@@ -35,7 +37,7 @@ enum class Color{
 
 fun main() {
 
-println("Color.values()")
+
 
 
 }
