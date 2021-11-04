@@ -185,7 +185,7 @@ dependencies {
     implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
     implementation 'com.gyf.immersionbar:immersionbar-ktx:3.0.0'
 
-    //implementation 'cn.hutool:hutool-all:5.7.11'
+    implementation 'cn.hutool:hutool-all:5.7.15'
 
     //DialogX
     def dialogx_version = "0.0.43.beta13"
