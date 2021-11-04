@@ -78,6 +78,7 @@ import com.example.yuehaoting.util.MusicConstant.MUSIC_136
 import com.example.yuehaoting.util.MusicConstant.NAME
 import com.example.yuehaoting.util.MusicConstant.QQ
 import com.example.yuehaoting.util.MyUtil
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.gyf.immersionbar.ImmersionBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -100,7 +101,7 @@ import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 
-class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.LoaderCallbacks<List<History>> ,HolderItemView{
+class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.LoaderCallbacks<List<History>>, HolderItemView {
     private lateinit var recyclerView: RecyclerView
     private lateinit var ivTitleBarSearchBack: ImageView
     private lateinit var etTitleBarSearch: EditText
@@ -136,6 +137,9 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     private val binding get() = _binding!!
 
     private lateinit var layoutListenerEvent: LayoutListenerEvent
+
+    private var bb:BottomSheetBehaviorMainActivity?=null
+
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -165,15 +169,15 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         //封面连接字符集合
         mCacheString.init(this, "Cover")
 
-        layoutListenerEvent=LayoutProcessingEvent(binding)
+        layoutListenerEvent = LayoutProcessingEvent(binding)
         //更新底部图片和标题
         updatePlayButtonImageAndText()
 
-        val bb = BottomSheetBehaviorMainActivity(
+        bb = BottomSheetBehaviorMainActivity(
             InsideSearchActivity(), binding.playerContainer, binding.musicButton,
             binding.ll3
         )
-        lifecycle.addObserver(bb)
+        lifecycle.addObserver(bb!!)
         // bb.onCreate()
 
     }
@@ -204,8 +208,8 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     private fun initData() {
         currentSong = MusicServiceRemote.getCurrentSong()
 
-        startTheAppForTheFirstTime(applicationContext){
-            currentSong=initializeTheCurrentSong()[0]
+        startTheAppForTheFirstTime(applicationContext) {
+            currentSong = initializeTheCurrentSong()[0]
         }
     }
 
@@ -340,16 +344,17 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
      *  加载网络mp3
      * @param isLottie Boolean
      */
-    private fun bufferingSongUi(isLottie:Boolean){
-        if (isLottie){
-            binding.fl2.visibility=View.VISIBLE
+    private fun bufferingSongUi(isLottie: Boolean) {
+        if (isLottie) {
+            binding.fl2.visibility = View.VISIBLE
             binding.lottie.repeatCount = 300
             binding.lottie.playAnimation()
-        }else{
-            binding.fl2.visibility=View.GONE
+        } else {
+            binding.fl2.visibility = View.GONE
             binding.lottie.repeatCount = 0
         }
     }
+
     /**
      * 更新播放状态
      * @param isPlay Boolean
@@ -781,9 +786,9 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             0 -> {
 
                 viewModel.singleObservedLiveData1.observe(this) {
-                         if(it.getOrNull()==null){
-                             return@observe
-                         }
+                    if (it.getOrNull() == null) {
+                        return@observe
+                    }
                     val musicData = it.getOrNull() as KuGouSingle.Data
                     viewModel.songList1.addAll(musicData.lists)
                     viewModel.songList1.add(0, musicData.lists[0]) //在0索引上在插入数据
@@ -793,7 +798,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             }
             1 -> {
                 viewModel.singleObservedLiveData2.observe(this) {
-                    if(it.getOrNull()==null){
+                    if (it.getOrNull() == null) {
                         return@observe
                     }
                     val musicData = it.getOrNull() as KuGouSingle.Data
@@ -998,23 +1003,19 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
                 viewModel.searchPlaces(content)
             } else {
                 layoutListenerEvent.eventEditTextNull()
-     /*           llRecyclerView.visibility = View.GONE
-                recyclerView.visibility = View.GONE
-                llContentFragment.visibility = View.GONE
-                llActionBarLayout.visibility = View.VISIBLE*/
+                /*           llRecyclerView.visibility = View.GONE
+                           recyclerView.visibility = View.GONE
+                           llContentFragment.visibility = View.GONE
+                           llActionBarLayout.visibility = View.VISIBLE*/
                 viewModel.placeList.clear()
                 adapter?.notifyDataSetChanged()
 
 
-                Timber.v("搜索框为空 %S",content)
+                Timber.v("搜索框为空 %S", content)
                 //历史记录刷新
 
                 // flowListView?.mFoldState=null
                 LoaderManager.getInstance(this).initLoader(++loaderId, null, this)
-
-
-
-
 
 
             }
@@ -1029,18 +1030,18 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
 
         viewModel.placeLiveData.observe(this) {
             try {
-                if(it.getOrNull()==null){
+                if (it.getOrNull() == null) {
                     return@observe
                 }
                 val places = it.getOrNull() as ArrayList<RecordData>
                 Log.e("请求的曲目数据已经观察到", places[0].HintInfo)
                 if (places.isNotEmpty()) {
                     layoutListenerEvent.eventNetworkData()
-                 //   recyclerView.visibility = View.VISIBLE
+                    //   recyclerView.visibility = View.VISIBLE
                     viewModel.placeList.clear()
                     viewModel.placeList.addAll(places)
                     adapter?.notifyDataSetChanged()
-                   // llActionBarLayout.visibility = View.GONE
+                    // llActionBarLayout.visibility = View.GONE
 
                 } else {
                     Toast.makeText(this, "未能查询到歌曲", Toast.LENGTH_SHORT).show()
@@ -1119,7 +1120,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         ViewPagerHelper.bind(magicIndicator, viewPager)
     }
 
-//<editor-fold desc="控件监听" >
+    //<editor-fold desc="控件监听" >
     override fun onClick(v: View) {
         when (v.id) {
             R.id.iv_title_bar_search_back -> {
@@ -1165,15 +1166,17 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
             }
         }
     }
-//</editor-fold>
+
+    //</editor-fold>
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
-          if (binding.fl2.visibility==View.VISIBLE){
-              binding.fl2.visibility=View.GONE
-              return true
-          }
+        if (binding.fl2.visibility == View.VISIBLE) {
+            binding.fl2.visibility = View.GONE
+            return true
+        }
         return super.onKeyUp(keyCode, event)
     }
-//<editor-fold desc="可见">
+
+    //<editor-fold desc="可见">
     override fun onResume() {
         super.onResume()
         launch(Dispatchers.IO) {
@@ -1182,7 +1185,7 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
     }
 //</editor-fold>
 
-//<editor-fold desc="销毁">
+    //<editor-fold desc="销毁">
     override fun onDestroy() {
         super.onDestroy()
         mAdapter = null
@@ -1200,6 +1203,8 @@ class SearchActivity : BaseActivity(), View.OnClickListener, LoaderManager.Loade
         repository.closure()
         mCacheString.close()
         _binding = null
+        bb=null
+
     }
 //</editor-fold>
 }

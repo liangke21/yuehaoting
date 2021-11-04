@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.SeekBar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -83,7 +84,7 @@ class BottomSheetBehaviorMainActivity
     private var _activity: InsideMainActivityBase? = null,
     private var _binding: ActivityMainLayoutBottomSheetBehaviorBinding? = null,
     private var musicButton: MusicButtonLayout,
-    private val behavior2: LinearLayout
+    private val behavior1: LinearLayout
 ) : LifecycleObserver, MusicEvenCallback, ActivityHandlerCallback, View.OnClickListener, CoroutineScope by MainScope() {
 
     private val activity get() = _activity!!.activity
@@ -98,6 +99,7 @@ class BottomSheetBehaviorMainActivity
 
     private lateinit var ppvPlayPause: PlayPauseView
 
+    lateinit var behavior2: BottomSheetBehavior<CoordinatorLayout>
     /**
      * 当前是否播放
      */
@@ -142,8 +144,8 @@ class BottomSheetBehaviorMainActivity
      * BottomSheetBehavior初始化
      */
     private fun initView() {
-        val behavior1 = BottomSheetBehavior.from(behavior2)
-        val behavior2 = BottomSheetBehavior.from(binding.playerContainer)
+        val behavior1 = BottomSheetBehavior.from(behavior1)
+         behavior2 = BottomSheetBehavior.from(binding.playerContainer)
 
         //展开
         behavior1.state = BottomSheetBehavior.STATE_EXPANDED
@@ -451,7 +453,7 @@ class BottomSheetBehaviorMainActivity
 
     //初始化控件
     private fun initView2() {
-
+     binding.layoutPlayLayoutBar.ibPlayDropDown.setOnClickListener(this)
 
         ppvPlayPause = activity.findViewById(R.id.ppv_play_pause)
 
@@ -843,6 +845,10 @@ class BottomSheetBehaviorMainActivity
 
                 }
             }
+
+         binding.layoutPlayLayoutBar.ibPlayDropDown.id->{
+             behavior2.state=BottomSheetBehavior.STATE_COLLAPSED
+         }
 
         }
     }

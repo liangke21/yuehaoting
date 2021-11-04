@@ -1,5 +1,7 @@
 package com.example.yuehaoting.kotlin
 
+import android.annotation.SuppressLint
+import android.content.Context
 
 
 /**
@@ -10,30 +12,22 @@ package com.example.yuehaoting.kotlin
 
 class MyMain() {
 
-    inner class Mian() {
-        val m: MyMain get() = this@MyMain
+    companion object{
+
+        lateinit var context: Context
+
+        fun add(){
+            MyMain.context
+        }
+
     }
 
-    class Mian2() {
-        val m: MyMain get() = MyMain()
+    fun add(){
+       MyMain.context
     }
 
-    fun play() {
-        println("哇咔咔")
-    }
+
 }
-
-
-enum class Color {
-    RED, BLACK, BLUE, GREEN, WHITE
-}
-
-/*enum class Color(val rgb: Int) {
-    RED(1),
-    GREEN(2),
-    BLUE(3)
-}*/
-
 
 fun main() {
 

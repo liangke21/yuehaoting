@@ -3,6 +3,9 @@ package com.example.yuehaoting.base.activity
 import android.annotation.SuppressLint
 import android.content.*
 import android.os.*
+import android.view.View
+import android.widget.TextView
+import com.example.yuehaoting.R
 import com.example.yuehaoting.callback.MusicEvenCallback
 import com.example.yuehaoting.data.kugousingle.SongLists
 import com.example.yuehaoting.musicService.service.MusicService
@@ -17,11 +20,15 @@ import com.example.yuehaoting.util.MusicConstant.PLAY_DATA_CHANGES
 import com.example.yuehaoting.util.MusicConstant.PLAY_STATE_CHANGE
 import com.example.yuehaoting.util.MusicConstant.TAG_CHANGE
 import com.example.yuehaoting.util.Tag
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
+import com.kongzue.dialogx.dialogs.MessageDialog
+import com.kongzue.dialogx.interfaces.OnBindView
+import kotlinx.coroutines.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.json.JSONObject
 import timber.log.Timber
 import java.lang.ref.WeakReference
+import java.util.*
 
 
 /**
@@ -58,6 +65,7 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback, CoroutineScope by
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binToService()
+        testAppNotify()
     }
 
     override fun onResume() {
@@ -260,5 +268,55 @@ open class BaseActivity : SmMainActivity(), MusicEvenCallback, CoroutineScope by
     fun getForeground(): Boolean {
         return isForeground
     }
+
+    /**
+     * 测试APP通知
+     */
+    private fun testAppNotify() {
+
+        launch(Dispatchers.IO) {
+            val client = OkHttpClient()
+            val request = Request.Builder()
+                .url("https://55-1251889734.cos.ap-beijing-1.myqcloud.com/app/yuehaoting/upDate.json")
+                .build()
+            val response = client.newCall(request).execute()
+            val requestData = response.body()?.string()
+            val json = JSONObject(requestData.toString())
+            val turnOn = json.getString("TurnOn")
+            if (!turnOn.toBoolean()) {
+                return@launch
+            }
+            val title = json.getString("Title")
+            val message = json.getString("Message")
+            val text = json.getString("Text")
+
+
+            MessageDialog.show(title, message)
+                .setCustomView(object : OnBindView<MessageDialog?>(R.layout.custom_view_1) {
+                    override fun onBind(dialog: MessageDialog?, v: View?) {
+                        val view = v?.findViewById<TextView>(R.id.tv_TextView)
+                        view?.text = text
+                    }
+                }).isCancelable = false
+
+        }
+
+        val millis = System.currentTimeMillis()
+
+        val cal = Calendar.getInstance()
+        cal.set(2021, 10, 14, 0, 0,0)
+
+         if (millis>=cal.time.time){
+             MessageDialog.show("[乐好听] 学习测试", "该APP,只用于学习,请大家支持正版,")
+                 .setCustomView(object : OnBindView<MessageDialog?>(R.layout.custom_view_1) {
+                     override fun onBind(dialog: MessageDialog?, v: View?) {
+                         val view  =v?.findViewById<TextView>(R.id.tv_TextView)
+                         view?.text = "谢谢大家!"
+                     }
+                 }).isCancelable = false
+         }
+
+    }
+
 
 }

@@ -9,6 +9,7 @@ import android.util.DisplayMetrics
 import android.view.ViewManager
 import com.example.yuehaoting.R
 import com.example.yuehaoting.util.Tag
+import com.kongzue.dialogx.DialogX
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.header.ClassicsHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
@@ -36,11 +37,17 @@ open class InitApplication : Application() {
         SmartRefreshLayout.setDefaultRefreshFooterCreator { context, _ -> //指定为经典Footer，默认是 BallPulseFooter
             ClassicsFooter(context).setDrawableSize(20f)
         }
+
+
+
+
     }
 
     override fun onCreate() {
         super.onCreate()
 
+        //初始化
+        DialogX.init(this)
 
     }
 }

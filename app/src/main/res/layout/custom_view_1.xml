@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="15dp"
+    android:paddingTop="15dp">
+
+    <pl.droidsonroids.gif.GifImageView
+      android:id="@+id/gifView"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:src="@mipmap/aa"
+      app:layout_srlSpinnerStyle="Scale"
+      app:layout_srlBackgroundColor="@android:color/transparent"/>
+
+    <TextView
+      android:id="@+id/tv_TextView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="10dp"
+      android:text="谢谢大家的支持"
+      android:textColor="#878787"
+      android:textSize="12dp"
+      android:autoLink="all"
+      />
+
+  </LinearLayout>
+
+</RelativeLayout>
